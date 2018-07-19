@@ -32,26 +32,32 @@ namespace CheckOutBot.Factory
             ChromeDriverService service = ChromeDriverService.CreateDefaultService();
             service.HideCommandPromptWindow = true;
             service.SuppressInitialDiagnosticInformation = true;
-            options.AddArguments("--incognito", "--disable-infobars", "--window-position=-32000,-32000");
-#if DEBUG
+            options.AddArguments("--incognito", "--disable-infobars");
+#if !DEBUG
+            options.AddArgument("--window-position=-32000,-32000");
+#endif
             if (AppSettings.Default.UseProxy && AppSettings.Default.Proxies.Count > 0)
             {
-                var proxy = GetRandomProxy();
-                options.Proxy = new Proxy()
-                {
-                    HttpProxy = proxy.Address.AbsoluteUri,
-                    Kind = ProxyKind.Manual,
-                };
+                var webProxy = GetRandomProxy();
+                string proxyStr = webProxy.Address.AbsoluteUri.Replace("\n", "");
+                var proxy = new Proxy();
+                proxy.Kind = ProxyKind.Manual;
+                proxy.IsAutoDetect = false;
+                proxy.HttpProxy = proxyStr;
+                proxy.SslProxy = proxyStr;
+                options.Proxy = proxy;
+                options.AddArgument("ignore-certificate-errors");
             }
-#endif
 
             ChromeDriver driver = new ChromeDriver(service,options);
+#if !DEBUG
             driver.Navigate().GoToUrl("chrome://version/");
             var processes = Process.GetProcessesByName("chrome").Where(p => p.MainWindowTitle.Contains(driver.Title));
             foreach (var p in processes)
             {
                 ShowWindowAsync(p.MainWindowHandle, 0);
             }
+#endif
 
             return driver;
         }

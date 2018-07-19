@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Flurl;
 using Flurl.Http;
+using Flurl.Http.Configuration;
 using OpenQA.Selenium;
 using Cookie = OpenQA.Selenium.Cookie;
 
@@ -134,6 +135,22 @@ namespace CheckOutBot
 
             request.Client =  request.Client.Configure(setting => 
                 setting.HttpClientFactory = new ProxyHttpClientFactory(proxy.Address.AbsoluteUri));
+
+            return request;
+        }
+
+        /// <summary>
+        /// Adds Proxy in FurlRequest.
+        /// proxy is added only if useProxy is set to true in settings
+        /// </summary>
+        /// <returns></returns>
+        public static IFlurlRequest WithProxy(this string url, string proxy)
+        {
+            var request = new FlurlRequest(url);
+            if (!AppSettings.Default.UseProxy) return request;
+
+            request.Client = request.Client.Configure(setting =>
+                setting.HttpClientFactory = new DefaultHttpClientFactory());
 
             return request;
         }
