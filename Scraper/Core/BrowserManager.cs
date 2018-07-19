@@ -14,6 +14,7 @@ namespace CheckOutBot.Core
 
         private readonly BlockingCollection<IWebDriver> _queue;
 
+
         private BrowserManager()
         {
             _queue = new BlockingCollection<IWebDriver>();
