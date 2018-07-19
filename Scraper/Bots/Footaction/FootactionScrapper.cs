@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Xml;
+using Flurl;
 using StoreScraper.Factory;
 using StoreScraper.Interfaces;
 using StoreScraper.Models;
@@ -29,8 +31,24 @@ namespace StoreScraper.Bots.Footaction
             task.Wait(token);
             var xmlDocument = new XmlDocument();
             xmlDocument.LoadXml(task.Result);
-            
-            throw new NotImplementedException();
+            var products = xmlDocument.SelectNodes("productCategorySearchPage/products");
+            if (products == null)
+            {
+                info.WriteLog("[Error] Uncexpected XML!!");
+                throw new WebException("Undexpected XML");
+            }
+            foreach (XmlNode  singleContact in products)
+            {
+                XmlNode personalNode = singleContact.SelectSingleNode("name");
+                string productName = personalNode?.InnerText;
+                string imageUrl = singleContact.SelectSingleNode("images/url")?.InnerText;
+                double.TryParse(singleContact.SelectSingleNode("price/value")?.InnerText,out var price);
+                string sku = singleContact.SelectSingleNode("sku")?.InnerText;
+                string link = new Uri($"https://www.footaction.com/product/{productName}/{sku}.html").AbsoluteUri;
+                var product = new Product(this.WebsiteName,productName,link,price,sku,imageUrl);
+                if (Utils.SatisfiesCriteria(product,setings))
+                    listOfProducts.Add(product);
+            }
         }
 
     }
