@@ -88,6 +88,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bots\ChampsSports\ChamsSportsScraper.cs" />
     <Compile Include="Bots\OffWhite\OffWhiteScraper.cs" />
     <Compile Include="Bots\OffWhite\OffWhiteSearchSettings.cs" />
     <Compile Include="AppSettings.cs" />
