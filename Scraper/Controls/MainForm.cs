@@ -1,9 +1,4 @@
-﻿using CheckOutBot.Browser;
-using CheckOutBot.Controls;
-using CheckOutBot.Core;
-using CheckOutBot.Interfaces;
-using CheckOutBot.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -13,8 +8,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using StoreScraper.Browser;
+using StoreScraper.Core;
+using StoreScraper.Models;
 
-namespace CheckOutBot
+namespace StoreScraper.Controls
 {
     public partial class MainForm : Form
     {

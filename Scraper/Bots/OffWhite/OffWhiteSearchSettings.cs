@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CheckOutBot.Models;
+﻿using StoreScraper.Models;
 
-namespace CheckOutBot.Bots.OffWhite
+namespace StoreScraper.Bots.OffWhite
 {
     public class OffWhiteSearchSettings : SearchSettingsBase
     {

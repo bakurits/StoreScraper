@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
-using CheckOutBot.Factory;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
+using StoreScraper.Factory;
 using Cookie = OpenQA.Selenium.Cookie;
 
-namespace CheckOutBot.Browser
+namespace StoreScraper.Browser
 {
 
     class CookieCollector

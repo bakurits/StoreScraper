@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
-using CheckOutBot.Models;
+using StoreScraper.Models;
 
-namespace CheckOutBot.Interfaces
+namespace StoreScraper
 {
     public abstract class ScraperBase
     {

@@ -1,27 +1,20 @@
-﻿using System;
-using System.CodeDom;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using CheckOutBot.Factory;
-using CheckOutBot.Models;
+using Flurl.Http;
+using Flurl.Http.Configuration;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Flurl;
-using Flurl.Http;
-using Flurl.Http.Configuration;
 using OpenQA.Selenium;
+using StoreScraper.Factory;
+using StoreScraper.Models;
 using Cookie = OpenQA.Selenium.Cookie;
 
-namespace CheckOutBot
+namespace StoreScraper.Helpers
 {
     static class Utils
     {

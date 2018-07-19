@@ -1,4 +1,4 @@
-﻿namespace CheckOutBot
+﻿namespace StoreScraper.Controls
 {
     partial class MainForm
     {

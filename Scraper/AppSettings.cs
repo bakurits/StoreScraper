@@ -4,10 +4,9 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml.Serialization;
-using CheckOutBot.Interfaces;
-using CheckOutBot.Models;
+using StoreScraper.Models;
 
-namespace CheckOutBot
+namespace StoreScraper
 {
     [Serializable]
     public class AppSettings

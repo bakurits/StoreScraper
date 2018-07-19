@@ -1,23 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using CheckOutBot.Bots;
-using CheckOutBot.Bots.OffWhite;
-using CheckOutBot.Interfaces;
-using CheckOutBot.Models;
-using Flurl.Http;
+﻿using System.Net.Http;
+using StoreScraper.Models;
 
 /*
  * New tester class for making debugging OffWhiteBot class
  * far more easier.
  */
 
-namespace CheckOutBot
+namespace StoreScraper.Bots.OffWhite
 {
     class Tester1
     {

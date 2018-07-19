@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using CheckOutBot.Helpers;
-using CheckOutBot.Interfaces;
-using CheckOutBot.Models;
+using StoreScraper.Helpers;
+using StoreScraper.Models;
 
-namespace CheckOutBot.Core
+namespace StoreScraper.Core
 {
     public class MonitoringTask : IMonitoringTask
     {

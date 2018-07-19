@@ -1,16 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using CheckOutBot.Core;
-using static CheckOutBot.Core.MonitoringTask;
+using StoreScraper.Core;
 
-namespace CheckOutBot.Controls
+namespace StoreScraper.Controls
 {
     public partial class ActionChooser : Form
     {
@@ -18,19 +11,19 @@ namespace CheckOutBot.Controls
         {
             InitializeComponent();
 
-            string[] names = Enum.GetNames(typeof(FinalAction));
+            string[] names = Enum.GetNames(typeof(MonitoringTask.FinalAction));
 
             CLbx_Actions.Items.AddRange(names);
         }
 
 
-        public IEnumerable<FinalAction> GetFinalActions()
+        public IEnumerable<MonitoringTask.FinalAction> GetFinalActions()
         {
-            List<FinalAction> result = new List<FinalAction>();
+            List<MonitoringTask.FinalAction> result = new List<MonitoringTask.FinalAction>();
 
             foreach (string checkedItem in CLbx_Actions.CheckedItems)
             {
-                result.Add((FinalAction) Enum.Parse(typeof(FinalAction), checkedItem));
+                result.Add((MonitoringTask.FinalAction) Enum.Parse(typeof(MonitoringTask.FinalAction), checkedItem));
             }
 
             return result;

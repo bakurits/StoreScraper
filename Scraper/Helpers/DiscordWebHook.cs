@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace CheckOutBot.Helpers
+namespace StoreScraper.Helpers
 {
     [JsonObject]
     public class DiscordWebhook

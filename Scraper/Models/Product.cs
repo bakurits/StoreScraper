@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Drawing;
-using Flurl.Http;
 using Flurl;
+using Flurl.Http;
+using StoreScraper.Helpers;
 
-namespace CheckOutBot.Models
+namespace StoreScraper.Models
 {
     public class Product
     {

@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using Cookie = System.Net.Cookie;
 
-namespace CheckOutBot.Factory
+namespace StoreScraper.Factory
 {
     class ClientFactory
     {

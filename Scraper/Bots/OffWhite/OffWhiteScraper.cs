@@ -1,30 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using CheckOutBot.Bots.OffWhite;
-using CheckOutBot.Browser;
-using CheckOutBot.Factory;
-using CheckOutBot.Interfaces;
-using CheckOutBot.Models;
 using Flurl.Http;
 using HtmlAgilityPack;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using Cookie = System.Net.Cookie;
-using Timer = System.Timers.Timer;
+using StoreScraper.Browser;
+using StoreScraper.Factory;
+using StoreScraper.Helpers;
+using StoreScraper.Interfaces;
+using StoreScraper.Models;
 
-namespace CheckOutBot.Bots
+namespace StoreScraper.Bots.OffWhite
 {
     [Serializable]
     public class OffWhiteBot : ScraperBase, ISearchSettingsValidator

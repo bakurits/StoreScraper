@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using CheckOutBot;
-using CheckOutBot.Factory;
 using OpenQA.Selenium;
+using StoreScraper.Factory;
 
 namespace StoreScraper.Core
 {

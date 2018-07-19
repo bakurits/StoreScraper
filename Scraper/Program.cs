@@ -1,19 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using CheckOutBot.Bots;
-using CheckOutBot.Browser;
-using CheckOutBot.Controls;
-using CheckOutBot.Core;
-using CheckOutBot.Helpers;
-using CheckOutBot.Interfaces;
-using OpenQA.Selenium;
+using StoreScraper.Bots.OffWhite;
+using StoreScraper.Browser;
+using StoreScraper.Controls;
 
-namespace CheckOutBot
+namespace StoreScraper
 {
     static class Program
     {

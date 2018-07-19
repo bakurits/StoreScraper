@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CheckOutBot.Models
+﻿namespace StoreScraper.Models
 {
     public class UrlString
     {
