@@ -55,7 +55,7 @@
     <DebugType>full</DebugType>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>CheckOutBot.Program</StartupObject>
+    <StartupObject>StoreScraper.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Flurl, Version=2.7.1.0, Culture=neutral, processorArchitecture=MSIL">
@@ -92,8 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bots\ChampsSports\ChampsSportsScraper.cs" />
-    <Compile Include="Bots\FootactionScrapper\FootactionScrapper.cs" />
-    <Compile Include="Bots\OffWhite\FootactionScrapper.cs" />
+    <Compile Include="Bots\Footaction\FootactionScrapper.cs" />
     <Compile Include="Bots\OffWhite\OffWhiteScraper.cs" />
     <Compile Include="Bots\OffWhite\OffWhiteSearchSettings.cs" />
     <Compile Include="AppSettings.cs" />
