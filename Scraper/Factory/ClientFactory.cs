@@ -59,6 +59,9 @@ namespace StoreScraper.Factory
             return driver;
         }
 
+
+        public static IWebDriver GetChrome;
+
         private static WebProxy ParseProxy(string proxy)
         {
 
