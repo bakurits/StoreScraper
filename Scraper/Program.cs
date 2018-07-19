@@ -37,7 +37,7 @@ namespace CheckOutBot
          
             CookieCollector.Default = new CookieCollector();
             
-            AppSettings.Default.AvaibleBots = new List<CheckOutBotBase>
+            AppSettings.Default.AvaibleBots = new List<ScraperBase>
             {
                 new OffWhiteBot()
             };

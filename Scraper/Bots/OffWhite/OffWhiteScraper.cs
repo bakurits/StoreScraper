@@ -27,7 +27,7 @@ using Timer = System.Timers.Timer;
 namespace CheckOutBot.Bots
 {
     [Serializable]
-    public class OffWhiteBot : CheckOutBotBase, ISearchSettingsValidator
+    public class OffWhiteBot : ScraperBase, ISearchSettingsValidator
     {
         public override string WebsiteName { get; set; } = "Off---white";
         public override string WebsiteBaseUrl { get; set; } = "Off---white.com";

@@ -15,7 +15,7 @@ namespace CheckOutBot.Core
         public enum FinalAction { PostToSlack, PostToDiscord };
 
 
-        public CheckOutBotBase Bot { get; set; }
+        public ScraperBase Bot { get; set; }
         public object SearchSettings { get; set; }
         public IEnumerable<Product> OldItems { get; set; }
         public IEnumerable<FinalAction> Actions;

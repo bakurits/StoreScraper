@@ -21,7 +21,7 @@ namespace CheckOutBot
 {
     class Tester1
     {
-        public CheckOutBotBase offWhiteBot = AppSettings.Default.AvaibleBots[0];
+        public ScraperBase offWhiteBot = AppSettings.Default.AvaibleBots[0];
 
         public void TestCheckOutForm()
         {

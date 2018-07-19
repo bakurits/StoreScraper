@@ -100,7 +100,7 @@ namespace CheckOutBot
             label_FindingStatus.Text = @"Processing...";
 
             _findProductsLogger.OnLogged += InfoOnOnLogged;
-            var bot = Cbx_ChooseStore.SelectedItem as CheckOutBotBase;
+            var bot = Cbx_ChooseStore.SelectedItem as ScraperBase;
 
             Task.Run
                 (
@@ -205,7 +205,7 @@ namespace CheckOutBot
 
         private void Cbx_ChooseStore_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var bot = (sender as ComboBox).SelectedItem as CheckOutBotBase;
+            var bot = (sender as ComboBox).SelectedItem as ScraperBase;
             var sType = bot.SearchSettings;
             PGrid_Bot.SelectedObject = Activator.CreateInstance(sType);
         }
@@ -222,7 +222,7 @@ namespace CheckOutBot
 
         private void Btn_AddToMonitor_Click(object sender, EventArgs e)
         {
-            var bot = (CheckOutBotBase) Cbx_ChooseStore.SelectedValue;
+            var bot = (ScraperBase) Cbx_ChooseStore.SelectedValue;
             btn_FindProducts.PerformClick();
             var storeIndex = Cbx_ChooseStore.SelectedIndex;
             var searchOptions = PGrid_Bot.SelectedObject;

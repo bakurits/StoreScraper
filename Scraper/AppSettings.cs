@@ -17,7 +17,7 @@ namespace CheckOutBot
         public static string DataDir;
         [XmlIgnore] public static string DataFilePath;
 
-        [XmlIgnore] [Browsable(false)] public List<CheckOutBotBase> AvaibleBots;
+        [XmlIgnore] [Browsable(false)] public List<ScraperBase> AvaibleBots;
 
 
         public int MaxThreadCount { get; set; } = 10;

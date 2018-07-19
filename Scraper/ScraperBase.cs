@@ -6,7 +6,7 @@ using CheckOutBot.Models;
 
 namespace CheckOutBot.Interfaces
 {
-    public abstract class CheckOutBotBase
+    public abstract class ScraperBase
     {
         [Browsable(false)] public abstract string WebsiteName { get; set; }
 

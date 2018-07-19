@@ -10,7 +10,7 @@ namespace CheckOutBot.Core
 {
     interface IMonitoringTask
     {
-        CheckOutBotBase Bot { get; set; }
+        ScraperBase Bot { get; set; }
 
         bool Do(CancellationToken token);
     }
