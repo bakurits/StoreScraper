@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Xml;
-using CheckOutBot.Factory;
-using CheckOutBot.Interfaces;
-using CheckOutBot.Models;
 using Flurl.Http;
+using StoreScraper.Factory;
+using StoreScraper.Helpers;
+using StoreScraper.Models;
 
-namespace CheckOutBot.Bots.OffWhite
+namespace StoreScraper.Bots.FootactionScrapper
 {
     [Serializable]
     public class FootactionScrapper : ScraperBase
