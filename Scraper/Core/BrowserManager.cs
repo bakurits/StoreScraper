@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using CheckOutBot;
 using CheckOutBot.Factory;
 using OpenQA.Selenium;
 
-namespace CheckOutBot.Core
+namespace StoreScraper.Core
 {
     public class BrowserManager
     {
