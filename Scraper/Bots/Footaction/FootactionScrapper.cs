@@ -10,7 +10,7 @@ using Flurl.Http;
 namespace CheckOutBot.Bots.OffWhite
 {
     [Serializable]
-    public class FootactionScrapper : CheckOutBotBase
+    public class FootactionScrapper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Footaction";
         public override string WebsiteBaseUrl { get; set; } = "https://www.footaction.com";
