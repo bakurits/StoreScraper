@@ -11,7 +11,6 @@ using CheckOutBot.Controls;
 using CheckOutBot.Core;
 using CheckOutBot.Helpers;
 using CheckOutBot.Interfaces;
-using CheckOutBot.Properties;
 using OpenQA.Selenium;
 
 namespace CheckOutBot
