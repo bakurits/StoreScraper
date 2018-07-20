@@ -9,7 +9,7 @@ using StoreScraper.Models;
 namespace ScraperTest
 {
     [TestClass]
-    public class UnitTest2
+    public class FootActionTest
     {
         [TestMethod]
         public void TestMethod1()

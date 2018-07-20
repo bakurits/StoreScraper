@@ -6,7 +6,7 @@ using StoreScraper.Models;
 
 namespace StoreScraper
 {
-    public abstract class ScraperBase
+    public abstract class ScraperBase<S> where S : SearchSettingsBase
     {
         [Browsable(false)] public abstract string WebsiteName { get; set; }
 
@@ -14,13 +14,13 @@ namespace StoreScraper
         /// Full url of website https://example.com.
         /// </summary>
         public abstract string WebsiteBaseUrl { get; set; }
-    
+
         /// <summary>
         /// Template for search settings, such as filters and any other settings.
         /// Object of this type will be provided in FindItems method as settings parameter.
         /// Any bot can use or implement any custom type for this field.
         /// </summary>
-        public abstract Type SearchSettings { get; set; }
+        public Type SearchSettings { get; set; } = typeof(S);
 
 
         /// <summary>
@@ -37,11 +37,13 @@ namespace StoreScraper
         /// each bot may implement and use custom type of settings depending on store</param>
         /// <param name="token">Canselation token to terminate process when cancel requested</param>
         /// <param name="info">Object in which method outputs detailed report of finding process</param>
-        public abstract void FindItems(out List<Product> listOfProducts, object settings, CancellationToken token,  Logger info);
+        public abstract void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token,  Logger info);
 
         public override string ToString()
         {
             return this.WebsiteName;
         }
     }
+
+    public abstract class ScraperBase : ScraperBase<SearchSettingsBase>{}
 }

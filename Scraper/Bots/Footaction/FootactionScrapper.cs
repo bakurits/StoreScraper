@@ -19,10 +19,9 @@ namespace StoreScraper.Bots.Footaction
     {
         public override string WebsiteName { get; set; } = "Footaction";
         public override string WebsiteBaseUrl { get; set; } = "https://www.footaction.com";
-        public override Type SearchSettings { get; set; } = typeof(SearchSettingsBase);
         public override bool Enabled { get; set; }
        
-        public override void FindItems(out List<Product> listOfProducts, object settings, CancellationToken token, Logger info)
+        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token, Logger info)
         {
             var setings = (SearchSettingsBase) settings;      
             listOfProducts = new List<Product>();

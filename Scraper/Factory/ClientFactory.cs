@@ -3,6 +3,7 @@ using System.Net;
 using System.Runtime.InteropServices;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Firefox;
 
 namespace StoreScraper.Factory
 {
@@ -45,7 +46,7 @@ namespace StoreScraper.Factory
         };
 
 
-        public static IWebDriver GetChromeDriver()
+        public static ChromeDriver GetChromeDriver()
         {
             ChromeOptions options = new ChromeOptions();
             ChromeDriverService service = ChromeDriverService.CreateDefaultService();
@@ -82,7 +83,24 @@ namespace StoreScraper.Factory
         }
 
 
-        public static IWebDriver GetChrome;
+        public static FirefoxDriver GetFirefoxDriver()
+        {
+            var service = FirefoxDriverService.CreateDefaultService();
+            var options = new FirefoxOptions();
+            service.HideCommandPromptWindow = true;
+            service.SuppressInitialDiagnosticInformation = true;
+
+            var proxy = GetRandomProxy();
+            options.Proxy = new Proxy()
+            {
+                Kind = ProxyKind.Manual,
+                SslProxy = proxy.Address.AbsoluteUri,
+                HttpProxy = proxy.Address.AbsoluteUri,
+                SocksPassword = proxy.Address.AbsoluteUri,
+            };
+
+            return new FirefoxDriver(service, options);
+        }
 
         private static WebProxy ParseProxy(string proxy)
         {

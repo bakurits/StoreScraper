@@ -10,18 +10,17 @@ using StoreScraper.Models;
 
 namespace StoreScraper.Bots.Mrporter
 {
-    public class MrporterScraper : ScraperBase
+    public class MrporterScraper : ScraperBase<MrporterSearchSettings>
     {
         public override string WebsiteName { get; set; } = "Mrporter";
         public override string WebsiteBaseUrl { get; set; } = "https://www.mrporter.com/";
-        public override Type SearchSettings { get; set; } = typeof(MrporterSearchSettings);
         public override bool Enabled { get; set; }
 
 
         private const string SearchUrlFormat = @"http://www.mrporter.com/mens/whats-new";
 
 
-        public override void FindItems(out List<Product> listOfProducts, object settingsObj, CancellationToken token, Logger info)
+        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settingsObj, CancellationToken token, Logger info)
         {
 
             var settings = (MrporterSearchSettings)settingsObj;
@@ -30,8 +29,7 @@ namespace StoreScraper.Bots.Mrporter
             var node = GetPage(settings.KeyWords, 1, token);
             
             Worker(listOfProducts, settings, node, token);
-           
-            
+                   
         }
 
 

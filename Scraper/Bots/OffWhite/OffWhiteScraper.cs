@@ -21,8 +21,6 @@ namespace StoreScraper.Bots.OffWhite
     {
         public override string WebsiteName { get; set; } = "Off---white";
         public override string WebsiteBaseUrl { get; set; } = "Off---white.com";
-        public override Type SearchSettings { get; set; } = typeof(OffWhiteSearchSettings);
-
        
         public override bool Enabled { get; set; }
 
@@ -47,7 +45,7 @@ namespace StoreScraper.Bots.OffWhite
         private const string SearchUrlFormat = @"https://www.off---white.com/en/US/search?q={0}";
 
 
-        public override void FindItems(out List<Product> listOfProducts, object settingsOjb
+        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settingsOjb
             , CancellationToken token, Logger info)
         {
             var settings = settingsOjb as OffWhiteSearchSettings;
@@ -101,12 +99,6 @@ namespace StoreScraper.Bots.OffWhite
             }
 
             info.State = Logger.ProcessingState.Success;
-        }
-
-        
-        private void CollectCookies()
-        {
-
         }
 
         public bool ValidateSearchSettings(object searchSettings, out string errorMessage)

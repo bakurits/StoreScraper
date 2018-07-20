@@ -13,7 +13,6 @@ namespace StoreScraper.Bots.ChampsSports
     {
         public override string WebsiteName { get; set; }
         public override string WebsiteBaseUrl { get; set; }
-        public override Type SearchSettings { get; set; }
         public override bool Enabled { get; set; }
 
         private const string UrlPrefix = @"https://www.champssports.com/_-_";
@@ -26,7 +25,7 @@ namespace StoreScraper.Bots.ChampsSports
 
         }
 
-        public override void FindItems(out List<Product> listOfProducts, object settings, CancellationToken token, Logger info)
+        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token, Logger info)
         {
             listOfProducts = new List<Product>();
 

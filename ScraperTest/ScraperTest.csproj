@@ -50,9 +50,9 @@
   <ItemGroup>
     <Compile Include="ChampsSportsTest.cs" />
     <Compile Include="MrporterTest.cs" />
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="OffWhiteTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnitTest2.cs" />
+    <Compile Include="FootActionTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="GenericTest1.GenericTest" />

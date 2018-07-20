@@ -12,7 +12,7 @@ namespace StoreScraper.Core
 
 
         public ScraperBase Bot { get; set; }
-        public object SearchSettings { get; set; }
+        public SearchSettingsBase SearchSettings { get; set; }
         public IEnumerable<Product> OldItems { get; set; }
         public IEnumerable<FinalAction> Actions;
 
