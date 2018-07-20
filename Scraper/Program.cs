@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using StoreScraper.Bots.Footaction;
 using StoreScraper.Bots.OffWhite;
 using StoreScraper.Browser;
 using StoreScraper.Controls;
@@ -31,7 +32,8 @@ namespace StoreScraper
             
             AppSettings.Default.AvaibleBots = new List<ScraperBase>
             {
-                new OffWhiteBot()
+                new OffWhiteBot(),
+                new FootactionScrapper(),
             };
 
             

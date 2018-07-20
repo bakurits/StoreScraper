@@ -1,29 +1,29 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper;
-using StoreScraper.Bots.Footaction;
+using StoreScraper.Bots.Mrporter;
 using StoreScraper.Models;
 
 namespace ScraperTest
 {
     [TestClass]
-    public class UnitTest2
+    public class Mrporter
     {
         [TestMethod]
         public void TestMethod1()
         {
-           var searchSettingsBase  = new SearchSettingsBase()
+            MrporterScraper scraper = new MrporterScraper();
+            List<Product> lst = new List<Product>();
+            MrporterSearchSettings settings = new MrporterSearchSettings()
             {
-                MaxPrice = 0,
-                MinPrice = 0,
-                KeyWords = "boots",
-                NegKeyWrods = ""
+                KeyWords = "bag sneakers boots"
             };
-            new FootactionScrapper().FindItems(out var listOfProducts, searchSettingsBase,CancellationToken.None,new Logger());
+           
+            scraper.FindItems(out lst, settings, CancellationToken.None, new Logger());
         }
-
 
         [TestInitialize]
         public void Init()

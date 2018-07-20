@@ -223,7 +223,7 @@ namespace StoreScraper.Controls
             var bot = (ScraperBase) Cbx_ChooseStore.SelectedValue;
             btn_FindProducts.PerformClick();
             var storeIndex = Cbx_ChooseStore.SelectedIndex;
-            var searchOptions = PGrid_Bot.SelectedObject;
+            var searchOptions = (SearchSettingsBase)PGrid_Bot.SelectedObject;
 
             ActionChooser form = new ActionChooser();
             form.ShowDialog();

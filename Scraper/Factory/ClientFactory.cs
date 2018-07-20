@@ -3,6 +3,7 @@ using System.Net;
 using System.Runtime.InteropServices;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Firefox;
 
 namespace StoreScraper.Factory
 {
@@ -22,8 +23,30 @@ namespace StoreScraper.Factory
             Cache_Control = "no-cache"
         };
 
+        public static object ChromeHeaders1 = new
+        {
+            User_Agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
+            Connection = "keep-alive"
+        };
 
-        public static IWebDriver GetChromeDriver()
+        public static object ChromeHeaders2 = new
+        {
+            Accept =
+                @"text/html, application/xhtml+xml, application/xml;q=0.9, image/webp,image/apng, */*;q=0.8",
+            User_Agent =
+                @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
+            Accept_Language = @"en-US,en;q=0.9",
+            Accept_Encoding = "gzip,deflate",
+            Cache_Control = "no-cache"
+        };
+
+        public static object Headers2 = new
+        {
+            Accept = "application/xml, application/json"
+        };
+
+
+        public static ChromeDriver GetChromeDriver()
         {
             ChromeOptions options = new ChromeOptions();
             ChromeDriverService service = ChromeDriverService.CreateDefaultService();
@@ -60,7 +83,24 @@ namespace StoreScraper.Factory
         }
 
 
-        public static IWebDriver GetChrome;
+        public static FirefoxDriver GetFirefoxDriver()
+        {
+            var service = FirefoxDriverService.CreateDefaultService();
+            var options = new FirefoxOptions();
+            service.HideCommandPromptWindow = true;
+            service.SuppressInitialDiagnosticInformation = true;
+
+            var proxy = GetRandomProxy();
+            options.Proxy = new Proxy()
+            {
+                Kind = ProxyKind.Manual,
+                SslProxy = proxy.Address.AbsoluteUri,
+                HttpProxy = proxy.Address.AbsoluteUri,
+                SocksPassword = proxy.Address.AbsoluteUri,
+            };
+
+            return new FirefoxDriver(service, options);
+        }
 
         private static WebProxy ParseProxy(string proxy)
         {
