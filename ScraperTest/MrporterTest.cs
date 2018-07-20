@@ -17,8 +17,11 @@ namespace ScraperTest
         {
             MrporterScraper scraper = new MrporterScraper();
             List<Product> lst = new List<Product>();
-            MrporterSearchSettings settings = new MrporterSearchSettings();
-            settings.KeyWords = "bag";
+            MrporterSearchSettings settings = new MrporterSearchSettings()
+            {
+                KeyWords = "bag sneakers boots"
+            };
+           
             scraper.FindItems(out lst, settings, CancellationToken.None, new Logger());
         }
 
