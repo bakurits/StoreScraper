@@ -39,6 +39,11 @@ namespace StoreScraper.Factory
             Cache_Control = "no-cache"
         };
 
+        public static object Headers2 = new
+        {
+            Accept = "application/xml, application/json"
+        };
+
 
         public static IWebDriver GetChromeDriver()
         {

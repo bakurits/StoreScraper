@@ -18,8 +18,9 @@ namespace ScraperTest
             {
                 MaxPrice = 0,
                 MinPrice = 0,
-                KeyWords = "boots",
-                NegKeyWrods = ""
+                KeyWords = "white t-shirt",
+                NegKeyWrods = "",
+                LoadImages = false
             };
             new FootactionScrapper().FindItems(out var listOfProducts, searchSettingsBase,CancellationToken.None,new Logger());
         }
