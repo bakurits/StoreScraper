@@ -55,7 +55,6 @@
     <Compile Include="FootActionTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="GenericTest1.GenericTest" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

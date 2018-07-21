@@ -22,15 +22,14 @@ namespace StoreScraper.Bots.Footaction
         public override bool Enabled { get; set; }
        
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token, Logger info)
-        {
-            var setings = (SearchSettingsBase) settings;      
+        {  
             listOfProducts = new List<Product>();
-            String searchUrl = $"https://www.footaction.com/api/products/search?currentPage=0&pageSize=50&query={setings.KeyWords}&sort=newArrivals";
-            var request = searchUrl.WithHeaders(ClientFactory.Headers2);
-            var task = request.GetStringAsync(token);
-            task.Wait(token);
+            String searchUrl = $"https://www.footaction.com/api/products/search?currentPage=0&pageSize=50&query={settings.KeyWords}&sort=newArrivals";
+            var request = searchUrl.WithProxy().WithHeaders(ClientFactory.JsonXmlOnlyHeaders);
+            var task = request.GetAsync(token);
+            task.Wait(CancellationToken.None);
             var xmlDocument = new XmlDocument();
-            xmlDocument.LoadXml(task.Result);
+            xmlDocument.LoadXml(task.Result.Content.ReadAsStringAsync().Result);
             var products = xmlDocument.SelectNodes("productCategorySearchPage/products");
             if (products == null)
             {
@@ -50,9 +49,9 @@ namespace StoreScraper.Bots.Footaction
                 double.TryParse(singleContact.SelectSingleNode("price/value")?.InnerText, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
                 string sku = singleContact.SelectSingleNode("sku")?.InnerText;
                 string link = new Uri($"https://www.footaction.com/product/{productName}/{sku}.html").AbsoluteUri;
-                if (!setings.LoadImages) imageUrl = null;
+                if (!settings.LoadImages) imageUrl = null;
                 var product = new Product(this.WebsiteName,productName,link,price,sku,imageUrl);
-                if (Utils.SatisfiesCriteria(product,setings))
+                if (Utils.SatisfiesCriteria(product,settings))
                     listOfProducts.Add(product);
             }
         }

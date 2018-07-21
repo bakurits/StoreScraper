@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.Remote;
 
 namespace StoreScraper.Factory
 {
@@ -40,9 +43,14 @@ namespace StoreScraper.Factory
             Cache_Control = "no-cache"
         };
 
-        public static object Headers2 = new
+        public static object JsonXmlOnlyHeaders = new
         {
             Accept = "application/xml, application/json"
+        };
+
+        public static object FireFoxHeaders = new
+        {
+            User_Agent = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0"
         };
 
 
@@ -78,12 +86,11 @@ namespace StoreScraper.Factory
                 ShowWindowAsync(p.MainWindowHandle, 0);
             }
 #endif
-
             return driver;
         }
 
 
-        public static FirefoxDriver GetFirefoxDriver()
+        public static (FirefoxOptions, FirefoxDriver) GetFirefoxDriver()
         {
             var service = FirefoxDriverService.CreateDefaultService();
             var options = new FirefoxOptions();
@@ -91,15 +98,28 @@ namespace StoreScraper.Factory
             service.SuppressInitialDiagnosticInformation = true;
 
             var proxy = GetRandomProxy();
+#if !DEBUG
+            options.AddArguments("-headless");
+#endif
+            if (proxy == null) return (options, new FirefoxDriver(service, options));
+            var proxyAddr = proxy.Address.Host + ":" + proxy.Address.Port;
+//            FirefoxProfile profile = new FirefoxProfile();
+//            profile.SetPreference("network.captive-portal-service.enabled", false);
+//            profile.SetPreference("network.proxy.type", 1);
+//            profile.SetPreference("network.proxy.http", proxy.Address.Host);
+//            profile.SetPreference("network.proxy.http_port", proxy.Address.Port);
+//            profile.SetPreference("network.proxy.ssl", proxy.Address.Host);
+//            profile.SetPreference("network.proxy.ssl_port", proxy.Address.Port);
+//            options.Profile = profile;
             options.Proxy = new Proxy()
             {
                 Kind = ProxyKind.Manual,
-                SslProxy = proxy.Address.AbsoluteUri,
-                HttpProxy = proxy.Address.AbsoluteUri,
-                SocksPassword = proxy.Address.AbsoluteUri,
+                HttpProxy = proxyAddr,
+                SslProxy = proxyAddr,
+                IsAutoDetect = false,
             };
 
-            return new FirefoxDriver(service, options);
+            return (options, new FirefoxDriver(service,options));
         }
 
         private static WebProxy ParseProxy(string proxy)
@@ -117,7 +137,15 @@ namespace StoreScraper.Factory
             }
             else
             {
-                return new WebProxy(proxy);
+                try
+                {
+                    return new WebProxy(proxy);
+                }
+                catch
+                {
+                    return null;
+                }
+
             }
         }
 

@@ -28,7 +28,7 @@ namespace StoreScraper.Controls
             DGrid_FoundProducts.DataSource = _listOfProducts;
             Cbx_ChooseStore.Items.AddRange(AppSettings.Default.AvaibleBots.ToArray());
             PGrid_Settings.SelectedObject = AppSettings.Default;
-            RTbx_Proxies.Text = string.Join("\n", AppSettings.Default.Proxies);
+            RTbx_Proxies.Text = string.Join("\r\n", AppSettings.Default.Proxies);
             _monitorThread = new Thread(Monitor);
             this.Shown += (sender, args) => _monitorThread.Start();
             CultureInfo.CurrentUICulture = new CultureInfo("en-US");
@@ -198,6 +198,18 @@ namespace StoreScraper.Controls
         {
             AppSettings.Default.Save();
             CookieCollector.Default.Dispose();
+            var processes = Process.GetProcessesByName("firefox");
+            foreach (var process in processes)
+            {
+                try
+                {
+                    process.Kill();
+                }
+                catch
+                {
+                    //ingored
+                }
+            }
             Environment.Exit(Environment.ExitCode);
         }
 

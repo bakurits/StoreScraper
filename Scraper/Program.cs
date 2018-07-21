@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using StoreScraper.Bots.ChampsSports;
 using StoreScraper.Bots.Footaction;
+using StoreScraper.Bots.Mrporter;
 using StoreScraper.Bots.OffWhite;
 using StoreScraper.Browser;
 using StoreScraper.Controls;
@@ -20,25 +22,30 @@ namespace StoreScraper
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+
             AppSettings.Init();
             if (!Directory.Exists(AppSettings.DataDir)) Directory.CreateDirectory(AppSettings.DataDir);
             AppSettings.Default = AppSettings.Load();
 
-
-            LoadingForm loadingForm = new LoadingForm();
-            loadingForm.Show();
          
             CookieCollector.Default = new CookieCollector();
+
+            LoadingForm form = new LoadingForm();
+            form.Show();
+
+
             
             AppSettings.Default.AvaibleBots = new List<ScraperBase>
             {
                 new OffWhiteBot(),
                 new FootactionScrapper(),
+                new ChampsSportsScraper(),
+                new MrporterScraper(),
             };
 
-            
 
-            loadingForm.Close();
+            form.Close();
+
             Application.Run(new MainForm());
         }
 

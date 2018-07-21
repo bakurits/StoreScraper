@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Flurl.Http;
 using Flurl.Http.Configuration;
+using Flurl.Http.Testing;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -121,15 +122,20 @@ namespace StoreScraper.Helpers
 
         public static IFlurlRequest WithProxy(this string url)
         {
-            
+           
             var proxy = ClientFactory.GetRandomProxy();
             var request = new FlurlRequest(url);
             if (proxy == null) return request;
 
-            request.Client =  request.Client.Configure(setting => 
-                setting.HttpClientFactory = new ProxyHttpClientFactory(proxy.Address.AbsoluteUri));
+            HttpClient hclient = new HttpClient(new HttpClientHandler()
+            {
+               Proxy = proxy
+            });
 
-            return request;
+            FlurlClient client = new FlurlClient(hclient);
+            client.BaseUrl = url;
+
+            return client.Request();
         }
 
         /// <summary>

@@ -25,6 +25,7 @@ namespace ScraperTest
             scraper.FindItems(out lst, settings, CancellationToken.None, new Logger());
         }
 
+
         [TestInitialize]
         public void Init()
         {

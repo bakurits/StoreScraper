@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Flurl.Http;
 using HtmlAgilityPack;
 using StoreScraper.Browser;
+using StoreScraper.Controls;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Interfaces;
@@ -17,43 +18,42 @@ using StoreScraper.Models;
 namespace StoreScraper.Bots.OffWhite
 {
     [Serializable]
-    public class OffWhiteBot : ScraperBase, ISearchSettingsValidator
+    public class OffWhiteBot : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Off---white";
         public override string WebsiteBaseUrl { get; set; } = "Off---white.com";
-       
+
         public override bool Enabled { get; set; }
-
-
-        public OffWhiteBot()
-        {
-            CookieCollector.Default.RegisterAction("OffWhite", browser =>
-            {
-                browser.Navigate().GoToUrl("https://Off---White.com/es/US");
-                Task.Delay(6000).Wait();
-
-                return browser.Manage().Cookies.AllCookies;
-            }, 30000);
-
-            Task.Delay(10000).Wait();
-        }
-
 
         [Browsable(false)]
         public List<string> CurrentCart { get; set; } = new List<string>();
 
         private const string SearchUrlFormat = @"https://www.off---white.com/en/US/search?q={0}";
 
+        public OffWhiteBot()
+        {
+            CookieCollector.Default.RegisterAction("OffWhite", browser =>
+            {
+                browser.Navigate().GoToUrl("https://Off---White.com/es/US");
 
-        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settingsOjb
+                Task.Delay(6000).Wait();
+
+                return browser.Manage().Cookies.AllCookies;
+
+            }, 30000);
+        }
+
+        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings
             , CancellationToken token, Logger info)
         {
-            var settings = settingsOjb as OffWhiteSearchSettings;
+
             listOfProducts = new List<Product>();
+
             var searchUrl = string.Format(SearchUrlFormat, settings.KeyWords);
 
             var cookies = CookieCollector.Default.GetCookies("OffWhite", token);
-            var request = searchUrl.WithProxy().WithHeaders(ClientFactory.ChromeHeaders).
+            string proxy = CookieCollector.Default.GetCurrentProxy();
+            var request = searchUrl.WithProxy(proxy).WithHeaders(ClientFactory.ChromeHeaders).
                 WithHeader("referer", @"https://www.off---white.com/").WithCookies(cookies);
             var document = request.GetDoc(token);
 
@@ -99,11 +99,6 @@ namespace StoreScraper.Bots.OffWhite
             }
 
             info.State = Logger.ProcessingState.Success;
-        }
-
-        public bool ValidateSearchSettings(object searchSettings, out string errorMessage)
-        {
-            throw new NotImplementedException();
         }
     }
 }

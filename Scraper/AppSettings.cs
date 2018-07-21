@@ -22,7 +22,6 @@ namespace StoreScraper
         public int MaxThreadCount { get; set; } = 10;
         public static int InitialBrowserCount { get; set; } = 0;
 
-        [XmlArray]
         [Browsable(false)]
         public List<string> Proxies { get; set; } = new List<string>();
 

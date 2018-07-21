@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Firefox;
 using StoreScraper.Factory;
 using Cookie = OpenQA.Selenium.Cookie;
 
@@ -32,15 +33,24 @@ namespace StoreScraper.Browser
         public static CookieCollector Default { get; set; }
 
 
-        private IWebDriver driver = ClientFactory.GetChromeDriver();
+        private IWebDriver driver;
+        private DriverOptions options;
+
         private Dictionary<string, CollectionTask> _registeredTasks = new Dictionary<string, CollectionTask>();
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         public const int MonitorInterval = 5000;
         private bool _diposed = false;
 
 
+
+        public string GetCurrentProxy()
+        {
+            return options.Proxy?.HttpProxy;
+        }
+
         public CookieCollector()
         {
+            (options, driver) = ClientFactory.GetFirefoxDriver();
             Monitor();
         }
 

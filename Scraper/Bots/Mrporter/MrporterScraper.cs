@@ -10,10 +10,11 @@ using StoreScraper.Models;
 
 namespace StoreScraper.Bots.Mrporter
 {
-    public class MrporterScraper : ScraperBase<MrporterSearchSettings>
+    public class MrporterScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Mrporter";
         public override string WebsiteBaseUrl { get; set; } = "https://www.mrporter.com/";
+        public override Type SearchSettings { get; set; } = typeof(MrporterSearchSettings);
         public override bool Enabled { get; set; }
 
 
@@ -36,7 +37,7 @@ namespace StoreScraper.Bots.Mrporter
         private HtmlNode GetPage(string keywords, int page, CancellationToken token)
         {
             var searchUrl = string.Format(SearchUrlFormat);
-            var request = searchUrl.WithHeaders(ClientFactory.ChromeHeaders);
+            var request = searchUrl.WithProxy().WithHeaders(ClientFactory.ChromeHeaders);
             var document = request.GetDoc(token);
             return document.DocumentNode;
         }
