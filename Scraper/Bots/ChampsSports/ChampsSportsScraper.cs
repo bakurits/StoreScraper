@@ -69,6 +69,8 @@ namespace StoreScraper.Bots.ChampsSports
                 Console.WriteLine(price);
                 Console.WriteLine(imgURL);
                 Console.WriteLine();
+
+                GetProductSizes(product, token);
             }
 
 
@@ -85,6 +87,7 @@ namespace StoreScraper.Bots.ChampsSports
         {
             List <string> productSizes = new List<string>();
             var node = product.Url.WithHeaders(Header).GetDoc(token).DocumentNode;
+            Console.WriteLine(node.InnerHtml);
             HtmlNodeCollection sizes = node.SelectNodes("//*[@class=\"product_sizes\"]//*[@class=\"button\"]");
             foreach (HtmlNode size in sizes)
             {
