@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Flurl.Http;
 using HtmlAgilityPack;
@@ -10,23 +11,24 @@ using StoreScraper.Models;
 
 namespace StoreScraper.Bots.ChampsSports
 {
-    public class ChampsSportsScraper : ScraperBase
+    public class FootStoreScraper : ScraperBase
     {
         public override string WebsiteName { get; set; }
         public override string WebsiteBaseUrl { get; set; }
         public override bool Enabled { get; set; }
 
-        private const string UrlPrefix = @"https://www.champssports.com/_-_";
+        private string UrlPrefix;
         private const string PageSizeSuffix = @"?Ns=P_NewArrivalDateEpoch%7C1&cm_SORT=New%20Arrivals";
         private const string Keywords = @"/keyword-{0}";
 
         private Object Header = new {Accept = "text/html"};
 
 
-        public ChampsSportsScraper()
+        public FootStoreScraper(string websiteName, string websiteBaseUrl)
         {
-            this.WebsiteName = "ChampsSports";
-            this.WebsiteBaseUrl = "https://www.champssports.com";
+            this.WebsiteName = websiteName;
+            this.WebsiteBaseUrl = websiteBaseUrl;
+            this.UrlPrefix = websiteBaseUrl + "/_-_";
         }
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token, Logger info)
@@ -34,6 +36,7 @@ namespace StoreScraper.Bots.ChampsSports
             listOfProducts = new List<Product>();
 
             string searchURL = UrlPrefix + string.Format(Keywords, addKeywords()) + PageSizeSuffix;
+            Console.WriteLine(searchURL);
             var request = searchURL.WithHeaders(Header);
 
             var document = request.GetDoc(token);
@@ -45,32 +48,34 @@ namespace StoreScraper.Bots.ChampsSports
             Console.WriteLine(searchURL);
             foreach (HtmlNode child in children)
             {
-                if (child.GetAttributeValue("class", null) == "clearRow")
+                try
                 {
-                    continue;
+                    string id = child.GetAttributeValue("data-sku", null);
+                    string name = child.SelectSingleNode(".//*[contains(@class, 'product_title')]").InnerText;
+                    string link = child.SelectSingleNode("./a").GetAttributeValue("href", null);
+
+                    string priceStr = child.SelectSingleNode(".//*[contains(@class, 'product_price')]").InnerText;
+                    priceStr = priceStr.Trim().Substring(1);
+                    double.TryParse(priceStr, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
+
+                    //string imgURL = child.SelectSingleNode("./a/span/img").GetAttributeValue("data-original", null);
+
+                    //Product product = new Product(this.WebsiteName, name, link, price, id, imgURL);
+
+                    Console.WriteLine(id);
+                    Console.WriteLine(name);
+                    Console.WriteLine(link);
+                    Console.WriteLine(price);
+                    //Console.WriteLine(imgURL);
+                    Console.WriteLine();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.StackTrace);
+                    Console.WriteLine(@"This is not a product!");
                 }
 
-                string id = child.GetAttributeValue("data-sku", null);
-                string name = child.SelectSingleNode(".//*[contains(@class, 'product_title')]").InnerText;
-                string link = child.SelectSingleNode("./a").GetAttributeValue("href", null);
-
-                string priceStr  = child.SelectSingleNode(".//*[contains(@class, 'product_price')]").InnerText;
-                priceStr = priceStr.Trim().Substring(1);
-                double.TryParse(priceStr, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
-
-                string imgURL = child.SelectSingleNode(".//*[contains(@class, 'product_image')]").GetAttributeValue("src", null);
-
-                Product product = new Product(this.WebsiteName, name, link, price, id, imgURL);
-
-                Console.WriteLine(priceStr);
-                Console.WriteLine(id);
-                Console.WriteLine(name);
-                Console.WriteLine(link);
-                Console.WriteLine(price);
-                Console.WriteLine(imgURL);
-                Console.WriteLine();
-
-                GetProductSizes(product, token);
+                //GetProductSizes(product, token);
             }
 
 
