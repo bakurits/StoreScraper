@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using Flurl.Http;
 using HtmlAgilityPack;
 using StoreScraper.Browser;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
+using StoreScraper.Interfaces;
 using StoreScraper.Models;
 
 namespace StoreScraper.Bots.Mrporter
@@ -18,31 +18,26 @@ namespace StoreScraper.Bots.Mrporter
         public override bool Enabled { get; set; }
 
 
-        private const string SearchUrlFormat = @"https://www.mrporter.com/mens/search?keywords={0}";
+        private const string SearchUrlFormat = @"http://www.mrporter.com/mens/whats-new";
 
-        /// <summary>
-        /// This method is for finding items on page
-        /// With given restrictions 
-        /// </summary>
-        /// <param name="listOfProducts">List of Products which fits in restrictions</param>
-        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settingsObj,
-            CancellationToken token, Logger info)
+
+        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settingsObj, CancellationToken token, Logger info)
         {
 
             var settings = (MrporterSearchSettings)settingsObj;
             listOfProducts = new List<Product>();
 
-            var node = GetPage(settings.KeyWords, token);
+            var node = GetPage(settings.KeyWords, 1, token);
             
             Worker(listOfProducts, settings, node, token);
                    
         }
 
 
-        private HtmlNode GetPage(string keywords, CancellationToken token)
+        private HtmlNode GetPage(string keywords, int page, CancellationToken token)
         {
-            var searchUrl = string.Format(SearchUrlFormat, keywords);
-            var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.ChromeHeaders);
+            var searchUrl = string.Format(SearchUrlFormat);
+            var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FirefoxHeaders);
             var document = request.GetDoc(searchUrl, token);
             return document.DocumentNode;
         }
@@ -84,6 +79,7 @@ namespace StoreScraper.Bots.Mrporter
                         if (curProduct.Name.ToLower().Contains(keyWord.ToLower()))
                         {
                             listOfProducts.Add(curProduct);
+                            Console.WriteLine(curProduct);
                             break;
                         }       
                     }

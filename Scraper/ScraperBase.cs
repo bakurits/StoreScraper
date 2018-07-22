@@ -6,7 +6,7 @@ using StoreScraper.Models;
 
 namespace StoreScraper
 {
-    public abstract class ScraperBase<S> where S : SearchSettingsBase
+    public abstract class ScraperBase
     {
         [Browsable(false)] public abstract string WebsiteName { get; set; }
 
@@ -20,7 +20,7 @@ namespace StoreScraper
         /// Object of this type will be provided in FindItems method as settings parameter.
         /// Any bot can use or implement any custom type for this field.
         /// </summary>
-        public Type SearchSettings { get; set; } = typeof(S);
+        public virtual Type SearchSettings { get; set; } = typeof(SearchSettingsBase);
 
 
         /// <summary>
@@ -39,11 +39,14 @@ namespace StoreScraper
         /// <param name="info">Object in which method outputs detailed report of finding process</param>
         public abstract void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token,  Logger info);
 
+        public virtual void Initialize()
+        {
+
+        }
+
         public override string ToString()
         {
             return this.WebsiteName;
         }
     }
-
-    public abstract class ScraperBase : ScraperBase<SearchSettingsBase>{}
 }

@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Flurl.Http;
-using Flurl.Http.Configuration;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -33,9 +32,9 @@ namespace StoreScraper.Helpers
         /// Gets Image from specified Url
         /// And resizes it to supplied width, height
         /// </summary>
-        public static Image GetImage(this IFlurlRequest client, int width, int height)
+        public static Image GetImage(this HttpClient client, string url, int width, int height)
         {
-            var task = client.GetStreamAsync();
+            var task = client.GetStreamAsync(url);
             task.Wait();
 
             using (var stream = task.Result)
@@ -75,77 +74,34 @@ namespace StoreScraper.Helpers
         public static HtmlDocument GetDoc(this HttpClient client, string url, CancellationToken token)
         {
             var task = client.GetStringAsync(url);
-            HtmlDocument doc = new HtmlDocument();
-            task.Wait(token);
-            token.ThrowIfCancellationRequested();
-            var str = task.Result;
-            doc.LoadHtml(str);
-
-            return doc;
-        }
-
-        public static HtmlDocument GetDoc(this IFlurlRequest request, CancellationToken token)
-        {
-            var task = request.GetStringAsync();
             task.Wait(token);
             token.ThrowIfCancellationRequested();
             var result = task.Result;
 
             var doc = new HtmlDocument();
             doc.LoadHtml(result);
-
             return doc;
         }
 
-        public static IFlurlRequest WithCookies(this IFlurlRequest request, IEnumerable<Cookie> cookies)
+        public static HttpClient AddCookies(this HttpClient client, IEnumerable<Cookie> cookies)
         {
-            IFlurlRequest result = request;
+            var list = cookies.ToList();
+            var cookieStr = string.Join(";", list.ConvertAll(cookie => $"{cookie.Name}={cookie.Value}"));
 
-            foreach (var cookie in cookies)
+           
+            client.DefaultRequestHeaders.TryAddWithoutValidation("Cookies", cookieStr);
+
+            return client;
+        }
+
+        public static HttpClient AddHeaders(this HttpClient client, params StringPair[] headers)
+        {
+            foreach (var header in headers)
             {
-                result = result.WithCookie(cookie.Name, cookie.Value, cookie.Expiry);
+                client.DefaultRequestHeaders.TryAddWithoutValidation(header.Key, header.Value);
             }
 
-            return result;
-        }
-
-        public static async Task<IEnumerable<Cookie>> SolveAntiBotChallenge(this IWebDriver browser, string url, CancellationToken token)
-        {
-            await Task.Run(() => browser.Navigate().GoToUrl(url), token);
-
-            await Task.Delay(8000, token);
-            token.ThrowIfCancellationRequested();
-
-            return browser.Manage().Cookies.AllCookies.ToList();
-        }
-
-        public static IFlurlRequest WithProxy(this string url)
-        {
-            
-            var proxy = ClientFactory.GetRandomProxy();
-            var request = new FlurlRequest(url);
-            if (proxy == null) return request;
-
-            request.Client =  request.Client.Configure(setting => 
-                setting.HttpClientFactory = new ProxyHttpClientFactory(proxy.Address.AbsoluteUri));
-
-            return request;
-        }
-
-        /// <summary>
-        /// Adds Proxy in FurlRequest.
-        /// proxy is added only if useProxy is set to true in settings
-        /// </summary>
-        /// <returns></returns>
-        public static IFlurlRequest WithProxy(this string url, string proxy)
-        {
-            var request = new FlurlRequest(url);
-            if (!AppSettings.Default.UseProxy) return request;
-
-            request.Client = request.Client.Configure(setting =>
-                setting.HttpClientFactory = new DefaultHttpClientFactory());
-
-            return request;
+            return client;
         }
     }
 }

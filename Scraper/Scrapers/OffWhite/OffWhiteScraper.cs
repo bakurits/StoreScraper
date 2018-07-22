@@ -6,7 +6,6 @@ using System.IO;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Flurl.Http;
 using HtmlAgilityPack;
 using StoreScraper.Browser;
 using StoreScraper.Controls;
@@ -17,7 +16,7 @@ using StoreScraper.Models;
 
 namespace StoreScraper.Bots.OffWhite
 {
-    [Serializable]
+    [DisabledScraper]
     public class OffWhiteBot : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Off---white";
@@ -53,8 +52,8 @@ namespace StoreScraper.Bots.OffWhite
 
             var cookies = CookieCollector.Default.GetCookies("OffWhite", token);
             string proxy = CookieCollector.Default.GetCurrentProxy();
-            var request = ClientFactory.GetHttpClient(new WebProxy(proxy)).AddHeaders(ClientFactory.FireFoxHeaders)
-                .AddHeaders(("Referer", @"https://www.off---white.com/")).AddCookies(cookies);
+            var request = ClientFactory.GetHttpClient(new WebProxy(proxy)).AddHeaders(ClientFactory.FirefoxHeaders).
+                AddHeaders(("referer", @"https://www.off---white.com/")).AddCookies(cookies);
             var document = request.GetDoc(searchUrl, token);
 
             var node = document.DocumentNode;

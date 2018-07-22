@@ -27,7 +27,7 @@ namespace ScraperTest
 
 
         [TestInitialize]
-        public void Init()
+        public  void Init()
         {
             AppSettings.Init();
             if (!Directory.Exists(AppSettings.DataDir)) Directory.CreateDirectory(AppSettings.DataDir);

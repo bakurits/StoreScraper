@@ -28,7 +28,7 @@ namespace StoreScraper.Controls
             DGrid_FoundProducts.DataSource = _listOfProducts;
             Cbx_ChooseStore.Items.AddRange(AppSettings.Default.AvaibleBots.ToArray());
             PGrid_Settings.SelectedObject = AppSettings.Default;
-            RTbx_Proxies.Text = string.Join("\n", AppSettings.Default.Proxies);
+            RTbx_Proxies.Text = string.Join("\r\n", AppSettings.Default.Proxies);
             _monitorThread = new Thread(Monitor);
             this.Shown += (sender, args) => _monitorThread.Start();
             CultureInfo.CurrentUICulture = new CultureInfo("en-US");
@@ -122,7 +122,7 @@ namespace StoreScraper.Controls
         private void InfoOnOnLogged(object sender, string s)
         {
             Rtbx_EventLog.Invoke(new Action(() =>
-                            Rtbx_EventLog.AppendText(s + "\n")
+                            Rtbx_EventLog.AppendText(s + "\r\n")
             ));
         }
 
@@ -133,14 +133,7 @@ namespace StoreScraper.Controls
             {
                 if (task.IsFaulted)
                 {
-                    Rtbx_DebugLog.AppendText
-                    (
-#if DEBUG 
-                        task.Exception.ToString() + "\n"
-#else
-                    task.Exception.Message.ToString()
-#endif
-                    );
+                    Rtbx_DebugLog.AppendText(task.Exception?.Message + "\r\n");
                     label_FindingStatus.Text = @"Some Errors!";
                     label_FindingStatus.ForeColor = Color.Red;
                 }
@@ -198,6 +191,18 @@ namespace StoreScraper.Controls
         {
             AppSettings.Default.Save();
             CookieCollector.Default.Dispose();
+            var processes = Process.GetProcessesByName("firefox");
+            foreach (var process in processes)
+            {
+                try
+                {
+                    process.Kill();
+                }
+                catch
+                {
+                    //ingored
+                }
+            }
             Environment.Exit(Environment.ExitCode);
         }
 
@@ -215,7 +220,7 @@ namespace StoreScraper.Controls
 
         private void Btn_Save_Click(object sender, EventArgs e)
         {
-            AppSettings.Default.Proxies = RTbx_Proxies.Text.Split('\n').ToList();
+            AppSettings.Default.Proxies = RTbx_Proxies.Text.Remove('\r').Split('\n').ToList();
         }
 
         private void Btn_AddToMonitor_Click(object sender, EventArgs e)

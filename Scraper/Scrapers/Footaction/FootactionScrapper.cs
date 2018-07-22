@@ -4,11 +4,9 @@ using System.Globalization;
 using System.Net;
 using System.Threading;
 using System.Xml;
-using Flurl;
 using StoreScraper.Factory;
 using StoreScraper.Interfaces;
 using StoreScraper.Models;
-using Flurl.Http;
 using StoreScraper;
 using StoreScraper.Helpers;
 
@@ -25,7 +23,7 @@ namespace StoreScraper.Bots.Footaction
         {  
             listOfProducts = new List<Product>();
             string searchUrl = $"https://www.footaction.com/api/products/search?currentPage=0&pageSize=50&query={settings.KeyWords}&sort=newArrivals";
-            var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FireFoxHeaders);
+            var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.AcceptXmlJsonHeader);
             var task = request.GetStringAsync(searchUrl);
             task.Wait(token);
             var xmlDocument = new XmlDocument();

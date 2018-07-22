@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace ScraperTest
 {
     [TestClass]
-    public class UnitTest1
+    public class OffWhiteTest
     {
         [TestMethod]
         public void TestMethod1()

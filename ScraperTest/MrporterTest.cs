@@ -16,21 +16,12 @@ namespace ScraperTest
         public void TestMethod1()
         {
             MrporterScraper scraper = new MrporterScraper();
-            List<Product> lst = new List<Product>();
             MrporterSearchSettings settings = new MrporterSearchSettings()
             {
-                KeyWords = "bag sneakers boots"
+                KeyWords = "sneakers"
             };
            
-            scraper.FindItems(out lst, settings, CancellationToken.None, new Logger());
-        }
-
-        [TestInitialize]
-        public void Init()
-        {
-            AppSettings.Init();
-            if (!Directory.Exists(AppSettings.DataDir)) Directory.CreateDirectory(AppSettings.DataDir);
-            AppSettings.Default = AppSettings.Load();
+            scraper.FindItems(out var lst, settings, CancellationToken.None, new Logger());
         }
     }
 }
