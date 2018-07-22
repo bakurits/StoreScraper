@@ -19,8 +19,13 @@ namespace StoreScraper.Bots.Mrporter
 
         private const string SearchUrlFormat = @"http://www.mrporter.com/mens/whats-new";
 
-
-        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settingsObj, CancellationToken token, Logger info)
+        /// <summary>
+        /// This method is for finding items on page
+        /// With given restrictions 
+        /// </summary>
+        /// <param name="listOfProducts">List of Products which fits in restrictions</param>
+        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settingsObj,
+            CancellationToken token, Logger info)
         {
 
             var settings = (MrporterSearchSettings)settingsObj;
