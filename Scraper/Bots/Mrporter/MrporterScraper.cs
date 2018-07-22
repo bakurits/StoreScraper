@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using Flurl.Http;
 using HtmlAgilityPack;
@@ -32,18 +33,40 @@ namespace StoreScraper.Bots.Mrporter
             var settings = (MrporterSearchSettings)settingsObj;
             listOfProducts = new List<Product>();
 
-            var node = GetPage(settings.KeyWords, token);
+            var searchUrl = string.Format(SearchUrlFormat, settings.KeyWords);
+            var node = GetPage(searchUrl, token);
             
             Worker(listOfProducts, settings, node, token);
                    
         }
 
-
-        private HtmlNode GetPage(string keywords, CancellationToken token)
+        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
-            var searchUrl = string.Format(SearchUrlFormat, keywords);
+            ProductDetails resut = new ProductDetails();
+            
+            var node = GetPage(product.Url, token).SelectSingleNode("//select[@class = 'select-option-style']");
+
+            var optionList = node.SelectNodes("./option");
+
+            foreach (var item in optionList)
+            {
+                var dataStock = item.GetAttributeValue("data-stock", null);
+                if (dataStock == "Low_Stock" || dataStock == "In_Stock")
+                {
+                    Debug.WriteLine(item.InnerHtml);
+                    resut.Add(item.InnerHtml);
+                }
+                
+            }
+
+            return new ProductDetails();
+        }
+
+
+        private HtmlNode GetPage(string url, CancellationToken token)
+        {
             var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.ChromeHeaders);
-            var document = request.GetDoc(searchUrl, token);
+            var document = request.GetDoc(url, token);
             return document.DocumentNode;
         }
 

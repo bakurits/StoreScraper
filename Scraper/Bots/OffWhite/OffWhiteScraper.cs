@@ -100,5 +100,11 @@ namespace StoreScraper.Bots.OffWhite
 
             info.State = Logger.ProcessingState.Success;
         }
+
+
+        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

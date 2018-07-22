@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -18,10 +19,30 @@ namespace ScraperTest
             MrporterScraper scraper = new MrporterScraper();
             MrporterSearchSettings settings = new MrporterSearchSettings()
             {
-                KeyWords = "sneakers"
+                KeyWords = "bag"
             };
            
             scraper.FindItems(out var lst, settings, CancellationToken.None, new Logger());
+            foreach (var item in lst)
+            {
+                Debug.WriteLine(item);
+            }
+            
+        }
+
+        [TestMethod]
+        public void TestMethod2()
+        {
+            Product curProduct = new Product("mrporter", "JOHN ELLIOTT Camp-Collar Printed Tencel-Twill Shirt",
+                "https://www.mrporter.com/mens/barena/camp-collar-melange-linen-blend-shirt/1080212?ppv=2",
+                120.83,
+                "https://www.mrporter.com/mens/barena/camp-collar-melange-linen-blend-shirt/1080212?ppv=2",
+                "https://cache.mrporter.com/images/products/1012326/1012326_mrp_in_l.jpg");
+
+
+            MrporterScraper scraper = new MrporterScraper();
+
+            scraper.GetProductDetails(curProduct, CancellationToken.None);
         }
     }
 }

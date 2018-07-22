@@ -56,5 +56,9 @@ namespace StoreScraper.Bots.Footaction
             }
         }
 
+        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

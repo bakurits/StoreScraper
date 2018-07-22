@@ -65,13 +65,13 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
 
         }
 
-        public List<string> GetProductSizes(Product product, CancellationToken token)
+        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
             var node = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.HtmlOnlyHeader).GetDoc(product.Url, token)
                 .DocumentNode;
             HtmlNodeCollection sizes = node.SelectNodes("//*[@class=\"product_sizes\"]//*[@class=\"button\"]");
-
-            return sizes.Select(size => size.InnerText).ToList();
+            ProductDetails details = new ProductDetails {SizesList = sizes.Select(size => size.InnerText).ToList()};
+            return details;
         }
 
         public class ChampsSportsScraper : FootStoreScraper

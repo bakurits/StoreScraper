@@ -39,6 +39,15 @@ namespace StoreScraper
         /// <param name="info">Object in which method outputs detailed report of finding process</param>
         public abstract void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token,  Logger info);
 
+        /// <summary>
+        /// This method finds products avaliable sizes
+        /// </summary>
+        /// <param name="product"></param>
+        /// <param name="token"></param>
+        /// <returns>List of sizes</returns>
+        public abstract ProductDetails GetProductDetails(Product product, CancellationToken token);
+
+
         public virtual void Initialize()
         {
 
