@@ -21,21 +21,21 @@ namespace ScraperTest
         [TestMethod]
         public void ChampsSportsScraper()
         {
-            FootStoreScraper footStoreScraper = new FootStoreScraper("ChampsSports", "https://www.champssports.com");
-            footStoreScraper.FindItems(out  var lst, settings, CancellationToken.None, new Logger());
+            FootStoreScraper.ChampsSportsScraper scraper = new FootStoreScraper.ChampsSportsScraper();
+            scraper.FindItems(out  var lst, settings, CancellationToken.None, new Logger());
         }
 
         [TestMethod]
         public void FootLocker()
         {
-            FootStoreScraper footStoreScraper = new FootStoreScraper("FootLocker", "https://www.footlocker.com");
-            footStoreScraper.FindItems(out var lst, settings, CancellationToken.None, new Logger());
+            FootStoreScraper.FootLockerScraper scraper = new FootStoreScraper.FootLockerScraper();
+            scraper.FindItems(out var lst, settings, CancellationToken.None, new Logger());
         }
 
         [TestMethod]
         public void EastBay()
         {
-            FootStoreScraper footStoreScraper = new FootStoreScraper("EastBay", "https://www.eastbay.com");
+            FootStoreScraper.EastBayScraper footStoreScraper = new FootStoreScraper.EastBayScraper();
             footStoreScraper.FindItems(out var lst, settings, CancellationToken.None, new Logger());
         }
 
@@ -48,7 +48,7 @@ namespace ScraperTest
 
             settings = new SearchSettingsBase()
             {
-                KeyWords = "blue shirt"
+                KeyWords = "blue+shirt"
             };
         }
     }
