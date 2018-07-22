@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using StoreScraper.Bots.ChampsSports;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StoreScraper.Bots.ChampsSports_FootLocker_EastBay;
 using StoreScraper.Models;
 
 namespace ScraperTest

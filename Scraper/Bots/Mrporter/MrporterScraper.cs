@@ -37,8 +37,8 @@ namespace StoreScraper.Bots.Mrporter
         private HtmlNode GetPage(string keywords, int page, CancellationToken token)
         {
             var searchUrl = string.Format(SearchUrlFormat);
-            var request = searchUrl.WithProxy().WithHeaders(ClientFactory.ChromeHeaders);
-            var document = request.GetDoc(token);
+            var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.ChromeHeaders);
+            var document = request.GetDoc(searchUrl, token);
             return document.DocumentNode;
         }
 

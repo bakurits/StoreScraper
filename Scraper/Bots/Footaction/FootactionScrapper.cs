@@ -24,9 +24,9 @@ namespace StoreScraper.Bots.Footaction
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token, Logger info)
         {  
             listOfProducts = new List<Product>();
-            String searchUrl = $"https://www.footaction.com/api/products/search?currentPage=0&pageSize=50&query={settings.KeyWords}&sort=newArrivals";
-            var request = searchUrl.WithProxy().WithHeaders(ClientFactory.JsonXmlOnlyHeaders);
-            var task = request.GetAsync(token);
+            string searchUrl = $"https://www.footaction.com/api/products/search?currentPage=0&pageSize=50&query={settings.KeyWords}&sort=newArrivals";
+            var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.JsonXmlAcceptHeader);
+            var task = request.GetAsync(searchUrl, token);
             task.Wait(CancellationToken.None);
             var xmlDocument = new XmlDocument();
             xmlDocument.LoadXml(task.Result.Content.ReadAsStringAsync().Result);

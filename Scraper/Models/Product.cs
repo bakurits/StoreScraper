@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Drawing;
-using Flurl;
-using Flurl.Http;
+using StoreScraper.Factory;
 using StoreScraper.Helpers;
 
 namespace StoreScraper.Models
@@ -30,7 +29,7 @@ namespace StoreScraper.Models
             {
                 if (value != null)
                 {
-                    new FlurlRequest(new Url(value)).GetImage(70, 70);
+                    ClientFactory.GetHttpClient().GetImage(value, 70, 70);
                 }
             
             }

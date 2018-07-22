@@ -2,55 +2,49 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Runtime.InteropServices;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Remote;
+using StoreScraper.Models;
 
 namespace StoreScraper.Factory
 {
-    class ClientFactory
+    static class ClientFactory
     {
      
         private static Random random = new Random();
 
-        public static object ChromeHeaders = new
-        {
-            Accept =
-                @"text/html, application/xhtml+xml, application/xml;q=0.9, image/webp,image/apng, */*;q=0.8",
-            User_Agent =
-                @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
-            Accept_Language = @"en-US,en;q=0.9",
-            Accept_Encoding = "gzip,deflate",
-            Cache_Control = "no-cache"
-        };
+        public static StringPair JsonXmlAcceptHeader = ("Accept", "application/xml, application/json");
 
-        public static object ChromeHeaders1 = new
-        {
-            User_Agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
-            Connection = "keep-alive"
-        };
+        public static StringPair HtmlOnlyHeader = ("Accept", "text/html");
 
-        public static object ChromeHeaders2 = new
-        {
-            Accept =
-                @"text/html, application/xhtml+xml, application/xml;q=0.9, image/webp,image/apng, */*;q=0.8",
-            User_Agent =
-                @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
-            Accept_Language = @"en-US,en;q=0.9",
-            Accept_Encoding = "gzip,deflate",
-            Cache_Control = "no-cache"
-        };
+        public static StringPair FirefoxUserAgentHeader = ("User_Agent",
+            "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0");
 
-        public static object JsonXmlOnlyHeaders = new
+        public static StringPair ChromeUserAgentHeader =
+            ("User-Agent",
+                @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36");
+
+        public static StringPair ChromeAcceptHeader = 
+            ("Accept",
+            @"text/html, application/xhtml+xml, application/xml;q=0.9, image/webp,image/apng, */*;q=0.8");
+
+        public static StringPair[] ChromeHeaders = new StringPair[]
         {
-            Accept = "application/xml, application/json"
+            ChromeAcceptHeader,
+            ChromeUserAgentHeader,
+            ("Accept-Language", @"en-US,en;q=0.9"),
+            ("Accept-Encoding", "gzip,deflate"),
+            ("Cache_Control", "no-cache")
         };
 
         public static object FireFoxHeaders = new
         {
-            User_Agent = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0"
+            FirefoxUserAgentHeader,
+            ChromeAcceptHeader,
         };
 
 
@@ -158,6 +152,30 @@ namespace StoreScraper.Factory
             }
 
             return null;
+        }
+
+        public static HttpClient GetHttpClient(WebProxy proxy = null)
+        {
+            HttpClientHandler handler = new HttpClientHandler()
+            {
+                UseCookies = false,
+                AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
+                AllowAutoRedirect = true,
+                MaxAutomaticRedirections = 3,
+                CheckCertificateRevocationList = false,
+            };
+
+            proxy = proxy ?? GetRandomProxy();
+
+            if (proxy != null)
+            {
+                handler.UseProxy = true;
+                handler.Proxy = proxy;
+            }
+
+            HttpClient client = new HttpClient(handler);
+
+            return client;
         }
 
         [DllImport("user32.dll")]

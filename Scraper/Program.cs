@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
-using StoreScraper.Bots.ChampsSports;
+using StoreScraper.Attributes;
 using StoreScraper.Bots.Footaction;
 using StoreScraper.Bots.Mrporter;
 using StoreScraper.Bots.OffWhite;
@@ -39,7 +41,6 @@ namespace StoreScraper
             {
                 new OffWhiteBot(),
                 new FootactionScrapper(),
-                new ChampsSportsScraper(),
                 new MrporterScraper(),
             };
 
@@ -53,6 +54,24 @@ namespace StoreScraper
         static void OnProcessExit(object sender, EventArgs e)
         {
             CookieCollector.Default.Dispose();
+        }
+
+        static IEnumerable<ScraperBase> GetScrapers()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+
+            foreach (var type in assembly.GetTypes())
+            {
+                if (type.IsSubclassOf(typeof(ScraperBase)))
+                {
+                    bool disabled =
+                        type.CustomAttributes.Any(attr => attr.AttributeType == typeof(DisabledScraperAttribute));
+                    if (!disabled)
+                    {
+                        yield return (ScraperBase) Activator.CreateInstance(type);
+                    }
+                }
+            }
         }
     }
 }

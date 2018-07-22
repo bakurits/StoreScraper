@@ -53,9 +53,9 @@ namespace StoreScraper.Bots.OffWhite
 
             var cookies = CookieCollector.Default.GetCookies("OffWhite", token);
             string proxy = CookieCollector.Default.GetCurrentProxy();
-            var request = searchUrl.WithProxy(proxy).WithHeaders(ClientFactory.ChromeHeaders).
-                WithHeader("referer", @"https://www.off---white.com/").WithCookies(cookies);
-            var document = request.GetDoc(token);
+            var request = ClientFactory.GetHttpClient(new WebProxy(proxy)).AddHeaders(ClientFactory.ChromeHeaders)
+                .AddHeaders(("referer", @"https://www.off---white.com/")).AddCookies(cookies);
+            var document = request.GetDoc(searchUrl, token);
 
             var node = document.DocumentNode;
             HtmlNode container = node.SelectSingleNode("//section[@class='products']");
