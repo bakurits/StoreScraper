@@ -42,7 +42,7 @@ namespace StoreScraper.Bots.Mrporter
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
-            ProductDetails resut = new ProductDetails();
+            ProductDetails result = new ProductDetails();
             
             var node = GetPage(product.Url, token).SelectSingleNode("//select[@class = 'select-option-style']");
 
@@ -54,12 +54,12 @@ namespace StoreScraper.Bots.Mrporter
                 if (dataStock == "Low_Stock" || dataStock == "In_Stock")
                 {
                     Debug.WriteLine(item.InnerHtml);
-                    resut.Add(item.InnerHtml);
+                    result.Add(item.InnerHtml);
                 }
                 
             }
 
-            return new ProductDetails();
+            return result;
         }
 
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,7 @@ namespace ScraperTest
         {
             FootStoreScraper.ChampsSportsScraper scraper = new FootStoreScraper.ChampsSportsScraper();
             scraper.FindItems(out  var lst, settings, CancellationToken.None, new Logger());
+            Debug.WriteLine(lst.Count);
         }
 
         [TestMethod]
@@ -30,6 +32,7 @@ namespace ScraperTest
         {
             FootStoreScraper.FootLockerScraper scraper = new FootStoreScraper.FootLockerScraper();
             scraper.FindItems(out var lst, settings, CancellationToken.None, new Logger());
+            Debug.WriteLine(lst.Count);
         }
 
         [TestMethod]
@@ -37,6 +40,7 @@ namespace ScraperTest
         {
             FootStoreScraper.EastBayScraper footStoreScraper = new FootStoreScraper.EastBayScraper();
             footStoreScraper.FindItems(out var lst, settings, CancellationToken.None, new Logger());
+            Debug.WriteLine(lst.Count);
         }
 
         [AssemblyInitialize]
