@@ -43,8 +43,18 @@ namespace StoreScraper.Bots.Mrporter
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
             ProductDetails result = new ProductDetails();
-            
-            var node = GetPage(product.Url, token).SelectSingleNode("//select[@class = 'select-option-style']");
+            var doc = GetPage(product.Url, token);
+            var node = doc.SelectSingleNode("//select[contains(@class, 'select-option-style')]");
+
+            string sizeCaster = "";
+            try
+            {
+                sizeCaster = doc.SelectSingleNode("//ul[contains(@class, 'product-accordion__list')]").SelectSingleNode("./li").InnerHtml;
+            }
+            catch
+            {
+                // ignored
+            }
 
             var optionList = node.SelectNodes("./option");
 
@@ -53,12 +63,34 @@ namespace StoreScraper.Bots.Mrporter
                 var dataStock = item.GetAttributeValue("data-stock", null);
                 if (dataStock == "Low_Stock" || dataStock == "In_Stock")
                 {
-                    Debug.WriteLine(item.InnerHtml);
-                    result.Add(item.InnerHtml);
+                    string val = GenerateRealSize(item.InnerHtml, sizeCaster);
+
+                    Debug.WriteLine(val);
+                    result.Add(val);
                 }
                 
             }
 
+            return result;
+        }
+
+        private string GenerateRealSize(string html, string caster)
+        {
+            string result = html;
+            string before = html.Substring(0, html.IndexOf("-", StringComparison.Ordinal)).Trim();
+            int val;
+            if (int.TryParse(before, out val))
+            {
+                int indx = caster.IndexOf(val.ToString(), comparisonType: StringComparison.Ordinal);
+                if (indx != -1)
+                {
+                    int indOfEqualitySign = caster.IndexOf("=", indx, StringComparison.Ordinal);
+                    int indOfTokenFinish = caster.IndexOf(",", indOfEqualitySign, StringComparison.Ordinal);
+                    if (indOfTokenFinish == -1) indOfTokenFinish = caster.Length;
+                    result = caster.Substring(indOfEqualitySign + 1, indOfTokenFinish - indOfEqualitySign - 1).Trim();
+                    result += html.Substring(html.IndexOf("-", StringComparison.Ordinal) - 1);
+                }
+            }
             return result;
         }
 

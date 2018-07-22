@@ -34,9 +34,24 @@ namespace ScraperTest
         public void TestMethod2()
         {
             Product curProduct = new Product("mrporter", "JOHN ELLIOTT Camp-Collar Printed Tencel-Twill Shirt",
-                "https://www.mrporter.com/mens/barena/camp-collar-melange-linen-blend-shirt/1080212?ppv=2",
+                "https://www.mrporter.com/mens/okeeffe/bristol-leather-trimmed-suede-derby-shoes/1026175",
                 120.83,
-                "https://www.mrporter.com/mens/barena/camp-collar-melange-linen-blend-shirt/1080212?ppv=2",
+                "id",
+                "https://cache.mrporter.com/images/products/1012326/1012326_mrp_in_l.jpg");
+
+
+            MrporterScraper scraper = new MrporterScraper();
+
+            scraper.GetProductDetails(curProduct, CancellationToken.None);
+        }
+
+        [TestMethod]
+        public void TestMethod3()
+        {
+            Product curProduct = new Product("mrporter", "SACAI Slim - Fit Bleached Black Watch Checked Linen Trousers",
+                "https://www.mrporter.com/mens/sacai/slim-fit-bleached-black-watch-checked-linen-trousers/1007487?ppv=2",
+                120.83,
+                "id",
                 "https://cache.mrporter.com/images/products/1012326/1012326_mrp_in_l.jpg");
 
 
