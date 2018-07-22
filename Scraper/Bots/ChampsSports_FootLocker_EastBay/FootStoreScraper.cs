@@ -36,10 +36,11 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
         {
             listOfProducts = new List<Product>();
 
-            string searchURL = UrlPrefix + string.Format(Keywords,settings.KeyWords) + PageSizeSuffix;
+            string searchURL = UrlPrefix + string.Format(Keywords, settings.KeyWords) + PageSizeSuffix;
             var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FireFoxHeaders);
+            //Console.WriteLine(searchURL);
 
-            var document = request.GetDoc(searchURL,token);
+            var document = request.GetDoc(searchURL, token);
 
             var node = document.DocumentNode;
             HtmlNode container = node.SelectSingleNode("//*[@id=\"endeca_search_results\"]/ul");
@@ -47,22 +48,48 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
 
             foreach (HtmlNode child in children)
             {
-                string id = child.GetAttributeValue("data-sku", null);
-                string name = child.SelectSingleNode(".//*[contains(@class, 'product_title')]").InnerText;
-                string link = child.SelectSingleNode("./a").GetAttributeValue("href", null);
+                try
+                {
+                    string id = child.GetAttributeValue("data-sku", null);
+                    string name = child.SelectSingleNode(".//*[contains(@class, 'product_title')]").InnerText;
+                    string link = child.SelectSingleNode("./a").GetAttributeValue("href", null);
 
-                string priceStr = child.SelectSingleNode(".//*[contains(@class, 'product_price')]").InnerText;
-                priceStr = priceStr.Trim().Substring(1);
-                double.TryParse(priceStr, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
+                    string priceStr = child.SelectSingleNode(".//*[contains(@class, 'product_price')]").InnerText;
+                    priceStr = priceStr.Trim().Substring(1);
+                    double.TryParse(priceStr, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
 
-                //string imgURL = child.SelectSingleNode("./a/span/img").GetAttributeValue("data-original", null);
+                    string imgURL;
+                    try
+                    {
+                        imgURL = child.SelectSingleNode("./a/img").GetAttributeValue("src", null);
 
-                Product product = new Product(this.WebsiteName, name, link, price, id, null); //TODO gaaswore suratis linki yvero
-                listOfProducts.Add(product);
+                    }
+                    catch (Exception e)
+                    {
+                        imgURL = child.SelectSingleNode("./a/span/img").GetAttributeValue("data-original", null);
 
-                token.ThrowIfCancellationRequested();
+                    }
+/*
+
+                    Console.WriteLine(id);
+                    Console.WriteLine(name);
+                    Console.WriteLine(link);
+                    Console.WriteLine(price + " " + priceStr);
+                    Console.WriteLine(imgURL);
+                    Console.WriteLine();
+*/
+
+                    Product product = new Product(this.WebsiteName, name, link, price, id, imgURL);
+                    listOfProducts.Add(product);
+                }
+                catch (Exception e)
+                {
+                    //info.WriteLog(e.StackTrace);
+                    //info.WriteLog(@"This is not a product!");
+                }
             }
 
+            token.ThrowIfCancellationRequested();
         }
 
         public List<string> GetProductSizes(Product product, CancellationToken token)
