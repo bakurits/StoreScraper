@@ -10,13 +10,13 @@ using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
-namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
+namespace StoreScraper.Scrapers.ChampsSports_FootLocker_EastBay
 {
     [DisabledScraper]
     public class FootStoreScraper : ScraperBase
     {
-        public override string WebsiteName { get; set; }
-        public override string WebsiteBaseUrl { get; set; }
+        public sealed override string WebsiteName { get; set; }
+        public sealed override string WebsiteBaseUrl { get; set; }
         public override bool Enabled { get; set; }
 
         private string UrlPrefix;
@@ -38,10 +38,8 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
 
             string searchURL = UrlPrefix + string.Format(Keywords, settings.KeyWords) + PageSizeSuffix;
             var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FireFoxHeaders);
-            //Console.WriteLine(searchURL);
-
             var document = request.GetDoc(searchURL, token);
-
+            request.Dispose();
             var node = document.DocumentNode;
             HtmlNode container = node.SelectSingleNode("//*[@id=\"endeca_search_results\"]/ul");
             HtmlNodeCollection children = container.SelectNodes("./li");
@@ -55,7 +53,7 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
                     string link = child.SelectSingleNode("./a").GetAttributeValue("href", null);
 
                     var priceNode= child.SelectSingleNode(".//*[contains(@class, 'product_price')]");
-                    string salePriceStr = priceNode.SelectSingleNode("/*[contains(@class, 'sale')]")?.InnerText;
+                    string salePriceStr = priceNode.SelectSingleNode("./*[contains(@class, 'sale')]")?.InnerText;
 
                     string priceStr = (salePriceStr ?? priceNode.InnerText).Trim().Substring(1);
                     double.TryParse(priceStr, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);

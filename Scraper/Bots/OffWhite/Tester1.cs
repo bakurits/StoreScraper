@@ -2,11 +2,11 @@
 using StoreScraper.Models;
 
 /*
- * New tester class for making debugging OffWhiteBot class
+ * New tester class for making debugging OffWhiteScraper class
  * far more easier.
  */
 
-namespace StoreScraper.Bots.OffWhite
+namespace StoreScraper.Scrapers.OffWhite
 {
     class Tester1
     {

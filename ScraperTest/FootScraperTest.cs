@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper;
-using StoreScraper.Bots.ChampsSports_FootLocker_EastBay;
+using StoreScraper.Scrapers.ChampsSports_FootLocker_EastBay;
 using StoreScraper.Models;
 
 namespace ScraperTest
@@ -24,7 +24,7 @@ namespace ScraperTest
         {
             FootStoreScraper.ChampsSportsScraper scraper = new FootStoreScraper.ChampsSportsScraper();
             scraper.FindItems(out  var lst, settings, CancellationToken.None, new Logger());
-            Debug.WriteLine(lst.Count);
+            PrintTestReuslts(lst);
         }
 
         [TestMethod]
@@ -32,7 +32,7 @@ namespace ScraperTest
         {
             FootStoreScraper.FootLockerScraper scraper = new FootStoreScraper.FootLockerScraper();
             scraper.FindItems(out var lst, settings, CancellationToken.None, new Logger());
-            Debug.WriteLine(lst.Count);
+            PrintTestReuslts(lst);
         }
 
         [TestMethod]
@@ -40,7 +40,7 @@ namespace ScraperTest
         {
             FootStoreScraper.EastBayScraper footStoreScraper = new FootStoreScraper.EastBayScraper();
             footStoreScraper.FindItems(out var lst, settings, CancellationToken.None, new Logger());
-            Debug.WriteLine(lst.Count);
+            PrintTestReuslts(lst);
         }
 
         [AssemblyInitialize]
@@ -60,6 +60,7 @@ namespace ScraperTest
         {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(string.Join("\n", list));
+            Console.ForegroundColor = ConsoleColor.Black;
         }
     }
 }

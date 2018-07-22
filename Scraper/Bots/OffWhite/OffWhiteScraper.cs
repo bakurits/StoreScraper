@@ -15,10 +15,10 @@ using StoreScraper.Helpers;
 using StoreScraper.Interfaces;
 using StoreScraper.Models;
 
-namespace StoreScraper.Bots.OffWhite
+namespace StoreScraper.Scrapers.OffWhite
 {
     [Serializable]
-    public class OffWhiteBot : ScraperBase
+    public class OffWhiteScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Off---white";
         public override string WebsiteBaseUrl { get; set; } = "Off---white.com";
@@ -30,7 +30,7 @@ namespace StoreScraper.Bots.OffWhite
 
         private const string SearchUrlFormat = @"https://www.off---white.com/en/US/search?q={0}";
 
-        public OffWhiteBot()
+        public OffWhiteScraper()
         {
             CookieCollector.Default.RegisterAction("OffWhite", browser =>
             {

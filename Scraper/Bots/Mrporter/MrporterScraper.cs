@@ -9,7 +9,7 @@ using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
-namespace StoreScraper.Bots.Mrporter
+namespace StoreScraper.Scrapers.Mrporter
 {
     public class MrporterScraper : ScraperBase
     {

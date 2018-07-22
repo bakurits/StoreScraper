@@ -50,7 +50,7 @@ namespace StoreScraper.Models
 
         public override string ToString()
         {
-            return $"{this.Name}-{this.Price}";
+            return $"{this.Name}-{this.Price}$";
         }
     }
 }

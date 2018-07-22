@@ -12,7 +12,7 @@ using Flurl.Http;
 using StoreScraper;
 using StoreScraper.Helpers;
 
-namespace StoreScraper.Bots.Footaction
+namespace StoreScraper.Scrapers.Footaction
 {
     [Serializable]
     public class FootactionScrapper : ScraperBase

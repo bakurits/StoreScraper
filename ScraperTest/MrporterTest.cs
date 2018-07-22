@@ -5,7 +5,7 @@ using System.IO;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper;
-using StoreScraper.Bots.Mrporter;
+using StoreScraper.Scrapers.Mrporter;
 using StoreScraper.Models;
 
 namespace ScraperTest
