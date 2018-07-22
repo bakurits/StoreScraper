@@ -37,7 +37,7 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
             listOfProducts = new List<Product>();
 
             string searchURL = UrlPrefix + string.Format(Keywords,settings.KeyWords) + PageSizeSuffix;
-            var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.ChromeHeaders);
+            var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FireFoxHeaders);
 
             var document = request.GetDoc(searchURL,token);
 
@@ -55,7 +55,7 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
                 priceStr = priceStr.Trim().Substring(1);
                 double.TryParse(priceStr, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
 
-                string imgURL = child.SelectSingleNode("./a/span/img").GetAttributeValue("data-original", null);
+                //string imgURL = child.SelectSingleNode("./a/span/img").GetAttributeValue("data-original", null);
 
                 Product product = new Product(this.WebsiteName, name, link, price, id, null); //TODO gaaswore suratis linki yvero
                 listOfProducts.Add(product);

@@ -25,7 +25,7 @@ namespace StoreScraper.Bots.Footaction
         {  
             listOfProducts = new List<Product>();
             string searchUrl = $"https://www.footaction.com/api/products/search?currentPage=0&pageSize=50&query={settings.KeyWords}&sort=newArrivals";
-            var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FirefoxUserAgentHeader, ClientFactory.JsonXmlAcceptHeader);
+            var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FireFoxHeaders);
             var task = request.GetStringAsync(searchUrl);
             task.Wait(token);
             var xmlDocument = new XmlDocument();

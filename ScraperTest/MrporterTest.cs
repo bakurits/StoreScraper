@@ -23,14 +23,5 @@ namespace ScraperTest
            
             scraper.FindItems(out var lst, settings, CancellationToken.None, new Logger());
         }
-
-
-        [TestInitialize]
-        public void Init()
-        {
-            AppSettings.Init();
-            if (!Directory.Exists(AppSettings.DataDir)) Directory.CreateDirectory(AppSettings.DataDir);
-            AppSettings.Default = AppSettings.Load();
-        }
     }
 }

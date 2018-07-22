@@ -21,7 +21,7 @@ namespace StoreScraper.Factory
 
         public static StringPair HtmlOnlyHeader = ("Accept", "text/html");
 
-        public static StringPair FirefoxUserAgentHeader = ("User_Agent",
+        public static StringPair FirefoxUserAgentHeader = ("User-Agent",
             "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0");
 
         public static StringPair ChromeUserAgentHeader =
@@ -32,19 +32,29 @@ namespace StoreScraper.Factory
             ("Accept",
             @"text/html, application/xhtml+xml, application/xml;q=0.9, image/webp,image/apng, */*;q=0.8");
 
+        public static StringPair FirefoxAcceptHeader =
+            ("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+
         public static StringPair[] ChromeHeaders = new StringPair[]
         {
-            ChromeAcceptHeader,
+            FirefoxAcceptHeader,
             ChromeUserAgentHeader,
             ("Accept-Language", @"en-US,en;q=0.9"),
             ("Accept-Encoding", "gzip,deflate"),
-            ("Cache_Control", "no-cache")
+            ("Cache-Control", "no-cache")
         };
 
-        public static object FireFoxHeaders = new
+        public static StringPair[] FireFoxHeaders = new StringPair[]
         {
-            FirefoxUserAgentHeader,
             ChromeAcceptHeader,
+            ("Accept-Encoding", "gzip,deflate"),
+            ("Accept-Language", "en-US,en; q=0.5"),
+            ("Cache-Control", "no-cache"),
+            ("Connection", "keep-alive"),
+            ("Pragma", "no-cache"),
+            ("DNT","1"),
+            ("Upgrade-Insecure-Requests", "1"),
+            FirefoxUserAgentHeader
         };
 
 
@@ -97,14 +107,6 @@ namespace StoreScraper.Factory
 #endif
             if (proxy == null) return (options, new FirefoxDriver(service, options));
             var proxyAddr = proxy.Address.Host + ":" + proxy.Address.Port;
-//            FirefoxProfile profile = new FirefoxProfile();
-//            profile.SetPreference("network.captive-portal-service.enabled", false);
-//            profile.SetPreference("network.proxy.type", 1);
-//            profile.SetPreference("network.proxy.http", proxy.Address.Host);
-//            profile.SetPreference("network.proxy.http_port", proxy.Address.Port);
-//            profile.SetPreference("network.proxy.ssl", proxy.Address.Host);
-//            profile.SetPreference("network.proxy.ssl_port", proxy.Address.Port);
-//            options.Profile = profile;
             options.Proxy = new Proxy()
             {
                 Kind = ProxyKind.Manual,
