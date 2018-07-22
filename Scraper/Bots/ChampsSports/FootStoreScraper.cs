@@ -21,7 +21,7 @@ namespace StoreScraper.Bots.ChampsSports
         private const string PageSizeSuffix = @"?Ns=P_NewArrivalDateEpoch%7C1&cm_SORT=New%20Arrivals";
         private const string Keywords = @"/keyword-{0}";
 
-        private Object Header = new {Accept = "text/html"};
+        private Object Header = new { Accept = "text/html" };
 
 
         public FootStoreScraper(string websiteName, string websiteBaseUrl)
@@ -36,16 +36,16 @@ namespace StoreScraper.Bots.ChampsSports
             listOfProducts = new List<Product>();
 
             string searchURL = UrlPrefix + string.Format(Keywords, addKeywords()) + PageSizeSuffix;
-            Console.WriteLine(searchURL);
+            info.WriteLog(searchURL);
             var request = searchURL.WithHeaders(Header);
 
             var document = request.GetDoc(token);
 
             var node = document.DocumentNode;
+
             HtmlNode container = node.SelectSingleNode("//*[@id=\"endeca_search_results\"]/ul");
             HtmlNodeCollection children = container.SelectNodes("./li");
 
-            Console.WriteLine(searchURL);
             foreach (HtmlNode child in children)
             {
                 try
@@ -58,24 +58,35 @@ namespace StoreScraper.Bots.ChampsSports
                     priceStr = priceStr.Trim().Substring(1);
                     double.TryParse(priceStr, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
 
-                    //string imgURL = child.SelectSingleNode("./a/span/img").GetAttributeValue("data-original", null);
+                    string imgURL;
+                    try
+                    {
+                        imgURL = child.SelectSingleNode("./a/img").GetAttributeValue("src", null);
 
-                    //Product product = new Product(this.WebsiteName, name, link, price, id, imgURL);
+                    }
+                    catch (Exception e)
+                    {
+                        imgURL = child.SelectSingleNode("./a/span/img").GetAttributeValue("data-original", null);
 
+                    }
+
+                    /*
                     Console.WriteLine(id);
                     Console.WriteLine(name);
                     Console.WriteLine(link);
                     Console.WriteLine(price);
-                    //Console.WriteLine(imgURL);
+                    Console.WriteLine(imgURL);
                     Console.WriteLine();
+                    */
+
+                    Product product = new Product(this.WebsiteName, name, link, price, id, imgURL);
+                    listOfProducts.Add(product);
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.StackTrace);
-                    Console.WriteLine(@"This is not a product!");
+                    info.WriteLog(e.StackTrace);
+                    info.WriteLog(@"This is not a product!");
                 }
-
-                //GetProductSizes(product, token);
             }
 
 
@@ -90,7 +101,7 @@ namespace StoreScraper.Bots.ChampsSports
 
         public List<string> GetProductSizes(Product product, CancellationToken token)
         {
-            List <string> productSizes = new List<string>();
+            List<string> productSizes = new List<string>();
             var node = product.Url.WithHeaders(Header).GetDoc(token).DocumentNode;
             Console.WriteLine(node.InnerHtml);
             HtmlNodeCollection sizes = node.SelectNodes("//*[@class=\"product_sizes\"]//*[@class=\"button\"]");
