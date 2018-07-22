@@ -48,45 +48,24 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
 
             foreach (HtmlNode child in children)
             {
-                try
-                {
+                
                     string id = child.GetAttributeValue("data-sku", null);
-                    string name = child.SelectSingleNode(".//*[contains(@class, 'product_title')]").InnerText;
+                    string name = child.SelectSingleNode(".//*[contains(@class, 'product_title')]")?.InnerText;
+                    if(name == null) continue;
                     string link = child.SelectSingleNode("./a").GetAttributeValue("href", null);
 
-                    string priceStr = child.SelectSingleNode(".//*[contains(@class, 'product_price')]").InnerText;
-                    priceStr = priceStr.Trim().Substring(1);
+                    var priceNode= child.SelectSingleNode(".//*[contains(@class, 'product_price')]");
+                    string salePriceStr = priceNode.SelectSingleNode("/*[contains(@class, 'sale')]")?.InnerText;
+
+                    string priceStr = (salePriceStr ?? priceNode.InnerText).Trim().Substring(1);
                     double.TryParse(priceStr, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
 
-                    string imgURL;
-                    try
-                    {
-                        imgURL = child.SelectSingleNode("./a/img").GetAttributeValue("src", null);
+                    var imgURL = child.SelectSingleNode("./a/img")?.GetAttributeValue("src", null);               
+                    imgURL = imgURL?? child.SelectSingleNode("./a/span/img").GetAttributeValue("data-original", null);
 
-                    }
-                    catch (Exception e)
-                    {
-                        imgURL = child.SelectSingleNode("./a/span/img").GetAttributeValue("data-original", null);
-
-                    }
-/*
-
-                    Console.WriteLine(id);
-                    Console.WriteLine(name);
-                    Console.WriteLine(link);
-                    Console.WriteLine(price + " " + priceStr);
-                    Console.WriteLine(imgURL);
-                    Console.WriteLine();
-*/
 
                     Product product = new Product(this.WebsiteName, name, link, price, id, imgURL);
                     listOfProducts.Add(product);
-                }
-                catch (Exception e)
-                {
-                    //info.WriteLog(e.StackTrace);
-                    //info.WriteLog(@"This is not a product!");
-                }
             }
 
             token.ThrowIfCancellationRequested();

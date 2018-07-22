@@ -55,5 +55,11 @@ namespace ScraperTest
                 KeyWords = "blue+shirt"
             };
         }
+
+        public static void PrintTestReuslts(List<Product> list)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(string.Join("\n", list));
+        }
     }
 }

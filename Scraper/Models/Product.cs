@@ -19,21 +19,8 @@ namespace StoreScraper.Models
         [Browsable(false)]
         public string Id { get; } = "";
 
-        
-        public Image Picture { get; set;}
-
         [Browsable(false)]
-        public string ImageUrl
-        {
-            set
-            {
-                if (value != null)
-                {
-                    ClientFactory.GetHttpClient().GetImage(value, 70, 70);
-                }
-            
-            }
-        }
+        public string ImageUrl { get; set; }
 
         public Product(string storeName, string name, string url, double price, string id, string imageUrl)
         {
@@ -63,7 +50,7 @@ namespace StoreScraper.Models
 
         public override string ToString()
         {
-            return this.Name + " " + this.Price;
+            return $"{this.Name}-{this.Price}";
         }
     }
 }

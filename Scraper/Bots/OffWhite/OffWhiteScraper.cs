@@ -93,7 +93,7 @@ namespace StoreScraper.Bots.OffWhite
                 Product p = new Product(this.WebsiteName, name, url, price, id, null);
                 if(!Utils.SatisfiesCriteria(p, settings)) continue;
 
-                if (settings.LoadImages) p.ImageUrl = imagePath;
+                p.ImageUrl = imagePath;
 
                 listOfProducts.Add(p);
             }

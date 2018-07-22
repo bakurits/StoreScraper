@@ -9,9 +9,6 @@ namespace StoreScraper.Models
         protected const string FilterCatName = "Filters";
         protected const string CommonCatName = "Common";
 
-        [Category(CommonCatName)]
-        public bool LoadImages { get; set; } = false;
-
 
         [Category(FilterCatName)] public string KeyWords { get; set; } = "";
 
