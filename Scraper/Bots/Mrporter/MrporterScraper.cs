@@ -19,7 +19,7 @@ namespace StoreScraper.Bots.Mrporter
         public override bool Enabled { get; set; }
 
 
-        private const string SearchUrlFormat = @"https://www.mrporter.com/mens/search?keywords={0}";
+        private const string SearchUrlFormat = @"https://www.mrporter.com/mens/whats-new";
 
         /// <summary>
         /// This method is for finding items on page
@@ -33,7 +33,7 @@ namespace StoreScraper.Bots.Mrporter
             var settings = (MrporterSearchSettings)settingsObj;
             listOfProducts = new List<Product>();
 
-            var searchUrl = string.Format(SearchUrlFormat, settings.KeyWords);
+            var searchUrl = SearchUrlFormat;
             var node = GetPage(searchUrl, token);
             
             Worker(listOfProducts, settings, node, token);
