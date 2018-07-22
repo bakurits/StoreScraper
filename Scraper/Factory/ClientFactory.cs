@@ -1,48 +1,60 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Runtime.InteropServices;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.Remote;
+using StoreScraper.Models;
 
 namespace StoreScraper.Factory
 {
-    class ClientFactory
+    static class ClientFactory
     {
      
         private static Random random = new Random();
 
-        public static object ChromeHeaders = new
+        public static StringPair JsonXmlAcceptHeader = ("Accept", "application/xml, application/json");
+
+        public static StringPair HtmlOnlyHeader = ("Accept", "text/html");
+
+        public static StringPair FirefoxUserAgentHeader = ("User-Agent",
+            "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0");
+
+        public static StringPair ChromeUserAgentHeader =
+            ("User-Agent",
+                @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36");
+
+        public static StringPair ChromeAcceptHeader = 
+            ("Accept",
+            @"text/html, application/xhtml+xml, application/xml;q=0.9, image/webp,image/apng, */*;q=0.8");
+
+        public static StringPair FirefoxAcceptHeader =
+            ("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+
+        public static StringPair[] ChromeHeaders = new StringPair[]
         {
-            Accept =
-                @"text/html, application/xhtml+xml, application/xml;q=0.9, image/webp,image/apng, */*;q=0.8",
-            User_Agent =
-                @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
-            Accept_Language = @"en-US,en;q=0.9",
-            Accept_Encoding = "gzip,deflate",
-            Cache_Control = "no-cache"
+            FirefoxAcceptHeader,
+            ChromeUserAgentHeader,
+            ("Accept-Language", @"en-US,en;q=0.9"),
+            ("Accept-Encoding", "gzip,deflate"),
+            ("Cache-Control", "no-cache")
         };
 
-        public static object ChromeHeaders1 = new
+        public static StringPair[] FireFoxHeaders = new StringPair[]
         {
-            User_Agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
-            Connection = "keep-alive"
-        };
-
-        public static object ChromeHeaders2 = new
-        {
-            Accept =
-                @"text/html, application/xhtml+xml, application/xml;q=0.9, image/webp,image/apng, */*;q=0.8",
-            User_Agent =
-                @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
-            Accept_Language = @"en-US,en;q=0.9",
-            Accept_Encoding = "gzip,deflate",
-            Cache_Control = "no-cache"
-        };
-
-        public static object Headers2 = new
-        {
-            Accept = "application/xml, application/json"
+            ChromeAcceptHeader,
+            ("Accept-Encoding", "gzip,deflate"),
+            ("Accept-Language", "en-US,en; q=0.5"),
+            ("Cache-Control", "no-cache"),
+            ("Connection", "keep-alive"),
+            ("Pragma", "no-cache"),
+            ("DNT","1"),
+            ("Upgrade-Insecure-Requests", "1"),
+            FirefoxUserAgentHeader
         };
 
 
@@ -78,12 +90,11 @@ namespace StoreScraper.Factory
                 ShowWindowAsync(p.MainWindowHandle, 0);
             }
 #endif
-
             return driver;
         }
 
 
-        public static FirefoxDriver GetFirefoxDriver()
+        public static (FirefoxOptions, FirefoxDriver) GetFirefoxDriver()
         {
             var service = FirefoxDriverService.CreateDefaultService();
             var options = new FirefoxOptions();
@@ -91,15 +102,20 @@ namespace StoreScraper.Factory
             service.SuppressInitialDiagnosticInformation = true;
 
             var proxy = GetRandomProxy();
+#if !DEBUG
+            options.AddArguments("-headless");
+#endif
+            if (proxy == null) return (options, new FirefoxDriver(service, options));
+            var proxyAddr = proxy.Address.Host + ":" + proxy.Address.Port;
             options.Proxy = new Proxy()
             {
                 Kind = ProxyKind.Manual,
-                SslProxy = proxy.Address.AbsoluteUri,
-                HttpProxy = proxy.Address.AbsoluteUri,
-                SocksPassword = proxy.Address.AbsoluteUri,
+                HttpProxy = proxyAddr,
+                SslProxy = proxyAddr,
+                IsAutoDetect = false,
             };
 
-            return new FirefoxDriver(service, options);
+            return (options, new FirefoxDriver(service,options));
         }
 
         private static WebProxy ParseProxy(string proxy)
@@ -117,7 +133,15 @@ namespace StoreScraper.Factory
             }
             else
             {
-                return new WebProxy(proxy);
+                try
+                {
+                    return new WebProxy(proxy);
+                }
+                catch
+                {
+                    return null;
+                }
+
             }
         }
 
@@ -130,6 +154,30 @@ namespace StoreScraper.Factory
             }
 
             return null;
+        }
+
+        public static HttpClient GetHttpClient(WebProxy proxy = null)
+        {
+            HttpClientHandler handler = new HttpClientHandler()
+            {
+                UseCookies = false,
+                AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
+                AllowAutoRedirect = true,
+                MaxAutomaticRedirections = 3,
+                CheckCertificateRevocationList = false,
+            };
+
+            proxy = proxy ?? GetRandomProxy();
+
+            if (proxy != null)
+            {
+                handler.UseProxy = true;
+                handler.Proxy = proxy;
+            }
+
+            HttpClient client = new HttpClient(handler);
+
+            return client;
         }
 
         [DllImport("user32.dll")]

@@ -14,6 +14,7 @@
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -26,7 +27,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -56,6 +56,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>StoreScraper.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Flurl, Version=2.7.1.0, Culture=neutral, processorArchitecture=MSIL">
@@ -91,14 +94,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bots\ChampsSports\FootStoreScraper.cs" />
+    <Compile Include="Attributes\DisabledScraperAttribute.cs" />
+    <Compile Include="Bots\ChampsSports_FootLocker_EastBay\FootStoreScraper.cs" />
     <Compile Include="Bots\Footaction\FootactionScrapper.cs" />
     <Compile Include="Bots\Mrporter\MrporterScraper.cs" />
     <Compile Include="Bots\Mrporter\MrporterSearchSettings.cs" />
     <Compile Include="Bots\OffWhite\OffWhiteScraper.cs" />
-    <Compile Include="Bots\OffWhite\OffWhiteSearchSettings.cs" />
     <Compile Include="AppSettings.cs" />
     <Compile Include="Browser\CookieCollector.cs" />
+    <Compile Include="Models\StringPair.cs" />
     <Compile Include="ScraperBase.cs" />
     <Compile Include="Controls\ActionChooser.cs">
       <SubType>Form</SubType>
@@ -162,6 +166,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="app.manifest" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -179,9 +184,6 @@
   <ItemGroup>
     <Content Include="..\packages\PhantomJS.2.1.1\tools\phantomjs\phantomjs.exe">
       <Link>phantomjs.exe</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="phantomjs-license.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
