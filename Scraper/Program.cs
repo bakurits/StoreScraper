@@ -36,13 +36,8 @@ namespace StoreScraper
             form.Show();
 
 
-            
-            AppSettings.Default.AvaibleBots = new List<ScraperBase>
-            {
-                new OffWhiteBot(),
-                new FootactionScrapper(),
-                new MrporterScraper(),
-            };
+
+            AppSettings.Default.AvaibleBots = GetScrapers().ToList();
 
 
             form.Close();

@@ -18,7 +18,7 @@ namespace StoreScraper.Bots.Mrporter
         public override bool Enabled { get; set; }
 
 
-        private const string SearchUrlFormat = @"http://www.mrporter.com/mens/whats-new";
+        private const string SearchUrlFormat = @"https://www.mrporter.com/mens/search?keywords={0}";
 
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settingsObj, CancellationToken token, Logger info)
@@ -27,16 +27,16 @@ namespace StoreScraper.Bots.Mrporter
             var settings = (MrporterSearchSettings)settingsObj;
             listOfProducts = new List<Product>();
 
-            var node = GetPage(settings.KeyWords, 1, token);
+            var node = GetPage(settings.KeyWords, token);
             
             Worker(listOfProducts, settings, node, token);
                    
         }
 
 
-        private HtmlNode GetPage(string keywords, int page, CancellationToken token)
+        private HtmlNode GetPage(string keywords, CancellationToken token)
         {
-            var searchUrl = string.Format(SearchUrlFormat);
+            var searchUrl = string.Format(SearchUrlFormat, keywords);
             var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.ChromeHeaders);
             var document = request.GetDoc(searchUrl, token);
             return document.DocumentNode;
@@ -79,12 +79,13 @@ namespace StoreScraper.Bots.Mrporter
                         if (curProduct.Name.ToLower().Contains(keyWord.ToLower()))
                         {
                             listOfProducts.Add(curProduct);
-                            Console.WriteLine(curProduct);
                             break;
                         }       
                     }
                     
                 }
+
+                token.ThrowIfCancellationRequested();
             }
         }
 

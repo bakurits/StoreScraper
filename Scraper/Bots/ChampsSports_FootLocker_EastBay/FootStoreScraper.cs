@@ -15,8 +15,8 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
     [DisabledScraper]
     public class FootStoreScraper : ScraperBase
     {
-        public sealed override string WebsiteName { get; set; }
-        public sealed override string WebsiteBaseUrl { get; set; }
+        public override string WebsiteName { get; set; }
+        public override string WebsiteBaseUrl { get; set; }
         public override bool Enabled { get; set; }
 
         private string UrlPrefix;
@@ -37,8 +37,7 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
             listOfProducts = new List<Product>();
 
             string searchURL = UrlPrefix + string.Format(Keywords,settings.KeyWords) + PageSizeSuffix;
-            Console.WriteLine(searchURL);
-            var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.HtmlOnlyHeader);
+            var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.ChromeHeaders);
 
             var document = request.GetDoc(searchURL,token);
 
@@ -46,33 +45,24 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
             HtmlNode container = node.SelectSingleNode("//*[@id=\"endeca_search_results\"]/ul");
             HtmlNodeCollection children = container.SelectNodes("./li");
 
-            Console.WriteLine(searchURL);
             foreach (HtmlNode child in children)
             {
-                try
-                {
-                    string id = child.GetAttributeValue("data-sku", null);
-                    string name = child.SelectSingleNode(".//*[contains(@class, 'product_title')]").InnerText;
-                    string link = child.SelectSingleNode("./a").GetAttributeValue("href", null);
+                string id = child.GetAttributeValue("data-sku", null);
+                string name = child.SelectSingleNode(".//*[contains(@class, 'product_title')]").InnerText;
+                string link = child.SelectSingleNode("./a").GetAttributeValue("href", null);
 
-                    string priceStr = child.SelectSingleNode(".//*[contains(@class, 'product_price')]").InnerText;
-                    priceStr = priceStr.Trim().Substring(1);
-                    double.TryParse(priceStr, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
+                string priceStr = child.SelectSingleNode(".//*[contains(@class, 'product_price')]").InnerText;
+                priceStr = priceStr.Trim().Substring(1);
+                double.TryParse(priceStr, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
 
-                    string imgURL = child.SelectSingleNode("./a/span/img").GetAttributeValue("data-original", null);
+                string imgURL = child.SelectSingleNode("./a/span/img").GetAttributeValue("data-original", null);
 
-                    Product product = new Product(this.WebsiteName, name, link, price, id, imgURL);
-                    listOfProducts.Add(product);
-                }
-                catch
-                {
-                    // ignored
-                }
+                Product product = new Product(this.WebsiteName, name, link, price, id, null); //TODO gaaswore suratis linki yvero
+                listOfProducts.Add(product);
+
+                token.ThrowIfCancellationRequested();
             }
 
-
-
-            Console.WriteLine(container.ToString());
         }
 
         public List<string> GetProductSizes(Product product, CancellationToken token)

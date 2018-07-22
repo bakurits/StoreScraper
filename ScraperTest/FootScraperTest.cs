@@ -14,28 +14,36 @@ namespace ScraperTest
     [TestClass]
     public class FootScraperTest
     {
+        public static SearchSettingsBase settings;
+
         [TestMethod]
         public void ChampsSportsScraper()
         {
             FootStoreScraper footStoreScraper = new FootStoreScraper("ChampsSports", "https://www.champssports.com");
-            List<Product> lst = new List<Product>();
-            footStoreScraper.FindItems(out lst, null, CancellationToken.None, new Logger());
+            footStoreScraper.FindItems(out  var lst, settings, CancellationToken.None, new Logger());
         }
 
         [TestMethod]
         public void FootLocker()
         {
             FootStoreScraper footStoreScraper = new FootStoreScraper("FootLocker", "https://www.footlocker.com");
-            List<Product> lst = new List<Product>();
-            footStoreScraper.FindItems(out lst, null, CancellationToken.None, new Logger());
+            footStoreScraper.FindItems(out var lst, settings, CancellationToken.None, new Logger());
         }
 
         [TestMethod]
         public void EastBay()
         {
             FootStoreScraper footStoreScraper = new FootStoreScraper("EastBay", "https://www.eastbay.com");
-            List<Product> lst = new List<Product>();
-            footStoreScraper.FindItems(out lst, null, CancellationToken.None, new Logger());
+            footStoreScraper.FindItems(out var lst, settings, CancellationToken.None, new Logger());
+        }
+
+        [ClassInitialize]
+        public static void InitSettings(TestContext context)
+        {
+            settings = new SearchSettingsBase()
+            {
+                KeyWords = "blue shirt"
+            };
         }
     }
 }

@@ -122,7 +122,7 @@ namespace StoreScraper.Controls
         private void InfoOnOnLogged(object sender, string s)
         {
             Rtbx_EventLog.Invoke(new Action(() =>
-                            Rtbx_EventLog.AppendText(s + "\n")
+                            Rtbx_EventLog.AppendText(s + "\r\n")
             ));
         }
 
@@ -133,14 +133,7 @@ namespace StoreScraper.Controls
             {
                 if (task.IsFaulted)
                 {
-                    Rtbx_DebugLog.AppendText
-                    (
-#if DEBUG 
-                        task.Exception.ToString() + "\n"
-#else
-                    task.Exception.Message.ToString()
-#endif
-                    );
+                    Rtbx_DebugLog.AppendText(task.Exception?.Message + "\r\n");
                     label_FindingStatus.Text = @"Some Errors!";
                     label_FindingStatus.ForeColor = Color.Red;
                 }
@@ -227,7 +220,7 @@ namespace StoreScraper.Controls
 
         private void Btn_Save_Click(object sender, EventArgs e)
         {
-            AppSettings.Default.Proxies = RTbx_Proxies.Text.Split('\n').ToList();
+            AppSettings.Default.Proxies = RTbx_Proxies.Text.Remove('\r').Split('\n').ToList();
         }
 
         private void Btn_AddToMonitor_Click(object sender, EventArgs e)

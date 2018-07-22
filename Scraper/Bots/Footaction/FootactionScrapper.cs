@@ -25,11 +25,11 @@ namespace StoreScraper.Bots.Footaction
         {  
             listOfProducts = new List<Product>();
             string searchUrl = $"https://www.footaction.com/api/products/search?currentPage=0&pageSize=50&query={settings.KeyWords}&sort=newArrivals";
-            var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.JsonXmlAcceptHeader);
-            var task = request.GetAsync(searchUrl, token);
-            task.Wait(CancellationToken.None);
+            var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FirefoxUserAgentHeader, ClientFactory.JsonXmlAcceptHeader);
+            var task = request.GetStringAsync(searchUrl);
+            task.Wait(token);
             var xmlDocument = new XmlDocument();
-            xmlDocument.LoadXml(task.Result.Content.ReadAsStringAsync().Result);
+            xmlDocument.LoadXml(task.Result);
             var products = xmlDocument.SelectNodes("productCategorySearchPage/products");
             if (products == null)
             {
