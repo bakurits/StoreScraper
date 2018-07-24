@@ -13,8 +13,8 @@ namespace StoreScraper.Core
 
         public ScraperBase Bot { get; set; }
         public SearchSettingsBase SearchSettings { get; set; }
-        public IEnumerable<Product> OldItems { get; set; }
-        public IEnumerable<FinalAction> Actions;
+        public List<Product> OldItems { get; set; }
+        public List<FinalAction> Actions;
 
         public bool Do(CancellationToken token)
         {
@@ -24,7 +24,7 @@ namespace StoreScraper.Core
             {
                 if (!OldItems.Contains(product))
                 {
-                    OldItems.Append(product);
+                    OldItems.Add(product);
                     foreach (var action in Actions)
                     {
                         if (action == FinalAction.PostToSlack)

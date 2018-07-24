@@ -343,7 +343,7 @@
             this.Controls.Add(this.Tabs);
             this.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.Name = "MainForm";
-            this.Text = "CheckOut Bot";
+            this.Text = "Scraper";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainForm_FormClosed);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.toolStripContainer1.ResumeLayout(false);

@@ -156,15 +156,21 @@ namespace StoreScraper.Factory
             return null;
         }
 
-        public static HttpClient GetHttpClient(WebProxy proxy = null)
+        /// <summary>
+        /// Gets scrapping optimized http client.
+        /// </summary>
+        /// <param name="proxy">proxy to user. If not provided, httpclient will use random proxy from setting's proxy group</param>
+        /// <param name="autoCookies">Set true when you want client to automatically handle sending and receiving cookies.
+        /// When autoCookies is true, you manually add cookies with Addcookies method</param>
+        /// <returns></returns>
+        public static HttpClient GetHttpClient(WebProxy proxy = null, bool autoCookies = false)
         {
             HttpClientHandler handler = new HttpClientHandler()
             {
-                UseCookies = false,
+                UseCookies = autoCookies,
                 AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
                 AllowAutoRedirect = true,
                 MaxAutomaticRedirections = 3,
-                CheckCertificateRevocationList = false,
             };
 
             proxy = proxy ?? GetRandomProxy();

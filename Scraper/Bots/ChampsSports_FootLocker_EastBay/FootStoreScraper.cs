@@ -38,7 +38,8 @@ namespace StoreScraper.Scrapers.ChampsSports_FootLocker_EastBay
 
             string searchURL = UrlPrefix + string.Format(Keywords, settings.KeyWords) + PageSizeSuffix;
             var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FireFoxHeaders);
-            var document = request.GetDoc(searchURL, token);
+            var document = request.GetDoc(searchURL, token, info);
+            request.Dispose();
             request.Dispose();
             var node = document.DocumentNode;
             HtmlNode container = node.SelectSingleNode("//*[@id=\"endeca_search_results\"]/ul");
@@ -82,8 +83,10 @@ namespace StoreScraper.Scrapers.ChampsSports_FootLocker_EastBay
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
-            var node = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.HtmlOnlyHeader).GetDoc(product.Url, token)
+            var client = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.HtmlOnlyHeader);
+            var node = client.GetDoc(product.Url, token, null)
                 .DocumentNode;
+            client.Dispose();
             HtmlNodeCollection sizes = node.SelectNodes("//*[@class=\"product_sizes\"]//*[@class=\"button\"]");
             ProductDetails details = new ProductDetails {SizesList = sizes.Select(size => size.InnerText).ToList()};
             return details;

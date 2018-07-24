@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using Flurl.Http;
 using HtmlAgilityPack;
@@ -15,26 +17,20 @@ namespace StoreScraper.Scrapers.Mrporter
     {
         public override string WebsiteName { get; set; } = "Mrporter";
         public override string WebsiteBaseUrl { get; set; } = "https://www.mrporter.com/";
-        public override Type SearchSettings { get; set; } = typeof(MrporterSearchSettings);
+        public override Type SearchSettings { get; set; } = typeof(SearchSettingsBase);
         public override bool Enabled { get; set; }
 
 
         private const string SearchUrlFormat = @"https://www.mrporter.com/mens/whats-new";
+        private HttpClient client = ClientFactory.GetHttpClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
 
-        /// <summary>
-        /// This method is for finding items on page
-        /// With given restrictions 
-        /// </summary>
-        /// <param name="listOfProducts">List of Products which fits in restrictions</param>
-        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settingsObj,
+        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,
             CancellationToken token, Logger info)
         {
-
-            var settings = (MrporterSearchSettings)settingsObj;
             listOfProducts = new List<Product>();
 
             var searchUrl = SearchUrlFormat;
-            var node = GetPage(searchUrl, token);
+            var node = GetPage(searchUrl, token, info);
             
             Worker(listOfProducts, settings, node, token, info);
                    
@@ -61,14 +57,12 @@ namespace StoreScraper.Scrapers.Mrporter
             foreach (var item in optionList)
             {
                 var dataStock = item.GetAttributeValue("data-stock", null);
-                if (dataStock == "Low_Stock" || dataStock == "In_Stock")
-                {
-                    string val = GenerateRealSize(item.InnerHtml, sizeCaster);
+                if (dataStock != "Low_Stock" && dataStock != "In_Stock") continue;
+                string val = GenerateRealSize(item.InnerHtml, sizeCaster);
 
-                    Debug.WriteLine(val);
-                    result.Add(val);
-                }
-                
+                Debug.WriteLine(val);
+                result.Add(val);
+
             }
 
             return result;
@@ -94,15 +88,14 @@ namespace StoreScraper.Scrapers.Mrporter
         }
 
 
-        private HtmlNode GetPage(string url, CancellationToken token)
+        private HtmlNode GetPage(string url, CancellationToken token, Logger logger = null)
         {
-            var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.ChromeHeaders);
-            var document = request.GetDoc(url, token);
+            var document = client.GetDoc(url, token, logger);
             return document.DocumentNode;
         }
 
 
-        private void Worker(List<Product> listOfProducts, MrporterSearchSettings settings, HtmlNode node, CancellationToken token, Logger info)
+        private void Worker(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode node, CancellationToken token, Logger info)
         {
             HtmlNodeCollection collection =
                 node.SelectNodes(
@@ -132,19 +125,14 @@ namespace StoreScraper.Scrapers.Mrporter
 
                     Product curProduct = new Product(this.WebsiteName, name, url, price, url, null);
 
-                    if (Utils.SatisfiesCriteria(curProduct, settings))
+                if (Utils.SatisfiesCriteria(curProduct, settings))
+                {
+                    var keyWordSplit = settings.KeyWords.Split(' ');
+                    if (keyWordSplit.All(keyWord => curProduct.Name.ToLower().Contains(keyWord.ToLower())))
                     {
-                        var keyWordSplit = settings.KeyWords.Split(' ');
-                        foreach (var keyWord in keyWordSplit)
-                        {
-                            if (curProduct.Name.ToLower().Contains(keyWord.ToLower()))
-                            {
-                                listOfProducts.Add(curProduct);
-                                break;
-                            }
-                        }
-
+                        listOfProducts.Add(curProduct);
                     }
+                }
 
                     token.ThrowIfCancellationRequested();
                 }

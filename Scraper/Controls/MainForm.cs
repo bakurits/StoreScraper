@@ -45,8 +45,6 @@ namespace StoreScraper.Controls
             {
                 stopWatch.Restart();
                 _monitorCancellation.Token.ThrowIfCancellationRequested();
-                List<CartItem> cartItems = new List<CartItem>();
-                List<CheckoutTask> settings = new List<CheckoutTask>();
 
                 var checkeItems = new object[CLbx_Monitor.CheckedItems.Count];
 
@@ -56,19 +54,8 @@ namespace StoreScraper.Controls
 
 
                 foreach (var checkedItem in checkeItems)
-                {
-                    if (checkedItem is CartItem)
-                    {
-                        cartItems.Add(checkedItem as CartItem);
-                    }
-                    else if (checkedItem is CheckoutTask)
-                    {
-                        settings.Add(checkedItem as CheckoutTask);
-                    }
-                    else
-                    {
-                        (checkedItem as MonitoringTask)?.Do(_monitorCancellation.Token);
-                    }
+                {        
+                    (checkedItem as MonitoringTask)?.Do(_monitorCancellation.Token);
                 }
                 
 
@@ -244,7 +231,7 @@ namespace StoreScraper.Controls
                 SearchSettings = searchOptions,
                 Bot = AppSettings.Default.AvaibleBots[storeIndex],
                 Actions = actions,
-                OldItems = _listOfProducts
+                OldItems = _listOfProducts.ToList()
             };
 
             CLbx_Monitor.Items.Add(item);

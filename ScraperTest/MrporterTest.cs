@@ -17,7 +17,7 @@ namespace ScraperTest
         public void TestMethod1()
         {
             MrporterScraper scraper = new MrporterScraper();
-            MrporterSearchSettings settings = new MrporterSearchSettings()
+            SearchSettingsBase settings = new SearchSettingsBase()
             {
                 KeyWords = "bag"
             };

@@ -55,7 +55,7 @@ namespace StoreScraper.Scrapers.OffWhite
             string proxy = CookieCollector.Default.GetCurrentProxy();
             var request = ClientFactory.GetHttpClient(new WebProxy(proxy)).AddHeaders(ClientFactory.FireFoxHeaders)
                 .AddHeaders(("Referer", @"https://www.off---white.com/")).AddCookies(cookies);
-            var document = request.GetDoc(searchUrl, token);
+            var document = request.GetDoc(searchUrl, token, info);
 
             var node = document.DocumentNode;
             HtmlNode container = node.SelectSingleNode("//section[@class='products']");

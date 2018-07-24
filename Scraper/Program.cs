@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Windows.Forms;
 using StoreScraper.Attributes;
@@ -29,8 +30,10 @@ namespace StoreScraper
             if (!Directory.Exists(AppSettings.DataDir)) Directory.CreateDirectory(AppSettings.DataDir);
             AppSettings.Default = AppSettings.Load();
 
-         
             CookieCollector.Default = new CookieCollector();
+
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 
             LoadingForm form = new LoadingForm();
             form.Show();

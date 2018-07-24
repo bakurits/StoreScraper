@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -71,9 +72,19 @@ namespace StoreScraper.Helpers
         }
 
 
-        public static HtmlDocument GetDoc(this HttpClient client, string url, CancellationToken token)
+        public static HtmlDocument GetDoc(this HttpClient client, string url, CancellationToken token, Logger logger = null)
         {
             var task = client.GetStringAsync(url);
+
+            try
+            {
+                task.Wait(token);
+            }
+            finally
+            {
+                logger?.WriteLog("[Error] Connection blocked by server");
+            }
+
             task.Wait(token);
             token.ThrowIfCancellationRequested();
             var result = task.Result;
@@ -89,7 +100,7 @@ namespace StoreScraper.Helpers
             var cookieStr = string.Join(";", list.ConvertAll(cookie => $"{cookie.Name}={cookie.Value}"));
 
            
-            client.DefaultRequestHeaders.TryAddWithoutValidation("Cookies", cookieStr);
+            client.DefaultRequestHeaders.TryAddWithoutValidation("Cookie", cookieStr);
 
             return client;
         }
