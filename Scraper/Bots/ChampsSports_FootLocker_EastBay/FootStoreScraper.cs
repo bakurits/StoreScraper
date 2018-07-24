@@ -46,24 +46,35 @@ namespace StoreScraper.Scrapers.ChampsSports_FootLocker_EastBay
 
             foreach (HtmlNode child in children)
             {
-                
+                try
+                {
                     string id = child.GetAttributeValue("data-sku", null);
                     string name = child.SelectSingleNode(".//*[contains(@class, 'product_title')]")?.InnerText;
-                    if(name == null) continue;
+                    if (name == null) continue;
                     string link = child.SelectSingleNode("./a").GetAttributeValue("href", null);
 
-                    var priceNode= child.SelectSingleNode(".//*[contains(@class, 'product_price')]");
+                    var priceNode = child.SelectSingleNode(".//*[contains(@class, 'product_price')]");
                     string salePriceStr = priceNode.SelectSingleNode("./*[contains(@class, 'sale')]")?.InnerText;
 
                     string priceStr = (salePriceStr ?? priceNode.InnerText).Trim().Substring(1);
                     double.TryParse(priceStr, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
 
-                    var imgURL = child.SelectSingleNode("./a/img")?.GetAttributeValue("src", null);               
-                    imgURL = imgURL?? child.SelectSingleNode("./a/span/img").GetAttributeValue("data-original", null);
+                    var imgURL = child.SelectSingleNode("./a/img")?.GetAttributeValue("src", null);
+                    imgURL = imgURL ?? child.SelectSingleNode("./a/span/img").GetAttributeValue("data-original", null);
 
 
                     Product product = new Product(this.WebsiteName, name, link, price, id, imgURL);
                     listOfProducts.Add(product);
+                }
+                catch (Exception e)
+                {
+                    info.WriteLog(e.Message);
+#if DEBUG
+                    throw;
+#endif
+                }
+                
+                   
             }
 
             token.ThrowIfCancellationRequested();

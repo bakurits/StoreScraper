@@ -36,7 +36,7 @@ namespace StoreScraper.Scrapers.Mrporter
             var searchUrl = SearchUrlFormat;
             var node = GetPage(searchUrl, token);
             
-            Worker(listOfProducts, settings, node, token);
+            Worker(listOfProducts, settings, node, token, info);
                    
         }
 
@@ -78,8 +78,7 @@ namespace StoreScraper.Scrapers.Mrporter
         {
             string result = html;
             string before = html.Substring(0, html.IndexOf("-", StringComparison.Ordinal)).Trim();
-            int val;
-            if (int.TryParse(before, out val))
+            if (int.TryParse(before, out var val))
             {
                 int indx = caster.IndexOf(val.ToString(), comparisonType: StringComparison.Ordinal);
                 if (indx != -1)
@@ -103,49 +102,61 @@ namespace StoreScraper.Scrapers.Mrporter
         }
 
 
-        private void Worker(List<Product> listOfProducts, MrporterSearchSettings settings, HtmlNode node, CancellationToken token)
+        private void Worker(List<Product> listOfProducts, MrporterSearchSettings settings, HtmlNode node, CancellationToken token, Logger info)
         {
             HtmlNodeCollection collection =
                 node.SelectNodes(
                     "//div[@class='product-details']/div[@class='description']|//div[@class='product-details']/div[@class='description description-last']");
 
             foreach (var htmlNode in collection)
-            { 
-                string url = htmlNode.SelectSingleNode("./div/a").GetAttributeValue("href", null);
-                string name = htmlNode.SelectSingleNode("./div/a/span[1]").InnerHtml + " " + htmlNode.SelectSingleNode("./div/a/span[2]").InnerHtml;
-
-                var priceContainer = htmlNode.SelectSingleNode("./div[@class='price-container']");
-
-                var newPrice = priceContainer.SelectSingleNode(".//span[@class='price-value']");
-                double price = 0;
-                if (newPrice != null)
+            {
+                try
                 {
-                    string html = newPrice.InnerHtml;
-                    html = html.Substring(html.LastIndexOf("&pound;", StringComparison.Ordinal) + 7);
-                    price = Convert.ToDouble(html);
-                }
-                else
-                {
-                    price = Convert.ToDouble(priceContainer.SelectSingleNode("./p[1]").InnerHtml.Substring(7));
-                }
+                    string url = htmlNode.SelectSingleNode("./div/a").GetAttributeValue("href", null);
+                    string name = htmlNode.SelectSingleNode("./div/a/span[1]").InnerHtml + " " + htmlNode.SelectSingleNode("./div/a/span[2]").InnerHtml;
 
-                Product curProduct = new Product(this.WebsiteName, name, url, price, url, null);
+                    var priceContainer = htmlNode.SelectSingleNode("./div[@class='price-container']");
 
-                if (Utils.SatisfiesCriteria(curProduct, settings))
-                {
-                    var keyWordSplit = settings.KeyWords.Split(' ');
-                    foreach (var keyWord in keyWordSplit)
+                    var newPrice = priceContainer.SelectSingleNode(".//span[@class='price-value']");
+                    double price = 0;
+                    if (newPrice != null)
                     {
-                        if (curProduct.Name.ToLower().Contains(keyWord.ToLower()))
-                        {
-                            listOfProducts.Add(curProduct);
-                            break;
-                        }       
+                        string html = newPrice.InnerHtml;
+                        html = html.Substring(html.LastIndexOf("&pound;", StringComparison.Ordinal) + 7);
+                        price = Convert.ToDouble(html);
                     }
-                    
+                    else
+                    {
+                        price = Convert.ToDouble(priceContainer.SelectSingleNode("./p[1]").InnerHtml.Substring(7));
+                    }
+
+                    Product curProduct = new Product(this.WebsiteName, name, url, price, url, null);
+
+                    if (Utils.SatisfiesCriteria(curProduct, settings))
+                    {
+                        var keyWordSplit = settings.KeyWords.Split(' ');
+                        foreach (var keyWord in keyWordSplit)
+                        {
+                            if (curProduct.Name.ToLower().Contains(keyWord.ToLower()))
+                            {
+                                listOfProducts.Add(curProduct);
+                                break;
+                            }
+                        }
+
+                    }
+
+                    token.ThrowIfCancellationRequested();
+                }
+                catch(Exception e)
+                {
+                    info.WriteLog(e.Message);
+#if DEBUG
+                    throw;
+#endif
                 }
 
-                token.ThrowIfCancellationRequested();
+
             }
         }
 

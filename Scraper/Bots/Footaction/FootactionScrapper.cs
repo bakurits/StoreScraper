@@ -40,18 +40,29 @@ namespace StoreScraper.Scrapers.Footaction
             int sum = 0;
             foreach (XmlNode  singleContact in products)
             {
-                token.ThrowIfCancellationRequested();
-                if (sum > 50) break;
-                ++sum; 
-                XmlNode personalNode = singleContact.SelectSingleNode("name");
-                string productName = personalNode?.InnerText;
-                string imageUrl = singleContact.SelectSingleNode("images/url")?.InnerText;
-                double.TryParse(singleContact.SelectSingleNode("price/value")?.InnerText, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
-                string sku = singleContact.SelectSingleNode("sku")?.InnerText;
-                string link = new Uri($"https://www.footaction.com/product/{productName}/{sku}.html").AbsoluteUri;
-                var product = new Product(this.WebsiteName,productName,link,price,sku,imageUrl);
-                if (Utils.SatisfiesCriteria(product,settings))
-                    listOfProducts.Add(product);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (sum > 50) break;
+                    ++sum;
+                    XmlNode personalNode = singleContact.SelectSingleNode("name");
+                    string productName = personalNode?.InnerText;
+                    string imageUrl = singleContact.SelectSingleNode("images/url")?.InnerText;
+                    double.TryParse(singleContact.SelectSingleNode("price/value")?.InnerText, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
+                    string sku = singleContact.SelectSingleNode("sku")?.InnerText;
+                    string link = new Uri($"https://www.footaction.com/product/{productName}/{sku}.html").AbsoluteUri;
+                    var product = new Product(this.WebsiteName, productName, link, price, sku, imageUrl);
+                    if (Utils.SatisfiesCriteria(product, settings))
+                        listOfProducts.Add(product);
+                }
+                catch (Exception e)
+                { 
+                    info.WriteLog(e.Message);
+#if DEBUG
+                    throw;
+#endif
+                }
+                
             }
         }
 

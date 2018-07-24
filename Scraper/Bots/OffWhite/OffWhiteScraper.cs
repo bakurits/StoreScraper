@@ -72,30 +72,40 @@ namespace StoreScraper.Scrapers.OffWhite
            
             foreach (var item in items)
             {
-                
-                token.ThrowIfCancellationRequested();
-                var url = "https://www.off---white.com" + item.SelectSingleNode("./a").GetAttributeValue("href", "");
-                string name = item.SelectSingleNode("./a/figure/figcaption/div").InnerText;
-                var priceNode = item.SelectSingleNode("./a/figure/figcaption/div[4]/span[1]/strong");
-                bool parseSuccess = double.TryParse(priceNode.InnerText.Substring(2), NumberStyles.Any,
-                    CultureInfo.InvariantCulture, out var price);
-
-                if(!parseSuccess) throw new WebException("Couldn't get price of product");
-
-                string imagePath = item.SelectSingleNode("./a/figure/img").GetAttributeValue("src", null);
-                if (imagePath == null)
+                try
                 {
-                    info.WriteLog("Image Of product couldn't found");
+                    token.ThrowIfCancellationRequested();
+                    var url = "https://www.off---white.com" + item.SelectSingleNode("./a").GetAttributeValue("href", "");
+                    string name = item.SelectSingleNode("./a/figure/figcaption/div").InnerText;
+                    var priceNode = item.SelectSingleNode("./a/figure/figcaption/div[4]/span[1]/strong");
+                    bool parseSuccess = double.TryParse(priceNode.InnerText.Substring(2), NumberStyles.Any,
+                        CultureInfo.InvariantCulture, out var price);
+
+                    if (!parseSuccess) throw new WebException("Couldn't get price of product");
+
+                    string imagePath = item.SelectSingleNode("./a/figure/img").GetAttributeValue("src", null);
+                    if (imagePath == null)
+                    {
+                        info.WriteLog("Image Of product couldn't found");
+                    }
+                    string id = Path.GetFileName(url);
+
+
+                    Product p = new Product(this.WebsiteName, name, url, price, id, null);
+                    if (!Utils.SatisfiesCriteria(p, settings)) continue;
+
+                    p.ImageUrl = imagePath;
+
+                    listOfProducts.Add(p);
                 }
-                string id = Path.GetFileName(url);
-
-
-                Product p = new Product(this.WebsiteName, name, url, price, id, null);
-                if(!Utils.SatisfiesCriteria(p, settings)) continue;
-
-                p.ImageUrl = imagePath;
-
-                listOfProducts.Add(p);
+                catch (Exception e)
+                {
+                    info.WriteLog(e.Message);
+#if DEBUG
+                    throw;
+#endif
+                }
+                
             }
 
             info.State = Logger.ProcessingState.Success;
