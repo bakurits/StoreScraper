@@ -12,7 +12,7 @@ namespace StoreScraper.Models
 
         public void WriteLog(string message)
         {
-            OnLogged(this, message);
+            OnLogged?.Invoke(this, message);
 
             CurrentLog += message + Environment.NewLine;
         }

@@ -234,6 +234,7 @@ namespace StoreScraper.Controls
                 OldItems = _listOfProducts.ToList()
             };
 
+            item.Bot.Active = true;
             CLbx_Monitor.Items.Add(item);
         }
     }

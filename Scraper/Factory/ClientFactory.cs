@@ -118,7 +118,7 @@ namespace StoreScraper.Factory
             return (options, new FirefoxDriver(service,options));
         }
 
-        private static WebProxy ParseProxy(string proxy)
+        public static WebProxy ParseProxy(string proxy)
         {
 
             var tokens = proxy.Split(':');

@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
-using Flurl.Http;
 using HtmlAgilityPack;
 using StoreScraper.Browser;
 using StoreScraper.Factory;
@@ -18,7 +17,7 @@ namespace StoreScraper.Scrapers.Mrporter
         public override string WebsiteName { get; set; } = "Mrporter";
         public override string WebsiteBaseUrl { get; set; } = "https://www.mrporter.com/";
         public override Type SearchSettings { get; set; } = typeof(SearchSettingsBase);
-        public override bool Enabled { get; set; }
+        public override bool Active { get; set; }
 
 
         private const string SearchUrlFormat = @"https://www.mrporter.com/mens/whats-new";

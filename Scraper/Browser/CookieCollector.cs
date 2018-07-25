@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Firefox;
 using StoreScraper.Factory;
-using Cookie = OpenQA.Selenium.Cookie;
+using StoreScraper.Helpers;
+using Cookie = System.Net.Cookie;
 
 namespace StoreScraper.Browser
 {
@@ -15,19 +17,28 @@ namespace StoreScraper.Browser
 
         public class CollectionTask
         {
-            public Func<IWebDriver, IEnumerable<Cookie>> Func { get; set; }
+            /// <summary>
+            /// Unique name of Collection task.
+            /// Used for removing registered task
+            /// </summary>
+            public string Name { get; set; }
+
+            public Action<HttpClient, CancellationToken> Func { get; set; }
 
             /// <summary>
-            /// Interval in milliSeconds
+            /// Interval to repeat cookie collection task
             /// </summary>
-            public int Interval { get; set; }
+            public TimeSpan Interval { get; set; }
 
             /// <summary>
             /// Cookies after last update
             /// </summary>
             public List<Cookie> Cookies { get; set; }
 
-            public DateTime NextRun { get; set; } = DateTime.Now;
+            /// <summary>
+            /// Next time to run cookie collection task. set dinamically after each collection
+            /// </summary>
+            public DateTime NextRun { get; set; }
         }
 
         public static CookieCollector Default { get; set; }
@@ -36,11 +47,12 @@ namespace StoreScraper.Browser
         private IWebDriver driver;
         private DriverOptions options;
 
-        private Dictionary<string, CollectionTask> _registeredTasks = new Dictionary<string, CollectionTask>();
+        private List<HttpClient> _clients;
+        private List<CollectionTask> _registeredTasks = new List<CollectionTask>();
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         public const int MonitorInterval = 5000;
         private bool _diposed = false;
-
+        private Random rand = new Random();
 
 
         public string GetCurrentProxy()
@@ -50,74 +62,59 @@ namespace StoreScraper.Browser
 
         public CookieCollector()
         {
-            (options, driver) = ClientFactory.GetFirefoxDriver();
+            _clients = new List<HttpClient>();
+
+            foreach (string proxy in AppSettings.Default.Proxies)
+            {
+                var webProxy = ClientFactory.ParseProxy(proxy);
+                HttpClient client = ClientFactory.GetHttpClient(webProxy, true).AddHeaders(ClientFactory.FireFoxHeaders);
+                _clients.Add(client);
+            }
             Monitor();
         }
 
         private void Monitor()
         {
-            Task.Run(() =>
-            {
-                while (true)
-                {
-                    Task.Run(() =>
-                    {
-                        foreach (var task in _registeredTasks)
-                        {
-                            if (task.Value.NextRun < DateTime.Now)
-                            {
-                                try
-                                {
-                                    var exeTask = Task.Run(() => task.Value.Func.Invoke(driver));
-                                    exeTask.Wait(_cancellationTokenSource.Token);
-                                    task.Value.Cookies = new List<Cookie>();
-                                    foreach (var cookie in exeTask.Result)
-                                    {
-                                        task.Value.Cookies.Add(cookie);
-                                    }
-                                }
-                                catch
-                                {
-                                    //ignored
-                                }
-                               
-                            }
-
-                            task.Value.NextRun += TimeSpan.FromMilliseconds(MonitorInterval);
-                        }
-                    }).Wait(_cancellationTokenSource.Token);
-
-                    Task.Delay(5000, _cancellationTokenSource.Token);
-                }
-            });
-           
+            
         }
 
-        public void RegisterAction(string uniqueName, Func<IWebDriver, IEnumerable<Cookie>> collectFunc, int repeatInMilliSeconds)
-        {
-            if (_registeredTasks.ContainsKey(uniqueName))
-                throw new Exception("cookie collection action with this name already exist!");
 
-            _registeredTasks.Add(uniqueName, new CollectionTask()
+        public void MonitorEpoch()
+        {
+            foreach (var task in _registeredTasks)
+            {
+                if (DateTime.Now <= task.NextRun) continue;
+                foreach (var httpClient in _clients)
+                {                    
+                    Task.Run(() => task.Func.Invoke(httpClient, CancellationToken.None));
+                }
+            }
+        }
+
+        public void RegisterAction(string uniqueName, Action<HttpClient, CancellationToken> collectFunc, TimeSpan repeatInMilliSeconds)
+        {
+           
+            _registeredTasks.Add(new CollectionTask()
            {
+               Name = uniqueName,
                Func = collectFunc,
-               Interval = repeatInMilliSeconds
+               Interval = repeatInMilliSeconds,
+               NextRun = DateTime.Now
            });
+        }
+
+        public HttpClient GetClient()
+        {
+            return _clients[rand.Next(_clients.Count - 1)];
         }
 
         public void RemoveAction(string uniqueName)
         {
-            if(!_registeredTasks.Remove(uniqueName)) throw new NoSuchElementException("Actions with given name is not registered");
+            var findIndex = _registeredTasks.FindIndex(task => task.Name == uniqueName);
+            if(findIndex == -1) throw new NoSuchElementException("Actions with given name is not registered");
+            _registeredTasks.RemoveAt(findIndex);
         }
-
-        public IEnumerable<Cookie> GetCookies(string uniqueName, CancellationToken token)
-        {
-            while (_registeredTasks[uniqueName].Cookies == null)
-            {
-               Task.Delay(100).Wait(token);
-            }
-            return _registeredTasks[uniqueName].Cookies;
-        }
+    
 
         public void Dispose()
         {   

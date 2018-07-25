@@ -24,9 +24,9 @@ namespace StoreScraper
 
 
         /// <summary>
-        /// Determinates bot state. Bot is enabled when user have at least 1 product in monitoring list.
+        /// Determinates bot state. Bot is Active when user have at least 1 product in monitoring list.
         /// </summary>
-        public abstract bool Enabled { get; set; }
+        public abstract bool Active { get; set; }
 
 
         /// <summary>

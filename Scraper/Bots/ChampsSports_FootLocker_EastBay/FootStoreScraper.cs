@@ -17,7 +17,7 @@ namespace StoreScraper.Scrapers.ChampsSports_FootLocker_EastBay
     {
         public sealed override string WebsiteName { get; set; }
         public sealed override string WebsiteBaseUrl { get; set; }
-        public override bool Enabled { get; set; }
+        public override bool Active { get; set; }
 
         private string UrlPrefix;
         private const string PageSizeSuffix = @"?Ns=P_NewArrivalDateEpoch%7C1&cm_SORT=New%20Arrivals";
@@ -84,7 +84,7 @@ namespace StoreScraper.Scrapers.ChampsSports_FootLocker_EastBay
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
             var client = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.HtmlOnlyHeader);
-            var node = client.GetDoc(product.Url, token, null)
+            var node = client.GetDoc(product.Url, token)
                 .DocumentNode;
             client.Dispose();
             HtmlNodeCollection sizes = node.SelectNodes("//*[@class=\"product_sizes\"]//*[@class=\"button\"]");

@@ -4,11 +4,9 @@ using System.Globalization;
 using System.Net;
 using System.Threading;
 using System.Xml;
-using Flurl;
 using StoreScraper.Factory;
 using StoreScraper.Interfaces;
 using StoreScraper.Models;
-using Flurl.Http;
 using StoreScraper;
 using StoreScraper.Helpers;
 
@@ -19,7 +17,7 @@ namespace StoreScraper.Scrapers.Footaction
     {
         public override string WebsiteName { get; set; } = "Footaction";
         public override string WebsiteBaseUrl { get; set; } = "https://www.footaction.com";
-        public override bool Enabled { get; set; }
+        public override bool Active { get; set; }
        
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token, Logger info)
         {  
