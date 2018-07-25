@@ -14,7 +14,7 @@ using StoreScraper.Controls;
 
 namespace StoreScraper
 {
-    static class Program
+    public static class Program
     {
         /// <summary>
         /// The main entry point for the application.
@@ -54,7 +54,7 @@ namespace StoreScraper
             CookieCollector.Default.Dispose();
         }
 
-        static IEnumerable<ScraperBase> GetScrapers()
+        public static IEnumerable<ScraperBase> GetScrapers()
         {
             var assembly = Assembly.GetExecutingAssembly();
 

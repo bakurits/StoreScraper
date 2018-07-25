@@ -24,14 +24,14 @@ namespace StoreScraper.Scrapers.OffWhite
         public sealed override string WebsiteName { get; set; } = "Off---white";
         public sealed override string WebsiteBaseUrl { get; set; } = "Off---white.com";
 
-        private bool _enabled;
+        private bool _active;
 
         public override bool Active
         {
-            get => _enabled;
+            get => _active;
             set
             {
-                _enabled = value;
+                _active = value;
                 if (value)
                 {
                     CookieCollector.Default.RegisterAction(this.WebsiteName, CollectCookies, TimeSpan.FromMinutes(5));
@@ -59,7 +59,7 @@ namespace StoreScraper.Scrapers.OffWhite
 
             HttpClient client = null;
 
-            if (_enabled)
+            if (_active)
             {
                 client = CookieCollector.Default.GetClient();
             }
@@ -137,10 +137,10 @@ namespace StoreScraper.Scrapers.OffWhite
             var engine = new Jurassic.ScriptEngine();
             engine.SetGlobalValue("interop", "15");
 
-            var task = client.GetAsync("https://www.off---white.com/en/BR", HttpCompletionOption.ResponseContentRead);
+            var task = client.GetAsync("https://www.off---white.com/en/US/", HttpCompletionOption.ResponseContentRead);
             var aa = task.Result.Content.ReadAsStringAsync().Result;
 
-            client.DefaultRequestHeaders.TryAddWithoutValidation("Referer", "https://www.off---white.com/en/BR");
+            client.DefaultRequestHeaders.TryAddWithoutValidation("Referer", "https://www.off---white.com/en/US/");
             client.DefaultRequestHeaders.Remove("Accept");
             client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "image/webp,image/apng,image/*,*/*;q=0.8");
 

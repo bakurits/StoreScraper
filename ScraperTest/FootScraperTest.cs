@@ -24,7 +24,7 @@ namespace ScraperTest
         {
             FootStoreScraper.ChampsSportsScraper scraper = new FootStoreScraper.ChampsSportsScraper();
             scraper.FindItems(out  var lst, settings, CancellationToken.None, new Logger());
-            PrintTestReuslts(lst);
+            Helper.PrintTestReuslts(lst);
         }
 
         [TestMethod]
@@ -32,7 +32,7 @@ namespace ScraperTest
         {
             FootStoreScraper.FootLockerScraper scraper = new FootStoreScraper.FootLockerScraper();
             scraper.FindItems(out var lst, settings, CancellationToken.None, new Logger());
-            PrintTestReuslts(lst);
+            Helper.PrintTestReuslts(lst);
         }
 
         [TestMethod]
@@ -40,7 +40,7 @@ namespace ScraperTest
         {
             FootStoreScraper.EastBayScraper footStoreScraper = new FootStoreScraper.EastBayScraper();
             footStoreScraper.FindItems(out var lst, settings, CancellationToken.None, new Logger());
-            PrintTestReuslts(lst);
+            Helper.PrintTestReuslts(lst);
         }
 
         [AssemblyInitialize]
@@ -54,13 +54,6 @@ namespace ScraperTest
             {
                 KeyWords = "blue+shirt"
             };
-        }
-
-        public static void PrintTestReuslts(List<Product> list)
-        {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(string.Join("\n", list));
-            Console.ForegroundColor = ConsoleColor.Black;
         }
     }
 }
