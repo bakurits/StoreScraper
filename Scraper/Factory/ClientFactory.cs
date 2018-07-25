@@ -93,31 +93,6 @@ namespace StoreScraper.Factory
             return driver;
         }
 
-
-        public static (FirefoxOptions, FirefoxDriver) GetFirefoxDriver()
-        {
-            var service = FirefoxDriverService.CreateDefaultService();
-            var options = new FirefoxOptions();
-            service.HideCommandPromptWindow = true;
-            service.SuppressInitialDiagnosticInformation = true;
-
-            var proxy = GetRandomProxy();
-#if !DEBUG
-            options.AddArguments("-headless");
-#endif
-            if (proxy == null) return (options, new FirefoxDriver(service, options));
-            var proxyAddr = proxy.Address.Host + ":" + proxy.Address.Port;
-            options.Proxy = new Proxy()
-            {
-                Kind = ProxyKind.Manual,
-                HttpProxy = proxyAddr,
-                SslProxy = proxyAddr,
-                IsAutoDetect = false,
-            };
-
-            return (options, new FirefoxDriver(service,options));
-        }
-
         public static WebProxy ParseProxy(string proxy)
         {
 
