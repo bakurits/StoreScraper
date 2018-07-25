@@ -12,7 +12,6 @@ using HtmlAgilityPack;
 using StoreScraper.Browser;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
-using Jint;
 using StoreScraper.Interfaces;
 using StoreScraper.Models;
 
@@ -65,7 +64,7 @@ namespace StoreScraper.Scrapers.OffWhite
             }
             else
             {
-                client = ClientFactory.GetHttpClient();
+                client = ClientFactory.GetHttpClient(autoCookies:true).AddHeaders(ClientFactory.FireFoxHeaders);
                 CollectCookies(client, token);
             }
 

@@ -44,21 +44,12 @@ namespace StoreScraper.Browser
         public static CookieCollector Default { get; set; }
 
 
-        private IWebDriver driver;
-        private DriverOptions options;
-
         private List<HttpClient> _clients;
         private List<CollectionTask> _registeredTasks = new List<CollectionTask>();
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         public const int MonitorInterval = 5000;
         private bool _diposed = false;
         private Random rand = new Random();
-
-
-        public string GetCurrentProxy()
-        {
-            return options.Proxy?.HttpProxy;
-        }
 
         public CookieCollector()
         {
@@ -121,8 +112,7 @@ namespace StoreScraper.Browser
             if(_diposed) return;
             _diposed = true;
             this._cancellationTokenSource.Cancel();
-            this.driver.Close();
-            this.driver.Quit();
+            _clients.ForEach(client => client.Dispose());
         }
     }
 }

@@ -74,24 +74,18 @@ namespace StoreScraper.Helpers
 
         public static HtmlDocument GetDoc(this HttpClient client, string url, CancellationToken token, Logger logger = null)
         {
-            var task = client.GetStringAsync(url);
-
             try
             {
-                task.Wait(token);
+                var result = client.GetAsync(url, token).Result.Content.ReadAsStringAsync().Result;
+                var doc = new HtmlDocument();
+                doc.LoadHtml(result);
+                return doc;
             }
-            finally
+            catch (WebException)
             {
-                logger?.WriteLog("[Error] Connection blocked by server");
+                logger?.WriteLog("[Error] Can't connect to website");
+                throw;
             }
-
-            task.Wait(token);
-            token.ThrowIfCancellationRequested();
-            var result = task.Result;
-
-            var doc = new HtmlDocument();
-            doc.LoadHtml(result);
-            return doc;
         }
 
         public static HttpClient AddCookies(this HttpClient client, IEnumerable<Cookie> cookies)

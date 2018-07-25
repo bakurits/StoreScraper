@@ -173,6 +173,7 @@ namespace StoreScraper.Factory
                 MaxAutomaticRedirections = 3,
             };
 
+        
             proxy = proxy ?? GetRandomProxy();
 
             if (proxy != null)
@@ -181,7 +182,7 @@ namespace StoreScraper.Factory
                 handler.Proxy = proxy;
             }
 
-            HttpClient client = new HttpClient(handler);
+            HttpClient client = new HttpClient(handler) {Timeout = TimeSpan.FromSeconds(15)};
 
             return client;
         }
