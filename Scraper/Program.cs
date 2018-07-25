@@ -25,23 +25,22 @@ namespace StoreScraper
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            EnsureInternetConnection();
 
             AppSettings.Init();
             if (!Directory.Exists(AppSettings.DataDir)) Directory.CreateDirectory(AppSettings.DataDir);
             AppSettings.Default = AppSettings.Load();
 
             CookieCollector.Default = new CookieCollector();
-
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
+            ServicePointManager.CheckCertificateRevocationList = false;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.SystemDefault;
             ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
 
             LoadingForm form = new LoadingForm();
             form.Show();
 
-
-
             AppSettings.Default.AvaibleBots = GetScrapers().ToList();
-
 
             form.Close();
 
@@ -69,6 +68,23 @@ namespace StoreScraper
                         yield return (ScraperBase) Activator.CreateInstance(type);
                     }
                 }
+            }
+        }
+
+
+        public static bool EnsureInternetConnection()
+        {
+            try
+            {
+                using (var client = new WebClient())
+                using (client.OpenRead("http://clients3.google.com/generate_204"))
+                {
+                    return true;
+                }
+            }
+            catch
+            {
+                throw new WebException("Internet Not Available");
             }
         }
     }
