@@ -115,7 +115,7 @@ namespace StoreScraper.Factory
             }
 
             HttpClient client = new HttpClient(handler) {Timeout = TimeSpan.FromSeconds(15)};
-            client.GetAsync("https://google.com").Result.EnsureSuccessStatusCode();
+            client.DefaultRequestHeaders.Clear();
 
             return client;
         }
