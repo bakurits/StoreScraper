@@ -75,14 +75,12 @@ namespace StoreScraper.Scrapers.Mrporter
             if (int.TryParse(before, out var val))
             {
                 int indx = caster.IndexOf(val.ToString(), comparisonType: StringComparison.Ordinal);
-                if (indx != -1)
-                {
-                    int indOfEqualitySign = caster.IndexOf("=", indx, StringComparison.Ordinal);
-                    int indOfTokenFinish = caster.IndexOf(",", indOfEqualitySign, StringComparison.Ordinal);
-                    if (indOfTokenFinish == -1) indOfTokenFinish = caster.Length;
-                    result = caster.Substring(indOfEqualitySign + 1, indOfTokenFinish - indOfEqualitySign - 1).Trim();
-                    result += html.Substring(html.IndexOf("-", StringComparison.Ordinal) - 1);
-                }
+                if (indx == -1) return result;
+                int indOfEqualitySign = caster.IndexOf("=", indx, StringComparison.Ordinal);
+                int indOfTokenFinish = caster.IndexOf(",", indOfEqualitySign, StringComparison.Ordinal);
+                if (indOfTokenFinish == -1) indOfTokenFinish = caster.Length;
+                result = caster.Substring(indOfEqualitySign + 1, indOfTokenFinish - indOfEqualitySign - 1).Trim();
+                result += html.Substring(html.IndexOf("-", StringComparison.Ordinal) - 1);
             }
             return result;
         }

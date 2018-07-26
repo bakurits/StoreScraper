@@ -30,10 +30,6 @@ namespace StoreScraper.Browser
             /// </summary>
             public TimeSpan Interval { get; set; }
 
-            /// <summary>
-            /// Cookies after last update
-            /// </summary>
-            public List<Cookie> Cookies { get; set; }
 
             /// <summary>
             /// Next time to run cookie collection task. set dinamically after each collection
@@ -48,19 +44,28 @@ namespace StoreScraper.Browser
         private List<CollectionTask> _registeredTasks = new List<CollectionTask>();
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         public const int MonitorInterval = 5000;
-        private bool _diposed = false;
+        private bool _diposed;
         private Random rand = new Random();
 
         public CookieCollector()
         {
             _clients = new List<HttpClient>();
 
-            foreach (string proxy in AppSettings.Default.Proxies)
+            if (AppSettings.Default.UseProxy && AppSettings.Default.Proxies.Count > 0)
             {
-                var webProxy = ClientFactory.ParseProxy(proxy);
-                HttpClient client = ClientFactory.GetHttpClient(webProxy, true).AddHeaders(ClientFactory.FireFoxHeaders);
+                foreach (var proxy in AppSettings.Default.Proxies)
+                {
+                    var webProxy = ClientFactory.ParseProxy(proxy);
+                    var client = ClientFactory.GetHttpClient(webProxy, true).AddHeaders(ClientFactory.FireFoxHeaders);
+                    _clients.Add(client);
+                }
+            }
+            else
+            {
+                var client = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FireFoxHeaders);
                 _clients.Add(client);
             }
+
             Monitor();
         }
 

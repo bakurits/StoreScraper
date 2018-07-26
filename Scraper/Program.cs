@@ -32,16 +32,15 @@ namespace StoreScraper
 
             CookieCollector.Default = new CookieCollector();
             ServicePointManager.CheckCertificateRevocationList = false;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.SystemDefault;
-            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | 
+                                                   SecurityProtocolType.Tls | 
+                                                   SecurityProtocolType.Tls11 | 
+                                                   SecurityProtocolType.Tls12;
 
 
-            LoadingForm form = new LoadingForm();
-            form.Show();
-
+            ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
+            
             AppSettings.Default.AvaibleBots = GetScrapers().ToList();
-
-            form.Close();
 
             Application.Run(new MainForm());
         }

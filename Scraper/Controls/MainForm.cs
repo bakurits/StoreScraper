@@ -207,7 +207,7 @@ namespace StoreScraper.Controls
 
         private void Btn_Save_Click(object sender, EventArgs e)
         {
-            AppSettings.Default.Proxies = RTbx_Proxies.Text.Remove('\r').Split('\n').ToList();
+            AppSettings.Default.Proxies = RTbx_Proxies.Text.Replace("\r","").Split('\n').ToList();
         }
 
         private void Btn_AddToMonitor_Click(object sender, EventArgs e)
