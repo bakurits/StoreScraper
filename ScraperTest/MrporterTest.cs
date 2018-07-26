@@ -26,6 +26,7 @@ namespace ScraperTest
             foreach (var item in lst)
             {
                 Debug.WriteLine(item);
+                Debug.WriteLine(item.Url);
             }
             
         }
@@ -48,8 +49,8 @@ namespace ScraperTest
         [TestMethod]
         public void TestMethod3()
         {
-            Product curProduct = new Product("mrporter", "SACAI Slim - Fit Bleached Black Watch Checked Linen Trousers",
-                "https://www.mrporter.com/mens/sacai/slim-fit-bleached-black-watch-checked-linen-trousers/1007487?ppv=2",
+            Product curProduct = new Product("mrporter", "INCOTEX Slim - Fit Pleated Brushed Stretch - Cotton Trousers",
+                "https://www.mrporter.com/en-ge/mens/incotex/slim-fit-pleated-brushed-stretch-cotton-trousers/1051390",
                 120.83,
                 "id",
                 "https://cache.mrporter.com/images/products/1012326/1012326_mrp_in_l.jpg");

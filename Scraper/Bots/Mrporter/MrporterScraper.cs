@@ -70,7 +70,8 @@ namespace StoreScraper.Scrapers.Mrporter
         private string GenerateRealSize(string html, string caster)
         {
             string result = html;
-            string before = html.Substring(0, html.IndexOf("-", StringComparison.Ordinal)).Trim();
+            int ind = html.IndexOf("-", StringComparison.Ordinal);
+            string before = html.Substring(0,  ind != -1 ? ind : html.Length).Trim();
             if (int.TryParse(before, out var val))
             {
                 int indx = caster.IndexOf(val.ToString(), comparisonType: StringComparison.Ordinal);
@@ -104,7 +105,9 @@ namespace StoreScraper.Scrapers.Mrporter
             {
                 try
                 {
-                    string url = htmlNode.SelectSingleNode("./div/a").GetAttributeValue("href", null);
+                    string aHref = htmlNode.SelectSingleNode("./div/a").GetAttributeValue("href", null);
+                    string url = "https://www.mrporter.com/" + aHref.Substring(aHref.IndexOf("/", 1, StringComparison.Ordinal) + 1);
+                                 
                     string name = htmlNode.SelectSingleNode("./div/a/span[1]").InnerHtml + " " + htmlNode.SelectSingleNode("./div/a/span[2]").InnerHtml;
 
                     var priceContainer = htmlNode.SelectSingleNode("./div[@class='price-container']");
