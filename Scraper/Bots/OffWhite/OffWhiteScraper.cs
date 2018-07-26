@@ -80,48 +80,72 @@ namespace StoreScraper.Scrapers.OffWhite
             }
 
             var items = container.SelectChildren("article");
-            
 
-           
+
+
             foreach (var item in items)
             {
-                try
-                {
-                    token.ThrowIfCancellationRequested();
-                    var url = "https://www.off---white.com" + item.SelectSingleNode("./a").GetAttributeValue("href", "");
-                    string name = item.SelectSingleNode("./a/figure/figcaption/div").InnerText;
-                    var priceNode = item.SelectSingleNode("./a/figure/figcaption/div[4]/span[1]/strong");
-                    bool parseSuccess = double.TryParse(priceNode.InnerText.Substring(2), NumberStyles.Any,
-                        CultureInfo.InvariantCulture, out var price);
-
-                    if (!parseSuccess) throw new WebException("Couldn't get price of product");
-
-                    string imagePath = item.SelectSingleNode("./a/figure/img").GetAttributeValue("src", null);
-                    if (imagePath == null)
-                    {
-                        info.WriteLog("Image Of product couldn't found");
-                    }
-                    string id = Path.GetFileName(url);
-
-
-                    Product p = new Product(this.WebsiteName, name, url, price, id, null);
-                    if (!Utils.SatisfiesCriteria(p, settings)) continue;
-
-                    p.ImageUrl = imagePath;
-
-                    listOfProducts.Add(p);
-                }
-                catch (Exception e)
-                {
-                    info.WriteLog(e.Message);
+                token.ThrowIfCancellationRequested();
 #if DEBUG
-                    throw;
+                LoadSingleProduct(listOfProducts, settings, item, info);
+#else
+                LoadSingleProductTryCatchWraper(listOfProducts, settings, item, info);
 #endif
-                }
-                
             }
 
             info.State = Logger.ProcessingState.Success;
+        }
+
+        /// <summary>
+        /// This method is simple wrapper on LoadSingleProduct
+        /// To catch all Exceptions during release
+        /// </summary>
+        /// <param name="listOfProducts"></param>
+        /// <param name="settings"></param>
+        /// <param name="item"></param>
+        /// <param name="info"></param>
+        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item, Logger info)
+        {
+            try
+            {
+                LoadSingleProduct(listOfProducts, settings, item, info);
+            }
+            catch (Exception e)
+            {
+                info.WriteLog(e.Message);
+            }
+        }
+        /// <summary>
+        /// This method handles single product's creation 
+        /// </summary>
+        /// <param name="listOfProducts"></param>
+        /// <param name="settings"></param>
+        /// <param name="item"></param>
+        /// <param name="info"></param>
+        private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item, Logger info)
+        {
+            var url = "https://www.off---white.com" + item.SelectSingleNode("./a").GetAttributeValue("href", "");
+            string name = item.SelectSingleNode("./a/figure/figcaption/div").InnerText;
+            var priceNode = item.SelectSingleNode("./a/figure/figcaption/div[4]/span[1]/strong");
+            bool parseSuccess = double.TryParse(priceNode.InnerText.Substring(2), NumberStyles.Any,
+                CultureInfo.InvariantCulture, out var price);
+
+            if (!parseSuccess) throw new WebException("Couldn't get price of product");
+
+            string imagePath = item.SelectSingleNode("./a/figure/img").GetAttributeValue("src", null);
+            if (imagePath == null)
+            {
+                info.WriteLog("Image Of product couldn't found");
+            }
+            string id = Path.GetFileName(url);
+
+
+            Product p = new Product(this.WebsiteName, name, url, price, id, null);
+            if (!Utils.SatisfiesCriteria(p, settings)) return;
+
+            p.ImageUrl = imagePath;
+
+            listOfProducts.Add(p);
         }
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
@@ -136,7 +160,7 @@ namespace StoreScraper.Scrapers.OffWhite
             var engine = new Jurassic.ScriptEngine();
             engine.SetGlobalValue("interop", "15");
 
-            var task = client.GetAsync("https://www.off---white.com/en/US/", HttpCompletionOption.ResponseContentRead);
+            var task = client.GetAsync("https://www.off---white.com/en/US/", HttpCompletionOption.ResponseContentRead, token);
             var aa = task.Result.Content.ReadAsStringAsync().Result;
 
             client.DefaultRequestHeaders.TryAddWithoutValidation("Referer", "https://www.off---white.com/en/US/");
@@ -165,7 +189,7 @@ namespace StoreScraper.Scrapers.OffWhite
             var calc = engine.GetGlobalValue<string>("interop");
 
             Thread.Sleep(5000);
-            var resultTask = client.GetAsync($"https://www.off---white.com/cdn-cgi/l/chk_jschl?jschl_vc={answer}&pass={pass}&jschl_answer={calc}");
+            var resultTask = client.GetAsync($"https://www.off---white.com/cdn-cgi/l/chk_jschl?jschl_vc={answer}&pass={pass}&jschl_answer={calc}", token);
             var unused = resultTask.Result.Content.ReadAsStreamAsync().Result;
            
         }

@@ -6,7 +6,6 @@ using System.Net;
 using System.Reflection;
 using System.Windows.Forms;
 using StoreScraper.Attributes;
-using StoreScraper.Scrapers.Footaction;
 using StoreScraper.Scrapers.Mrporter;
 using StoreScraper.Scrapers.OffWhite;
 using StoreScraper.Browser;

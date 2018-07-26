@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper;
+using StoreScraper.Bots.ChampsSports_FootLocker_EastBay;
 using StoreScraper.Models;
-using StoreScraper.Scrapers.ChampsSports_FootLocker_EastBay;
 
 namespace ScraperTest
 {

@@ -103,50 +103,73 @@ namespace StoreScraper.Scrapers.Mrporter
 
             foreach (var htmlNode in collection)
             {
-                try
-                {
-                    string aHref = htmlNode.SelectSingleNode("./div/a").GetAttributeValue("href", null);
-                    string url = "https://www.mrporter.com/" + aHref.Substring(aHref.IndexOf("/", 1, StringComparison.Ordinal) + 1);
-                                 
-                    string name = htmlNode.SelectSingleNode("./div/a/span[1]").InnerHtml + " " + htmlNode.SelectSingleNode("./div/a/span[2]").InnerHtml;
-
-                    var priceContainer = htmlNode.SelectSingleNode("./div[@class='price-container']");
-
-                    var newPrice = priceContainer.SelectSingleNode(".//span[@class='price-value']");
-                    double price = 0;
-                    if (newPrice != null)
-                    {
-                        string html = newPrice.InnerHtml;
-                        html = html.Substring(html.LastIndexOf("&pound;", StringComparison.Ordinal) + 7);
-                        price = Convert.ToDouble(html);
-                    }
-                    else
-                    {
-                        price = Convert.ToDouble(priceContainer.SelectSingleNode("./p[1]").InnerHtml.Substring(7));
-                    }
-
-                    Product curProduct = new Product(this.WebsiteName, name, url, price, url, null);
-
-                if (Utils.SatisfiesCriteria(curProduct, settings))
-                {
-                    var keyWordSplit = settings.KeyWords.Split(' ');
-                    if (keyWordSplit.All(keyWord => curProduct.Name.ToLower().Contains(keyWord.ToLower())))
-                    {
-                        listOfProducts.Add(curProduct);
-                    }
-                }
-
-                    token.ThrowIfCancellationRequested();
-                }
-                catch(Exception e)
-                {
-                    info.WriteLog(e.Message);
+                token.ThrowIfCancellationRequested();
 #if DEBUG
-                    throw;
+                LoadSingleProduct(listOfProducts, settings, htmlNode);
+#else
+                LoadSingleProductTryCatchWraper(listOfProducts, settings, htmlNode, info);
 #endif
+
+            }
+        }
+
+        /// <summary>
+        /// This method is simple wrapper on LoadSingleProduct
+        /// To catch all Exceptions during 
+        /// </summary>
+        /// <param name="listOfProducts"></param>
+        /// <param name="settings"></param>
+        /// <param name="htmlNode"></param>
+        /// <param name="info"></param>
+        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode htmlNode, Logger info)
+        {
+            try
+            {
+                LoadSingleProduct(listOfProducts, settings, htmlNode);
+            }
+            catch (Exception e)
+            {
+                info.WriteLog(e.Message);
+            }
+        }
+
+        /// <summary>
+        /// This method handles single product's creation 
+        /// </summary>
+        /// <param name="listOfProducts"></param>
+        /// <param name="settings"></param>
+        /// <param name="htmlNode"></param>
+        private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode htmlNode)
+        {
+            string aHref = htmlNode.SelectSingleNode("./div/a").GetAttributeValue("href", null);
+            string url = "https://www.mrporter.com/" + aHref.Substring(aHref.IndexOf("/", 1, StringComparison.Ordinal) + 1);
+
+            string name = htmlNode.SelectSingleNode("./div/a/span[1]").InnerHtml + " " + htmlNode.SelectSingleNode("./div/a/span[2]").InnerHtml;
+
+            var priceContainer = htmlNode.SelectSingleNode("./div[@class='price-container']");
+
+            var newPrice = priceContainer.SelectSingleNode(".//span[@class='price-value']");
+            double price = 0;
+            if (newPrice != null)
+            {
+                string html = newPrice.InnerHtml;
+                html = html.Substring(html.LastIndexOf("&pound;", StringComparison.Ordinal) + 7);
+                price = Convert.ToDouble(html);
+            }
+            else
+            {
+                price = Convert.ToDouble(priceContainer.SelectSingleNode("./p[1]").InnerHtml.Substring(7));
+            }
+
+            Product curProduct = new Product(this.WebsiteName, name, url, price, url, null);
+
+            if (Utils.SatisfiesCriteria(curProduct, settings))
+            {
+                var keyWordSplit = settings.KeyWords.Split(' ');
+                if (keyWordSplit.All(keyWord => curProduct.Name.ToLower().Contains(keyWord.ToLower())))
+                {
+                    listOfProducts.Add(curProduct);
                 }
-
-
             }
         }
 

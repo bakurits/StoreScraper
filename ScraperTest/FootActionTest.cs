@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper;
-using StoreScraper.Scrapers.Footaction;
+using StoreScraper.Bots.Footaction;
 using StoreScraper.Models;
 
 namespace ScraperTest

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using HtmlAgilityPack;
 using StoreScraper.Attributes;
@@ -10,7 +10,7 @@ using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
-namespace StoreScraper.Scrapers.ChampsSports_FootLocker_EastBay
+namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
 {
     [DisabledScraper]
     public class FootStoreScraper : ScraperBase
@@ -44,51 +44,72 @@ namespace StoreScraper.Scrapers.ChampsSports_FootLocker_EastBay
         {
             listOfProducts = new List<Product>();
 
-            string searchURL = UrlPrefix + string.Format(Keywords, settings.KeyWords) + PageSizeSuffix;
+            string searchUrl = UrlPrefix + string.Format(Keywords, settings.KeyWords) + PageSizeSuffix;
 
             HtmlNode container = null;
 
             while (container == null)
             {
-                HtmlNode node = InitialNavigation(searchURL, token, info);
+                HtmlNode node = InitialNavigation(searchUrl, token, info);
                 container = node.SelectSingleNode("//*[@id=\"endeca_search_results\"]/ul");
             }
             HtmlNodeCollection children = container.SelectNodes("./li");
 
             foreach (HtmlNode child in children)
             {
-                try
-                {
-                    string id = child.GetAttributeValue("data-sku", null);
-                    string name = child.SelectSingleNode(".//*[contains(@class, 'product_title')]")?.InnerText;
-                    if (name == null) continue;
-                    string link = child.SelectSingleNode("./a").GetAttributeValue("href", null);
-
-                    var priceNode = child.SelectSingleNode(".//*[contains(@class, 'product_price')]");
-                    string salePriceStr = priceNode.SelectSingleNode("./*[contains(@class, 'sale')]")?.InnerText;
-
-                    string priceStr = (salePriceStr ?? priceNode.InnerText).Trim().Substring(1);
-                    double.TryParse(priceStr, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
-
-                    var imgURL = child.SelectSingleNode("./a/img")?.GetAttributeValue("src", null);
-                    imgURL = imgURL ?? child.SelectSingleNode("./a/span/img").GetAttributeValue("data-original", null);
-
-
-                    Product product = new Product(this.WebsiteName, name, link, price, id, imgURL);
-                    listOfProducts.Add(product);
-                }
-                catch (Exception e)
-                {
-                    info.WriteLog(e.Message);
+                token.ThrowIfCancellationRequested();
 #if DEBUG
-                    throw;
+                LoadSingleProduct(listOfProducts, child);
+#else
+                LoadSingleProductTryCatchWraper(listOfProducts, child, info);
 #endif
-                }
-                
-                   
             }
 
-            token.ThrowIfCancellationRequested();
+        }
+
+        /// <summary>
+        /// This method is simple wrapper on LoadSingleProduct
+        /// To catch all Exceptions during release
+        /// </summary>
+        /// <param name="listOfProducts"></param>
+        /// <param name="child"></param>
+        /// <param name="info"></param>
+        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, HtmlNode child, Logger info)
+        {
+            try
+            {
+                LoadSingleProduct(listOfProducts, child);
+            }
+            catch (Exception e)
+            {
+                info.WriteLog(e.Message);
+            }
+        }
+        /// <summary>
+        /// This method handles single product's creation 
+        /// </summary>
+        /// <param name="listOfProducts"></param>
+        /// <param name="child"></param>
+        private void LoadSingleProduct(List<Product> listOfProducts, HtmlNode child)
+        {
+            string id = child.GetAttributeValue("data-sku", null);
+            string name = child.SelectSingleNode(".//*[contains(@class, 'product_title')]")?.InnerText;
+            if (name == null) return;
+            string link = child.SelectSingleNode("./a").GetAttributeValue("href", null);
+
+            var priceNode = child.SelectSingleNode(".//*[contains(@class, 'product_price')]");
+            string salePriceStr = priceNode.SelectSingleNode("./*[contains(@class, 'sale')]")?.InnerText;
+
+            string priceStr = (salePriceStr ?? priceNode.InnerText).Trim().Substring(1);
+            double.TryParse(priceStr, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
+
+            var imgUrl = child.SelectSingleNode("./a/img")?.GetAttributeValue("src", null);
+            imgUrl = imgUrl ?? child.SelectSingleNode("./a/span/img").GetAttributeValue("data-original", null);
+
+
+            Product product = new Product(this.WebsiteName, name, link, price, id, imgUrl);
+            listOfProducts.Add(product);
+            Debug.WriteLine(product);
         }
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
