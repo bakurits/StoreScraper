@@ -101,15 +101,24 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
             string salePriceStr = priceNode.SelectSingleNode("./*[contains(@class, 'sale')]")?.InnerText;
 
             string priceStr = (salePriceStr ?? priceNode.InnerText).Trim().Substring(1);
+            int i = 0;
+
+            for (i = 0; i < priceStr.Length; i++)
+            {
+                if (!((priceStr[i] >= '0' && priceStr[i] <= '9') || priceStr[i] == '.'))
+                {
+                    break;
+                }
+            }
+
+            priceStr = priceStr.Substring(0, i);
             double.TryParse(priceStr, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
 
             var imgUrl = child.SelectSingleNode("./a/img")?.GetAttributeValue("src", null);
             imgUrl = imgUrl ?? child.SelectSingleNode("./a/span/img").GetAttributeValue("data-original", null);
 
-
             Product product = new Product(this.WebsiteName, name, link, price, id, imgUrl);
             listOfProducts.Add(product);
-            Debug.WriteLine(product);
         }
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)

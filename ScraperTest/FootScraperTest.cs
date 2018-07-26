@@ -52,7 +52,7 @@ namespace ScraperTest
 
             settings = new SearchSettingsBase()
             {
-                KeyWords = "blue+shirt"
+                KeyWords = "white"
             };
         }
     }
