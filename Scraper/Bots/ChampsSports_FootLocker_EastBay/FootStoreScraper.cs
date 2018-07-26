@@ -32,17 +32,27 @@ namespace StoreScraper.Scrapers.ChampsSports_FootLocker_EastBay
             this.UrlPrefix = websiteBaseUrl + "/_-_";
         }
 
+        private HtmlNode InitialNavigation(string url, CancellationToken token, Logger info)
+        {
+            var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FireFoxHeaders);
+            var document = request.GetDoc(url, token, info);
+            request.Dispose();
+            return document.DocumentNode;
+        }
+
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token, Logger info)
         {
             listOfProducts = new List<Product>();
 
             string searchURL = UrlPrefix + string.Format(Keywords, settings.KeyWords) + PageSizeSuffix;
-            var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FireFoxHeaders);
-            var document = request.GetDoc(searchURL, token, info);
-            request.Dispose();
-            request.Dispose();
-            var node = document.DocumentNode;
-            HtmlNode container = node.SelectSingleNode("//*[@id=\"endeca_search_results\"]/ul");
+
+            HtmlNode container = null;
+
+            while (container == null)
+            {
+                HtmlNode node = InitialNavigation(searchURL, token, info);
+                container = node.SelectSingleNode("//*[@id=\"endeca_search_results\"]/ul");
+            }
             HtmlNodeCollection children = container.SelectNodes("./li");
 
             foreach (HtmlNode child in children)
