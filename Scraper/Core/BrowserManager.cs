@@ -18,10 +18,10 @@ namespace StoreScraper.Core
         private BrowserManager()
         {
             _queue = new BlockingCollection<IWebDriver>();
-            for (int i = 0; i < AppSettings.InitialBrowserCount; i++)
-            {
-                _queue.Add(ClientFactory.GetChromeDriver());
-            }
+//            for (int i = 0; i < AppSettings.InitialBrowserCount; i++)
+//            {
+//                //_queue.Add();
+//            }
         }
 
         /**
