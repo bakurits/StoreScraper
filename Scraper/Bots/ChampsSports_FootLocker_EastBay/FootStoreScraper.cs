@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using HtmlAgilityPack;
 using StoreScraper.Attributes;
@@ -34,9 +35,8 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
 
         private HtmlNode InitialNavigation(string url, CancellationToken token, Logger info)
         {
-            var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FireFoxHeaders);
-            var document = request.GetDoc(url, token, info);
-            request.Dispose();
+            HttpClient ClientGenerator() => ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FireFoxHeaders);
+            var document = Utils.GetDoc(ClientGenerator, url, 2, 5, token, info);
             return document.DocumentNode;
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Net;
@@ -86,6 +87,32 @@ namespace StoreScraper.Helpers
                 logger?.WriteLog("[Error] Can't connect to website");
                 throw;
             }
+        }
+
+        public static HtmlDocument GetDoc(Func<HttpClient> clientGenerator, string url, int timeoutSeconds, int maxTries, 
+            CancellationToken token, Logger logger = null)
+        {
+            for (int i = 0; i < maxTries; i++)
+            {
+                using (var client = clientGenerator())
+                {
+                    try
+                    {
+                        client.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
+                        var result = client.GetAsync(url, token).Result.Content.ReadAsStringAsync().Result;
+                        var doc = new HtmlDocument();
+                        doc.LoadHtml(result);
+                        return doc;
+                    }
+                    catch
+                    {
+                        //ingored
+                    }
+                }        
+            }
+
+            logger?.WriteLog($"[Error] Can't connect to webiste url: {url}");
+            throw new WebException();
         }
 
         public static HttpClient AddCookies(this HttpClient client, IEnumerable<Cookie> cookies)
