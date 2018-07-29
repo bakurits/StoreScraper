@@ -14,6 +14,7 @@ namespace StoreScraper.Helpers
 
         public static void PostMessage(Product product, string apiUrl)
         {
+            
             string formater = @"{{
     ""attachments"": [
         {{

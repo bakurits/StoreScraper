@@ -6,7 +6,6 @@ using System.Net;
 using System.Reflection;
 using System.Windows.Forms;
 using StoreScraper.Attributes;
-using StoreScraper.Scrapers.Mrporter;
 using StoreScraper.Browser;
 using StoreScraper.Controls;
 

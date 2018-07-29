@@ -6,12 +6,11 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
-using StoreScraper.Browser;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
-namespace StoreScraper.Scrapers.Mrporter
+namespace StoreScraper.Bots.Mrporter
 {
     public class MrporterScraper : ScraperBase
     {
