@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper;
+using StoreScraper.Browser;
 using StoreScraper.Models;
 
 namespace ScraperTest
 {
-    public static class Helper
+    [TestClass]
+    public class Helper
     {
        public static SearchSettingsBase SearchSettings = new SearchSettingsBase
         {
@@ -20,9 +24,17 @@ namespace ScraperTest
 
         public static void PrintTestReuslts(List<Product> list)
         {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(String.Join("\n", list));
-            Console.ForegroundColor = ConsoleColor.Black;
+            Console.WriteLine(string.Join("\n", list));
+        }
+
+        [AssemblyInitialize]
+        public static void InitSettings(TestContext context)
+        {
+            AppSettings.Init();
+            if (!Directory.Exists(AppSettings.DataDir)) Directory.CreateDirectory(AppSettings.DataDir);
+            AppSettings.Default = AppSettings.Load();
+            
+            CookieCollector.Default = new CookieCollector();
         }
     }
 }

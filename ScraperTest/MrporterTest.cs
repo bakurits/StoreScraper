@@ -34,7 +34,7 @@ namespace ScraperTest
         [TestMethod]
         public void TestMethod2()
         {
-            Product curProduct = new Product("mrporter", "JOHN ELLIOTT Camp-Collar Printed Tencel-Twill Shirt",
+            Product curProduct = new Product(new MrporterScraper(), "JOHN ELLIOTT Camp-Collar Printed Tencel-Twill Shirt",
                 "https://www.mrporter.com/mens/okeeffe/bristol-leather-trimmed-suede-derby-shoes/1026175",
                 120.83,
                 "id",
@@ -49,7 +49,7 @@ namespace ScraperTest
         [TestMethod]
         public void TestMethod3()
         {
-            Product curProduct = new Product("mrporter", "INCOTEX Slim - Fit Pleated Brushed Stretch - Cotton Trousers",
+            Product curProduct = new Product(new MrporterScraper(), "INCOTEX Slim - Fit Pleated Brushed Stretch - Cotton Trousers",
                 "https://www.mrporter.com/en-ge/mens/incotex/slim-fit-pleated-brushed-stretch-cotton-trousers/1051390",
                 120.83,
                 "id",

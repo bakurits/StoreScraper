@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Drawing;
+using System.Threading;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 
@@ -7,15 +8,12 @@ namespace StoreScraper.Models
 {
     public class Product
     {
-        private string v1;
-        private string v2;
-        private string v3;
-        private int v4;
-        private int v5;
-        private string v6;
-
         [DisplayName("Store")]
         public string StoreName { get; } = "";
+
+        [Browsable(false)]
+        public ScraperBase ScrapedBy { get; }
+
         public string Name { get; } = "";
 
         public double Price { get; set; }
@@ -29,13 +27,14 @@ namespace StoreScraper.Models
         [Browsable(false)]
         public string ImageUrl { get; set; }
 
-        public Product(string storeName, string name, string url, double price, string id, string imageUrl)
+        public Product(ScraperBase scrapedBy, string name, string url, double price, string id, string imageUrl)
         {
             Name = name.Replace('\n', ' ');
             Url = url;
             Price = price;
             Id = id;
-            StoreName = storeName;
+            ScrapedBy = scrapedBy;
+            StoreName = ScrapedBy.WebsiteName;
             ImageUrl = imageUrl;
         }
 
@@ -43,14 +42,10 @@ namespace StoreScraper.Models
         {
         }
 
-        public Product(string v1, string v2, string v3, int v4, int v5, string v6)
+
+        public ProductDetails GetDetails(CancellationToken token)
         {
-            this.v1 = v1;
-            this.v2 = v2;
-            this.v3 = v3;
-            this.v4 = v4;
-            this.v5 = v5;
-            this.v6 = v6;
+           return this.ScrapedBy.GetProductDetails(this, token);
         }
 
         public override bool Equals(object obj)

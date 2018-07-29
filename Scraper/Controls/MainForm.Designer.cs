@@ -53,6 +53,7 @@
             this.Tab_ErrorLog = new System.Windows.Forms.TabPage();
             this.Rtbx_EventLog = new System.Windows.Forms.RichTextBox();
             this.Rtbx_DebugLog = new System.Windows.Forms.RichTextBox();
+            this.Btn_RemoveMon = new System.Windows.Forms.Button();
             this.toolStripContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.SuspendLayout();
@@ -117,6 +118,7 @@
             // 
             // Tab_Main
             // 
+            this.Tab_Main.Controls.Add(this.Btn_RemoveMon);
             this.Tab_Main.Controls.Add(this.l_MonInterval);
             this.Tab_Main.Controls.Add(this.label5);
             this.Tab_Main.Controls.Add(this.CLbx_Monitor);
@@ -171,7 +173,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(93, 17);
             this.label1.TabIndex = 16;
-            this.label1.Text = "Select Store :";
+            this.label1.Text = "Select ScrapedBy :";
             // 
             // Cbx_ChooseStore
             // 
@@ -335,6 +337,17 @@
             this.Rtbx_DebugLog.TabIndex = 0;
             this.Rtbx_DebugLog.Text = "";
             // 
+            // Btn_RemoveMon
+            // 
+            this.Btn_RemoveMon.ForeColor = System.Drawing.Color.Crimson;
+            this.Btn_RemoveMon.Location = new System.Drawing.Point(756, 208);
+            this.Btn_RemoveMon.Name = "Btn_RemoveMon";
+            this.Btn_RemoveMon.Size = new System.Drawing.Size(135, 23);
+            this.Btn_RemoveMon.TabIndex = 22;
+            this.Btn_RemoveMon.Text = "Remove Selected";
+            this.Btn_RemoveMon.UseVisualStyleBackColor = true;
+            this.Btn_RemoveMon.Click += new System.EventHandler(this.Btn_RemoveMon_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -387,6 +400,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.CheckedListBox CLbx_Monitor;
         private System.Windows.Forms.Label l_MonInterval;
+        private System.Windows.Forms.Button Btn_RemoveMon;
     }
 }
 

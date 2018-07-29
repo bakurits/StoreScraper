@@ -35,7 +35,7 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
 
         private HtmlNode InitialNavigation(string url, CancellationToken token, Logger info)
         {
-            HttpClient ClientGenerator() => ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FireFoxHeaders);
+            HttpClient ClientGenerator() => ClientFactory.GetProxiedClient().AddHeaders(ClientFactory.FireFoxHeaders);
             var document = Utils.GetDoc(ClientGenerator, url, 2, 5, token, info);
             return document.DocumentNode;
         }
@@ -117,13 +117,13 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
             var imgUrl = child.SelectSingleNode("./a/img")?.GetAttributeValue("src", null);
             imgUrl = imgUrl ?? child.SelectSingleNode("./a/span/img").GetAttributeValue("data-original", null);
 
-            Product product = new Product(this.WebsiteName, name, link, price, id, imgUrl);
+            Product product = new Product(this, name, link, price, id, imgUrl);
             listOfProducts.Add(product);
         }
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
-            var client = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.HtmlOnlyHeader);
+            var client = ClientFactory.GetProxiedClient().AddHeaders(ClientFactory.HtmlOnlyHeader);
             var node = client.GetDoc(product.Url, token)
                 .DocumentNode;
             client.Dispose();

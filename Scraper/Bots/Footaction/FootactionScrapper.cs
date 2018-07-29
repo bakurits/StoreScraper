@@ -24,11 +24,10 @@ namespace StoreScraper.Bots.Footaction
             listOfProducts = new List<Product>();
             string searchUrl =
                 $"https://www.footaction.com/api/products/search?currentPage=0&pageSize=50&query={settings.KeyWords}&sort=newArrivals";
-            var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FireFoxHeaders);
-            var task = request.GetStringAsync(searchUrl);
-            task.Wait(token);
+            var request = ClientFactory.GetProxiedClient().AddHeaders(ClientFactory.FireFoxHeaders);
+            var responseText = request.GetAsync(searchUrl, token).Result.Content.ReadAsStringAsync().Result;
             var xmlDocument = new XmlDocument();
-            xmlDocument.LoadXml(task.Result);
+            xmlDocument.LoadXml(responseText);
             var products = xmlDocument.SelectNodes("productCategorySearchPage/products");
             if (products == null)
             {
@@ -88,7 +87,7 @@ namespace StoreScraper.Bots.Footaction
             double.TryParse(singleContact.SelectSingleNode("price/value")?.InnerText, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
             string sku = singleContact.SelectSingleNode("sku")?.InnerText;
             string link = new Uri($"https://www.footaction.com/product/{productName}/{sku}.html").AbsoluteUri;
-            var product = new Product(this.WebsiteName, productName, link, price, sku, imageUrl);
+            var product = new Product(this, productName, link, price, sku, imageUrl);
             if (Utils.SatisfiesCriteria(product, settings))
                 listOfProducts.Add(product);
         }

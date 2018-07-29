@@ -112,7 +112,7 @@ namespace StoreScraper.Helpers
             }
 
             logger?.WriteLog($"[Error] Can't connect to webiste url: {url}");
-            throw new WebException();
+            throw new WebException($"Can't connect to webiste url: {url}");
         }
 
         public static HttpClient AddCookies(this HttpClient client, IEnumerable<Cookie> cookies)

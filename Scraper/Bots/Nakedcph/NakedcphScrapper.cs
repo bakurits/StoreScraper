@@ -93,7 +93,7 @@ namespace StoreScraper.Bots.Nakedcph
             var productName = child.SelectSingleNode(".//span[contains(@class, 'product-name d-block')]").InnerText;
             var imageURL = child.SelectSingleNode(".//img[contains(@class,'card-img-top embed-responsive-item lazyloaded')]").GetAttributeValue("data-src",null);
 
-            Product product = new Product(this.WebsiteName, productName, productURL, price, productURL, imageURL);
+            Product product = new Product(this, productName, productURL, price, productURL, imageURL);
             listOfProducts.Add(product);
         }
 
