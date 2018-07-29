@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
+using StoreScraper.Browser;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
@@ -109,12 +110,14 @@ namespace StoreScraper.Bots.Mrporter
 
         private HtmlNode GetPage(string url, CancellationToken token, Logger logger = null)
         {
-            HttpClient client = null;
-
-            client = _active ? CookieCollector.Default.GetClient() : ClientFactory.GetHttpClient(autoCookies:true).AddHeaders(ClientFactory.FireFoxHeaders);
-
-            var document = client.GetDoc(url, token, logger);
-            return document.DocumentNode;
+            using (HttpClient client = _active
+                ? CookieCollector.Default.GetClient()
+                : ClientFactory.GetHttpClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders))
+            {
+                var document = client.GetDoc(url, token, logger);
+                client.Dispose();
+                return document.DocumentNode;
+            }
         }
 
 
