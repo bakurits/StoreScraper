@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using StoreScraper.Browser;
 using StoreScraper.Factory;
@@ -28,14 +29,15 @@ namespace StoreScraper.Bots.OffWhite
             get => _active;
             set
             {
-                _active = value;
-                if (value)
+                if (!_active && value)
                 {
-                    CookieCollector.Default.RegisterAction(this.WebsiteName, CollectCookies, TimeSpan.FromMinutes(5));
+                    CookieCollector.Default.RegisterActionAsync(this.WebsiteName, CollectCookies, TimeSpan.FromMinutes(5)).Wait();
+                    _active = true;
                 }
-                else
+                else if(_active && !value)
                 {
                     CookieCollector.Default.RemoveAction(this.WebsiteName);
+                    _active = false;
                 }
             }
         }
@@ -146,7 +148,7 @@ namespace StoreScraper.Bots.OffWhite
             string id = Path.GetFileName(url);
 
 
-            Product p = new Product(this.WebsiteName, name, url, price, id, null);
+            Product p = new Product(this, name, url, price, id, null);
             if (!Utils.SatisfiesCriteria(p, settings)) return;
 
             p.ImageUrl = imagePath;
@@ -194,7 +196,7 @@ namespace StoreScraper.Bots.OffWhite
             var gga = engine.Evaluate(script);
             var calc = engine.GetGlobalValue<string>("interop");
 
-            Thread.Sleep(5000);
+            Task.Delay(5000, token).Wait();
             var resultTask = client.GetAsync($"https://www.off---white.com/cdn-cgi/l/chk_jschl?jschl_vc={answer}&pass={pass}&jschl_answer={calc}", token);
             var unused = resultTask.Result.Content.ReadAsStreamAsync().Result;
            

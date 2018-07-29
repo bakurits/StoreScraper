@@ -10,6 +10,7 @@ using StoreScraper.Browser;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
+#pragma warning disable 4014
 
 namespace StoreScraper.Scrapers.Mrporter
 {
@@ -18,18 +19,38 @@ namespace StoreScraper.Scrapers.Mrporter
         public override string WebsiteName { get; set; } = "Mrporter";
         public override string WebsiteBaseUrl { get; set; } = "https://www.mrporter.com/";
         public override Type SearchSettings { get; set; } = typeof(SearchSettingsBase);
-        public override bool Active { get; set; }
+
+
+        private bool _active;
+        public override bool Active
+        {
+            get => _active;
+            set
+            {
+                if (!_active && value)
+                {
+                    CookieCollector.Default.RegisterActionAsync(this.WebsiteName,
+                        (httpClient, token) => httpClient.GetAsync("https://www.mrporter.com/mens/whats-new"),
+                        TimeSpan.FromMinutes(20)).Wait();
+                    _active = true;
+                }
+                else if(_active && !value)
+                {
+                    CookieCollector.Default.RemoveAction(this.WebsiteName);
+                    _active = false;
+                }
+            }
+        }
 
 
         private const string SearchUrlFormat = @"https://www.mrporter.com/mens/whats-new";
-        private HttpClient client = ClientFactory.GetHttpClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,
             CancellationToken token, Logger info)
         {
             listOfProducts = new List<Product>();
 
-            var searchUrl = SearchUrlFormat;
+            string searchUrl = SearchUrlFormat;
             var node = GetPage(searchUrl, token, info);
 
             Worker(listOfProducts, settings, node, token, info);
@@ -89,6 +110,10 @@ namespace StoreScraper.Scrapers.Mrporter
 
         private HtmlNode GetPage(string url, CancellationToken token, Logger logger = null)
         {
+            HttpClient client = null;
+
+            client = _active ? CookieCollector.Default.GetClient() : ClientFactory.GetHttpClient(autoCookies:true).AddHeaders(ClientFactory.FireFoxHeaders);
+
             var document = client.GetDoc(url, token, logger);
             return document.DocumentNode;
         }
@@ -159,7 +184,7 @@ namespace StoreScraper.Scrapers.Mrporter
                 price = GetPrice(priceContainer.SelectSingleNode("./p[1]").InnerHtml);
             }
 
-            Product curProduct = new Product(this.WebsiteName, name, url, price, url, null);
+            Product curProduct = new Product(this, name, url, price, url, null);
 
             Debug.WriteLine(curProduct);
 

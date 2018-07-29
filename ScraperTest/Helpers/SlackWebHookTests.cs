@@ -4,6 +4,7 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
+using StoreScraper.Scrapers.Mrporter;
 
 namespace ScraperTest.Helpers
 {
@@ -13,7 +14,7 @@ namespace ScraperTest.Helpers
         [TestMethod()]
         public void PostMessageTest()
         {
-            Product product = new Product("mrporter", "JOHN ELLIOTT Camp-Collar Printed Tencel-Twill Shirt",
+            Product product = new Product(new MrporterScraper(), "JOHN ELLIOTT Camp-Collar Printed Tencel-Twill Shirt",
                 "https://www.mrporter.com/mens/okeeffe/bristol-leather-trimmed-suede-derby-shoes/1026175",
                 120.83,
                 "id",

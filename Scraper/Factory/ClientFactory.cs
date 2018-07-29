@@ -95,6 +95,12 @@ namespace StoreScraper.Factory
         /// <param name="autoCookies">Set true when you want client to automatically handle sending and receiving cookies.
         /// When autoCookies is true, you manually add cookies with Addcookies method</param>
         /// <returns></returns>
+        public static HttpClient GetProxiedClient(WebProxy proxy = null, bool autoCookies = false)
+        {
+            proxy = proxy ?? GetRandomProxy();
+            return GetHttpClient(proxy, autoCookies);
+        }
+
         public static HttpClient GetHttpClient(WebProxy proxy = null, bool autoCookies = false)
         {
             HttpClientHandler handler = new HttpClientHandler()
@@ -105,16 +111,13 @@ namespace StoreScraper.Factory
                 MaxAutomaticRedirections = 3,
             };
 
-        
-            proxy = proxy ?? GetRandomProxy();
-
             if (proxy != null)
             {
                 handler.UseProxy = true;
                 handler.Proxy = proxy;
             }
 
-            HttpClient client = new HttpClient(handler) {Timeout = TimeSpan.FromSeconds(15)};
+            HttpClient client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(15) };
             client.DefaultRequestHeaders.Clear();
 
             return client;
