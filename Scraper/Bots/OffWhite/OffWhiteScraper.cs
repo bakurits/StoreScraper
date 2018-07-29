@@ -7,15 +7,13 @@ using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using HtmlAgilityPack;
 using StoreScraper.Browser;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
-using StoreScraper.Interfaces;
 using StoreScraper.Models;
 
-namespace StoreScraper.Scrapers.OffWhite
+namespace StoreScraper.Bots.OffWhite
 {
     [Serializable]
     public class OffWhiteScraper : ScraperBase

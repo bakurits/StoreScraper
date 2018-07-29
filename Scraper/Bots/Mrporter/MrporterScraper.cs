@@ -21,7 +21,6 @@ namespace StoreScraper.Scrapers.Mrporter
 
 
         private const string SearchUrlFormat = @"https://www.mrporter.com/mens/whats-new";
-        private HttpClient client = ClientFactory.GetHttpClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,
             CancellationToken token, Logger info)
@@ -88,6 +87,7 @@ namespace StoreScraper.Scrapers.Mrporter
 
         private HtmlNode GetPage(string url, CancellationToken token, Logger logger = null)
         {
+            var client = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FireFoxHeaders);
             var document = client.GetDoc(url, token, logger);
             return document.DocumentNode;
         }

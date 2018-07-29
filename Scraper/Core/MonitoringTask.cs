@@ -31,7 +31,7 @@ namespace StoreScraper.Core
                         {
                             foreach (var slackUrl in AppSettings.Default.SlackApiUrl)
                             {
-                                SlackWebHook.PostMessageAsync($"Product: *{product.Name}* Appeared!! Url : {product.Url}", slackUrl);
+                                SlackWebHook.PostMessage(product, slackUrl);
                             }
                         }
                         else if (action == FinalAction.PostToDiscord)

@@ -7,6 +7,13 @@ namespace StoreScraper.Models
 {
     public class Product
     {
+        private string v1;
+        private string v2;
+        private string v3;
+        private int v4;
+        private int v5;
+        private string v6;
+
         [DisplayName("Store")]
         public string StoreName { get; } = "";
         public string Name { get; } = "";
@@ -35,7 +42,17 @@ namespace StoreScraper.Models
         public Product()
         {
         }
-        
+
+        public Product(string v1, string v2, string v3, int v4, int v5, string v6)
+        {
+            this.v1 = v1;
+            this.v2 = v2;
+            this.v3 = v3;
+            this.v4 = v4;
+            this.v5 = v5;
+            this.v6 = v6;
+        }
+
         public override bool Equals(object obj)
         {
             if (!(obj is Product toCompare)) return false;
