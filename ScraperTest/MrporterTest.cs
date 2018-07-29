@@ -19,7 +19,7 @@ namespace ScraperTest
             MrporterScraper scraper = new MrporterScraper();
             SearchSettingsBase settings = new SearchSettingsBase()
             {
-                KeyWords = "shirt"
+                KeyWords = "watch"
             };
            
             scraper.FindItems(out var lst, settings, CancellationToken.None, new Logger());

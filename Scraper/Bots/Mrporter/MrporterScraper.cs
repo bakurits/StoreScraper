@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
 using StoreScraper.Browser;
@@ -21,6 +22,7 @@ namespace StoreScraper.Scrapers.Mrporter
 
 
         private const string SearchUrlFormat = @"https://www.mrporter.com/mens/whats-new";
+        private HttpClient client = ClientFactory.GetHttpClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,
             CancellationToken token, Logger info)
@@ -29,9 +31,9 @@ namespace StoreScraper.Scrapers.Mrporter
 
             var searchUrl = SearchUrlFormat;
             var node = GetPage(searchUrl, token, info);
-            
+
             Worker(listOfProducts, settings, node, token, info);
-                   
+
         }
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
@@ -70,7 +72,7 @@ namespace StoreScraper.Scrapers.Mrporter
         {
             string result = html;
             int ind = html.IndexOf("-", StringComparison.Ordinal);
-            string before = html.Substring(0,  ind != -1 ? ind : html.Length).Trim();
+            string before = html.Substring(0, ind != -1 ? ind : html.Length).Trim();
             if (int.TryParse(before, out var val))
             {
                 int indx = caster.IndexOf(val.ToString(), comparisonType: StringComparison.Ordinal);
@@ -87,7 +89,6 @@ namespace StoreScraper.Scrapers.Mrporter
 
         private HtmlNode GetPage(string url, CancellationToken token, Logger logger = null)
         {
-            var client = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FireFoxHeaders);
             var document = client.GetDoc(url, token, logger);
             return document.DocumentNode;
         }
@@ -151,15 +152,16 @@ namespace StoreScraper.Scrapers.Mrporter
             if (newPrice != null)
             {
                 string html = newPrice.InnerHtml;
-                html = html.Substring(html.LastIndexOf("&pound;", StringComparison.Ordinal) + 7);
-                price = Convert.ToDouble(html);
+                price = GetPrice(html);
             }
             else
             {
-                price = Convert.ToDouble(priceContainer.SelectSingleNode("./p[1]").InnerHtml.Substring(7));
+                price = GetPrice(priceContainer.SelectSingleNode("./p[1]").InnerHtml);
             }
 
             Product curProduct = new Product(this.WebsiteName, name, url, price, url, null);
+
+            Debug.WriteLine(curProduct);
 
             if (Utils.SatisfiesCriteria(curProduct, settings))
             {
@@ -168,6 +170,21 @@ namespace StoreScraper.Scrapers.Mrporter
                 {
                     listOfProducts.Add(curProduct);
                 }
+            }
+        }
+
+        private double GetPrice(string html)
+        {
+            int ind = html.LastIndexOf("&pound;", StringComparison.Ordinal);
+            if (ind > -1)
+            {
+                html = html.Substring(ind + 7);
+                return Convert.ToDouble(html);
+            }
+            else
+            {
+                string result = Regex.Replace(html, @"[^\d]", "");
+                return Convert.ToDouble(result);
             }
         }
 
