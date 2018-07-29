@@ -1,6 +1,12 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Threading;
 using Newtonsoft.Json;
+using StoreScraper.Models;
 
 namespace StoreScraper.Helpers
 {
@@ -17,21 +23,37 @@ namespace StoreScraper.Helpers
         // ReSharper disable once InconsistentNaming
         [JsonProperty("tts")]
         public bool IsTTS { get; set; }
-
+        [JsonProperty("embeds")]
+        public List<Embed> Embeds { get; set; } = new List<Embed>();
 
         // ReSharper disable once InconsistentNaming
-        public static void Send(string webhookUrl, string content, string username = null, string avatarUrl = null, bool isTTS = false)
+        public static async void Send(string webhookUrl, Product product, string username = null, string avatarUrl = null, bool isTTS = false)
         {
-            DiscordWebhook hook = new DiscordWebhook()
-            {
-                Content = content,
-                Username = username,
-                AvatarUrl = avatarUrl,
-                IsTTS = isTTS
-            };
-            var stringContent = new StringContent(JsonConvert.SerializeObject(hook), Encoding.UTF8, "application/json");
+            string formatter = @"{{
+              ""content"": ""Added new item"",
+              ""embeds"": [
+                {{
+                  ""title"": ""{0}"",
+                  ""type"": ""rich"",
+                  ""description"": ""{1}"",
+                  ""url"": ""{2}"",
+                  ""color"": ""7753637"",
+                  ""image"": {{
+                    ""url"": ""{3}""
+                  }}
+                }}
+              ]
+            }}";
+            
+            string szs = string.Join(";  ", product.GetDetails(CancellationToken.None).SizesList.Select(t => t));
 
-           new HttpClient().PostAsync(webhookUrl, stringContent);
+            string myJson = String.Format(formatter, product.Name,  product.Name + " added in site available sizes are : " + szs, product.Url, product.ImageUrl);
+            var stringContent = new StringContent(myJson, Encoding.UTF8, "application/json");
+            Debug.WriteLine(myJson);
+            using (var client = new HttpClient())
+            {
+                await client.PostAsync(webhookUrl, stringContent);
+            }
         }
     }
 }

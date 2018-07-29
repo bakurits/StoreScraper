@@ -122,6 +122,7 @@
     <Compile Include="Bots\OffWhite\OffWhiteScraper.cs" />
     <Compile Include="AppSettings.cs" />
     <Compile Include="Browser\CookieCollector.cs" />
+    <Compile Include="Helpers\Embed.cs" />
     <Compile Include="Models\ProductDetails.cs" />
     <Compile Include="Models\StringPair.cs" />
     <Compile Include="ScraperBase.cs" />

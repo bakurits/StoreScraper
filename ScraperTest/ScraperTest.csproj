@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="Helper.cs" />
     <Compile Include="FootScraperTest.cs" />
+    <Compile Include="Helpers\DiscordWebhookTests.cs" />
     <Compile Include="Helpers\SlackWebHookTests.cs" />
     <Compile Include="MrporterTest.cs" />
     <Compile Include="NakedcphTest.cs" />
