@@ -44,20 +44,15 @@ namespace StoreScraper.Core
         {
             List<Product> lst = null;
 
-            for (int i = 0; ; i++)
-            {
+           
                 try
                 {
                     Bot.FindItems(out lst, SearchSettings, token, new Logger());
-                    break;
                 }
                 catch
                 {
                     //ignored
                 }
-
-                if (i >= 4) return false;
-            }
 
             var result = false;
             foreach (var product in lst)
@@ -71,14 +66,29 @@ namespace StoreScraper.Core
                         {
                             foreach (var slackUrl in AppSettings.Default.SlackApiUrl)
                             {
-                                SlackWebHook.PostMessage(product, slackUrl);
+                                try
+                                {
+                                    SlackWebHook.PostMessage(product, slackUrl);
+                                }
+                                catch
+                                {
+                                    // ignored
+                                }
                             }
                         }
                         else if (action == FinalAction.PostToDiscord)
                         {
                             foreach (var discordUrl in AppSettings.Default.DiscordApiUrl)
                             {
-                                DiscordWebhook.Send(discordUrl, $"Product: *{product.Name}* Appeared!! Url : {product.Url}");
+                                try
+                                {
+                                    DiscordWebhook.Send(discordUrl,
+                                        $"Product: *{product.Name}* Appeared!! Url : {product.Url}");
+                                }
+                                catch
+                                {
+                                    // ignored
+                                }
                             }
                         }
                         result = true;
