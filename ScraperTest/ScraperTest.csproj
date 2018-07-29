@@ -55,6 +55,7 @@
     <Compile Include="FootScraperTest.cs" />
     <Compile Include="Helpers\SlackWebHookTests.cs" />
     <Compile Include="MrporterTest.cs" />
+    <Compile Include="NakedcphTest.cs" />
     <Compile Include="OffwhiteTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FootActionTest.cs" />
