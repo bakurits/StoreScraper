@@ -44,8 +44,7 @@ namespace StoreScraper.Core
         {
             List<Product> lst = null;
 
-            for (int i = 0; ; i++)
-            {
+           
                 try
                 {
                     Bot.FindItems(out lst, SearchSettings, token, new Logger());
