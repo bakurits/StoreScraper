@@ -54,22 +54,29 @@ namespace StoreScraper.Bots.OffWhite
 
             var searchUrl = string.Format(SearchUrlFormat, settings.KeyWords);
 
-            HttpClient client = null;
+            
 
-            if (_active)
+
+            HtmlNode container = null;
+
+            for (int i = 0; i < 5 && container==null; i++)
             {
-                client = CookieCollector.Default.GetClient();
-            }
-            else
-            {
-                client = ClientFactory.GetHttpClient(autoCookies:true).AddHeaders(ClientFactory.FireFoxHeaders);
-                CollectCookies(client, token);
-            }
+                HttpClient client = null;
 
-            var document = client.GetDoc(searchUrl, token, info);
+                if (_active)
+                {
+                    client = CookieCollector.Default.GetClient();
+                }
+                else
+                {
+                    client = ClientFactory.GetHttpClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
+                    CollectCookies(client, token);
+                }
 
-            var node = document.DocumentNode;
-            HtmlNode container = node.SelectSingleNode("//section[@class='products']");
+                var document = client.GetDoc(searchUrl, token, info);
+                var node = document.DocumentNode;
+                container = node.SelectSingleNode("//section[@class='products']");
+            }
 
             if (container == null)
             {
@@ -93,6 +100,7 @@ namespace StoreScraper.Bots.OffWhite
 
             info.State = Logger.ProcessingState.Success;
         }
+
 
         /// <summary>
         /// This method is simple wrapper on LoadSingleProduct
