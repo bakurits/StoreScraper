@@ -49,15 +49,11 @@ namespace StoreScraper.Core
                 try
                 {
                     Bot.FindItems(out lst, SearchSettings, token, new Logger());
-                    break;
                 }
                 catch
                 {
                     //ignored
                 }
-
-                if (i >= 4) return false;
-            }
 
             var result = false;
             foreach (var product in lst)
@@ -71,14 +67,33 @@ namespace StoreScraper.Core
                         {
                             foreach (var slackUrl in AppSettings.Default.SlackApiUrl)
                             {
-                                SlackWebHook.PostMessage(product, slackUrl);
+                                try
+                                {
+                                    SlackWebHook.PostMessage(product, slackUrl);
+                                }
+                                catch
+                                {
+                                    // ignored
+                                }
                             }
                         }
                         else if (action == FinalAction.PostToDiscord)
                         {
                             foreach (var discordUrl in AppSettings.Default.DiscordApiUrl)
                             {
+<<<<<<< HEAD
                                 DiscordWebhook.Send(discordUrl, product);
+=======
+                                try
+                                {
+                                    DiscordWebhook.Send(discordUrl,
+                                        $"Product: *{product.Name}* Appeared!! Url : {product.Url}");
+                                }
+                                catch
+                                {
+                                    // ignored
+                                }
+>>>>>>> 75894b91a1ee3e8b7c4d0ec912609a7f5f77fa8c
                             }
                         }
                         result = true;

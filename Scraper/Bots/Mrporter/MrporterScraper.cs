@@ -112,10 +112,9 @@ namespace StoreScraper.Bots.Mrporter
         {
             using (HttpClient client = _active
                 ? CookieCollector.Default.GetClient()
-                : ClientFactory.GetHttpClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders))
+                : ClientFactory.GetProxiedClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders))
             {
                 var document = client.GetDoc(url, token, logger);
-                client.Dispose();
                 return document.DocumentNode;
             }
         }

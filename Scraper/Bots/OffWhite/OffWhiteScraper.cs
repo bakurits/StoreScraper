@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Newtonsoft.Json.Linq;
 using StoreScraper.Browser;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
@@ -31,7 +32,7 @@ namespace StoreScraper.Bots.OffWhite
             {
                 if (!_active && value)
                 {
-                    CookieCollector.Default.RegisterActionAsync(this.WebsiteName, CollectCookies, TimeSpan.FromMinutes(5)).Wait();
+                    CookieCollector.Default.RegisterActionAsync(this.WebsiteName, CollectCookies, TimeSpan.FromMinutes(20)).Wait();
                     _active = true;
                 }
                 else if(_active && !value)
@@ -56,28 +57,33 @@ namespace StoreScraper.Bots.OffWhite
 
             var searchUrl = string.Format(SearchUrlFormat, settings.KeyWords);
 
-            
-
-
             HtmlNode container = null;
 
-            for (int i = 0; i < 5 && container==null; i++)
+            for (int i = 0; i < 5; i++)
             {
-                HttpClient client = null;
-
-                if (_active)
+                try
                 {
-                    client = CookieCollector.Default.GetClient();
-                }
-                else
-                {
-                    client = ClientFactory.GetHttpClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
-                    CollectCookies(client, token);
-                }
+                    HttpClient client = null;
 
-                var document = client.GetDoc(searchUrl, token, info);
-                var node = document.DocumentNode;
-                container = node.SelectSingleNode("//section[@class='products']");
+                    if (_active)
+                    {
+                        client = CookieCollector.Default.GetClient();
+                    }
+                    else
+                    {
+                        client = ClientFactory.GetProxiedClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
+                        CollectCookies(client, token);
+                    }
+
+                    var document = client.GetDoc(searchUrl, token, info);
+                    var node = document.DocumentNode;
+                    container = node.SelectSingleNode("//section[@class='products']");
+                    break;
+                }
+                catch 
+                {
+                    //ingored
+                }
             }
 
             if (container == null)
@@ -145,7 +151,8 @@ namespace StoreScraper.Bots.OffWhite
             {
                 info.WriteLog("Image Of product couldn't found");
             }
-            string id = Path.GetFileName(url);
+
+            string id = item.GetAttributeValue("data-json-url", null);
 
 
             Product p = new Product(this, name, url, price, id, null);
@@ -158,7 +165,22 @@ namespace StoreScraper.Bots.OffWhite
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
-            throw new NotImplementedException();
+            var jsonUrl = this.WebsiteBaseUrl + product.Id;
+            ProductDetails result = new ProductDetails();
+            using (var client = ClientFactory.GetProxiedClient().AddHeaders(ClientFactory.FireFoxHeaders))
+            {
+                var jsonStr = client.GetStringAsync(jsonUrl).Result;
+                JObject parsed = JObject.Parse(jsonStr);
+                var sizes = parsed.SelectTokens("available_sizes");
+               
+                foreach (JToken size in sizes)
+                {
+                    var sizeName = (string) size.SelectToken("name");
+                    result.SizesList.Add(sizeName);
+                }
+            }
+
+            return result;
         }
 
 
@@ -177,7 +199,7 @@ namespace StoreScraper.Bots.OffWhite
 
             var cc = client.GetAsync("https://www.off---white.com/favicon.ico").Result;
             client.DefaultRequestHeaders.Remove("Accept");
-            client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
+            client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", ClientFactory.ChromeAcceptHeader.Value);
             var pass = Regex.Match(aa, "name=\"pass\" value=\"(.*?)\"/>").Groups[1].Value;
             var answer = Regex.Match(aa, "name=\"jschl_vc\" value=\"(.*?)\"/>").Groups[1].Value;
 
@@ -198,8 +220,8 @@ namespace StoreScraper.Bots.OffWhite
 
             Task.Delay(5000, token).Wait();
             var resultTask = client.GetAsync($"https://www.off---white.com/cdn-cgi/l/chk_jschl?jschl_vc={answer}&pass={pass}&jschl_answer={calc}", token);
-            var unused = resultTask.Result.Content.ReadAsStreamAsync().Result;
-           
+            resultTask.Result.EnsureSuccessStatusCode();
+
         }
     }
 }

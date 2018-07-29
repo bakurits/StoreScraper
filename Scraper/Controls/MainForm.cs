@@ -237,19 +237,34 @@ namespace StoreScraper.Controls
             else return;
 
             var scraper = AppSettings.Default.AvaibleBots[storeIndex];
-            FindAction(scraper);
+            List<Product> curProductsList = null;
+            try
+            {
+                scraper.FindItems(out curProductsList, searchOptions, CancellationToken.None, new Logger());
+            }
+            catch
+            {
+                MessageBox.Show($"Error Occured while trying to obtain current products with specified search criteria on {scraper.WebsiteName}");
+
+                return;
+            }
 
             var item = new MonitoringTask()
             {
                 SearchSettings = searchOptions,
                 Bot = scraper,
                 FinalActions = actions,
-                OldItems = _listOfProducts.ToList()
+                OldItems = curProductsList
             };
+
+            MessageBox.Show(@"searching filter is now adding to monitor list. 
+                              That may take several mins...
+                              When Complete you will see filter added in monitor");
 
 
             Task.Run(() =>
             {
+
                 item.Bot.Active = true;
                 CLbx_Monitor.Invoke(new Action(() => CLbx_Monitor.Items.Add(item, true)));
                 item.Start(_monitorCancellation.Token);

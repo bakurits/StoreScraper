@@ -93,25 +93,30 @@ namespace StoreScraper.Browser
         {
             if (AppSettings.Default.UseProxy && AppSettings.Default.Proxies.Count > 0)
             {
-                var tasks = _proxiedClients.ConvertAll<Task>(client => 
-                    Task.Run(()=>
-                    {
-                        for (int i = 0; i < 5; i++)
-                        {
-                            try
-                            {
-                                task.Func.Invoke(client, _cancellationTokenSource.Token);
-                                break;
-                            }
-                            catch
-                            {
-                                // ignored
-                            }
-                        }
-                        
-                    }));
+               var newTask = Task.Run
+                   (() =>
+                   {
+                       _proxiedClients.AsParallel().WithExecutionMode(ParallelExecutionMode.ForceParallelism).ForAll(client => 
+                       {
 
-                await Task.WhenAll(tasks);
+                           for (int i = 0; i < 5; i++)
+                           {
+                               try
+                               {
+                                   task.Func.Invoke(client, _cancellationTokenSource.Token);
+                                   break;
+                               }
+                               catch
+                               {
+                                   // ignored
+                               }
+                           }
+                       });
+                       
+                   }
+                  );
+
+                await newTask;
             }
             else
             {

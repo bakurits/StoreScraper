@@ -34,6 +34,7 @@
             this.btn_FindProducts = new System.Windows.Forms.Button();
             this.Tabs = new System.Windows.Forms.TabControl();
             this.Tab_Main = new System.Windows.Forms.TabPage();
+            this.Btn_RemoveMon = new System.Windows.Forms.Button();
             this.l_MonInterval = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.CLbx_Monitor = new System.Windows.Forms.CheckedListBox();
@@ -53,7 +54,6 @@
             this.Tab_ErrorLog = new System.Windows.Forms.TabPage();
             this.Rtbx_EventLog = new System.Windows.Forms.RichTextBox();
             this.Rtbx_DebugLog = new System.Windows.Forms.RichTextBox();
-            this.Btn_RemoveMon = new System.Windows.Forms.Button();
             this.toolStripContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.SuspendLayout();
@@ -139,6 +139,17 @@
             this.Tab_Main.Text = "Main";
             this.Tab_Main.UseVisualStyleBackColor = true;
             // 
+            // Btn_RemoveMon
+            // 
+            this.Btn_RemoveMon.ForeColor = System.Drawing.Color.Crimson;
+            this.Btn_RemoveMon.Location = new System.Drawing.Point(756, 208);
+            this.Btn_RemoveMon.Name = "Btn_RemoveMon";
+            this.Btn_RemoveMon.Size = new System.Drawing.Size(135, 23);
+            this.Btn_RemoveMon.TabIndex = 22;
+            this.Btn_RemoveMon.Text = "Remove Selected";
+            this.Btn_RemoveMon.UseVisualStyleBackColor = true;
+            this.Btn_RemoveMon.Click += new System.EventHandler(this.Btn_RemoveMon_Click);
+            // 
             // l_MonInterval
             // 
             this.l_MonInterval.AutoSize = true;
@@ -173,14 +184,14 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(93, 17);
             this.label1.TabIndex = 16;
-            this.label1.Text = "Select ScrapedBy :";
+            this.label1.Text = "Select Store :";
             // 
             // Cbx_ChooseStore
             // 
             this.Cbx_ChooseStore.FormattingEnabled = true;
             this.Cbx_ChooseStore.Location = new System.Drawing.Point(120, 6);
             this.Cbx_ChooseStore.Name = "Cbx_ChooseStore";
-            this.Cbx_ChooseStore.Size = new System.Drawing.Size(310, 21);
+            this.Cbx_ChooseStore.Size = new System.Drawing.Size(321, 21);
             this.Cbx_ChooseStore.TabIndex = 15;
             this.Cbx_ChooseStore.SelectedIndexChanged += new System.EventHandler(this.Cbx_ChooseStore_SelectedIndexChanged);
             // 
@@ -336,17 +347,6 @@
             this.Rtbx_DebugLog.Size = new System.Drawing.Size(1041, 299);
             this.Rtbx_DebugLog.TabIndex = 0;
             this.Rtbx_DebugLog.Text = "";
-            // 
-            // Btn_RemoveMon
-            // 
-            this.Btn_RemoveMon.ForeColor = System.Drawing.Color.Crimson;
-            this.Btn_RemoveMon.Location = new System.Drawing.Point(756, 208);
-            this.Btn_RemoveMon.Name = "Btn_RemoveMon";
-            this.Btn_RemoveMon.Size = new System.Drawing.Size(135, 23);
-            this.Btn_RemoveMon.TabIndex = 22;
-            this.Btn_RemoveMon.Text = "Remove Selected";
-            this.Btn_RemoveMon.UseVisualStyleBackColor = true;
-            this.Btn_RemoveMon.Click += new System.EventHandler(this.Btn_RemoveMon_Click);
             // 
             // MainForm
             // 
