@@ -244,8 +244,7 @@ namespace StoreScraper.Controls
             }
             catch
             {
-                MessageBox.Show($@"Error Occured while trying to obtain current products 
-                                   with specified search criteria on {scraper.WebsiteName}");
+                MessageBox.Show($"Error Occured while trying to obtain current products with specified search criteria on {scraper.WebsiteName}");
 
                 return;
             }
@@ -259,7 +258,7 @@ namespace StoreScraper.Controls
             };
 
             MessageBox.Show(@"searching filter is now adding to monitor list. 
-                              That may take up to 1 min...
+                              That may take several mins...
                               When Complete you will see filter added in monitor");
 
 

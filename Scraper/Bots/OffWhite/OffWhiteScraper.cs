@@ -32,7 +32,7 @@ namespace StoreScraper.Bots.OffWhite
             {
                 if (!_active && value)
                 {
-                    CookieCollector.Default.RegisterActionAsync(this.WebsiteName, CollectCookies, TimeSpan.FromMinutes(5)).Wait();
+                    CookieCollector.Default.RegisterActionAsync(this.WebsiteName, CollectCookies, TimeSpan.FromMinutes(20)).Wait();
                     _active = true;
                 }
                 else if(_active && !value)
