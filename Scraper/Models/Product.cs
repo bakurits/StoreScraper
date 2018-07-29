@@ -43,9 +43,9 @@ namespace StoreScraper.Models
         }
 
 
-        public void GetDetails(CancellationToken token)
+        public ProductDetails GetDetails(CancellationToken token)
         {
-            this.ScrapedBy.GetProductDetails(this, token);
+           return this.ScrapedBy.GetProductDetails(this, token);
         }
 
         public override bool Equals(object obj)
