@@ -52,7 +52,7 @@ namespace StoreScraper.Bots.Mrporter
 
             string searchUrl = SearchUrlFormat;
             var node = GetPage(searchUrl, token, info);
-
+            
             Worker(listOfProducts, settings, node, token, info);
 
         }
@@ -123,17 +123,18 @@ namespace StoreScraper.Bots.Mrporter
 
         private void Worker(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode node, CancellationToken token, Logger info)
         {
-            HtmlNodeCollection collection =
+            HtmlNodeCollection infoCollection =
                 node.SelectNodes(
                     "//div[@class='product-details']/div[@class='description']|//div[@class='product-details']/div[@class='description description-last']");
+            HtmlNodeCollection imageCollection = node.SelectNodes("//*[@id='product-list']/div/div/a/img");
 
-            foreach (var htmlNode in collection)
+            for (int i = 0; i < infoCollection.Count; i++)
             {
                 token.ThrowIfCancellationRequested();
 #if DEBUG
-                LoadSingleProduct(listOfProducts, settings, htmlNode);
+                LoadSingleProduct(listOfProducts, settings, infoCollection, imageCollection, i);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, settings, htmlNode, info);
+                LoadSingleProductTryCatchWraper(listOfProducts, settings, infoCollection, imageCollection, i, info);
 #endif
 
             }
@@ -145,13 +146,15 @@ namespace StoreScraper.Bots.Mrporter
         /// </summary>
         /// <param name="listOfProducts"></param>
         /// <param name="settings"></param>
-        /// <param name="htmlNode"></param>
+        /// <param name="ind"></param>
         /// <param name="info"></param>
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode htmlNode, Logger info)
+        /// <param name="infoCollection"></param>
+        /// <param name="imageCollection"></param>
+        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNodeCollection infoCollection, HtmlNodeCollection imageCollection, int ind, Logger info)
         {
             try
             {
-                LoadSingleProduct(listOfProducts, settings, htmlNode);
+                LoadSingleProduct(listOfProducts, settings, infoCollection, imageCollection, ind);
             }
             catch (Exception e)
             {
@@ -164,12 +167,18 @@ namespace StoreScraper.Bots.Mrporter
         /// </summary>
         /// <param name="listOfProducts"></param>
         /// <param name="settings"></param>
-        /// <param name="htmlNode"></param>
-        private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode htmlNode)
+        /// <param name="infoCollection"></param>
+        /// <param name="imageCollection"></param>
+        /// <param name="ind"></param>
+        private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNodeCollection infoCollection, HtmlNodeCollection imageCollection, int ind)
         {
-            string aHref = htmlNode.SelectSingleNode("./div/a").GetAttributeValue("href", null);
+            var htmlNode = infoCollection[ind];
+            var imgNode = imageCollection[ind];
+            string aHref = htmlNode.SelectSingleNode("./div/a").GetAttributeValue("href", "");
+            string imgSrc = imgNode.GetAttributeValue("src", "");
             string url = "https://www.mrporter.com/" + aHref.Substring(aHref.IndexOf("/", 1, StringComparison.Ordinal) + 1);
-
+            string imgUrl = "https:" + imgSrc;
+                
             string name = htmlNode.SelectSingleNode("./div/a/span[1]").InnerHtml + " " + htmlNode.SelectSingleNode("./div/a/span[2]").InnerHtml;
 
             var priceContainer = htmlNode.SelectSingleNode("./div[@class='price-container']");
@@ -186,9 +195,7 @@ namespace StoreScraper.Bots.Mrporter
                 price = GetPrice(priceContainer.SelectSingleNode("./p[1]").InnerHtml);
             }
 
-            Product curProduct = new Product(this, name, url, price, url, null);
-
-            Debug.WriteLine(curProduct);
+            Product curProduct = new Product(this, name, url, price, url, imgUrl);
 
             if (Utils.SatisfiesCriteria(curProduct, settings))
             {

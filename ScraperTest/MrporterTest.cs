@@ -25,8 +25,7 @@ namespace ScraperTest
             scraper.FindItems(out var lst, settings, CancellationToken.None, new Logger());
             foreach (var item in lst)
             {
-                Debug.WriteLine(item);
-                Debug.WriteLine(item.Url);
+                Debug.WriteLine(item.ImageUrl);
             }
             
         }
