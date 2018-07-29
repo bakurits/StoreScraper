@@ -80,19 +80,15 @@ namespace StoreScraper.Core
                         {
                             foreach (var discordUrl in AppSettings.Default.DiscordApiUrl)
                             {
-<<<<<<< HEAD
-                                DiscordWebhook.Send(discordUrl, product);
-=======
                                 try
                                 {
-                                    DiscordWebhook.Send(discordUrl,
-                                        $"Product: *{product.Name}* Appeared!! Url : {product.Url}");
+                                    DiscordWebhook.Send(discordUrl, product);
+
                                 }
                                 catch
                                 {
                                     // ignored
                                 }
->>>>>>> 75894b91a1ee3e8b7c4d0ec912609a7f5f77fa8c
                             }
                         }
                         result = true;
