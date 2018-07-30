@@ -47,7 +47,7 @@ namespace StoreScraper.Core
            
                 try
                 {
-                    Bot.FindItems(out lst, SearchSettings, token, new Logger());
+                    Bot.FindItems(out lst, SearchSettings, token);
                 }
                 catch
                 {

@@ -46,14 +46,14 @@ namespace StoreScraper.Bots.Mrporter
         private const string SearchUrlFormat = @"https://www.mrporter.com/mens/whats-new";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,
-            CancellationToken token, Logger info)
+            CancellationToken token)
         {
             listOfProducts = new List<Product>();
 
             string searchUrl = SearchUrlFormat;
-            var node = GetPage(searchUrl, token, info);
+            var node = GetPage(searchUrl, token);
             
-            Worker(listOfProducts, settings, node, token, info);
+            Worker(listOfProducts, settings, node, token);
 
         }
 
@@ -108,19 +108,19 @@ namespace StoreScraper.Bots.Mrporter
         }
 
 
-        private HtmlNode GetPage(string url, CancellationToken token, Logger logger = null)
+        private HtmlNode GetPage(string url, CancellationToken token)
         {
             using (HttpClient client = _active
                 ? CookieCollector.Default.GetClient()
                 : ClientFactory.GetProxiedClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders))
             {
-                var document = client.GetDoc(url, token, logger);
+                var document = client.GetDoc(url, token);
                 return document.DocumentNode;
             }
         }
 
 
-        private void Worker(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode node, CancellationToken token, Logger info)
+        private void Worker(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode node, CancellationToken token)
         {
             HtmlNodeCollection infoCollection =
                 node.SelectNodes(
@@ -133,7 +133,7 @@ namespace StoreScraper.Bots.Mrporter
 #if DEBUG
                 LoadSingleProduct(listOfProducts, settings, infoCollection, imageCollection, i);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, settings, infoCollection, imageCollection, i, info);
+                LoadSingleProductTryCatchWraper(listOfProducts, settings, infoCollection, imageCollection, i);
 #endif
 
             }
@@ -149,7 +149,7 @@ namespace StoreScraper.Bots.Mrporter
         /// <param name="info"></param>
         /// <param name="infoCollection"></param>
         /// <param name="imageCollection"></param>
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNodeCollection infoCollection, HtmlNodeCollection imageCollection, int ind, Logger info)
+        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNodeCollection infoCollection, HtmlNodeCollection imageCollection, int ind)
         {
             try
             {
@@ -157,7 +157,7 @@ namespace StoreScraper.Bots.Mrporter
             }
             catch (Exception e)
             {
-                info.WriteLog(e.Message);
+                Logger.Instance.WriteLog(e.Message);
             }
         }
 

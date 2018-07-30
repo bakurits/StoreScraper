@@ -18,7 +18,7 @@ namespace StoreScraper.Controls
     {
         private CancellationTokenSource _findTokenSource = new CancellationTokenSource();
         private BindingList<Product> _listOfProducts = new BindingList<Product>();
-        private Logger _findProductsLogger = new Logger();
+        private Logger _findProductsLogger = Logger.Instance;
         private Thread _monitorThread;
         private CancellationTokenSource _monitorCancellation;
 
@@ -98,7 +98,7 @@ namespace StoreScraper.Controls
             {
                 try
                 {
-                    scraper.FindItems(out var products, PGrid_Bot.SelectedObject as SearchSettingsBase, _findTokenSource.Token, _findProductsLogger);
+                    scraper.FindItems(out var products, PGrid_Bot.SelectedObject as SearchSettingsBase, _findTokenSource.Token);
                     DGrid_FoundProducts.Invoke(new Action(() =>
                     {
                         lock (_listOfProducts)
@@ -240,7 +240,7 @@ namespace StoreScraper.Controls
             List<Product> curProductsList = null;
             try
             {
-                scraper.FindItems(out curProductsList, searchOptions, CancellationToken.None, new Logger());
+                scraper.FindItems(out curProductsList, searchOptions, CancellationToken.None);
             }
             catch
             {

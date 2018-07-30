@@ -19,7 +19,7 @@ namespace ScraperTest
         public void TestFind()
         {
             var searchSettings = Helper.SearchSettings;
-            Scraper.FindItems(out var listOfProducts, searchSettings, CancellationToken.None, new Logger());
+            Scraper.FindItems(out var listOfProducts, searchSettings, CancellationToken.None);
             Helper.PrintTestReuslts(listOfProducts);
         }
     }

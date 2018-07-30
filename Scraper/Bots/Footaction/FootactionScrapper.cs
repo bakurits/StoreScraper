@@ -19,7 +19,7 @@ namespace StoreScraper.Bots.Footaction
         public override bool Active { get; set; }
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,
-            CancellationToken token, Logger info)
+            CancellationToken token)
         {
             listOfProducts = new List<Product>();
             string searchUrl =
@@ -31,7 +31,7 @@ namespace StoreScraper.Bots.Footaction
             var products = xmlDocument.SelectNodes("productCategorySearchPage/products");
             if (products == null)
             {
-                info.WriteLog("[Error] Uncexpected XML!!");
+                Logger.Instance.WriteLog("[Error] Uncexpected XML!!");
                 throw new WebException("Undexpected XML");
             }
 
@@ -44,7 +44,7 @@ namespace StoreScraper.Bots.Footaction
 #if DEBUG
                 LoadSingleProduct(listOfProducts, settings, singleContact, ref sum);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, settings, singleContact, ref sum, info);
+                LoadSingleProductTryCatchWraper(listOfProducts, settings, singleContact, ref sum);
 #endif
             }
         }
@@ -58,7 +58,7 @@ namespace StoreScraper.Bots.Footaction
         /// <param name="singleContact"></param>
         /// <param name="sum"></param>
         /// <param name="info"></param>
-        private void LoadSingleProductTryCatchWraper(List<Product>listOfProducts, SearchSettingsBase settings, XmlNode singleContact, ref int sum, Logger info)
+        private void LoadSingleProductTryCatchWraper(List<Product>listOfProducts, SearchSettingsBase settings, XmlNode singleContact, ref int sum)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace StoreScraper.Bots.Footaction
             }
             catch (Exception e)
             {
-                info.WriteLog(e.Message);
+                Logger.Instance.WriteLog(e.Message);
             }
 
         }

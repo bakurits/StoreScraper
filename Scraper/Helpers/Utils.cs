@@ -73,7 +73,7 @@ namespace StoreScraper.Helpers
         }
 
 
-        public static HtmlDocument GetDoc(this HttpClient client, string url, CancellationToken token, Logger logger = null)
+        public static HtmlDocument GetDoc(this HttpClient client, string url, CancellationToken token)
         {
             try
             {
@@ -84,13 +84,13 @@ namespace StoreScraper.Helpers
             }
             catch (WebException)
             {
-                logger?.WriteLog("[Error] Can't connect to website");
+                Logger.Instance.WriteLog("[Error] Can't connect to website");
                 throw;
             }
         }
 
         public static HtmlDocument GetDoc(Func<HttpClient> clientGenerator, string url, int timeoutSeconds, int maxTries, 
-            CancellationToken token, Logger logger = null)
+            CancellationToken token)
         {
             for (int i = 0; i < maxTries; i++)
             {
@@ -111,7 +111,7 @@ namespace StoreScraper.Helpers
                 }        
             }
 
-            logger?.WriteLog($"[Error] Can't connect to webiste url: {url}");
+            Logger.Instance.WriteLog($"[Error] Can't connect to webiste url: {url}");
             throw new WebException($"Can't connect to webiste url: {url}");
         }
 

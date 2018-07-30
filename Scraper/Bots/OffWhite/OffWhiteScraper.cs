@@ -50,7 +50,7 @@ namespace StoreScraper.Bots.OffWhite
 
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings
-            , CancellationToken token, Logger info)
+            , CancellationToken token)
         {
 
             listOfProducts = new List<Product>();
@@ -75,7 +75,7 @@ namespace StoreScraper.Bots.OffWhite
                         CollectCookies(client, token);
                     }
 
-                    var document = client.GetDoc(searchUrl, token, info);
+                    var document = client.GetDoc(searchUrl, token);
                     var node = document.DocumentNode;
                     container = node.SelectSingleNode("//section[@class='products']");
                     break;
@@ -88,7 +88,7 @@ namespace StoreScraper.Bots.OffWhite
 
             if (container == null)
             {
-                info.WriteLog("[Error] Uncexpected Html!!");
+                Logger.Instance.WriteLog("[Error] Uncexpected Html!!");
                 throw new WebException("Undexpected Html");
             }
 
@@ -100,13 +100,11 @@ namespace StoreScraper.Bots.OffWhite
             {
                 token.ThrowIfCancellationRequested();
 #if DEBUG
-                LoadSingleProduct(listOfProducts, settings, item, info);
+                LoadSingleProduct(listOfProducts, settings, item);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, settings, item, info);
+                LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
 #endif
             }
-
-            info.State = Logger.ProcessingState.Success;
         }
 
 
@@ -118,15 +116,15 @@ namespace StoreScraper.Bots.OffWhite
         /// <param name="settings"></param>
         /// <param name="item"></param>
         /// <param name="info"></param>
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item, Logger info)
+        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
             {
-                LoadSingleProduct(listOfProducts, settings, item, info);
+                LoadSingleProduct(listOfProducts, settings, item);
             }
             catch (Exception e)
             {
-                info.WriteLog(e.Message);
+                Logger.Instance.WriteLog(e.Message);
             }
         }
         /// <summary>
@@ -136,7 +134,7 @@ namespace StoreScraper.Bots.OffWhite
         /// <param name="settings"></param>
         /// <param name="item"></param>
         /// <param name="info"></param>
-        private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item, Logger info)
+        private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             var url = "https://www.off---white.com" + item.SelectSingleNode("./a").GetAttributeValue("href", "");
             string name = item.SelectSingleNode("./a/figure/figcaption/div").InnerText;
@@ -149,7 +147,7 @@ namespace StoreScraper.Bots.OffWhite
             string imagePath = item.SelectSingleNode("./a/figure/img").GetAttributeValue("src", null);
             if (imagePath == null)
             {
-                info.WriteLog("Image Of product couldn't found");
+                Logger.Instance.WriteLog("Image Of product couldn't found");
             }
 
             string id = item.GetAttributeValue("data-json-url", null);

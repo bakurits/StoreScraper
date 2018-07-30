@@ -20,7 +20,7 @@ namespace StoreScraper.Bots.Nakedcph
         public override bool Active { get; set; }
 
 
-        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token, Logger info)
+        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
             string searchUrl =
@@ -35,7 +35,7 @@ namespace StoreScraper.Bots.Nakedcph
             foreach (var child in children)
             {
                 token.ThrowIfCancellationRequested();
-                LoadSingleProductTryCatchWraper(listOfProducts,child,info);
+                LoadSingleProductTryCatchWraper(listOfProducts,child);
             }
             throw new NotImplementedException();
         }
@@ -47,7 +47,7 @@ namespace StoreScraper.Bots.Nakedcph
         /// <param name="listOfProducts"></param>
         /// <param name="child"></param>
         /// <param name="info"></param>
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, HtmlNode child, Logger info)
+        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, HtmlNode child)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace StoreScraper.Bots.Nakedcph
             }
             catch (Exception e)
             {
-                info.WriteLog(e.Message);
+                Logger.Instance.WriteLog(e.Message);
             }
         }
 

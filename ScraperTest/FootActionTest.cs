@@ -21,7 +21,7 @@ namespace ScraperTest
                 KeyWords = "white t-shirt",
                 NegKeyWrods = "",
             };
-            new FootactionScrapper().FindItems(out var listOfProducts, searchSettingsBase,CancellationToken.None,new Logger());
+            new FootactionScrapper().FindItems(out var listOfProducts, searchSettingsBase,CancellationToken.None);
         }
 
 
