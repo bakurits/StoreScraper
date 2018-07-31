@@ -21,7 +21,7 @@ namespace StoreScraper.Bots.OffWhite
     public class OffWhiteScraper : ScraperBase
     {
         public sealed override string WebsiteName { get; set; } = "Off---white";
-        public sealed override string WebsiteBaseUrl { get; set; } = "Off---white.com";
+        public sealed override string WebsiteBaseUrl { get; set; } = "https://Off---white.com";
 
         private bool _active;
 
@@ -165,13 +165,49 @@ namespace StoreScraper.Bots.OffWhite
         {
             var jsonUrl = this.WebsiteBaseUrl + product.Id;
             ProductDetails result = new ProductDetails();
-            using (var client = ClientFactory.GetProxiedClient().AddHeaders(ClientFactory.FireFoxHeaders))
+
+            HttpClient client = null;
+
+            for (int i = 0; i < 5; i++)
             {
-                var jsonStr = client.GetStringAsync(jsonUrl).Result;
+                try
+                {
+                    
+                    if (_active)
+                    {
+                        client = CookieCollector.Default.GetClient();
+                    }
+                    else
+                    {
+                        client = ClientFactory.GetProxiedClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
+                        CollectCookies(client, token);
+                    }
+                    break;
+                }
+                catch
+                {
+                    //ingored
+                }
+            }
+
+            
+            HttpRequestMessage message = new HttpRequestMessage();
+            message.Headers.Clear();
+            message.Headers.TryAddWithoutValidation(ClientFactory.JsonXmlAcceptHeader.Key, ClientFactory.JsonXmlAcceptHeader.Value);
+            message.Headers.TryAddWithoutValidation(ClientFactory.FirefoxUserAgentHeader.Key, ClientFactory.FirefoxUserAgentHeader.Value);
+
+            message.Method = HttpMethod.Get;
+            message.RequestUri = new Uri(jsonUrl);
+
+            using (client)
+            {
+                var response = client.SendAsync(message).Result;
+                response.EnsureSuccessStatusCode();
+                var jsonStr = response.Content.ReadAsStringAsync().Result;
                 JObject parsed = JObject.Parse(jsonStr);
-                var sizes = parsed.SelectTokens("available_sizes");
+                var sizes = parsed.SelectToken("available_sizes");
                
-                foreach (JToken size in sizes)
+                foreach (JToken size in sizes.Children())
                 {
                     var sizeName = (string) size.SelectToken("name");
                     result.SizesList.Add(sizeName);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -21,6 +22,26 @@ namespace ScraperTest
             var searchSettings = Helper.SearchSettings;
             Scraper.FindItems(out var listOfProducts, searchSettings, CancellationToken.None);
             Helper.PrintTestReuslts(listOfProducts);
+        }
+
+
+        [TestMethod]
+        public void TestGetDetails()
+        {
+            var testProduct = new Product(){Id = "/en/GE/men/products/omca072e188200111001.json" };
+            var details = new OffWhiteScraper().GetProductDetails(testProduct,CancellationToken.None);
+
+            Console.WriteLine(string.Join(" ",details.SizesList));
+        }
+
+        [TestMethod]
+        public void TestGetDetails2()
+        {
+            var testProduct = new Product() { Id = "/en/GE/men/products/omca072e188200111001.json" };
+            var scraper = new OffWhiteScraper {Active = true};
+            var details = scraper.GetProductDetails(testProduct, CancellationToken.None);
+
+            Console.WriteLine(string.Join(" ", details.SizesList));
         }
     }
 }
