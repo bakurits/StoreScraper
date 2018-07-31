@@ -29,7 +29,7 @@ namespace StoreScraper.Bots.Nakedcph
             var task = request.GetStringAsync(searchUrl);
             task.Wait(token);
             var htmlDocument = new HtmlDocument();
-            var nodes = htmlDocument.DocumentNode.SelectSingleNode("//[@id='products']");
+            var nodes = htmlDocument.DocumentNode.SelectSingleNode("//*[@id='products']");
             HtmlNodeCollection children = nodes.SelectNodes("./div");
 
             foreach (var child in children)
@@ -37,7 +37,6 @@ namespace StoreScraper.Bots.Nakedcph
                 token.ThrowIfCancellationRequested();
                 LoadSingleProductTryCatchWraper(listOfProducts,child,info);
             }
-            throw new NotImplementedException();
         }
 
         /// <summary>
