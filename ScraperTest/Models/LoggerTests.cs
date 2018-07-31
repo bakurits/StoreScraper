@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StoreScraper.Core;
 using StoreScraper.Models;
 
 namespace ScraperTest.Models
@@ -9,7 +10,7 @@ namespace ScraperTest.Models
         [TestMethod()]
         public void WriteLogTest()
         {
-            Logger.Instance.WriteLog("bakuri");
+            Logger.Instance.WriteVerboseLog("bakuri");
         }
     }
 }

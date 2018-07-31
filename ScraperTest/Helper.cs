@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper;
 using StoreScraper.Browser;
+using StoreScraper.Core;
 using StoreScraper.Models;
 
 namespace ScraperTest
@@ -33,7 +34,8 @@ namespace ScraperTest
             AppSettings.Init();
             if (!Directory.Exists(AppSettings.DataDir)) Directory.CreateDirectory(AppSettings.DataDir);
             AppSettings.Default = AppSettings.Load();
-            
+
+            Logger.Instance.OnLogged += (message, color) => Console.WriteLine(message);
             CookieCollector.Default = new CookieCollector();
         }
     }

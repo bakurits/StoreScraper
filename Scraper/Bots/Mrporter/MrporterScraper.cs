@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
 using StoreScraper.Browser;
+using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
@@ -157,7 +158,7 @@ namespace StoreScraper.Bots.Mrporter
             }
             catch (Exception e)
             {
-                Logger.Instance.WriteLog(e.Message);
+                Logger.Instance.WriteVerboseLog(e.Message);
             }
         }
 

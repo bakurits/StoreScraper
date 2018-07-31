@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using StoreScraper.Browser;
 using StoreScraper.Core;
+using StoreScraper.Helpers;
 using StoreScraper.Models;
 
 namespace StoreScraper.Controls
@@ -18,7 +19,6 @@ namespace StoreScraper.Controls
     {
         private CancellationTokenSource _findTokenSource = new CancellationTokenSource();
         private BindingList<Product> _listOfProducts = new BindingList<Product>();
-        private Logger _findProductsLogger = Logger.Instance;
         private Thread _monitorThread;
         private CancellationTokenSource _monitorCancellation;
 
@@ -29,6 +29,7 @@ namespace StoreScraper.Controls
             Cbx_ChooseStore.Items.AddRange(AppSettings.Default.AvaibleBots.ToArray());
             PGrid_Settings.SelectedObject = AppSettings.Default;
             RTbx_Proxies.Text = string.Join("\r\n", AppSettings.Default.Proxies);
+            Logger.Instance.OnLogged += (message, color) => Rtbx_EventLog.AppendText(message,color);
             _monitorThread = new Thread(Monitor);
             this.Shown += (sender, args) => _monitorThread.Start();
             CultureInfo.CurrentUICulture = new CultureInfo("en-US");
@@ -85,7 +86,6 @@ namespace StoreScraper.Controls
             label_FindingStatus.ForeColor = Color.SaddleBrown;
             label_FindingStatus.Text = @"Processing...";
 
-            _findProductsLogger.OnLogged += InfoOnOnLogged;
             var scraper = Cbx_ChooseStore.SelectedItem as ScraperBase;
 
             Task.Run(() => FindAction(scraper)).ContinueWith(FindProductsTaskCompleted);

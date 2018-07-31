@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Threading;
 using HtmlAgilityPack;
 using StoreScraper.Attributes;
+using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
@@ -81,7 +82,7 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
             }
             catch (Exception e)
             {
-                Logger.Instance.WriteLog(e.Message);
+                Logger.Instance.WriteErrorLog(e.Message);
             }
         }
         /// <summary>

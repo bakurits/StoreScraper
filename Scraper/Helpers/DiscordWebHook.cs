@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using Newtonsoft.Json;
+using StoreScraper.Core;
 using StoreScraper.Models;
 
 namespace StoreScraper.Helpers
@@ -44,10 +45,20 @@ namespace StoreScraper.Helpers
                 }}
               ]
             }}";
-            
-            string szs = string.Join(";  ", product.GetDetails(CancellationToken.None).SizesList.Select(t => t));
 
-            string myJson = String.Format(formatter, product.Name,  product.Name + " added in site available sizes are : " + szs, product.Url, product.ImageUrl);
+            string szs;
+
+            try
+            {
+                szs = string.Join(";  ", product.GetDetails(CancellationToken.None));
+            }
+            catch(Exception e)
+            {
+                Logger.Instance.WriteErrorLog($"while getting product details {e.Message}");
+                szs = "Error occured while getting details";
+            }
+
+            string myJson = string.Format(formatter, product.Name,  product.Name + " added in site available sizes are : " + szs, product.Url, product.ImageUrl);
             var stringContent = new StringContent(myJson, Encoding.UTF8, "application/json");
             Debug.WriteLine(myJson);
             using (var client = new HttpClient())

@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Xml;
+using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
@@ -31,7 +32,7 @@ namespace StoreScraper.Bots.Footaction
             var products = xmlDocument.SelectNodes("productCategorySearchPage/products");
             if (products == null)
             {
-                Logger.Instance.WriteLog("[Error] Uncexpected XML!!");
+                Logger.Instance.WriteVerboseLog("[Error] Uncexpected XML!!");
                 throw new WebException("Undexpected XML");
             }
 
@@ -66,7 +67,7 @@ namespace StoreScraper.Bots.Footaction
             }
             catch (Exception e)
             {
-                Logger.Instance.WriteLog(e.Message);
+                Logger.Instance.WriteVerboseLog(e.Message);
             }
 
         }
