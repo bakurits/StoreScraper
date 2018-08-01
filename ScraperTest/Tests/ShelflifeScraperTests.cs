@@ -1,11 +1,10 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper.Bots.Shelflife;
 using StoreScraper.Models;
 
-namespace ScraperTest.Bots.Shelflife
+namespace ScraperTest.Tests
 {
     [TestClass()]
     public class ShelflifeScraperTests

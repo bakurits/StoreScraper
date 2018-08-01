@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper.Bots.OffWhite;
 using StoreScraper.Models;
 
-namespace ScraperTest
+namespace ScraperTest.Tests
 {
     [TestClass]
     public class OffWhiteTest

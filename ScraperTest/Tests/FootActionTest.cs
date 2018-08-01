@@ -1,12 +1,11 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper;
 using StoreScraper.Bots.Footaction;
 using StoreScraper.Models;
 
-namespace ScraperTest
+namespace ScraperTest.Tests
 {
     [TestClass]
     public class FootActionTest
