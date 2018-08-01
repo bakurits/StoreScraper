@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StoreScraper;
 using StoreScraper.Bots.Mrporter;
 using StoreScraper.Models;
 
-namespace ScraperTest
+namespace ScraperTest.Tests
 {
     [TestClass]
     public class Mrporter
