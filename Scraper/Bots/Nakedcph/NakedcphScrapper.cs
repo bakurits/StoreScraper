@@ -99,7 +99,7 @@ namespace StoreScraper.Bots.Nakedcph
             var image = child.SelectSingleNode(".//img[contains(@class,'card-img-top')]");
             string imageURL = new Uri(new Uri(this.WebsiteBaseUrl), image.GetAttributeValue("data-src", null)).ToString();  
 
-            Product product = new Product(this, productName, productURL, price, productURL, imageURL);
+            Product product = new Product(this, productName, productURL, price, imageURL, productURL);
             listOfProducts.Add(product);
         }
 

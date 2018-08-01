@@ -154,7 +154,7 @@ namespace StoreScraper.Bots.OffWhite
             string id = item.GetAttributeValue("data-json-url", null);
 
 
-            Product p = new Product(this, name, url, price, id, null);
+            Product p = new Product(this, name, url, price, imagePath, id);
             if (!Utils.SatisfiesCriteria(p, settings)) return;
 
             p.ImageUrl = imagePath;

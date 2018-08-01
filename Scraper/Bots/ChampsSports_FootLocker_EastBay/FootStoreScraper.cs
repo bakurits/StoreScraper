@@ -117,7 +117,7 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
             var imgUrl = child.SelectSingleNode("./a/img")?.GetAttributeValue("src", null);
             imgUrl = imgUrl ?? child.SelectSingleNode("./a/span/img").GetAttributeValue("data-original", null);
 
-            Product product = new Product(this, name, link, price, id, imgUrl);
+            Product product = new Product(this, name, link, price, imgUrl, id);
             listOfProducts.Add(product);
         }
 

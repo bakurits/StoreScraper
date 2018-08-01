@@ -88,7 +88,7 @@ namespace StoreScraper.Bots.Footaction
             double.TryParse(singleContact.SelectSingleNode("price/value")?.InnerText, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
             string sku = singleContact.SelectSingleNode("sku")?.InnerText;
             string link = new Uri($"https://www.footaction.com/product/{productName}/{sku}.html").AbsoluteUri;
-            var product = new Product(this, productName, link, price, sku, imageUrl);
+            var product = new Product(this, productName, link, price, imageUrl, sku);
             if (Utils.SatisfiesCriteria(product, settings))
                 listOfProducts.Add(product);
         }
