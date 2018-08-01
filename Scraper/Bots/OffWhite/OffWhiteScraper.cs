@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 using StoreScraper.Browser;
+using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
@@ -88,7 +89,7 @@ namespace StoreScraper.Bots.OffWhite
 
             if (container == null)
             {
-                Logger.Instance.WriteLog("[Error] Uncexpected Html!!");
+                Logger.Instance.WriteVerboseLog("[Error] Uncexpected Html!!");
                 throw new WebException("Undexpected Html");
             }
 
@@ -124,7 +125,7 @@ namespace StoreScraper.Bots.OffWhite
             }
             catch (Exception e)
             {
-                Logger.Instance.WriteLog(e.Message);
+                Logger.Instance.WriteVerboseLog(e.Message);
             }
         }
         /// <summary>
@@ -147,13 +148,13 @@ namespace StoreScraper.Bots.OffWhite
             string imagePath = item.SelectSingleNode("./a/figure/img").GetAttributeValue("src", null);
             if (imagePath == null)
             {
-                Logger.Instance.WriteLog("Image Of product couldn't found");
+                Logger.Instance.WriteVerboseLog("Image Of product couldn't found");
             }
 
             string id = item.GetAttributeValue("data-json-url", null);
 
 
-            Product p = new Product(this, name, url, price, id, null);
+            Product p = new Product(this, name, url, price, imagePath, id);
             if (!Utils.SatisfiesCriteria(p, settings)) return;
 
             p.ImageUrl = imagePath;

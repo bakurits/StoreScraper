@@ -18,6 +18,12 @@ namespace StoreScraper.Models
 
         public double Price { get; set; }
 
+        /// <summary>
+        /// Short name of currecy.
+        /// For example: USD, EUR etc..
+        /// </summary>
+        public string Currency { get; set; }
+
         [Browsable(false)]
         public string Url { get; set; } = "";
 
@@ -27,15 +33,16 @@ namespace StoreScraper.Models
         [Browsable(false)]
         public string ImageUrl { get; set; }
 
-        public Product(ScraperBase scrapedBy, string name, string url, double price, string id, string imageUrl)
+        public Product(ScraperBase scrapedBy, string name, string url, double price, string imageUrl, string id, string currency = "USD")
         {
-            Name = name.Replace('\n', ' ');
-            Url = url;
-            Price = price;
-            Id = id;
-            ScrapedBy = scrapedBy;
-            StoreName = ScrapedBy.WebsiteName;
-            ImageUrl = imageUrl;
+            this.Name = name.Replace('\n', ' ');
+            this.Url = url;
+            this.Price = price;
+            this.Id = id;
+            this.ScrapedBy = scrapedBy;
+            this.StoreName = ScrapedBy.WebsiteName;
+            this.ImageUrl = imageUrl;
+            this.Currency = currency;
         }
 
         public Product()

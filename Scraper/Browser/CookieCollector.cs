@@ -124,6 +124,19 @@ namespace StoreScraper.Browser
             }
         }
 
+        /// <summary>
+        /// RegistersAction which runs between interval. Also wait for first run asynchonously
+        /// </summary>
+        /// <param name="uniqueName"> unique Name of action. Used for later removing</param>
+        /// <param name="url">Url to collect cookies from</param>
+        /// <param name="repeatInterval">Registered action repeat interval</param>
+        /// <returns></returns>
+        public async Task RegisterActionAsync(string uniqueName, Uri url, TimeSpan repeatInterval)
+        {
+            void Action(HttpClient client, CancellationToken token) => client.GetAsync(url).Wait();
+            await RegisterActionAsync(uniqueName, (Action<HttpClient, CancellationToken>) Action, repeatInterval);
+        }
+
         public async Task RegisterActionAsync(string uniqueName, Action<HttpClient, CancellationToken> collectFunc, TimeSpan repeatInterval)
         {
 

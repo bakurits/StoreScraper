@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
 using StoreScraper.Browser;
+using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
@@ -157,7 +158,7 @@ namespace StoreScraper.Bots.Mrporter
             }
             catch (Exception e)
             {
-                Logger.Instance.WriteLog(e.Message);
+                Logger.Instance.WriteVerboseLog(e.Message);
             }
         }
 
@@ -194,7 +195,7 @@ namespace StoreScraper.Bots.Mrporter
                 price = GetPrice(priceContainer.SelectSingleNode("./p[1]").InnerHtml);
             }
 
-            Product curProduct = new Product(this, name, url, price, url, imgUrl);
+            Product curProduct = new Product(this, name, url, price, imgUrl, url, "GBR");
 
             if (Utils.SatisfiesCriteria(curProduct, settings))
             {
