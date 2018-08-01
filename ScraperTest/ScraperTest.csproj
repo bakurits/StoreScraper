@@ -52,6 +52,7 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bots\Shelflife\ShelflifeScraperTests.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="FootScraperTest.cs" />
     <Compile Include="Helpers\DiscordWebhookTests.cs" />
