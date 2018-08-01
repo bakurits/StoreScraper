@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -8,11 +9,12 @@ using OpenQA.Selenium;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using Cookie = System.Net.Cookie;
+#pragma warning disable 4014
 
 namespace StoreScraper.Browser
 {
 
-    class CookieCollector
+    public class CookieCollector
     {
 
         public class CollectionTask
@@ -40,7 +42,8 @@ namespace StoreScraper.Browser
         public static CookieCollector Default { get; set; }
 
 
-        private List<HttpClient> _clients;
+        private List<HttpClient> _proxiedClients;
+        private HttpClient _proxylessClient;
         private List<CollectionTask> _registeredTasks = new List<CollectionTask>();
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         public const int MonitorInterval = 5000;
@@ -49,75 +52,113 @@ namespace StoreScraper.Browser
 
         public CookieCollector()
         {
-            _clients = new List<HttpClient>();
+            _proxiedClients = new List<HttpClient>();
 
             if (AppSettings.Default.UseProxy && AppSettings.Default.Proxies.Count > 0)
             {
                 foreach (var proxy in AppSettings.Default.Proxies)
                 {
                     var webProxy = ClientFactory.ParseProxy(proxy);
-                    var client = ClientFactory.GetHttpClient(webProxy, true).AddHeaders(ClientFactory.FireFoxHeaders);
-                    _clients.Add(client);
+                    var client = ClientFactory.GetProxiedClient(webProxy, true).AddHeaders(ClientFactory.FireFoxHeaders);
+                    _proxiedClients.Add(client);
                 }
             }
-            else
-            {
-                var client = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FireFoxHeaders);
-                _clients.Add(client);
-            }
 
-            Monitor();
+
+            _proxylessClient = ClientFactory.GetHttpClient(null, true).AddHeaders(ClientFactory.FireFoxHeaders);
+
+            Task.Run((Action)Monitor);
         }
 
         private void Monitor()
         {
-            
+            while (true)
+            {
+                MonitorEpoch();
+                Task.Delay(MonitorInterval, _cancellationTokenSource.Token).Wait();
+            }
         }
 
 
-        public void MonitorEpoch()
+        private void MonitorEpoch()
         {
             foreach (var task in _registeredTasks)
             {
                 if (DateTime.Now <= task.NextRun) continue;
-                foreach (var httpClient in _clients)
-                {                    
-                    Task.Run(() => task.Func.Invoke(httpClient, CancellationToken.None));
-                }
+                CompleteTaskAsync(task);
             }
         }
 
-        public void RegisterAction(string uniqueName, Action<HttpClient, CancellationToken> collectFunc, TimeSpan repeatInMilliSeconds)
+        private async Task CompleteTaskAsync(CollectionTask task)
         {
-           
-            _registeredTasks.Add(new CollectionTask()
-           {
-               Name = uniqueName,
-               Func = collectFunc,
-               Interval = repeatInMilliSeconds,
-               NextRun = DateTime.Now
-           });
+            if (AppSettings.Default.UseProxy && AppSettings.Default.Proxies.Count > 0)
+            {
+               var newTask = Task.Run
+                   (() =>
+                   {
+                       _proxiedClients.AsParallel().WithExecutionMode(ParallelExecutionMode.ForceParallelism).ForAll(client => 
+                       {
+
+                           for (int i = 0; i < 5; i++)
+                           {
+                               try
+                               {
+                                   task.Func.Invoke(client, _cancellationTokenSource.Token);
+                                   break;
+                               }
+                               catch
+                               {
+                                   // ignored
+                               }
+                           }
+                       });
+                       
+                   }
+                  );
+
+                await newTask;
+            }
+            else
+            {
+                await Task.Run(() => task.Func.Invoke(_proxylessClient, CancellationToken.None));
+            }
         }
 
-        public HttpClient GetClient()
+        public async Task RegisterActionAsync(string uniqueName, Action<HttpClient, CancellationToken> collectFunc, TimeSpan repeatInterval)
         {
-            return _clients[rand.Next(_clients.Count - 1)];
+
+            var task = new CollectionTask()
+            {
+                Name = uniqueName,
+                Func = collectFunc,
+                Interval = repeatInterval,
+                NextRun = DateTime.Now + repeatInterval
+            };
+            _registeredTasks.Add(task);
+
+            await CompleteTaskAsync(task);
         }
+
+        public HttpClient GetClient() =>
+                AppSettings.Default.UseProxy && _proxiedClients.Count > 0 ?
+                _proxiedClients[rand.Next(_proxiedClients.Count - 1)] :
+                _proxylessClient;
+
 
         public void RemoveAction(string uniqueName)
         {
             var findIndex = _registeredTasks.FindIndex(task => task.Name == uniqueName);
-            if(findIndex == -1) throw new NoSuchElementException("Actions with given name is not registered");
+            if (findIndex == -1) throw new NoSuchElementException("FinalActions with given name is not registered");
             _registeredTasks.RemoveAt(findIndex);
         }
-    
+
 
         public void Dispose()
-        {   
-            if(_diposed) return;
+        {
+            if (_diposed) return;
             _diposed = true;
             this._cancellationTokenSource.Cancel();
-            _clients.ForEach(client => client.Dispose());
+            _proxiedClients.ForEach(client => client.Dispose());
         }
     }
 }

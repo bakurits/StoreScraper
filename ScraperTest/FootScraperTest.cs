@@ -17,13 +17,12 @@ namespace ScraperTest
     [TestClass]
     public class FootScraperTest
     {
-        public static SearchSettingsBase settings;
 
         [TestMethod]
         public void ChampsSportsScraper()
         {
             FootStoreScraper.ChampsSportsScraper scraper = new FootStoreScraper.ChampsSportsScraper();
-            scraper.FindItems(out  var lst, settings, CancellationToken.None, new Logger());
+            scraper.FindItems(out  var lst, Helper.SearchSettings, CancellationToken.None);
             Helper.PrintTestReuslts(lst);
         }
 
@@ -31,7 +30,7 @@ namespace ScraperTest
         public void FootLocker()
         {
             FootStoreScraper.FootLockerScraper scraper = new FootStoreScraper.FootLockerScraper();
-            scraper.FindItems(out var lst, settings, CancellationToken.None, new Logger());
+            scraper.FindItems(out var lst, Helper.SearchSettings, CancellationToken.None);
             Helper.PrintTestReuslts(lst);
         }
 
@@ -39,21 +38,8 @@ namespace ScraperTest
         public void EastBay()
         {
             FootStoreScraper.EastBayScraper footStoreScraper = new FootStoreScraper.EastBayScraper();
-            footStoreScraper.FindItems(out var lst, settings, CancellationToken.None, new Logger());
+            footStoreScraper.FindItems(out var lst, Helper.SearchSettings, CancellationToken.None);
             Helper.PrintTestReuslts(lst);
-        }
-
-        [AssemblyInitialize]
-        public static void InitSettings(TestContext context)
-        {
-            AppSettings.Init();
-            if (!Directory.Exists(AppSettings.DataDir)) Directory.CreateDirectory(AppSettings.DataDir);
-            AppSettings.Default = AppSettings.Load();
-
-            settings = new SearchSettingsBase()
-            {
-                KeyWords = "white"
-            };
         }
     }
 }

@@ -118,9 +118,11 @@
     <Compile Include="Bots\ChampsSports_FootLocker_EastBay\FootStoreScraper.cs" />
     <Compile Include="Bots\Footaction\FootactionScrapper.cs" />
     <Compile Include="Bots\Mrporter\MrporterScraper.cs" />
+    <Compile Include="Bots\Nakedcph\NakedcphScrapper.cs" />
     <Compile Include="Bots\OffWhite\OffWhiteScraper.cs" />
     <Compile Include="AppSettings.cs" />
     <Compile Include="Browser\CookieCollector.cs" />
+    <Compile Include="Helpers\Embed.cs" />
     <Compile Include="Models\ProductDetails.cs" />
     <Compile Include="Models\StringPair.cs" />
     <Compile Include="ScraperBase.cs" />
@@ -143,7 +145,6 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Core\BrowserManager.cs" />
-    <Compile Include="Core\IMonitoringTask.cs" />
     <Compile Include="Core\MonitoringTask.cs" />
     <Compile Include="Helpers\DiscordWebHook.cs" />
     <Compile Include="Helpers\SlackWebHook.cs" />

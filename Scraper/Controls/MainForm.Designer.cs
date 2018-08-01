@@ -34,6 +34,7 @@
             this.btn_FindProducts = new System.Windows.Forms.Button();
             this.Tabs = new System.Windows.Forms.TabControl();
             this.Tab_Main = new System.Windows.Forms.TabPage();
+            this.Btn_RemoveMon = new System.Windows.Forms.Button();
             this.l_MonInterval = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.CLbx_Monitor = new System.Windows.Forms.CheckedListBox();
@@ -117,6 +118,7 @@
             // 
             // Tab_Main
             // 
+            this.Tab_Main.Controls.Add(this.Btn_RemoveMon);
             this.Tab_Main.Controls.Add(this.l_MonInterval);
             this.Tab_Main.Controls.Add(this.label5);
             this.Tab_Main.Controls.Add(this.CLbx_Monitor);
@@ -136,6 +138,17 @@
             this.Tab_Main.TabIndex = 0;
             this.Tab_Main.Text = "Main";
             this.Tab_Main.UseVisualStyleBackColor = true;
+            // 
+            // Btn_RemoveMon
+            // 
+            this.Btn_RemoveMon.ForeColor = System.Drawing.Color.Crimson;
+            this.Btn_RemoveMon.Location = new System.Drawing.Point(756, 208);
+            this.Btn_RemoveMon.Name = "Btn_RemoveMon";
+            this.Btn_RemoveMon.Size = new System.Drawing.Size(135, 23);
+            this.Btn_RemoveMon.TabIndex = 22;
+            this.Btn_RemoveMon.Text = "Remove Selected";
+            this.Btn_RemoveMon.UseVisualStyleBackColor = true;
+            this.Btn_RemoveMon.Click += new System.EventHandler(this.Btn_RemoveMon_Click);
             // 
             // l_MonInterval
             // 
@@ -178,7 +191,7 @@
             this.Cbx_ChooseStore.FormattingEnabled = true;
             this.Cbx_ChooseStore.Location = new System.Drawing.Point(120, 6);
             this.Cbx_ChooseStore.Name = "Cbx_ChooseStore";
-            this.Cbx_ChooseStore.Size = new System.Drawing.Size(310, 21);
+            this.Cbx_ChooseStore.Size = new System.Drawing.Size(321, 21);
             this.Cbx_ChooseStore.TabIndex = 15;
             this.Cbx_ChooseStore.SelectedIndexChanged += new System.EventHandler(this.Cbx_ChooseStore_SelectedIndexChanged);
             // 
@@ -387,6 +400,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.CheckedListBox CLbx_Monitor;
         private System.Windows.Forms.Label l_MonInterval;
+        private System.Windows.Forms.Button Btn_RemoveMon;
     }
 }
 

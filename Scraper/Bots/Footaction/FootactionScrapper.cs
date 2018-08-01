@@ -19,20 +19,19 @@ namespace StoreScraper.Bots.Footaction
         public override bool Active { get; set; }
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,
-            CancellationToken token, Logger info)
+            CancellationToken token)
         {
             listOfProducts = new List<Product>();
             string searchUrl =
                 $"https://www.footaction.com/api/products/search?currentPage=0&pageSize=50&query={settings.KeyWords}&sort=newArrivals";
-            var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FireFoxHeaders);
-            var task = request.GetStringAsync(searchUrl);
-            task.Wait(token);
+            var request = ClientFactory.GetProxiedClient().AddHeaders(ClientFactory.FireFoxHeaders);
+            var responseText = request.GetAsync(searchUrl, token).Result.Content.ReadAsStringAsync().Result;
             var xmlDocument = new XmlDocument();
-            xmlDocument.LoadXml(task.Result);
+            xmlDocument.LoadXml(responseText);
             var products = xmlDocument.SelectNodes("productCategorySearchPage/products");
             if (products == null)
             {
-                info.WriteLog("[Error] Uncexpected XML!!");
+                Logger.Instance.WriteLog("[Error] Uncexpected XML!!");
                 throw new WebException("Undexpected XML");
             }
 
@@ -45,7 +44,7 @@ namespace StoreScraper.Bots.Footaction
 #if DEBUG
                 LoadSingleProduct(listOfProducts, settings, singleContact, ref sum);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, settings, singleContact, ref sum, info);
+                LoadSingleProductTryCatchWraper(listOfProducts, settings, singleContact, ref sum);
 #endif
             }
         }
@@ -59,7 +58,7 @@ namespace StoreScraper.Bots.Footaction
         /// <param name="singleContact"></param>
         /// <param name="sum"></param>
         /// <param name="info"></param>
-        private void LoadSingleProductTryCatchWraper(List<Product>listOfProducts, SearchSettingsBase settings, XmlNode singleContact, ref int sum, Logger info)
+        private void LoadSingleProductTryCatchWraper(List<Product>listOfProducts, SearchSettingsBase settings, XmlNode singleContact, ref int sum)
         {
             try
             {
@@ -67,7 +66,7 @@ namespace StoreScraper.Bots.Footaction
             }
             catch (Exception e)
             {
-                info.WriteLog(e.Message);
+                Logger.Instance.WriteLog(e.Message);
             }
 
         }
@@ -88,7 +87,7 @@ namespace StoreScraper.Bots.Footaction
             double.TryParse(singleContact.SelectSingleNode("price/value")?.InnerText, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
             string sku = singleContact.SelectSingleNode("sku")?.InnerText;
             string link = new Uri($"https://www.footaction.com/product/{productName}/{sku}.html").AbsoluteUri;
-            var product = new Product(this.WebsiteName, productName, link, price, sku, imageUrl);
+            var product = new Product(this, productName, link, price, sku, imageUrl);
             if (Utils.SatisfiesCriteria(product, settings))
                 listOfProducts.Add(product);
         }

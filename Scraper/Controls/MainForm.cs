@@ -18,7 +18,7 @@ namespace StoreScraper.Controls
     {
         private CancellationTokenSource _findTokenSource = new CancellationTokenSource();
         private BindingList<Product> _listOfProducts = new BindingList<Product>();
-        private Logger _findProductsLogger = new Logger();
+        private Logger _findProductsLogger = Logger.Instance;
         private Thread _monitorThread;
         private CancellationTokenSource _monitorCancellation;
 
@@ -38,7 +38,7 @@ namespace StoreScraper.Controls
 
         private void Monitor()
         {
-           _monitorCancellation = new CancellationTokenSource();
+            _monitorCancellation = new CancellationTokenSource();
             var stopWatch = new Stopwatch();
             stopWatch.Start();
             while (true)
@@ -48,16 +48,16 @@ namespace StoreScraper.Controls
 
                 var checkeItems = new object[CLbx_Monitor.CheckedItems.Count];
 
-                CLbx_Monitor.Invoke((MethodInvoker)(() => 
+                CLbx_Monitor.Invoke((MethodInvoker)(() =>
                     CLbx_Monitor.CheckedItems.CopyTo(checkeItems, 0)));
-                
+
 
 
                 foreach (var checkedItem in checkeItems)
-                {        
-                    (checkedItem as MonitoringTask)?.Do(_monitorCancellation.Token);
+                {
+                    var monTask = (MonitoringTask)checkedItem;
                 }
-                
+
 
 
                 Thread.Sleep(Math.Max(AppSettings.Default.MonitoringDelay, 100));
@@ -72,8 +72,9 @@ namespace StoreScraper.Controls
                 }
 
             }
-          
+
         }
+
 
         private void btn_FindProducts_Click(object sender, EventArgs e)
         {
@@ -85,14 +86,19 @@ namespace StoreScraper.Controls
             label_FindingStatus.Text = @"Processing...";
 
             _findProductsLogger.OnLogged += InfoOnOnLogged;
-            var bot = Cbx_ChooseStore.SelectedItem as ScraperBase;
+            var scraper = Cbx_ChooseStore.SelectedItem as ScraperBase;
 
-            Task.Run
-                (
-                () =>
+            Task.Run(() => FindAction(scraper)).ContinueWith(FindProductsTaskCompleted);
+
+        }
+
+        private void FindAction(ScraperBase scraper)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                try
                 {
-
-                    bot.FindItems(out var products, PGrid_Bot.SelectedObject as SearchSettingsBase, _findTokenSource.Token, _findProductsLogger);
+                    scraper.FindItems(out var products, PGrid_Bot.SelectedObject as SearchSettingsBase, _findTokenSource.Token);
                     DGrid_FoundProducts.Invoke(new Action(() =>
                     {
                         lock (_listOfProducts)
@@ -101,9 +107,14 @@ namespace StoreScraper.Controls
                             _findTokenSource.Token.ThrowIfCancellationRequested();
                         }
                     }));
+                    break;
                 }
-                ).ContinueWith(FindProductsTaskCompleted);
-
+                catch
+                {
+                   //ignored
+                }
+            }
+            
         }
 
         private void InfoOnOnLogged(object sender, string s)
@@ -207,13 +218,11 @@ namespace StoreScraper.Controls
 
         private void Btn_Save_Click(object sender, EventArgs e)
         {
-            AppSettings.Default.Proxies = RTbx_Proxies.Text.Replace("\r","").Split('\n').ToList();
+            AppSettings.Default.Proxies = RTbx_Proxies.Text.Replace("\r", "").Split('\n').ToList();
         }
 
         private void Btn_AddToMonitor_Click(object sender, EventArgs e)
         {
-            var bot = (ScraperBase) Cbx_ChooseStore.SelectedValue;
-            btn_FindProducts.PerformClick();
             var storeIndex = Cbx_ChooseStore.SelectedIndex;
             var searchOptions = (SearchSettingsBase)PGrid_Bot.SelectedObject;
 
@@ -225,17 +234,52 @@ namespace StoreScraper.Controls
             {
                 actions.AddRange(form.GetFinalActions());
             }
+            else return;
+
+            var scraper = AppSettings.Default.AvaibleBots[storeIndex];
+            List<Product> curProductsList = null;
+            try
+            {
+                scraper.FindItems(out curProductsList, searchOptions, CancellationToken.None);
+            }
+            catch
+            {
+                MessageBox.Show($"Error Occured while trying to obtain current products with specified search criteria on {scraper.WebsiteName}");
+
+                return;
+            }
 
             var item = new MonitoringTask()
             {
                 SearchSettings = searchOptions,
-                Bot = AppSettings.Default.AvaibleBots[storeIndex],
-                Actions = actions,
-                OldItems = _listOfProducts.ToList()
+                Bot = scraper,
+                FinalActions = actions,
+                OldItems = curProductsList
             };
 
-            item.Bot.Active = true;
-            CLbx_Monitor.Items.Add(item);
+            MessageBox.Show(@"searching filter is now adding to monitor list. 
+                              That may take several mins...
+                              When Complete you will see filter added in monitor");
+
+
+            Task.Run(() =>
+            {
+
+                item.Bot.Active = true;
+                CLbx_Monitor.Invoke(new Action(() => CLbx_Monitor.Items.Add(item, true)));
+                item.Start(_monitorCancellation.Token);
+            });
+        }
+
+        private void Btn_RemoveMon_Click(object sender, EventArgs e)
+        {
+            var selectedItems = CLbx_Monitor.SelectedItems;
+
+            if (CLbx_Monitor.SelectedIndex != -1)
+            {
+                for (int i = selectedItems.Count - 1; i >= 0; i--)
+                    CLbx_Monitor.Items.Remove(selectedItems[i]);
+            }
         }
     }
 }

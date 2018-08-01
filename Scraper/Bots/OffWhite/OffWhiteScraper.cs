@@ -9,19 +9,19 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Newtonsoft.Json.Linq;
 using StoreScraper.Browser;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
-using StoreScraper.Interfaces;
 using StoreScraper.Models;
 
-namespace StoreScraper.Scrapers.OffWhite
+namespace StoreScraper.Bots.OffWhite
 {
     [Serializable]
     public class OffWhiteScraper : ScraperBase
     {
         public sealed override string WebsiteName { get; set; } = "Off---white";
-        public sealed override string WebsiteBaseUrl { get; set; } = "Off---white.com";
+        public sealed override string WebsiteBaseUrl { get; set; } = "https://Off---white.com";
 
         private bool _active;
 
@@ -30,14 +30,15 @@ namespace StoreScraper.Scrapers.OffWhite
             get => _active;
             set
             {
-                _active = value;
-                if (value)
+                if (!_active && value)
                 {
-                    CookieCollector.Default.RegisterAction(this.WebsiteName, CollectCookies, TimeSpan.FromMinutes(5));
+                    CookieCollector.Default.RegisterActionAsync(this.WebsiteName, CollectCookies, TimeSpan.FromMinutes(20)).Wait();
+                    _active = true;
                 }
-                else
+                else if(_active && !value)
                 {
                     CookieCollector.Default.RemoveAction(this.WebsiteName);
+                    _active = false;
                 }
             }
         }
@@ -49,33 +50,45 @@ namespace StoreScraper.Scrapers.OffWhite
 
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings
-            , CancellationToken token, Logger info)
+            , CancellationToken token)
         {
 
             listOfProducts = new List<Product>();
 
             var searchUrl = string.Format(SearchUrlFormat, settings.KeyWords);
 
-            HttpClient client = null;
+            HtmlNode container = null;
 
-            if (_active)
+            for (int i = 0; i < 5; i++)
             {
-                client = CookieCollector.Default.GetClient();
-            }
-            else
-            {
-                client = ClientFactory.GetHttpClient(autoCookies:true).AddHeaders(ClientFactory.FireFoxHeaders);
-                CollectCookies(client, token);
-            }
+                try
+                {
+                    HttpClient client = null;
 
-            var document = client.GetDoc(searchUrl, token, info);
+                    if (_active)
+                    {
+                        client = CookieCollector.Default.GetClient();
+                    }
+                    else
+                    {
+                        client = ClientFactory.GetProxiedClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
+                        CollectCookies(client, token);
+                    }
 
-            var node = document.DocumentNode;
-            HtmlNode container = node.SelectSingleNode("//section[@class='products']");
+                    var document = client.GetDoc(searchUrl, token);
+                    var node = document.DocumentNode;
+                    container = node.SelectSingleNode("//section[@class='products']");
+                    break;
+                }
+                catch 
+                {
+                    //ingored
+                }
+            }
 
             if (container == null)
             {
-                info.WriteLog("[Error] Uncexpected Html!!");
+                Logger.Instance.WriteLog("[Error] Uncexpected Html!!");
                 throw new WebException("Undexpected Html");
             }
 
@@ -87,14 +100,13 @@ namespace StoreScraper.Scrapers.OffWhite
             {
                 token.ThrowIfCancellationRequested();
 #if DEBUG
-                LoadSingleProduct(listOfProducts, settings, item, info);
+                LoadSingleProduct(listOfProducts, settings, item);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, settings, item, info);
+                LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
 #endif
             }
-
-            info.State = Logger.ProcessingState.Success;
         }
+
 
         /// <summary>
         /// This method is simple wrapper on LoadSingleProduct
@@ -104,15 +116,15 @@ namespace StoreScraper.Scrapers.OffWhite
         /// <param name="settings"></param>
         /// <param name="item"></param>
         /// <param name="info"></param>
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item, Logger info)
+        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
             {
-                LoadSingleProduct(listOfProducts, settings, item, info);
+                LoadSingleProduct(listOfProducts, settings, item);
             }
             catch (Exception e)
             {
-                info.WriteLog(e.Message);
+                Logger.Instance.WriteLog(e.Message);
             }
         }
         /// <summary>
@@ -122,7 +134,7 @@ namespace StoreScraper.Scrapers.OffWhite
         /// <param name="settings"></param>
         /// <param name="item"></param>
         /// <param name="info"></param>
-        private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item, Logger info)
+        private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             var url = "https://www.off---white.com" + item.SelectSingleNode("./a").GetAttributeValue("href", "");
             string name = item.SelectSingleNode("./a/figure/figcaption/div").InnerText;
@@ -135,12 +147,13 @@ namespace StoreScraper.Scrapers.OffWhite
             string imagePath = item.SelectSingleNode("./a/figure/img").GetAttributeValue("src", null);
             if (imagePath == null)
             {
-                info.WriteLog("Image Of product couldn't found");
+                Logger.Instance.WriteLog("Image Of product couldn't found");
             }
-            string id = Path.GetFileName(url);
+
+            string id = item.GetAttributeValue("data-json-url", null);
 
 
-            Product p = new Product(this.WebsiteName, name, url, price, id, null);
+            Product p = new Product(this, name, url, price, id, null);
             if (!Utils.SatisfiesCriteria(p, settings)) return;
 
             p.ImageUrl = imagePath;
@@ -150,7 +163,58 @@ namespace StoreScraper.Scrapers.OffWhite
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
-            throw new NotImplementedException();
+            var jsonUrl = this.WebsiteBaseUrl + product.Id;
+            ProductDetails result = new ProductDetails();
+
+            HttpClient client = null;
+
+            for (int i = 0; i < 5; i++)
+            {
+                try
+                {
+                    
+                    if (_active)
+                    {
+                        client = CookieCollector.Default.GetClient();
+                    }
+                    else
+                    {
+                        client = ClientFactory.GetProxiedClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
+                        CollectCookies(client, token);
+                    }
+                    break;
+                }
+                catch
+                {
+                    //ingored
+                }
+            }
+
+            
+            HttpRequestMessage message = new HttpRequestMessage();
+            message.Headers.Clear();
+            message.Headers.TryAddWithoutValidation(ClientFactory.JsonXmlAcceptHeader.Key, ClientFactory.JsonXmlAcceptHeader.Value);
+            message.Headers.TryAddWithoutValidation(ClientFactory.FirefoxUserAgentHeader.Key, ClientFactory.FirefoxUserAgentHeader.Value);
+
+            message.Method = HttpMethod.Get;
+            message.RequestUri = new Uri(jsonUrl);
+
+            using (client)
+            {
+                var response = client.SendAsync(message).Result;
+                response.EnsureSuccessStatusCode();
+                var jsonStr = response.Content.ReadAsStringAsync().Result;
+                JObject parsed = JObject.Parse(jsonStr);
+                var sizes = parsed.SelectToken("available_sizes");
+               
+                foreach (JToken size in sizes.Children())
+                {
+                    var sizeName = (string) size.SelectToken("name");
+                    result.SizesList.Add(sizeName);
+                }
+            }
+
+            return result;
         }
 
 
@@ -169,7 +233,7 @@ namespace StoreScraper.Scrapers.OffWhite
 
             var cc = client.GetAsync("https://www.off---white.com/favicon.ico").Result;
             client.DefaultRequestHeaders.Remove("Accept");
-            client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
+            client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", ClientFactory.ChromeAcceptHeader.Value);
             var pass = Regex.Match(aa, "name=\"pass\" value=\"(.*?)\"/>").Groups[1].Value;
             var answer = Regex.Match(aa, "name=\"jschl_vc\" value=\"(.*?)\"/>").Groups[1].Value;
 
@@ -188,10 +252,10 @@ namespace StoreScraper.Scrapers.OffWhite
             var gga = engine.Evaluate(script);
             var calc = engine.GetGlobalValue<string>("interop");
 
-            Thread.Sleep(5000);
+            Task.Delay(5000, token).Wait();
             var resultTask = client.GetAsync($"https://www.off---white.com/cdn-cgi/l/chk_jschl?jschl_vc={answer}&pass={pass}&jschl_answer={calc}", token);
-            var unused = resultTask.Result.Content.ReadAsStreamAsync().Result;
-           
+            resultTask.Result.EnsureSuccessStatusCode();
+
         }
     }
 }

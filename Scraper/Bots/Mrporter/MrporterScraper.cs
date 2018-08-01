@@ -3,36 +3,58 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
 using StoreScraper.Browser;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
+#pragma warning disable 4014
 
-namespace StoreScraper.Scrapers.Mrporter
+namespace StoreScraper.Bots.Mrporter
 {
     public class MrporterScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Mrporter";
         public override string WebsiteBaseUrl { get; set; } = "https://www.mrporter.com/";
         public override Type SearchSettings { get; set; } = typeof(SearchSettingsBase);
-        public override bool Active { get; set; }
+
+
+        private bool _active;
+        public override bool Active
+        {
+            get => _active;
+            set
+            {
+                if (!_active && value)
+                {
+                    CookieCollector.Default.RegisterActionAsync(this.WebsiteName,
+                        (httpClient, token) => httpClient.GetAsync("https://www.mrporter.com/mens/whats-new"),
+                        TimeSpan.FromMinutes(20)).Wait();
+                    _active = true;
+                }
+                else if(_active && !value)
+                {
+                    CookieCollector.Default.RemoveAction(this.WebsiteName);
+                    _active = false;
+                }
+            }
+        }
 
 
         private const string SearchUrlFormat = @"https://www.mrporter.com/mens/whats-new";
-        private HttpClient client = ClientFactory.GetHttpClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,
-            CancellationToken token, Logger info)
+            CancellationToken token)
         {
             listOfProducts = new List<Product>();
 
-            var searchUrl = SearchUrlFormat;
-            var node = GetPage(searchUrl, token, info);
+            string searchUrl = SearchUrlFormat;
+            var node = GetPage(searchUrl, token);
             
-            Worker(listOfProducts, settings, node, token, info);
-                   
+            Worker(listOfProducts, settings, node, token);
+
         }
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
@@ -71,7 +93,7 @@ namespace StoreScraper.Scrapers.Mrporter
         {
             string result = html;
             int ind = html.IndexOf("-", StringComparison.Ordinal);
-            string before = html.Substring(0,  ind != -1 ? ind : html.Length).Trim();
+            string before = html.Substring(0, ind != -1 ? ind : html.Length).Trim();
             if (int.TryParse(before, out var val))
             {
                 int indx = caster.IndexOf(val.ToString(), comparisonType: StringComparison.Ordinal);
@@ -86,26 +108,32 @@ namespace StoreScraper.Scrapers.Mrporter
         }
 
 
-        private HtmlNode GetPage(string url, CancellationToken token, Logger logger = null)
+        private HtmlNode GetPage(string url, CancellationToken token)
         {
-            var document = client.GetDoc(url, token, logger);
-            return document.DocumentNode;
+            using (HttpClient client = _active
+                ? CookieCollector.Default.GetClient()
+                : ClientFactory.GetProxiedClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders))
+            {
+                var document = client.GetDoc(url, token);
+                return document.DocumentNode;
+            }
         }
 
 
-        private void Worker(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode node, CancellationToken token, Logger info)
+        private void Worker(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode node, CancellationToken token)
         {
-            HtmlNodeCollection collection =
+            HtmlNodeCollection infoCollection =
                 node.SelectNodes(
                     "//div[@class='product-details']/div[@class='description']|//div[@class='product-details']/div[@class='description description-last']");
+            HtmlNodeCollection imageCollection = node.SelectNodes("//*[@id='product-list']/div/div/a/img");
 
-            foreach (var htmlNode in collection)
+            for (int i = 0; i < infoCollection.Count; i++)
             {
                 token.ThrowIfCancellationRequested();
 #if DEBUG
-                LoadSingleProduct(listOfProducts, settings, htmlNode);
+                LoadSingleProduct(listOfProducts, settings, infoCollection, imageCollection, i);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, settings, htmlNode, info);
+                LoadSingleProductTryCatchWraper(listOfProducts, settings, infoCollection, imageCollection, i);
 #endif
 
             }
@@ -117,17 +145,19 @@ namespace StoreScraper.Scrapers.Mrporter
         /// </summary>
         /// <param name="listOfProducts"></param>
         /// <param name="settings"></param>
-        /// <param name="htmlNode"></param>
+        /// <param name="ind"></param>
         /// <param name="info"></param>
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode htmlNode, Logger info)
+        /// <param name="infoCollection"></param>
+        /// <param name="imageCollection"></param>
+        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNodeCollection infoCollection, HtmlNodeCollection imageCollection, int ind)
         {
             try
             {
-                LoadSingleProduct(listOfProducts, settings, htmlNode);
+                LoadSingleProduct(listOfProducts, settings, infoCollection, imageCollection, ind);
             }
             catch (Exception e)
             {
-                info.WriteLog(e.Message);
+                Logger.Instance.WriteLog(e.Message);
             }
         }
 
@@ -136,12 +166,18 @@ namespace StoreScraper.Scrapers.Mrporter
         /// </summary>
         /// <param name="listOfProducts"></param>
         /// <param name="settings"></param>
-        /// <param name="htmlNode"></param>
-        private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode htmlNode)
+        /// <param name="infoCollection"></param>
+        /// <param name="imageCollection"></param>
+        /// <param name="ind"></param>
+        private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNodeCollection infoCollection, HtmlNodeCollection imageCollection, int ind)
         {
-            string aHref = htmlNode.SelectSingleNode("./div/a").GetAttributeValue("href", null);
+            var htmlNode = infoCollection[ind];
+            var imgNode = imageCollection[ind];
+            string aHref = htmlNode.SelectSingleNode("./div/a").GetAttributeValue("href", "");
+            string imgSrc = imgNode.GetAttributeValue("src", "");
             string url = "https://www.mrporter.com/" + aHref.Substring(aHref.IndexOf("/", 1, StringComparison.Ordinal) + 1);
-
+            string imgUrl = "https:" + imgSrc;
+                
             string name = htmlNode.SelectSingleNode("./div/a/span[1]").InnerHtml + " " + htmlNode.SelectSingleNode("./div/a/span[2]").InnerHtml;
 
             var priceContainer = htmlNode.SelectSingleNode("./div[@class='price-container']");
@@ -151,15 +187,14 @@ namespace StoreScraper.Scrapers.Mrporter
             if (newPrice != null)
             {
                 string html = newPrice.InnerHtml;
-                html = html.Substring(html.LastIndexOf("&pound;", StringComparison.Ordinal) + 7);
-                price = Convert.ToDouble(html);
+                price = GetPrice(html);
             }
             else
             {
-                price = Convert.ToDouble(priceContainer.SelectSingleNode("./p[1]").InnerHtml.Substring(7));
+                price = GetPrice(priceContainer.SelectSingleNode("./p[1]").InnerHtml);
             }
 
-            Product curProduct = new Product(this.WebsiteName, name, url, price, url, null);
+            Product curProduct = new Product(this, name, url, price, url, imgUrl);
 
             if (Utils.SatisfiesCriteria(curProduct, settings))
             {
@@ -168,6 +203,21 @@ namespace StoreScraper.Scrapers.Mrporter
                 {
                     listOfProducts.Add(curProduct);
                 }
+            }
+        }
+
+        private double GetPrice(string html)
+        {
+            int ind = html.LastIndexOf("&pound;", StringComparison.Ordinal);
+            if (ind > -1)
+            {
+                html = html.Substring(ind + 7);
+                return Convert.ToDouble(html);
+            }
+            else
+            {
+                string result = Regex.Replace(html, @"[^\d]", "");
+                return Convert.ToDouble(result);
             }
         }
 

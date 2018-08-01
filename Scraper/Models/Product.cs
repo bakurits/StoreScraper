@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Drawing;
+using System.Threading;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 
@@ -8,34 +9,45 @@ namespace StoreScraper.Models
     public class Product
     {
         [DisplayName("Store")]
-        public string StoreName { get; } = "";
+        public string StoreName { get; set; } = "";
+
+        [Browsable(false)]
+        public ScraperBase ScrapedBy { get; set; }
+
         public string Name { get; } = "";
 
         public double Price { get; set; }
 
         [Browsable(false)]
-        public string Url { get; } = "";
+        public string Url { get; set; } = "";
 
         [Browsable(false)]
-        public string Id { get; } = "";
+        public string Id { get; set;} = "";
 
         [Browsable(false)]
         public string ImageUrl { get; set; }
 
-        public Product(string storeName, string name, string url, double price, string id, string imageUrl)
+        public Product(ScraperBase scrapedBy, string name, string url, double price, string id, string imageUrl)
         {
             Name = name.Replace('\n', ' ');
             Url = url;
             Price = price;
             Id = id;
-            StoreName = storeName;
+            ScrapedBy = scrapedBy;
+            StoreName = ScrapedBy.WebsiteName;
             ImageUrl = imageUrl;
         }
 
         public Product()
         {
         }
-        
+
+
+        public ProductDetails GetDetails(CancellationToken token)
+        {
+           return this.ScrapedBy.GetProductDetails(this, token);
+        }
+
         public override bool Equals(object obj)
         {
             if (!(obj is Product toCompare)) return false;
