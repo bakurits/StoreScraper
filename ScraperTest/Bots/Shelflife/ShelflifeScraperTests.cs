@@ -34,7 +34,20 @@ namespace ScraperTest.Bots.Shelflife
         [TestMethod()]
         public void GetProductDetailsTest()
         {
-            throw new NotImplementedException();
+            Product curProduct = new Product(new ShelflifeScraper(), "INCOTEX Slim - Fit Pleated Brushed Stretch - Cotton Trousers",
+                "https://www.shelflife.co.za/products/Nike-Air-More-Money-Olive",
+                2399,
+                "pics/product/large/aj2998-200-side.jpg",
+                "id");
+
+
+            ShelflifeScraper scraper = new ShelflifeScraper();
+
+            ProductDetails details = scraper.GetProductDetails(curProduct, CancellationToken.None);
+            foreach (var sz in details.SizesList)
+            {
+                Debug.WriteLine(sz);
+            }
         }
     }
 }

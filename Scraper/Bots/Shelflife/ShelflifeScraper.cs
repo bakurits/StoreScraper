@@ -34,18 +34,40 @@ namespace StoreScraper.Bots.Shelflife
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
-            throw new System.NotImplementedException();
+            var document = GetWebpage(product.Url, token);
+            ProductDetails details = new ProductDetails();
+
+            var node = document.SelectSingleNode("//*[@id='addToCart']/div/div/div/select[@id = 'size']");
+
+            var sizeCollection = node.SelectNodes("./option");
+
+            foreach (var size in sizeCollection)
+            {
+                string sz = size.GetAttributeValue("value", "");
+                if (sz.Length > 0)
+                {
+                    details.SizesList.Add(sz);
+                }
+                
+            }
+
+            return details;
+        }
+
+        private HtmlNode GetWebpage(string url, CancellationToken token)
+        {
+            using (HttpClient client = ClientFactory.GetProxiedClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders))
+            {
+                var document = client.GetDoc(url, token).DocumentNode;
+                return client.GetDoc(url, token).DocumentNode;
+            }
         }
 
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             string url = string.Format(SearchFormat, settings.KeyWords);
-
-            using (HttpClient client = ClientFactory.GetProxiedClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders))
-            {
-                var document = client.GetDoc(url, token).DocumentNode;
-                return document.SelectNodes("//body/div/div/div[contains(@class, 'col-xs-6 col-sm-3')]");
-            }
+            var document = GetWebpage(url, token);
+            return document.SelectNodes("//body/div/div/div[contains(@class, 'col-xs-6 col-sm-3')]");
         }
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
@@ -54,7 +76,7 @@ namespace StoreScraper.Bots.Shelflife
             string url = GetUrl(item);
             double price = GetPrice(item);
             string imageUrl = GetImageUrl(item);
-            listOfProducts.Add(new Product(this, name, url, price, url, imageUrl));
+            listOfProducts.Add(new Product(this, name, url, price, url, imageUrl, "R"));
         }
 
         private string GetName(HtmlNode item)
