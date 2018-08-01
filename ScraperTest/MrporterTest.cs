@@ -36,8 +36,8 @@ namespace ScraperTest
             Product curProduct = new Product(new MrporterScraper(), "JOHN ELLIOTT Camp-Collar Printed Tencel-Twill Shirt",
                 "https://www.mrporter.com/mens/okeeffe/bristol-leather-trimmed-suede-derby-shoes/1026175",
                 120.83,
-                "id",
-                "https://cache.mrporter.com/images/products/1012326/1012326_mrp_in_l.jpg");
+                "https://cache.mrporter.com/images/products/1012326/1012326_mrp_in_l.jpg",
+                "id");
 
 
             MrporterScraper scraper = new MrporterScraper();
@@ -51,8 +51,8 @@ namespace ScraperTest
             Product curProduct = new Product(new MrporterScraper(), "INCOTEX Slim - Fit Pleated Brushed Stretch - Cotton Trousers",
                 "https://www.mrporter.com/en-ge/mens/incotex/slim-fit-pleated-brushed-stretch-cotton-trousers/1051390",
                 120.83,
-                "id",
-                "https://cache.mrporter.com/images/products/1012326/1012326_mrp_in_l.jpg");
+                "https://cache.mrporter.com/images/products/1012326/1012326_mrp_in_l.jpg",
+                "id");
 
 
             MrporterScraper scraper = new MrporterScraper();
