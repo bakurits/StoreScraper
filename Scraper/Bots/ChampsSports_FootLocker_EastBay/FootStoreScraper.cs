@@ -24,7 +24,7 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
         private string UrlPrefix;
         private const string PageSizeSuffix = @"?Ns=P_NewArrivalDateEpoch%7C1&cm_SORT=New%20Arrivals";
         private const string Keywords = @"/keyword-{0}";
-
+        private const string UlXpath = @"//*[@id=""endeca_search_results""]/ul";
 
 
         public FootStoreScraper(string websiteName, string websiteBaseUrl)
@@ -52,7 +52,9 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
             while (container == null)
             {
                 HtmlNode node = InitialNavigation(searchUrl, token);
-                container = node.SelectSingleNode("//*[@id=\"endeca_search_results\"]/ul");
+                Console.WriteLine(node.InnerHtml);
+                container = new HtmlNode(HtmlNodeType.Comment, null, 12);
+                //container = node.SelectSingleNode(UlXpath);
             }
             HtmlNodeCollection children = container.SelectNodes("./li");
 
@@ -142,6 +144,8 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
 
         public class FootLockerScraper : FootStoreScraper
         {
+            private new const string UlXpath = @"//*[@class""c-product-search-results""]/ul";
+
             public FootLockerScraper() : base("FootLocker", "https://www.footlocker.com")
             {
             }
