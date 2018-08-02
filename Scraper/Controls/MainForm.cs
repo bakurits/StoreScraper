@@ -107,11 +107,11 @@ namespace StoreScraper.Controls
                             _findTokenSource.Token.ThrowIfCancellationRequested();
                         }
                     }));
-                    break;
+                    return;
                 }
                 catch
                 {
-                   //ignored
+                    if (i == 4) throw;
                 }
             }
             

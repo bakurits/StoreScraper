@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Security.Policy;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using HtmlAgilityPack;
 using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
-namespace StoreScraper.Bots.Nakedcph
+namespace StoreScraper.Scrapers.Nakedcph
 {
     [Serializable]
     public class NakedcphScrapper : ScraperBase
@@ -105,6 +102,17 @@ namespace StoreScraper.Bots.Nakedcph
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
+            string xpath = "//*[@id='product-form']//div[contains(@class, 'dropdown-menu')]/a";
+            HtmlDocument doc;
+            using (var client = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FireFoxHeaders))
+            {
+                doc = client.GetDoc(product.Url, token);
+            }
+
+            var nodes = doc.DocumentNode.SelectNodes(xpath);
+
+            var texts = nodes.Select(node => node.InnerText);
+
             throw new NotImplementedException();
         }
     }
