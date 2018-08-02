@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StoreScraper.Bots.Shelflife;
 using StoreScraper.Models;
-using StoreScraper.Scrapers.Shelflife;
 
 namespace ScraperTest.Tests
 {
@@ -13,7 +13,21 @@ namespace ScraperTest.Tests
         public void FindItemsTest()
         {
             ShelflifeScraper scraper = new ShelflifeScraper();
-            TestFind(scraper);
+            SearchSettingsBase settings = new SearchSettingsBase()
+            {
+                KeyWords = "watch"
+            };
+
+            scraper.FindItems(out var lst, settings, CancellationToken.None);
+            foreach (var item in lst)
+            {
+                Debug.WriteLine(item.Name);
+                Debug.WriteLine(item.Url);
+                Debug.WriteLine(item.ImageUrl);
+                Debug.WriteLine(item.Price);
+                Debug.WriteLine("");
+                Debug.WriteLine("");
+            }
         }
 
         [TestMethod()]
@@ -32,33 +46,6 @@ namespace ScraperTest.Tests
             foreach (var sz in details.SizesList)
             {
                 Debug.WriteLine(sz);
-            }
-        }
-
-        [TestMethod]
-        public void FindItemsTestWithCookies()
-        {
-            ShelflifeScraper scraper = new ShelflifeScraper();
-            scraper.Active = true;
-            TestFind(scraper);
-        }
-
-        private void TestFind(ShelflifeScraper scraper)
-        {
-            SearchSettingsBase settings = new SearchSettingsBase()
-            {
-                KeyWords = "watch"
-            };
-
-            scraper.FindItems(out var lst, settings, CancellationToken.None);
-            foreach (var item in lst)
-            {
-                Debug.WriteLine(item.Name);
-                Debug.WriteLine(item.Url);
-                Debug.WriteLine(item.ImageUrl);
-                Debug.WriteLine(item.Price);
-                Debug.WriteLine("");
-                Debug.WriteLine("");
             }
         }
     }

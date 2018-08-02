@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StoreScraper.Bots.OffWhite;
 using StoreScraper.Models;
-using StoreScraper.Scrapers.OffWhite;
 
 namespace ScraperTest.Tests
 {

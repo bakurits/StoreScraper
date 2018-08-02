@@ -11,10 +11,9 @@ using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
-
 #pragma warning disable 4014
 
-namespace StoreScraper.Scrapers.Mrporter
+namespace StoreScraper.Bots.Mrporter
 {
     public class MrporterScraper : ScraperBase
     {

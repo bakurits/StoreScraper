@@ -25,7 +25,7 @@ namespace StoreScraper.Models
         public string Currency { get; set; }
 
         [Browsable(false)]
-        public string Url { get; } = "";
+        public string Url { get; set; } = "";
 
         [Browsable(false)]
         public string Id { get; set;} = "";

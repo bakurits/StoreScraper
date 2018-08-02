@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
@@ -15,7 +16,7 @@ using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
-namespace StoreScraper.Scrapers.OffWhite
+namespace StoreScraper.Bots.OffWhite
 {
     [Serializable]
     public class OffWhiteScraper : ScraperBase

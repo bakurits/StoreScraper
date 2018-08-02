@@ -1,8 +1,8 @@
 ﻿using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StoreScraper.Bots.Mrporter;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
-using StoreScraper.Scrapers.Mrporter;
 
 namespace ScraperTest.Helpers
 {
