@@ -1,6 +1,8 @@
-﻿using System.Threading;
+﻿using System.Diagnostics;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StoreScraper.Bots.ChampsSports_FootLocker_EastBay;
+using StoreScraper.Models;
+using static StoreScraper.Scrapers.ChampsSports_FootLocker_EastBay.FootStoreScraper;
 
 namespace ScraperTest.Tests
 {
@@ -11,7 +13,7 @@ namespace ScraperTest.Tests
         [TestMethod]
         public void ChampsSportsScraper()
         {
-            FootStoreScraper.ChampsSportsScraper scraper = new FootStoreScraper.ChampsSportsScraper();
+            ChampsSportsScraper scraper = new ChampsSportsScraper();
             scraper.FindItems(out  var lst, Helper.SearchSettings, CancellationToken.None);
             Helper.PrintTestReuslts(lst);
         }
@@ -19,7 +21,7 @@ namespace ScraperTest.Tests
         [TestMethod]
         public void FootLocker()
         {
-            FootStoreScraper.FootLockerScraper scraper = new FootStoreScraper.FootLockerScraper();
+            FootLockerScraper scraper = new FootLockerScraper();
             scraper.FindItems(out var lst, Helper.SearchSettings, CancellationToken.None);
             Helper.PrintTestReuslts(lst);
         }
@@ -27,9 +29,21 @@ namespace ScraperTest.Tests
         [TestMethod]
         public void EastBay()
         {
-            FootStoreScraper.EastBayScraper footStoreScraper = new FootStoreScraper.EastBayScraper();
+            EastBayScraper footStoreScraper = new EastBayScraper();
             footStoreScraper.FindItems(out var lst, Helper.SearchSettings, CancellationToken.None);
             Helper.PrintTestReuslts(lst);
+        }
+
+        [TestMethod]
+        public void ChampsSportsGetDetails()
+        {
+            string url =
+                "https://www.champssports.com/product/model:299420/sku:A5905010/nike-jdi-club-pullover-hoodie-mens/";
+
+            Product p = new Product(new ChampsSportsScraper(), "chudo", url, 30, null, url);
+            var details = p.GetDetails(CancellationToken.None);
+            
+            Debug.WriteLine(string.Join(", ",details.SizesList));
         }
     }
 }

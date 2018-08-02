@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
-using System.Net.Http;
 using System.Threading;
 using System.Xml;
 using StoreScraper.Core;
@@ -10,7 +9,7 @@ using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
-namespace StoreScraper.Bots.Footaction
+namespace StoreScraper.Scrapers.Footaction
 {
     [Serializable]
     public class FootactionScrapper : ScraperBase

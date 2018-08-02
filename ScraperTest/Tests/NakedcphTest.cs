@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StoreScraper.Bots.Nakedcph;
 using StoreScraper.Models;
+using StoreScraper.Scrapers.Nakedcph;
 
 namespace ScraperTest.Tests
 {

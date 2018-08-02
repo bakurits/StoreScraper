@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net.Http;
 using System.Threading;
 using HtmlAgilityPack;
@@ -9,18 +8,40 @@ using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
-namespace StoreScraper.Bots.Shelflife
+#pragma warning disable 4014
+
+namespace StoreScraper.Scrapers.Shelflife
 {
     public class ShelflifeScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Shelflife";
         public override string WebsiteBaseUrl { get; set; } = "https://www.shelflife.co.za/";
-        public override bool Active { get; set; }
+
+
+        private bool _active;
+        public override bool Active
+        {
+            get => _active;
+            set
+            {
+                if (!_active && value)
+                {
+                    CookieCollector.Default.RegisterActionAsync(this.WebsiteName, new Uri(this.WebsiteBaseUrl),
+                                TimeSpan.FromMinutes(30)).Wait(); 
+                }
+                else if (_active && !value)
+                {
+                    CookieCollector.Default.RemoveAction(this.WebsiteName);
+                }
+
+            }
+        }
 
         private const string SearchFormat = "https://www.shelflife.co.za/Search?search={0}";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
+           
             listOfProducts = new List<Product>();
             HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
             
@@ -56,10 +77,12 @@ namespace StoreScraper.Bots.Shelflife
 
         private HtmlNode GetWebpage(string url, CancellationToken token)
         {
-            using (HttpClient client = ClientFactory.GetProxiedClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders))
+            HttpClient client = _active ? CookieCollector.Default.GetClient() : ClientFactory.GetProxiedClient().AddHeaders(ClientFactory.FireFoxHeaders);
+
+            using (client)
             {
                 var document = client.GetDoc(url, token).DocumentNode;
-                return client.GetDoc(url, token).DocumentNode;
+                return document;
             }
         }
 
