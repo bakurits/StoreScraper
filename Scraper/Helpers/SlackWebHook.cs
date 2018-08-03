@@ -14,10 +14,9 @@ namespace StoreScraper.Helpers
     public class SlackWebHook
     {
 
-
-        public static void PostMessage(Product product, string apiUrl)
+        public static async Task PostMessage(Product product, string apiUrl)
         {
-            string formater = @"{{
+            const string formater = @"{{
                 ""attachments"": [
                     {{
                         ""fallback"": ""New item added"",
@@ -45,18 +44,16 @@ namespace StoreScraper.Helpers
             }
 
 
-            string myJson = String.Format(formater, product.Url, "*" + product.Name + "* added in site\n *available sizes are* : " + szs , product.ImageUrl);
+            string myJson = string.Format(formater, product.Url, "*" + product.Name + "* added in site\n *available sizes are* : " + szs , product.ImageUrl);
 
-            PostMessageAsync(myJson, apiUrl);
+            await PostMessageAsync(myJson, apiUrl);
         }
 
-        public static async void PostMessageAsync(string messageJson, string apiUrl)
+        public static async Task PostMessageAsync(string messageJson, string apiUrl)
         {
             using (var client = new HttpClient())
             {   
                 await client.PostAsync(apiUrl, new StringContent(messageJson, Encoding.UTF8, "application/json"));
-                Debug.WriteLine(messageJson);
-                Debug.WriteLine(apiUrl);
             }
         }
 

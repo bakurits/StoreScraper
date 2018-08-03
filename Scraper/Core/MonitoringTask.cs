@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,7 +18,6 @@ namespace StoreScraper.Core
         public SearchSettingsBase SearchSettings { get; set; }
         public List<Product> OldItems { get; set; }
         public List<FinalAction> FinalActions { get; set; }
-
 
 
         public void Start(CancellationToken token)
@@ -57,42 +57,40 @@ namespace StoreScraper.Core
             var result = false;
             foreach (var product in lst)
             {
-                if (!OldItems.Contains(product))
+                if (OldItems.Contains(product)) continue;
+                Logger.Instance.WriteVerboseLog($"New Item Appeared: {product}");
+                OldItems.Add(product);
+                foreach (var action in FinalActions)
                 {
-                    OldItems.Add(product);
-                    foreach (var action in FinalActions)
+                    switch (action)
                     {
-                        if (action == FinalAction.PostToSlack)
-                        {
+                        case FinalAction.PostToSlack:
                             foreach (var slackUrl in AppSettings.Default.SlackApiUrl)
                             {
-                                try
-                                {
-                                    SlackWebHook.PostMessage(product, slackUrl);
-                                }
-                                catch
-                                {
-                                    // ignored
-                                }
+                                SlackWebHook.PostMessage(product, slackUrl).ContinueWith(task =>
+                                {                               
+                                    if(task.IsCompleted) Logger.Instance.WriteErrorLog($"({product}) Sent To Slack");
+                                    if (task.IsFaulted) Logger.Instance.WriteErrorLog($"({product}) Slack Send Error");
+                                });
                             }
-                        }
-                        else if (action == FinalAction.PostToDiscord)
-                        {
-                            foreach (var discordUrl in AppSettings.Default.DiscordApiUrl)
-                            {
-                                try
-                                {
-                                    DiscordWebhook.Send(discordUrl, product);
 
-                                }
-                                catch
+                            break;
+                        case FinalAction.PostToDiscord:
+                            foreach (var discordUrl in AppSettings.Default.DiscordApiUrl)
+                            {                        
+                                DiscordWebhook.Send(discordUrl, product).ContinueWith(task =>
                                 {
-                                    // ignored
-                                }
+                                    if (task.IsCompleted) Logger.Instance.WriteErrorLog($"({product}) Sent To Discord");
+                                    if (task.IsFaulted) Logger.Instance.WriteErrorLog($"({product}) Discord Send Error");
+                                });
                             }
-                        }
-                        result = true;
+
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
                     }
+
+                    result = true;
                 }
             }
             return result;

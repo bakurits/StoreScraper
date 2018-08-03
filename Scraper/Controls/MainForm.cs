@@ -94,36 +94,16 @@ namespace StoreScraper.Controls
 
         private void FindAction(ScraperBase scraper)
         {
-            for (int i = 0; i < 5; i++)
+            scraper.FindItems(out var products, PGrid_Bot.SelectedObject as SearchSettingsBase, _findTokenSource.Token);
+            DGrid_FoundProducts.Invoke(new Action(() =>
             {
-                try
+                lock (_listOfProducts)
                 {
-                    scraper.FindItems(out var products, PGrid_Bot.SelectedObject as SearchSettingsBase, _findTokenSource.Token);
-                    DGrid_FoundProducts.Invoke(new Action(() =>
-                    {
-                        lock (_listOfProducts)
-                        {
-                            products.ForEach(product => _listOfProducts.Add(product));
-                            _findTokenSource.Token.ThrowIfCancellationRequested();
-                        }
-                    }));
-                    break;
+                    products.ForEach(product => _listOfProducts.Add(product));
+                    _findTokenSource.Token.ThrowIfCancellationRequested();
                 }
-                catch
-                {
-                   //ignored
-                }
-            }
-            
+            }));
         }
-
-        private void InfoOnOnLogged(object sender, string s)
-        {
-            Rtbx_EventLog.Invoke(new Action(() =>
-                            Rtbx_EventLog.AppendText(s + "\r\n")
-            ));
-        }
-
 
         private void FindProductsTaskCompleted(Task task)
         {
@@ -219,6 +199,7 @@ namespace StoreScraper.Controls
         private void Btn_Save_Click(object sender, EventArgs e)
         {
             AppSettings.Default.Proxies = RTbx_Proxies.Text.Replace("\r", "").Split('\n').ToList();
+            AppSettings.Default.Save();
         }
 
         private void Btn_AddToMonitor_Click(object sender, EventArgs e)
@@ -280,6 +261,13 @@ namespace StoreScraper.Controls
                 for (int i = selectedItems.Count - 1; i >= 0; i--)
                     CLbx_Monitor.Items.Remove(selectedItems[i]);
             }
+        }
+
+        private void Btn_SaveRestart_Click(object sender, EventArgs e)
+        {
+           this.Hide();
+           Task.Run(() => MainForm_FormClosed(null, null));
+           Process.Start(Application.ExecutablePath);
         }
     }
 }

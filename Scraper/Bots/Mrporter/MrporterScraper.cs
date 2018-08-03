@@ -158,7 +158,7 @@ namespace StoreScraper.Bots.Mrporter
             }
             catch (Exception e)
             {
-                Logger.Instance.WriteVerboseLog(e.Message);
+                Logger.Instance.WriteErrorLog(e.Message);
             }
         }
 
