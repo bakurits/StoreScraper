@@ -52,16 +52,16 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Tests\ShelflifeScraperTests.cs" />
     <Compile Include="Helper.cs" />
-    <Compile Include="FootScraperTest.cs" />
+    <Compile Include="Tests\FootScraperTest.cs" />
     <Compile Include="Helpers\DiscordWebhookTests.cs" />
     <Compile Include="Helpers\SlackWebHookTests.cs" />
     <Compile Include="Models\LoggerTests.cs" />
-    <Compile Include="MrporterTest.cs" />
-    <Compile Include="NakedcphTest.cs" />
-    <Compile Include="OffwhiteTest.cs" />
+    <Compile Include="Tests\MrporterTest.cs" />
+    <Compile Include="Tests\NakedcphTest.cs" />
+    <Compile Include="Tests\OffwhiteTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="FootActionTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

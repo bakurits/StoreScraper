@@ -1,9 +1,9 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StoreScraper.Models;
 using StoreScraper.Bots.Nakedcph;
-namespace ScraperTest
+using StoreScraper.Models;
+
+namespace ScraperTest.Tests
 {
     [TestClass]
     public class NakedcphTest

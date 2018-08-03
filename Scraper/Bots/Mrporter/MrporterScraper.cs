@@ -195,7 +195,7 @@ namespace StoreScraper.Bots.Mrporter
                 price = GetPrice(priceContainer.SelectSingleNode("./p[1]").InnerHtml);
             }
 
-            Product curProduct = new Product(this, name, url, price, url, imgUrl);
+            Product curProduct = new Product(this, name, url, price, imgUrl, url, "GBR");
 
             if (Utils.SatisfiesCriteria(curProduct, settings))
             {

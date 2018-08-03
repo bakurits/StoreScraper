@@ -115,12 +115,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\DisabledScraperAttribute.cs" />
-    <Compile Include="Bots\ChampsSports_FootLocker_EastBay\FootStoreScraper.cs" />
-    <Compile Include="Bots\Footaction\FootactionScrapper.cs" />
+    <Compile Include="Bots\ChampsSports_FootLocker_EastBay_FootAction\FootStoreBase.cs" />
     <Compile Include="Bots\Mrporter\MrporterScraper.cs" />
     <Compile Include="Bots\Nakedcph\NakedcphScrapper.cs" />
     <Compile Include="Bots\OffWhite\OffWhiteScraper.cs" />
     <Compile Include="AppSettings.cs" />
+    <Compile Include="Bots\Shelflife\ShelflifeScraper.cs" />
     <Compile Include="Browser\CookieCollector.cs" />
     <Compile Include="Helpers\Embed.cs" />
     <Compile Include="Interfaces\DisabledScraperAttribute.cs" />
