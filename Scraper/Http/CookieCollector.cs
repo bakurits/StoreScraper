@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
-using Cookie = System.Net.Cookie;
+
 #pragma warning disable 4014
 
-namespace StoreScraper.Browser
+namespace StoreScraper.Http
 {
 
     public class CookieCollector
@@ -59,13 +58,13 @@ namespace StoreScraper.Browser
                 foreach (var proxy in AppSettings.Default.Proxies)
                 {
                     var webProxy = ClientFactory.ParseProxy(proxy);
-                    var client = ClientFactory.GetProxiedClient(webProxy, true).AddHeaders(ClientFactory.FireFoxHeaders);
+                    var client = ClientFactory.CreateProxiedHttpClient(webProxy, true).AddHeaders(ClientFactory.FireFoxHeaders);
                     _proxiedClients.Add(client);
                 }
             }
 
 
-            _proxylessClient = ClientFactory.GetHttpClient(null, true).AddHeaders(ClientFactory.FireFoxHeaders);
+            _proxylessClient = ClientFactory.CreateHttpCLient(null, true).AddHeaders(ClientFactory.FireFoxHeaders);
 
             Task.Run((Action)Monitor);
         }

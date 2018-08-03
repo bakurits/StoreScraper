@@ -46,6 +46,7 @@
             this.label_FindingStatus = new System.Windows.Forms.Label();
             this.DGrid_FoundProducts = new System.Windows.Forms.DataGridView();
             this.Tab_Settings = new System.Windows.Forms.TabPage();
+            this.Btn_SaveRestart = new System.Windows.Forms.Button();
             this.Btn_Save = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.RTbx_Proxies = new System.Windows.Forms.TextBox();
@@ -54,7 +55,7 @@
             this.Tab_ErrorLog = new System.Windows.Forms.TabPage();
             this.Rtbx_EventLog = new System.Windows.Forms.RichTextBox();
             this.Rtbx_DebugLog = new System.Windows.Forms.RichTextBox();
-            this.Btn_SaveRestart = new System.Windows.Forms.Button();
+            this.Btn_ClearAllLogs = new System.Windows.Forms.Button();
             this.toolStripContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.SuspendLayout();
@@ -272,6 +273,17 @@
             this.Tab_Settings.Text = "Settings";
             this.Tab_Settings.UseVisualStyleBackColor = true;
             // 
+            // Btn_SaveRestart
+            // 
+            this.Btn_SaveRestart.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.Btn_SaveRestart.Location = new System.Drawing.Point(615, 226);
+            this.Btn_SaveRestart.Name = "Btn_SaveRestart";
+            this.Btn_SaveRestart.Size = new System.Drawing.Size(139, 23);
+            this.Btn_SaveRestart.TabIndex = 9;
+            this.Btn_SaveRestart.Text = "Save And Restart";
+            this.Btn_SaveRestart.UseVisualStyleBackColor = true;
+            this.Btn_SaveRestart.Click += new System.EventHandler(this.Btn_SaveRestart_Click);
+            // 
             // Btn_Save
             // 
             this.Btn_Save.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -328,6 +340,7 @@
             // 
             // Tab_ErrorLog
             // 
+            this.Tab_ErrorLog.Controls.Add(this.Btn_ClearAllLogs);
             this.Tab_ErrorLog.Controls.Add(this.Rtbx_EventLog);
             this.Tab_ErrorLog.Controls.Add(this.Rtbx_DebugLog);
             this.Tab_ErrorLog.Location = new System.Drawing.Point(4, 22);
@@ -349,22 +362,23 @@
             // Rtbx_DebugLog
             // 
             this.Rtbx_DebugLog.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.Rtbx_DebugLog.Location = new System.Drawing.Point(0, 252);
+            this.Rtbx_DebugLog.Location = new System.Drawing.Point(0, 283);
             this.Rtbx_DebugLog.Name = "Rtbx_DebugLog";
-            this.Rtbx_DebugLog.Size = new System.Drawing.Size(1041, 299);
+            this.Rtbx_DebugLog.Size = new System.Drawing.Size(1041, 268);
             this.Rtbx_DebugLog.TabIndex = 0;
             this.Rtbx_DebugLog.Text = "";
             // 
-            // Btn_SaveRestart
+            // Btn_ClearAllLogs
             // 
-            this.Btn_SaveRestart.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.Btn_SaveRestart.Location = new System.Drawing.Point(615, 226);
-            this.Btn_SaveRestart.Name = "Btn_SaveRestart";
-            this.Btn_SaveRestart.Size = new System.Drawing.Size(139, 23);
-            this.Btn_SaveRestart.TabIndex = 9;
-            this.Btn_SaveRestart.Text = "Save And Restart";
-            this.Btn_SaveRestart.UseVisualStyleBackColor = true;
-            this.Btn_SaveRestart.Click += new System.EventHandler(this.Btn_SaveRestart_Click);
+            this.Btn_ClearAllLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
+            this.Btn_ClearAllLogs.ForeColor = System.Drawing.Color.Red;
+            this.Btn_ClearAllLogs.Location = new System.Drawing.Point(374, 236);
+            this.Btn_ClearAllLogs.Name = "Btn_ClearAllLogs";
+            this.Btn_ClearAllLogs.Size = new System.Drawing.Size(283, 32);
+            this.Btn_ClearAllLogs.TabIndex = 2;
+            this.Btn_ClearAllLogs.Text = "Clear All Logs";
+            this.Btn_ClearAllLogs.UseVisualStyleBackColor = true;
+            this.Btn_ClearAllLogs.Click += new System.EventHandler(this.Btn_ClearAllLogs_Click);
             // 
             // MainForm
             // 
@@ -420,6 +434,7 @@
         private System.Windows.Forms.Label l_MonInterval;
         private System.Windows.Forms.Button Btn_RemoveMon;
         private System.Windows.Forms.Button Btn_SaveRestart;
+        private System.Windows.Forms.Button Btn_ClearAllLogs;
     }
 }
 

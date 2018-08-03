@@ -6,10 +6,10 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
-using StoreScraper.Browser;
 using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
+using StoreScraper.Http;
 using StoreScraper.Models;
 #pragma warning disable 4014
 
@@ -113,10 +113,9 @@ namespace StoreScraper.Bots.Mrporter
         {
             var client = _active
                 ? CookieCollector.Default.GetClient()
-                : ClientFactory.GetProxiedClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
-
+                : ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            
             var document = client.GetDoc(url, token);
-
             return document.DocumentNode;
             
         }

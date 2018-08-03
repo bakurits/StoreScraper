@@ -44,17 +44,26 @@ namespace StoreScraper.Core
         {
             List<Product> lst = null;
 
-           
+
+            for (int i = 0; i < 5; i++)
+            {
                 try
                 {
                     Bot.FindItems(out lst, SearchSettings, token);
+                    Logger.Instance.WriteErrorLog($"{Bot.WebsiteName} search success! found {lst.Count} products!!");
+                    break;
                 }
                 catch
                 {
-                    //ignored
+                    Logger.Instance.WriteErrorLog($"{Bot.WebsiteName} search failed rotating proxy..");
+                    if (i == 4) return false;
                 }
+            }
+
+            
 
             var result = false;
+            Logger.Instance.WriteVerboseLog($"({SearchSettings}) epoch completed");
             foreach (var product in lst)
             {
                 if (OldItems.Contains(product)) continue;

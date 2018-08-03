@@ -4,10 +4,10 @@ using StoreScraper.Models;
 
 namespace ScraperTest.Models
 {
-    [TestClass()]
+    [TestClass]
     public class LoggerTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void WriteLogTest()
         {
             Logger.Instance.WriteVerboseLog("bakuri");

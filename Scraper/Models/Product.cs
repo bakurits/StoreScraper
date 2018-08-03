@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Threading;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
+using HtmlAgilityPack;
 
 namespace StoreScraper.Models
 {
@@ -35,7 +36,7 @@ namespace StoreScraper.Models
 
         public Product(ScraperBase scrapedBy, string name, string url, double price, string imageUrl, string id, string currency = "USD")
         {
-            this.Name = name.Replace('\n', ' ');
+            this.Name = HtmlEntity.DeEntitize(name.Trim());
             this.Url = url;
             this.Price = price;
             this.Id = id;

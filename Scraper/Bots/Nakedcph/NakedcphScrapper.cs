@@ -14,7 +14,7 @@ using StoreScraper.Models;
 
 namespace StoreScraper.Bots.Nakedcph
 {
-    [Serializable]
+    
     public class NakedcphScrapper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Nakedcph";
@@ -27,11 +27,17 @@ namespace StoreScraper.Bots.Nakedcph
             listOfProducts = new List<Product>();
             var searchUrl =
                 $"https://www.nakedcph.com/search/searchbytext/{settings.KeyWords}/1?orderBy=Published";
-            var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FireFoxHeaders);
+            var request = ClientFactory.GetProxiedFirefoxClient(autoCookies:true);
             var document = request.GetDoc(searchUrl, token);
             Logger.Instance.WriteErrorLog("Unexpected html!");
             var nodes = document.DocumentNode.SelectSingleNode("//*[@id='products']");
             HtmlNodeCollection children = nodes.SelectNodes("./div");
+
+            if (children == null)
+            {
+                Logger.Instance.WriteErrorLog("Unexpected html");
+                throw new HtmlWebException("Unexpected html");
+            }
 
             foreach (var child in children)
             {
@@ -107,7 +113,7 @@ namespace StoreScraper.Bots.Nakedcph
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
             const string xpath = "//*[@id='product-form']//div[contains(@class,'dropdown-menu')]/a";
-            using (var client = ClientFactory.GetProxiedClient().AddHeaders(ClientFactory.FireFoxHeaders))
+            using (var client = ClientFactory.GetProxiedFirefoxClient())
             {
                 var doc = client.GetDoc(product.Url, token);
 

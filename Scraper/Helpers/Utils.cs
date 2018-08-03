@@ -59,6 +59,17 @@ namespace StoreScraper.Helpers
             return product.Price <= settingsBase.MaxPrice && product.Price >= settingsBase.MinPrice;
         }
 
+        public static string EscapeFileName(this string fileName)
+        {
+
+            foreach (char c in System.IO.Path.GetInvalidFileNameChars())
+            {
+                fileName = fileName.Replace(c, '_');
+            }
+
+            return fileName;
+        }
+
 
         public static JObject GetParsedJson(this HttpClient client, string url, CancellationToken token)
         {
@@ -114,7 +125,7 @@ namespace StoreScraper.Helpers
                 }        
             }
 
-            Logger.Instance.WriteErrorLog($"[Error] Can't connect to webiste url: {url}");
+            Logger.Instance.WriteErrorLog($"Can't connect to webiste url: {url}");
             throw new WebException($"Can't connect to webiste url: {url}");
         }
 
@@ -152,6 +163,14 @@ namespace StoreScraper.Helpers
             });
 
         
+        }
+
+        private static Random r = new Random();
+
+        public static T GetRandomValue<T>(this IList<T> list)
+        {
+            int index = r.Next(0, list.Count);
+            return list[index];
         }
     }
 }

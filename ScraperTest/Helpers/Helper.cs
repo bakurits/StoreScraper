@@ -6,8 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper;
-using StoreScraper.Browser;
 using StoreScraper.Core;
+using StoreScraper.Http;
 using StoreScraper.Models;
 
 namespace ScraperTest

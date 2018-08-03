@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Threading;
 using HtmlAgilityPack;
-using StoreScraper.Browser;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
@@ -56,11 +55,9 @@ namespace StoreScraper.Bots.Shelflife
 
         private HtmlNode GetWebpage(string url, CancellationToken token)
         {
-            using (var client = ClientFactory.GetProxiedClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders))
-            {
-                var document = client.GetDoc(url, token).DocumentNode;
-                return client.GetDoc(url, token).DocumentNode;
-            }
+            HttpClient client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var document = client.GetDoc(url, token).DocumentNode;
+            return client.GetDoc(url, token).DocumentNode;
         }
 
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
@@ -76,7 +73,7 @@ namespace StoreScraper.Bots.Shelflife
             string url = GetUrl(item);
             double price = GetPrice(item);
             string imageUrl = GetImageUrl(item);
-            listOfProducts.Add(new Product(this, name, url, price, url, imageUrl, "R"));
+            listOfProducts.Add(new Product(this, name, url, price, imageUrl, url, "R"));
         }
 
         private string GetName(HtmlNode item)

@@ -38,7 +38,7 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay_FootAction
 
         private HtmlNode InitialNavigation(string url, CancellationToken token)
         {
-            HttpClient ClientGenerator() => ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FireFoxHeaders);
+            HttpClient ClientGenerator() => ClientFactory.GetProxiedFirefoxClient(autoCookies:true).AddHeaders(ClientFactory.FireFoxHeaders);
             var document = Utils.GetDoc(ClientGenerator, url, 3, 5, token);
             return document.DocumentNode;
         }
@@ -129,10 +129,9 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay_FootAction
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
-            var client = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.HtmlOnlyHeader);
+            var client = ClientFactory.GetProxiedFirefoxClient().AddHeaders(ClientFactory.HtmlOnlyHeader);
             var node = client.GetDoc(product.Url, token)
                 .DocumentNode;
-            client.Dispose();
             HtmlNodeCollection sizes = node.SelectNodes("//*[@class=\"product_sizes\"]//*[@class=\"button\"]");
             ProductDetails details = new ProductDetails {SizesList = sizes.Select(size => size.InnerText).ToList()};
             return details;
@@ -173,7 +172,7 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay_FootAction
             listOfProducts = new List<Product>();
 
             string searchUrl = WebsiteBaseUrl + $"/api/products/search?currentPage=0&pageSize=50&query={settings.KeyWords}&sort=newArrivals";
-            var request = ClientFactory.GetProxiedClient().AddHeaders(ClientFactory.FireFoxHeaders);
+            var request = ClientFactory.GetProxiedFirefoxClient(autoCookies:true);
             var responseText = request.GetAsync(searchUrl, token).Result.Content.ReadAsStringAsync().Result;
             var xmlDocument = new XmlDocument();
             xmlDocument.LoadXml(responseText);
