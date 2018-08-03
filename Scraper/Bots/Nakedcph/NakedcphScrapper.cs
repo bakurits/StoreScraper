@@ -25,10 +25,11 @@ namespace StoreScraper.Bots.Nakedcph
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            string searchUrl =
+            var searchUrl =
                 $"https://www.nakedcph.com/search/searchbytext/{settings.KeyWords}/1?orderBy=Published";
             var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FireFoxHeaders);
             var document = request.GetDoc(searchUrl, token);
+            Logger.Instance.WriteErrorLog("Unexpected html!");
             var nodes = document.DocumentNode.SelectSingleNode("//*[@id='products']");
             HtmlNodeCollection children = nodes.SelectNodes("./div");
 
