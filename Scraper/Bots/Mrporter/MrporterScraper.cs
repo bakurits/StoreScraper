@@ -111,13 +111,14 @@ namespace StoreScraper.Bots.Mrporter
 
         private HtmlNode GetPage(string url, CancellationToken token)
         {
-            using (HttpClient client = _active
+            var client = _active
                 ? CookieCollector.Default.GetClient()
-                : ClientFactory.GetProxiedClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders))
-            {
-                var document = client.GetDoc(url, token);
-                return document.DocumentNode;
-            }
+                : ClientFactory.GetProxiedClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
+
+            var document = client.GetDoc(url, token);
+
+            return document.DocumentNode;
+            
         }
 
 

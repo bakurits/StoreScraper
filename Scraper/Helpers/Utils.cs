@@ -70,7 +70,7 @@ namespace StoreScraper.Helpers
                 throw new JsonException("Can't parse json info");
             }
 
-            JObject buyOptions = JObject.Parse(task.Result);
+            var buyOptions = JObject.Parse(task.Result);
 
             return buyOptions;
         }
@@ -87,7 +87,7 @@ namespace StoreScraper.Helpers
             }
             catch (WebException)
             {
-                Logger.Instance.WriteErrorLog("[Error] Can't connect to website");
+                Logger.Instance.WriteErrorLog("Can't connect to website");
                 throw;
             }
         }

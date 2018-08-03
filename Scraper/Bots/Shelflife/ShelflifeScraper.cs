@@ -56,7 +56,7 @@ namespace StoreScraper.Bots.Shelflife
 
         private HtmlNode GetWebpage(string url, CancellationToken token)
         {
-            using (HttpClient client = ClientFactory.GetProxiedClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders))
+            using (var client = ClientFactory.GetProxiedClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders))
             {
                 var document = client.GetDoc(url, token).DocumentNode;
                 return client.GetDoc(url, token).DocumentNode;
