@@ -29,7 +29,7 @@ namespace StoreScraper.Core
 
             string log = $"[{nowTime}]: [Verbose] {message}" + Environment.NewLine + Environment.NewLine;
 
-            OnLogged?.Invoke(log, Color.Red);
+            OnLogged?.Invoke(log, Color.Blue);
         }
 
     }

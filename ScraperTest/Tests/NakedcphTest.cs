@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System;
+using System.Linq;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper.Bots.Nakedcph;
 using StoreScraper.Models;
@@ -11,7 +13,7 @@ namespace ScraperTest.Tests
         public NakedcphScrapper scrapper = new NakedcphScrapper();
 
         [TestMethod]
-        public void TestMethod1()
+        public void TestFind()
         {
             var searchSettingsBase = new SearchSettingsBase()
             {
@@ -21,6 +23,20 @@ namespace ScraperTest.Tests
                 NegKeyWrods = "",
             };
             scrapper.FindItems(out var listOfProducts, searchSettingsBase, CancellationToken.None);
+        }
+
+        [TestMethod]
+        public void TestGetProductDetails()
+        {
+            var product = new Product()
+            {
+                Url = "https://www.nakedcph.com/adidas-originals-t-shirt-ce1666/p/6724",
+                ScrapedBy = scrapper
+            };
+
+            var details = product.GetDetails(CancellationToken.None);
+
+            Console.WriteLine(string.Join(", ", details.SizesList));
         }
     }
 }

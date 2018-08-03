@@ -87,7 +87,7 @@ namespace StoreScraper.Helpers
             }
             catch (WebException)
             {
-                Logger.Instance.WriteVerboseLog("[Error] Can't connect to website");
+                Logger.Instance.WriteErrorLog("[Error] Can't connect to website");
                 throw;
             }
         }
@@ -114,7 +114,7 @@ namespace StoreScraper.Helpers
                 }        
             }
 
-            Logger.Instance.WriteVerboseLog($"[Error] Can't connect to webiste url: {url}");
+            Logger.Instance.WriteErrorLog($"[Error] Can't connect to webiste url: {url}");
             throw new WebException($"Can't connect to webiste url: {url}");
         }
 
@@ -141,12 +141,17 @@ namespace StoreScraper.Helpers
 
         public static void AppendText(this RichTextBox box, string text, Color color)
         {
-            box.SelectionStart = box.TextLength;
-            box.SelectionLength = 0;
+            box.Invoke((MethodInvoker) delegate
+            {
+                box.SelectionStart = box.TextLength;
+                box.SelectionLength = 0;
 
-            box.SelectionColor = color;
-            box.AppendText(text);
-            box.SelectionColor = box.ForeColor;
+                box.SelectionColor = color;
+                box.AppendText(text);
+                box.SelectionColor = box.ForeColor;
+            });
+
+        
         }
     }
 }

@@ -89,7 +89,7 @@ namespace StoreScraper.Bots.OffWhite
 
             if (container == null)
             {
-                Logger.Instance.WriteVerboseLog("[Error] Uncexpected Html!!");
+                Logger.Instance.WriteErrorLog("[Error] Uncexpected Html!!");
                 throw new WebException("Undexpected Html");
             }
 
@@ -125,7 +125,7 @@ namespace StoreScraper.Bots.OffWhite
             }
             catch (Exception e)
             {
-                Logger.Instance.WriteVerboseLog(e.Message);
+                Logger.Instance.WriteErrorLog(e.Message);
             }
         }
         /// <summary>
@@ -148,7 +148,7 @@ namespace StoreScraper.Bots.OffWhite
             string imagePath = item.SelectSingleNode("./a/figure/img").GetAttributeValue("src", null);
             if (imagePath == null)
             {
-                Logger.Instance.WriteVerboseLog("Image Of product couldn't found");
+                Logger.Instance.WriteErrorLog("Image Of product couldn't found");
             }
 
             string id = item.GetAttributeValue("data-json-url", null);

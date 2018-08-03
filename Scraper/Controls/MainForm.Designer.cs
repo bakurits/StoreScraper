@@ -54,6 +54,7 @@
             this.Tab_ErrorLog = new System.Windows.Forms.TabPage();
             this.Rtbx_EventLog = new System.Windows.Forms.RichTextBox();
             this.Rtbx_DebugLog = new System.Windows.Forms.RichTextBox();
+            this.Btn_SaveRestart = new System.Windows.Forms.Button();
             this.toolStripContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.SuspendLayout();
@@ -142,9 +143,9 @@
             // Btn_RemoveMon
             // 
             this.Btn_RemoveMon.ForeColor = System.Drawing.Color.Crimson;
-            this.Btn_RemoveMon.Location = new System.Drawing.Point(756, 208);
+            this.Btn_RemoveMon.Location = new System.Drawing.Point(842, 208);
             this.Btn_RemoveMon.Name = "Btn_RemoveMon";
-            this.Btn_RemoveMon.Size = new System.Drawing.Size(135, 23);
+            this.Btn_RemoveMon.Size = new System.Drawing.Size(181, 23);
             this.Btn_RemoveMon.TabIndex = 22;
             this.Btn_RemoveMon.Text = "Remove Selected";
             this.Btn_RemoveMon.UseVisualStyleBackColor = true;
@@ -173,7 +174,7 @@
             this.CLbx_Monitor.FormattingEnabled = true;
             this.CLbx_Monitor.Location = new System.Drawing.Point(517, 33);
             this.CLbx_Monitor.Name = "CLbx_Monitor";
-            this.CLbx_Monitor.Size = new System.Drawing.Size(374, 169);
+            this.CLbx_Monitor.Size = new System.Drawing.Size(506, 169);
             this.CLbx_Monitor.TabIndex = 17;
             // 
             // label1
@@ -208,6 +209,7 @@
             // 
             // label3
             // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label3.AutoSize = true;
             this.label3.ForeColor = System.Drawing.Color.DimGray;
             this.label3.Location = new System.Drawing.Point(17, 535);
@@ -256,6 +258,7 @@
             // 
             // Tab_Settings
             // 
+            this.Tab_Settings.Controls.Add(this.Btn_SaveRestart);
             this.Tab_Settings.Controls.Add(this.Btn_Save);
             this.Tab_Settings.Controls.Add(this.label4);
             this.Tab_Settings.Controls.Add(this.RTbx_Proxies);
@@ -271,9 +274,10 @@
             // 
             // Btn_Save
             // 
-            this.Btn_Save.Location = new System.Drawing.Point(762, 220);
+            this.Btn_Save.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.Btn_Save.Location = new System.Drawing.Point(760, 226);
             this.Btn_Save.Name = "Btn_Save";
-            this.Btn_Save.Size = new System.Drawing.Size(86, 23);
+            this.Btn_Save.Size = new System.Drawing.Size(88, 23);
             this.Btn_Save.TabIndex = 8;
             this.Btn_Save.Text = "Save";
             this.Btn_Save.UseVisualStyleBackColor = true;
@@ -281,9 +285,10 @@
             // 
             // label4
             // 
+            this.label4.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(635, 38);
+            this.label4.Location = new System.Drawing.Point(635, 15);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(67, 20);
             this.label4.TabIndex = 7;
@@ -292,17 +297,19 @@
             // 
             // RTbx_Proxies
             // 
-            this.RTbx_Proxies.Location = new System.Drawing.Point(478, 61);
+            this.RTbx_Proxies.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.RTbx_Proxies.Location = new System.Drawing.Point(478, 38);
             this.RTbx_Proxies.Multiline = true;
             this.RTbx_Proxies.Name = "RTbx_Proxies";
-            this.RTbx_Proxies.Size = new System.Drawing.Size(370, 153);
+            this.RTbx_Proxies.Size = new System.Drawing.Size(370, 183);
             this.RTbx_Proxies.TabIndex = 6;
             // 
             // label2
             // 
+            this.label2.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
-            this.label2.Location = new System.Drawing.Point(82, 38);
+            this.label2.Location = new System.Drawing.Point(201, 15);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(133, 20);
             this.label2.TabIndex = 5;
@@ -310,12 +317,12 @@
             // 
             // PGrid_Settings
             // 
-            this.PGrid_Settings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.PGrid_Settings.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.PGrid_Settings.CommandsVisibleIfAvailable = false;
             this.PGrid_Settings.HelpVisible = false;
-            this.PGrid_Settings.Location = new System.Drawing.Point(12, 61);
+            this.PGrid_Settings.Location = new System.Drawing.Point(98, 38);
             this.PGrid_Settings.Name = "PGrid_Settings";
-            this.PGrid_Settings.Size = new System.Drawing.Size(305, 183);
+            this.PGrid_Settings.Size = new System.Drawing.Size(374, 183);
             this.PGrid_Settings.TabIndex = 4;
             this.PGrid_Settings.ToolbarVisible = false;
             // 
@@ -347,6 +354,17 @@
             this.Rtbx_DebugLog.Size = new System.Drawing.Size(1041, 299);
             this.Rtbx_DebugLog.TabIndex = 0;
             this.Rtbx_DebugLog.Text = "";
+            // 
+            // Btn_SaveRestart
+            // 
+            this.Btn_SaveRestart.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.Btn_SaveRestart.Location = new System.Drawing.Point(615, 226);
+            this.Btn_SaveRestart.Name = "Btn_SaveRestart";
+            this.Btn_SaveRestart.Size = new System.Drawing.Size(139, 23);
+            this.Btn_SaveRestart.TabIndex = 9;
+            this.Btn_SaveRestart.Text = "Save And Restart";
+            this.Btn_SaveRestart.UseVisualStyleBackColor = true;
+            this.Btn_SaveRestart.Click += new System.EventHandler(this.Btn_SaveRestart_Click);
             // 
             // MainForm
             // 
@@ -401,6 +419,7 @@
         private System.Windows.Forms.CheckedListBox CLbx_Monitor;
         private System.Windows.Forms.Label l_MonInterval;
         private System.Windows.Forms.Button Btn_RemoveMon;
+        private System.Windows.Forms.Button Btn_SaveRestart;
     }
 }
 

@@ -59,7 +59,7 @@ namespace StoreScraper.Bots.Nakedcph
             }
             catch (Exception e)
             {
-                Logger.Instance.WriteVerboseLog(e.Message);
+                Logger.Instance.WriteErrorLog(e.Message);
             }
         }
 
@@ -105,7 +105,15 @@ namespace StoreScraper.Bots.Nakedcph
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
-            throw new NotImplementedException();
+            const string xpath = "//*[@id='product-form']//div[contains(@class,'dropdown-menu')]/a";
+            using (var client = ClientFactory.GetProxiedClient().AddHeaders(ClientFactory.FireFoxHeaders))
+            {
+                var doc = client.GetDoc(product.Url, token);
+
+                var nodes = doc.DocumentNode.SelectNodes(xpath);
+                var sizes = nodes.Select(node => node.InnerText.Trim());
+                return new ProductDetails() { SizesList = sizes.ToList() };
+            }
         }
     }
 }

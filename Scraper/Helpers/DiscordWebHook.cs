@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using StoreScraper.Core;
 using StoreScraper.Models;
@@ -28,7 +29,7 @@ namespace StoreScraper.Helpers
         public List<Embed> Embeds { get; set; } = new List<Embed>();
 
         // ReSharper disable once InconsistentNaming
-        public static async void Send(string webhookUrl, Product product, string username = null, string avatarUrl = null, bool isTTS = false)
+        public static async Task Send(string webhookUrl, Product product, string username = null, string avatarUrl = null, bool isTTS = false)
         {
             string formatter = @"{{
               ""content"": ""Added new item"",
