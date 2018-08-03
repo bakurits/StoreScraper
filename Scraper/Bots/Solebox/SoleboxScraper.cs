@@ -53,7 +53,7 @@ namespace StoreScraper.Bots.Solebox
 
         private HtmlNode GetWebpage(string url, CancellationToken token)
         {
-            using (var client = ClientFactory.GetProxiedClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders))
+            using (var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true))
             {
                 var document = client.GetDoc(url, token).DocumentNode;
                 return client.GetDoc(url, token).DocumentNode;
