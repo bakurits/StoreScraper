@@ -5,11 +5,13 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Security.Authentication;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Remote;
 using StoreScraper.Helpers;
+using StoreScraper.Http;
 using StoreScraper.Models;
 
 namespace StoreScraper.Factory
@@ -54,6 +56,18 @@ namespace StoreScraper.Factory
             ("Cache-Control", "no-cache"),
             ("Pramgma","no-cache"),
             ("Connection", "keep-alive"),
+            //("DNT","1"),
+            //("Upgrade-Insecure-Requests", "1"),
+        };
+
+        public static StringPair[] FireFoxHeaders2 = {
+            FirefoxUserAgentHeader,
+            FirefoxAcceptHeader,
+            ("Accept-Encoding", "gzip,deflate"),
+            ("Accept-Language", "en-US,en; q=0.5"),
+            ("Cache-Control", "no-cache"),
+            ("Pramgma","no-cache"),
+            ("Connection", "close"),
             ("DNT","1"),
             ("Upgrade-Insecure-Requests", "1"),
         };
@@ -97,20 +111,25 @@ namespace StoreScraper.Factory
         /// <param name="autoCookies">Set true when you want client to automatically handle sending and receiving cookies.
         /// When autoCookies is true, you manually add cookies with Addcookies method</param>
         /// <returns></returns>
-        public static HttpClient GetProxiedClient(WebProxy proxy = null, bool autoCookies = false)
+        public static HttpClient GetProxiedFirefoxClient(WebProxy proxy = null, bool autoCookies = true)
         {
             proxy = proxy ?? GetRandomProxy();
-            return GetHttpClient(proxy, autoCookies);
+            return GetFirefoxHttpClient(proxy, autoCookies);
         }
 
-        public static HttpClient GetHttpClient(WebProxy proxy = null, bool autoCookies = false)
+        public static HttpClient CreateProxiedHttpClient(WebProxy proxy = null, bool autoCookies = false)
+        {
+            proxy = proxy ?? GetRandomProxy();
+            return CreateHttpCLient(proxy, autoCookies);
+        }
+
+        public static HttpClient CreateHttpCLient(WebProxy proxy = null, bool autoCookies = false)
         {
             HttpClientHandler handler = new HttpClientHandler()
             {
                 UseCookies = autoCookies,
                 AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
                 AllowAutoRedirect = true,
-                MaxAutomaticRedirections = 3,
             };
 
             if (proxy != null)
@@ -119,10 +138,31 @@ namespace StoreScraper.Factory
                 handler.Proxy = proxy;
             }
 
-            HttpClient client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(15) };
-            client.DefaultRequestHeaders.Clear();
 
+            handler.ServerCertificateCustomValidationCallback = (message, certificate2, arg3, arg4) => true;
+            HttpClient client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(15)};
             return client;
+        }
+
+        public static FirefoxHttpClientStorage storage = new FirefoxHttpClientStorage();
+
+        public static HttpClient GetFirefoxHttpClient(WebProxy proxy = null, bool autoCookies = false)
+        {
+
+            if (!autoCookies)
+            {
+                return CreateHttpCLient(proxy).AddHeaders(FireFoxHeaders);
+            }
+
+            if (proxy == null)
+            {
+                return storage.GetHttpClient();
+            }
+            else
+            {
+                return storage.GetHttpClient(proxy);
+            }
+        
         }
 
         [DllImport("user32.dll")]

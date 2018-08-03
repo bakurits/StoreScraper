@@ -8,9 +8,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using StoreScraper.Browser;
 using StoreScraper.Core;
 using StoreScraper.Helpers;
+using StoreScraper.Http;
 using StoreScraper.Models;
 
 namespace StoreScraper.Controls
@@ -19,8 +19,7 @@ namespace StoreScraper.Controls
     {
         private CancellationTokenSource _findTokenSource = new CancellationTokenSource();
         private BindingList<Product> _listOfProducts = new BindingList<Product>();
-        private Thread _monitorThread;
-        private CancellationTokenSource _monitorCancellation;
+        private CancellationTokenSource _monitorCancellation = new CancellationTokenSource();
 
         public MainForm()
         {
@@ -30,52 +29,9 @@ namespace StoreScraper.Controls
             PGrid_Settings.SelectedObject = AppSettings.Default;
             RTbx_Proxies.Text = string.Join("\r\n", AppSettings.Default.Proxies);
             Logger.Instance.OnLogged += (message, color) => Rtbx_EventLog.AppendText(message,color);
-            _monitorThread = new Thread(Monitor);
-            this.Shown += (sender, args) => _monitorThread.Start();
             CultureInfo.CurrentUICulture = new CultureInfo("en-US");
             CultureInfo.CurrentCulture = new CultureInfo("en-US");
         }
-
-
-        private void Monitor()
-        {
-            _monitorCancellation = new CancellationTokenSource();
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
-            while (true)
-            {
-                stopWatch.Restart();
-                _monitorCancellation.Token.ThrowIfCancellationRequested();
-
-                var checkeItems = new object[CLbx_Monitor.CheckedItems.Count];
-
-                CLbx_Monitor.Invoke((MethodInvoker)(() =>
-                    CLbx_Monitor.CheckedItems.CopyTo(checkeItems, 0)));
-
-
-
-                foreach (var checkedItem in checkeItems)
-                {
-                    var monTask = (MonitoringTask)checkedItem;
-                }
-
-
-
-                Thread.Sleep(Math.Max(AppSettings.Default.MonitoringDelay, 100));
-                try
-                {
-                    l_MonInterval.Invoke(new Action(() =>
-                        l_MonInterval.Text = $"Monitoring Interval: {stopWatch.Elapsed}"));
-                }
-                catch
-                {
-                    //ignored
-                }
-
-            }
-
-        }
-
 
         private void btn_FindProducts_Click(object sender, EventArgs e)
         {
@@ -111,7 +67,7 @@ namespace StoreScraper.Controls
             {
                 if (task.IsFaulted)
                 {
-                    Rtbx_DebugLog.AppendText(task.Exception?.Message + "\r\n");
+                    Rtbx_DebugLog.AppendText(task.Exception?.StackTrace + "\r\n");
                     label_FindingStatus.Text = @"Some Errors!";
                     label_FindingStatus.ForeColor = Color.Red;
                 }
@@ -159,10 +115,6 @@ namespace StoreScraper.Controls
             var cell = grid.Rows[e.RowIndex].Cells[e.ColumnIndex];
 
             cell.ToolTipText = "Double click to open in browser";
-            if (grid.Columns[e.ColumnIndex].Name == "Price")
-            {
-                cell.Style.Format = "c";
-            }
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -198,7 +150,15 @@ namespace StoreScraper.Controls
 
         private void Btn_Save_Click(object sender, EventArgs e)
         {
-            AppSettings.Default.Proxies = RTbx_Proxies.Text.Replace("\r", "").Split('\n').ToList();
+            AppSettings.Default.Proxies = RTbx_Proxies.Text.Replace("\r", "").Split('\n').ToList().ConvertAll<string>(proxy => 
+            {
+                if (!proxy.Contains("http://") && !proxy.Contains("https://"))
+                {
+                    return "http://" + proxy;
+                }
+                else return proxy;
+            });
+
             AppSettings.Default.Save();
         }
 
@@ -268,6 +228,12 @@ namespace StoreScraper.Controls
            this.Hide();
            Task.Run(() => MainForm_FormClosed(null, null));
            Process.Start(Application.ExecutablePath);
+        }
+
+        private void Btn_ClearAllLogs_Click(object sender, EventArgs e)
+        {
+            Rtbx_EventLog.Clear();
+            Rtbx_DebugLog.Clear();
         }
     }
 }

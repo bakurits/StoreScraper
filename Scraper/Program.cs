@@ -6,8 +6,8 @@ using System.Net;
 using System.Reflection;
 using System.Windows.Forms;
 using StoreScraper.Attributes;
-using StoreScraper.Browser;
 using StoreScraper.Controls;
+using StoreScraper.Http;
 
 namespace StoreScraper
 {
@@ -30,10 +30,9 @@ namespace StoreScraper
 
             CookieCollector.Default = new CookieCollector();
             ServicePointManager.CheckCertificateRevocationList = false;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | 
-                                                   SecurityProtocolType.Tls | 
-                                                   SecurityProtocolType.Tls11 | 
-                                                   SecurityProtocolType.Tls12;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.SystemDefault;
+
+            ServicePointManager.Expect100Continue = false;
 
 
             ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;

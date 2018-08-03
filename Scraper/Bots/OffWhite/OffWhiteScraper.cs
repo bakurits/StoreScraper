@@ -10,10 +10,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
-using StoreScraper.Browser;
 using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
+using StoreScraper.Http;
 using StoreScraper.Models;
 
 namespace StoreScraper.Bots.OffWhite
@@ -58,38 +58,35 @@ namespace StoreScraper.Bots.OffWhite
 
             var searchUrl = string.Format(SearchUrlFormat, settings.KeyWords);
 
-            HtmlNode container = null;
+            HttpClient client = null;
 
-            for (int i = 0; i < 5; i++)
+
+            if (_active)
             {
-                try
-                {
-                    HttpClient client = null;
-
-                    if (_active)
-                    {
-                        client = CookieCollector.Default.GetClient();
-                    }
-                    else
-                    {
-                        client = ClientFactory.GetProxiedClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
-                        CollectCookies(client, token);
-                    }
-
-                    var document = client.GetDoc(searchUrl, token);
-                    var node = document.DocumentNode;
-                    container = node.SelectSingleNode("//section[@class='products']");
-                    break;
-                }
-                catch 
-                {
-                    //ingored
-                }
+                client = CookieCollector.Default.GetClient();
             }
+            else
+            {
+                client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+                CollectCookies(client, token);
+            }
+
+            var document = client.GetDoc(searchUrl, token);
+
+
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to off---white");
+                throw new WebException("Can't connect to website");
+            }
+
+            var node = document.DocumentNode;
+            var container = node.SelectSingleNode("//section[@class='products']");
 
             if (container == null)
             {
-                Logger.Instance.WriteErrorLog("[Error] Uncexpected Html!!");
+                Logger.Instance.WriteErrorLog("Uncexpected Html!!");
+                Logger.Instance.SaveHtmlSnapshop(document);
                 throw new WebException("Undexpected Html");
             }
 
@@ -180,7 +177,7 @@ namespace StoreScraper.Bots.OffWhite
                     }
                     else
                     {
-                        client = ClientFactory.GetProxiedClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
+                        client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
                         CollectCookies(client, token);
                     }
                     break;
@@ -228,13 +225,19 @@ namespace StoreScraper.Bots.OffWhite
             var task = client.GetAsync("https://www.off---white.com/en/US/", HttpCompletionOption.ResponseContentRead, token);
             var aa = task.Result.Content.ReadAsStringAsync().Result;
 
-            client.DefaultRequestHeaders.TryAddWithoutValidation("Referer", "https://www.off---white.com/en/US/");
-            client.DefaultRequestHeaders.Remove("Accept");
-            client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "image/webp,image/apng,image/*,*/*;q=0.8");
+            HttpRequestMessage message = new HttpRequestMessage();
+            message.Headers.Referrer = new Uri("https://www.off---white.com/en/US/");
+            message.Headers.Add("Accept", "image/webp,image/apng,image/*,*/*;q=0.8");
+            message.Method = HttpMethod.Get;
+            message.RequestUri = new Uri("https://www.off---white.com/favicon.ico");
 
-            var cc = client.GetAsync("https://www.off---white.com/favicon.ico").Result;
-            client.DefaultRequestHeaders.Remove("Accept");
-            client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", ClientFactory.ChromeAcceptHeader.Value);
+            //client.DefaultRequestHeaders.TryAddWithoutValidation("Referer", "https://www.off---white.com/en/US/");
+            //client.DefaultRequestHeaders.Remove("Accept");
+            //client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "image/webp,image/apng,image/*,*/*;q=0.8");
+
+            var cc = client.SendAsync(message, token).Result;
+            //client.DefaultRequestHeaders.Remove("Accept");
+            //client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", ClientFactory.ChromeAcceptHeader.Value);
             var pass = Regex.Match(aa, "name=\"pass\" value=\"(.*?)\"/>").Groups[1].Value;
             var answer = Regex.Match(aa, "name=\"jschl_vc\" value=\"(.*?)\"/>").Groups[1].Value;
 
@@ -254,7 +257,12 @@ namespace StoreScraper.Bots.OffWhite
             var calc = engine.GetGlobalValue<string>("interop");
 
             Task.Delay(5000, token).Wait();
-            var resultTask = client.GetAsync($"https://www.off---white.com/cdn-cgi/l/chk_jschl?jschl_vc={answer}&pass={pass}&jschl_answer={calc}", token);
+            var message2 = new HttpRequestMessage();
+            message2.Headers.Referrer = new Uri("https://www.off---white.com/en/US/");
+            message2.RequestUri = new Uri($"https://www.off---white.com/cdn-cgi/l/chk_jschl?jschl_vc={answer}&pass={pass}&jschl_answer={calc}");
+            message2.Method = HttpMethod.Get;
+
+            var resultTask = client.SendAsync(message2, token);
             resultTask.Result.EnsureSuccessStatusCode();
 
         }

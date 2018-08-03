@@ -122,8 +122,9 @@
     <Compile Include="AppSettings.cs" />
     <Compile Include="Bots\Shelflife\ShelflifeScraper.cs" />
     <Compile Include="Bots\Solebox\SoleboxScraper.cs" />
-    <Compile Include="Browser\CookieCollector.cs" />
+    <Compile Include="Http\CookieCollector.cs" />
     <Compile Include="Helpers\Embed.cs" />
+    <Compile Include="Http\FirefoxHttpClientStorage.cs" />
     <Compile Include="Interfaces\DisabledScraperAttribute.cs" />
     <Compile Include="Models\ProductDetails.cs" />
     <Compile Include="Models\StringPair.cs" />
