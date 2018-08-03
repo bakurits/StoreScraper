@@ -121,6 +121,7 @@
     <Compile Include="Bots\OffWhite\OffWhiteScraper.cs" />
     <Compile Include="AppSettings.cs" />
     <Compile Include="Bots\Shelflife\ShelflifeScraper.cs" />
+    <Compile Include="Bots\Solebox\SoleboxScraper.cs" />
     <Compile Include="Browser\CookieCollector.cs" />
     <Compile Include="Helpers\Embed.cs" />
     <Compile Include="Interfaces\DisabledScraperAttribute.cs" />
