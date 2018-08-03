@@ -9,20 +9,20 @@ namespace StoreScraper.Models
     public class Product
     {
         [DisplayName("Store")]
-        public string StoreName { get; } = "";
+        public string StoreName { get; set; } = "";
 
         [Browsable(false)]
-        public ScraperBase ScrapedBy { get; }
+        public ScraperBase ScrapedBy { get; set; }
 
         public string Name { get; } = "";
 
         public double Price { get; set; }
 
         [Browsable(false)]
-        public string Url { get; } = "";
+        public string Url { get; set; } = "";
 
         [Browsable(false)]
-        public string Id { get; } = "";
+        public string Id { get; set;} = "";
 
         [Browsable(false)]
         public string ImageUrl { get; set; }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using StoreScraper.Core;
 using StoreScraper.Models;
 
 namespace StoreScraper.Helpers
@@ -28,7 +29,21 @@ namespace StoreScraper.Helpers
                     }}
                 ]
             }}";
-            string szs = string.Join(";  ", product.GetDetails(CancellationToken.None).SizesList.Select(t => t));
+
+
+
+            string szs;
+
+            try
+            {
+                szs = string.Join(";  ", product.GetDetails(CancellationToken.None));
+            }
+            catch (Exception e)
+            {
+                Logger.Instance.WriteErrorLog($"while getting product details {e.Message}");
+                szs = "Error occured while getting details";
+            }
+
 
             string myJson = String.Format(formater, product.Url, "*" + product.Name + "* added in site\n *available sizes are* : " + szs , product.ImageUrl);
 

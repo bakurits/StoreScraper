@@ -36,8 +36,7 @@ namespace StoreScraper
         /// <param name="settings">Search settings and buying options.
         /// each bot may implement and use custom type of settings depending on store</param>
         /// <param name="token">Canselation token to terminate process when cancel requested</param>
-        /// <param name="info">Object in which method outputs detailed report of finding process</param>
-        public abstract void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token,  Logger info);
+        public abstract void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token);
 
         /// <summary>
         /// This method finds products avaliable sizes

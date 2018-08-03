@@ -47,7 +47,7 @@ namespace StoreScraper.Core
            
                 try
                 {
-                    Bot.FindItems(out lst, SearchSettings, token, new Logger());
+                    Bot.FindItems(out lst, SearchSettings, token);
                 }
                 catch
                 {
@@ -82,8 +82,8 @@ namespace StoreScraper.Core
                             {
                                 try
                                 {
-                                    DiscordWebhook.Send(discordUrl,
-                                        $"Product: *{product.Name}* Appeared!! Url : {product.Url}");
+                                    DiscordWebhook.Send(discordUrl, product);
+
                                 }
                                 catch
                                 {

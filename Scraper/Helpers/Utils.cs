@@ -7,13 +7,16 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using System.Windows.Forms;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OpenQA.Selenium;
+using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Models;
 using Cookie = OpenQA.Selenium.Cookie;
+using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 
 namespace StoreScraper.Helpers
 {
@@ -73,7 +76,7 @@ namespace StoreScraper.Helpers
         }
 
 
-        public static HtmlDocument GetDoc(this HttpClient client, string url, CancellationToken token, Logger logger = null)
+        public static HtmlDocument GetDoc(this HttpClient client, string url, CancellationToken token)
         {
             try
             {
@@ -84,13 +87,13 @@ namespace StoreScraper.Helpers
             }
             catch (WebException)
             {
-                logger?.WriteLog("[Error] Can't connect to website");
+                Logger.Instance.WriteVerboseLog("[Error] Can't connect to website");
                 throw;
             }
         }
 
         public static HtmlDocument GetDoc(Func<HttpClient> clientGenerator, string url, int timeoutSeconds, int maxTries, 
-            CancellationToken token, Logger logger = null)
+            CancellationToken token)
         {
             for (int i = 0; i < maxTries; i++)
             {
@@ -111,7 +114,7 @@ namespace StoreScraper.Helpers
                 }        
             }
 
-            logger?.WriteLog($"[Error] Can't connect to webiste url: {url}");
+            Logger.Instance.WriteVerboseLog($"[Error] Can't connect to webiste url: {url}");
             throw new WebException($"Can't connect to webiste url: {url}");
         }
 
@@ -134,6 +137,16 @@ namespace StoreScraper.Helpers
             }
 
             return client;
+        }
+
+        public static void AppendText(this RichTextBox box, string text, Color color)
+        {
+            box.SelectionStart = box.TextLength;
+            box.SelectionLength = 0;
+
+            box.SelectionColor = color;
+            box.AppendText(text);
+            box.SelectionColor = box.ForeColor;
         }
     }
 }

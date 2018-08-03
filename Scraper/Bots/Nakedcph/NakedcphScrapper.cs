@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
@@ -20,23 +22,26 @@ namespace StoreScraper.Bots.Nakedcph
         public override bool Active { get; set; }
 
 
-        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token, Logger info)
+        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
             string searchUrl =
                 $"https://www.nakedcph.com/search/searchbytext/{settings.KeyWords}/1?orderBy=Published";
             var request = ClientFactory.GetHttpClient().AddHeaders(ClientFactory.FireFoxHeaders);
-            var task = request.GetStringAsync(searchUrl);
-            task.Wait(token);
-            var htmlDocument = new HtmlDocument();
-            var nodes = htmlDocument.DocumentNode.SelectSingleNode("//*[@id='products']");
+            var document = request.GetDoc(searchUrl, token);
+            var nodes = document.DocumentNode.SelectSingleNode("//*[@id='products']");
             HtmlNodeCollection children = nodes.SelectNodes("./div");
 
             foreach (var child in children)
             {
                 token.ThrowIfCancellationRequested();
-                LoadSingleProductTryCatchWraper(listOfProducts,child,info);
+#if DEBUG
+                LoadSingleProduct(listOfProducts, child);
+#else
+                LoadSingleProductTryCatchWraper(listOfProducts,child);
+#endif
             }
+
         }
 
         /// <summary>
@@ -46,7 +51,7 @@ namespace StoreScraper.Bots.Nakedcph
         /// <param name="listOfProducts"></param>
         /// <param name="child"></param>
         /// <param name="info"></param>
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, HtmlNode child, Logger info)
+        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, HtmlNode child)
         {
             try
             {
@@ -54,7 +59,7 @@ namespace StoreScraper.Bots.Nakedcph
             }
             catch (Exception e)
             {
-                info.WriteLog(e.Message);
+                Logger.Instance.WriteVerboseLog(e.Message);
             }
         }
 
@@ -87,10 +92,12 @@ namespace StoreScraper.Bots.Nakedcph
         {
             string priceStr = child.SelectSingleNode(".//span[contains(@class, 'price')]/del").InnerText;
 
-            string productURL = child.SelectSingleNode("./a").GetAttributeValue("href",null); 
+            var urlNode = child.SelectSingleNode("./a");
+            string productURL = new Uri(new Uri(this.WebsiteBaseUrl), urlNode.GetAttributeValue("href", null)).ToString();   
             double price = changeStrIntoDouble(priceStr);
             var productName = child.SelectSingleNode(".//span[contains(@class, 'product-name d-block')]").InnerText;
-            var imageURL = child.SelectSingleNode(".//img[contains(@class,'card-img-top embed-responsive-item lazyloaded')]").GetAttributeValue("data-src",null);
+            var image = child.SelectSingleNode(".//img[contains(@class,'card-img-top')]");
+            string imageURL = new Uri(new Uri(this.WebsiteBaseUrl), image.GetAttributeValue("data-src", null)).ToString();  
 
             Product product = new Product(this, productName, productURL, price, productURL, imageURL);
             listOfProducts.Add(product);

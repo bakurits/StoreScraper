@@ -49,11 +49,14 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helper.cs" />
     <Compile Include="FootScraperTest.cs" />
+    <Compile Include="Helpers\DiscordWebhookTests.cs" />
     <Compile Include="Helpers\SlackWebHookTests.cs" />
+    <Compile Include="Models\LoggerTests.cs" />
     <Compile Include="MrporterTest.cs" />
     <Compile Include="NakedcphTest.cs" />
     <Compile Include="OffwhiteTest.cs" />

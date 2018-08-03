@@ -22,7 +22,7 @@ namespace ScraperTest
                 KeyWords = "watch"
             };
            
-            scraper.FindItems(out var lst, settings, CancellationToken.None, new Logger());
+            scraper.FindItems(out var lst, settings, CancellationToken.None);
             foreach (var item in lst)
             {
                 Debug.WriteLine(item.ImageUrl);

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 using StoreScraper.Browser;
+using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
@@ -21,7 +22,7 @@ namespace StoreScraper.Bots.OffWhite
     public class OffWhiteScraper : ScraperBase
     {
         public sealed override string WebsiteName { get; set; } = "Off---white";
-        public sealed override string WebsiteBaseUrl { get; set; } = "Off---white.com";
+        public sealed override string WebsiteBaseUrl { get; set; } = "https://Off---white.com";
 
         private bool _active;
 
@@ -50,7 +51,7 @@ namespace StoreScraper.Bots.OffWhite
 
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings
-            , CancellationToken token, Logger info)
+            , CancellationToken token)
         {
 
             listOfProducts = new List<Product>();
@@ -75,7 +76,7 @@ namespace StoreScraper.Bots.OffWhite
                         CollectCookies(client, token);
                     }
 
-                    var document = client.GetDoc(searchUrl, token, info);
+                    var document = client.GetDoc(searchUrl, token);
                     var node = document.DocumentNode;
                     container = node.SelectSingleNode("//section[@class='products']");
                     break;
@@ -88,7 +89,7 @@ namespace StoreScraper.Bots.OffWhite
 
             if (container == null)
             {
-                info.WriteLog("[Error] Uncexpected Html!!");
+                Logger.Instance.WriteVerboseLog("[Error] Uncexpected Html!!");
                 throw new WebException("Undexpected Html");
             }
 
@@ -100,13 +101,11 @@ namespace StoreScraper.Bots.OffWhite
             {
                 token.ThrowIfCancellationRequested();
 #if DEBUG
-                LoadSingleProduct(listOfProducts, settings, item, info);
+                LoadSingleProduct(listOfProducts, settings, item);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, settings, item, info);
+                LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
 #endif
             }
-
-            info.State = Logger.ProcessingState.Success;
         }
 
 
@@ -118,15 +117,15 @@ namespace StoreScraper.Bots.OffWhite
         /// <param name="settings"></param>
         /// <param name="item"></param>
         /// <param name="info"></param>
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item, Logger info)
+        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
             {
-                LoadSingleProduct(listOfProducts, settings, item, info);
+                LoadSingleProduct(listOfProducts, settings, item);
             }
             catch (Exception e)
             {
-                info.WriteLog(e.Message);
+                Logger.Instance.WriteVerboseLog(e.Message);
             }
         }
         /// <summary>
@@ -136,7 +135,7 @@ namespace StoreScraper.Bots.OffWhite
         /// <param name="settings"></param>
         /// <param name="item"></param>
         /// <param name="info"></param>
-        private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item, Logger info)
+        private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             var url = "https://www.off---white.com" + item.SelectSingleNode("./a").GetAttributeValue("href", "");
             string name = item.SelectSingleNode("./a/figure/figcaption/div").InnerText;
@@ -149,7 +148,7 @@ namespace StoreScraper.Bots.OffWhite
             string imagePath = item.SelectSingleNode("./a/figure/img").GetAttributeValue("src", null);
             if (imagePath == null)
             {
-                info.WriteLog("Image Of product couldn't found");
+                Logger.Instance.WriteVerboseLog("Image Of product couldn't found");
             }
 
             string id = item.GetAttributeValue("data-json-url", null);
@@ -167,13 +166,49 @@ namespace StoreScraper.Bots.OffWhite
         {
             var jsonUrl = this.WebsiteBaseUrl + product.Id;
             ProductDetails result = new ProductDetails();
-            using (var client = ClientFactory.GetProxiedClient().AddHeaders(ClientFactory.FireFoxHeaders))
+
+            HttpClient client = null;
+
+            for (int i = 0; i < 5; i++)
             {
-                var jsonStr = client.GetStringAsync(jsonUrl).Result;
+                try
+                {
+                    
+                    if (_active)
+                    {
+                        client = CookieCollector.Default.GetClient();
+                    }
+                    else
+                    {
+                        client = ClientFactory.GetProxiedClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
+                        CollectCookies(client, token);
+                    }
+                    break;
+                }
+                catch
+                {
+                    //ingored
+                }
+            }
+
+            
+            HttpRequestMessage message = new HttpRequestMessage();
+            message.Headers.Clear();
+            message.Headers.TryAddWithoutValidation(ClientFactory.JsonXmlAcceptHeader.Key, ClientFactory.JsonXmlAcceptHeader.Value);
+            message.Headers.TryAddWithoutValidation(ClientFactory.FirefoxUserAgentHeader.Key, ClientFactory.FirefoxUserAgentHeader.Value);
+
+            message.Method = HttpMethod.Get;
+            message.RequestUri = new Uri(jsonUrl);
+
+            using (client)
+            {
+                var response = client.SendAsync(message).Result;
+                response.EnsureSuccessStatusCode();
+                var jsonStr = response.Content.ReadAsStringAsync().Result;
                 JObject parsed = JObject.Parse(jsonStr);
-                var sizes = parsed.SelectTokens("available_sizes");
+                var sizes = parsed.SelectToken("available_sizes");
                
-                foreach (JToken size in sizes)
+                foreach (JToken size in sizes.Children())
                 {
                     var sizeName = (string) size.SelectToken("name");
                     result.SizesList.Add(sizeName);

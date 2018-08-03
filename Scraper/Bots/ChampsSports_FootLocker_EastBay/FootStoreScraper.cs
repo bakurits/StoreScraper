@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Threading;
 using HtmlAgilityPack;
 using StoreScraper.Attributes;
+using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
@@ -33,14 +34,14 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
             this.UrlPrefix = websiteBaseUrl + "/_-_";
         }
 
-        private HtmlNode InitialNavigation(string url, CancellationToken token, Logger info)
+        private HtmlNode InitialNavigation(string url, CancellationToken token)
         {
             HttpClient ClientGenerator() => ClientFactory.GetProxiedClient().AddHeaders(ClientFactory.FireFoxHeaders);
-            var document = Utils.GetDoc(ClientGenerator, url, 2, 5, token, info);
+            var document = Utils.GetDoc(ClientGenerator, url, 2, 5, token);
             return document.DocumentNode;
         }
 
-        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token, Logger info)
+        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
 
@@ -50,7 +51,7 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
 
             while (container == null)
             {
-                HtmlNode node = InitialNavigation(searchUrl, token, info);
+                HtmlNode node = InitialNavigation(searchUrl, token);
                 container = node.SelectSingleNode("//*[@id=\"endeca_search_results\"]/ul");
             }
             HtmlNodeCollection children = container.SelectNodes("./li");
@@ -61,7 +62,7 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
 #if DEBUG
                 LoadSingleProduct(listOfProducts, child);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, child, info);
+                LoadSingleProductTryCatchWraper(listOfProducts, child);
 #endif
             }
 
@@ -73,8 +74,7 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
         /// </summary>
         /// <param name="listOfProducts"></param>
         /// <param name="child"></param>
-        /// <param name="info"></param>
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, HtmlNode child, Logger info)
+        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, HtmlNode child)
         {
             try
             {
@@ -82,7 +82,7 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay
             }
             catch (Exception e)
             {
-                info.WriteLog(e.Message);
+                Logger.Instance.WriteErrorLog(e.Message);
             }
         }
         /// <summary>

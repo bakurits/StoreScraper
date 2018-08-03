@@ -122,6 +122,8 @@
     <Compile Include="Bots\OffWhite\OffWhiteScraper.cs" />
     <Compile Include="AppSettings.cs" />
     <Compile Include="Browser\CookieCollector.cs" />
+    <Compile Include="Helpers\Embed.cs" />
+    <Compile Include="Interfaces\DisabledScraperAttribute.cs" />
     <Compile Include="Models\ProductDetails.cs" />
     <Compile Include="Models\StringPair.cs" />
     <Compile Include="ScraperBase.cs" />
@@ -149,7 +151,7 @@
     <Compile Include="Helpers\SlackWebHook.cs" />
     <Compile Include="Interfaces\ISearchSettingsValidator.cs" />
     <Compile Include="Models\Info.cs" />
-    <Compile Include="Models\Logger.cs" />
+    <Compile Include="Core\Logger.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\SearchSettingsBase.cs" />
     <Compile Include="Models\UrlString.cs" />

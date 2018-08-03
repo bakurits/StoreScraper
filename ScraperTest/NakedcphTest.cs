@@ -20,7 +20,7 @@ namespace ScraperTest
                 KeyWords = "white t-shirt",
                 NegKeyWrods = "",
             };
-            scrapper.FindItems(out var listOfProducts, searchSettingsBase, CancellationToken.None, new Logger());
+            scrapper.FindItems(out var listOfProducts, searchSettingsBase, CancellationToken.None);
         }
     }
 }
