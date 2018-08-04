@@ -91,10 +91,13 @@ namespace StoreScraper.Helpers
         {
             try
             {
-                var result = client.GetAsync(url, token).Result.Content.ReadAsStringAsync().Result;
-                var doc = new HtmlDocument();
-                doc.LoadHtml(result);
-                return doc;
+                using (var response = client.GetAsync(url, token).Result)
+                {
+                    var result = response.Content.ReadAsStringAsync().Result;
+                    var doc = new HtmlDocument();
+                    doc.LoadHtml(result);
+                    return doc;
+                }
             }
             catch (WebException)
             {
@@ -104,25 +107,24 @@ namespace StoreScraper.Helpers
         }
 
         public static HtmlDocument GetDoc(Func<HttpClient> clientGenerator, string url, int timeoutSeconds, int maxTries, 
-            CancellationToken token)
+            CancellationToken token, bool autoDispose = false)
         {
             for (int i = 0; i < maxTries; i++)
             {
-                using (var client = clientGenerator())
+                var client = clientGenerator();
+                try
                 {
-                    try
-                    {
-                        client.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
-                        var result = client.GetAsync(url, token).Result.Content.ReadAsStringAsync().Result;
-                        var doc = new HtmlDocument();
-                        doc.LoadHtml(result);
-                        return doc;
-                    }
-                    catch
-                    {
-                        //ingored
-                    }
-                }        
+                    return client.GetDoc(url, token);
+                }
+                catch
+                {
+                    //ignored
+                }
+                finally
+                {
+                    if(autoDispose) client.Dispose();
+                }
+
             }
 
             Logger.Instance.WriteErrorLog($"Can't connect to webiste url: {url}");

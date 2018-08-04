@@ -67,8 +67,20 @@ namespace StoreScraper.Bots.OffWhite
             }
             else
             {
-                client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
-                CollectCookies(client, token);
+                for (int i = 0; i < 5; i++)
+                {
+                    try
+                    {
+                        client = ClientFactory.GetProxiedFirefoxClient();
+                        CollectCookies(client, token);
+                        break;
+                    }
+                    catch
+                    {
+                        //ignore
+                    }
+
+                }
             }
 
             var document = client.GetDoc(searchUrl, token);
@@ -110,10 +122,6 @@ namespace StoreScraper.Bots.OffWhite
         /// This method is simple wrapper on LoadSingleProduct
         /// To catch all Exceptions during release
         /// </summary>
-        /// <param name="listOfProducts"></param>
-        /// <param name="settings"></param>
-        /// <param name="item"></param>
-        /// <param name="info"></param>
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
@@ -177,7 +185,7 @@ namespace StoreScraper.Bots.OffWhite
                     }
                     else
                     {
-                        client = ClientFactory.CreateProxiedHttpClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
+                        client = ClientFactory.GetProxiedFirefoxClient();
                         CollectCookies(client, token);
                     }
                     break;
@@ -197,19 +205,16 @@ namespace StoreScraper.Bots.OffWhite
             message.Method = HttpMethod.Get;
             message.RequestUri = new Uri(jsonUrl);
 
-            using (client)
-            {
-                var response = client.SendAsync(message).Result;
-                response.EnsureSuccessStatusCode();
-                var jsonStr = response.Content.ReadAsStringAsync().Result;
-                JObject parsed = JObject.Parse(jsonStr);
-                var sizes = parsed.SelectToken("available_sizes");
+            var response = client.SendAsync(message).Result;
+            response.EnsureSuccessStatusCode();
+            var jsonStr = response.Content.ReadAsStringAsync().Result;
+            JObject parsed = JObject.Parse(jsonStr);
+            var sizes = parsed.SelectToken("available_sizes");
                
-                foreach (JToken size in sizes.Children())
-                {
-                    var sizeName = (string) size.SelectToken("name");
-                    result.SizesList.Add(sizeName);
-                }
+            foreach (JToken size in sizes.Children())
+            {
+                var sizeName = (string) size.SelectToken("name");
+                result.SizesList.Add(sizeName);
             }
 
             return result;
@@ -223,48 +228,66 @@ namespace StoreScraper.Bots.OffWhite
             engine.SetGlobalValue("interop", "15");
 
             var task = client.GetAsync("https://www.off---white.com/en/US/", HttpCompletionOption.ResponseContentRead, token);
-            var aa = task.Result.Content.ReadAsStringAsync().Result;
 
-            HttpRequestMessage message = new HttpRequestMessage();
-            message.Headers.Referrer = new Uri("https://www.off---white.com/en/US/");
-            message.Headers.Add("Accept", "image/webp,image/apng,image/*,*/*;q=0.8");
-            message.Method = HttpMethod.Get;
-            message.RequestUri = new Uri("https://www.off---white.com/favicon.ico");
+            using (var result = task.Result)
+            {
+                if (result.IsSuccessStatusCode) return;
 
-            //client.DefaultRequestHeaders.TryAddWithoutValidation("Referer", "https://www.off---white.com/en/US/");
-            //client.DefaultRequestHeaders.Remove("Accept");
-            //client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "image/webp,image/apng,image/*,*/*;q=0.8");
+                var aa = result.Content.ReadAsStringAsync().Result;
 
-            var cc = client.SendAsync(message, token).Result;
-            //client.DefaultRequestHeaders.Remove("Accept");
-            //client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", ClientFactory.ChromeAcceptHeader.Value);
-            var pass = Regex.Match(aa, "name=\"pass\" value=\"(.*?)\"/>").Groups[1].Value;
-            var answer = Regex.Match(aa, "name=\"jschl_vc\" value=\"(.*?)\"/>").Groups[1].Value;
+                using (var message = new HttpRequestMessage())
+                {
+                    message.Headers.Referrer = new Uri("https://www.off---white.com/en/US/");
+                    message.Headers.Add("Accept", "image/webp,image/apng,image/*,*/*;q=0.8");
+                    message.Method = HttpMethod.Get;
+                    message.RequestUri = new Uri("https://www.off---white.com/favicon.ico");
 
-            var script = Regex.Match(aa, "setTimeout\\(function\\(\\){(.*?)}, 4000\\);", RegexOptions.Singleline | RegexOptions.IgnoreCase).Groups[1].Value;
-            script = script.Replace("a = document.getElementById('jschl-answer');", string.Empty);
-            script = script.Replace("f.action += location.hash;", string.Empty);
-            script = script.Replace("f.submit();", string.Empty);
-            script = script.Replace("f = document.getElementById('challenge-form');", string.Empty);
-            script = script.Replace("a.value", "interop");
-            script = script.Replace("t = document.createElement('div');", string.Empty);
-            script = script.Replace("t.innerHTML=\"<a href='/'>x</a>\";", string.Empty);
-            script = script.Replace("t = t.firstChild.href", "t='https://www.off---white.com/';");
+                    //client.DefaultRequestHeaders.TryAddWithoutValidation("Referer", "https://www.off---white.com/en/US/");
+                    //client.DefaultRequestHeaders.Remove("Accept");
+                    //client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "image/webp,image/apng,image/*,*/*;q=0.8");
+
+                    var cc = client.SendAsync(message, token).Result;
+                    cc.Dispose();
+                }
+
+               
+                //client.DefaultRequestHeaders.Remove("Accept");
+                //client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", ClientFactory.ChromeAcceptHeader.Value);
+                var pass = Regex.Match(aa, "name=\"pass\" value=\"(.*?)\"/>").Groups[1].Value;
+                var answer = Regex.Match(aa, "name=\"jschl_vc\" value=\"(.*?)\"/>").Groups[1].Value;
+
+                var script = Regex.Match(aa, "setTimeout\\(function\\(\\){(.*?)}, 4000\\);",
+                    RegexOptions.Singleline | RegexOptions.IgnoreCase).Groups[1].Value;
+                script = script.Replace("a = document.getElementById('jschl-answer');", string.Empty);
+                script = script.Replace("f.action += location.hash;", string.Empty);
+                script = script.Replace("f.submit();", string.Empty);
+                script = script.Replace("f = document.getElementById('challenge-form');", string.Empty);
+                script = script.Replace("a.value", "interop");
+                script = script.Replace("t = document.createElement('div');", string.Empty);
+                script = script.Replace("t.innerHTML=\"<a href='/'>x</a>\";", string.Empty);
+                script = script.Replace("t = t.firstChild.href", "t='https://www.off---white.com/';");
 
 
 
-            var gga = engine.Evaluate(script);
-            var calc = engine.GetGlobalValue<string>("interop");
+                var gga = engine.Evaluate(script);
+                var calc = engine.GetGlobalValue<string>("interop");
 
-            Task.Delay(5000, token).Wait();
-            var message2 = new HttpRequestMessage();
-            message2.Headers.Referrer = new Uri("https://www.off---white.com/en/US/");
-            message2.RequestUri = new Uri($"https://www.off---white.com/cdn-cgi/l/chk_jschl?jschl_vc={answer}&pass={pass}&jschl_answer={calc}");
-            message2.Method = HttpMethod.Get;
+                Task.Delay(5000, token).Wait();
+                using (var message2 = new HttpRequestMessage())
+                {
+                
+                    message2.Headers.Referrer = new Uri("https://www.off---white.com/en/US/");
+                    message2.RequestUri =
+                        new Uri(
+                            $"https://www.off---white.com/cdn-cgi/l/chk_jschl?jschl_vc={answer}&pass={pass}&jschl_answer={calc}");
+                    message2.Method = HttpMethod.Get;
 
-            var resultTask = client.SendAsync(message2, token);
-            resultTask.Result.EnsureSuccessStatusCode();
-
+                    using (var resultTask = client.SendAsync(message2, token))
+                    {
+                        resultTask.Result.EnsureSuccessStatusCode();
+                    }
+                }
+            }
         }
     }
 }
