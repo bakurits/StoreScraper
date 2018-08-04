@@ -245,8 +245,7 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay_FootAction
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
-
-            throw new NotImplementedException();
+            return new ProductDetails();
         }
 
         public class FootLockerScraper : FootAPIBase

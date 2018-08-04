@@ -177,7 +177,7 @@ namespace StoreScraper.Bots.OffWhite
                     }
                     else
                     {
-                        client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
+                        client = ClientFactory.CreateProxiedHttpClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
                         CollectCookies(client, token);
                     }
                     break;
