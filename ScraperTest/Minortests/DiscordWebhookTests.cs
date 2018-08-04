@@ -4,7 +4,7 @@ using StoreScraper.Bots.Mrporter;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
-namespace ScraperTest.Helpers
+namespace ScraperTest.Minortests
 {
     [TestClass()]
     public class DiscordWebhookTests
