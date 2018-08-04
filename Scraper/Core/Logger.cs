@@ -4,8 +4,10 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using HtmlAgilityPack;
+using System.Text;
+using System.Windows.Forms;
 using StoreScraper.Helpers;
+using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 
 namespace StoreScraper.Core
 {
@@ -14,15 +16,25 @@ namespace StoreScraper.Core
 
         public static Logger Instance = new Logger();
 
+        public DateTime LastLogSave { get; set; }
         public event ColoredLogHandler OnLogged;
+        public RichTextBox LogTarget { get; set; }
 
+        private const int MaxLogBytes = 1024 * 1024 * 10;
         private const string SnapshotFolderName = "HtmlSnapshots";
+        private const string LogsFolderName = "Logs";
 
         public Logger()
         {
+            LastLogSave = DateTime.Now;
             if (!Directory.Exists(SnapshotFolderName))
             {
                 Directory.CreateDirectory(SnapshotFolderName);
+            }
+
+            if (!Directory.Exists(LogsFolderName))
+            {
+                Directory.CreateDirectory(LogsFolderName);
             }
         }
 
@@ -32,7 +44,38 @@ namespace StoreScraper.Core
 
             string log = $"[{nowTime}]: [Error] {errorMessage}" + Environment.NewLine + Environment.NewLine;
 
+            LogTarget?.AppendText(log, Color.Red);
             OnLogged?.Invoke(log, Color.Red);
+        }
+
+
+        private void CheckSaveLog()
+        {
+            if(LogTarget == null) return;
+
+            if (Encoding.ASCII.GetByteCount(LogTarget.Text) <= MaxLogBytes) return;
+            SaveLog();
+        }
+
+        public void SaveLog()
+        {
+            if(LogTarget == null) return;
+
+            string logFileName = $"{LastLogSave:g} - {DateTime.Now:g}.rtf".EscapeFileName();
+            string path = Path.Combine(LogsFolderName, logFileName);
+
+            try
+            {
+                using (var stream = File.Create(path))
+                {
+                    LogTarget.Clear();
+                    LogTarget.SaveFile(stream, RichTextBoxStreamType.RichText);
+                }
+            }
+            catch
+            {
+               //ignored
+            }
         }
 
         public void WriteVerboseLog(string message)
@@ -41,6 +84,7 @@ namespace StoreScraper.Core
 
             string log = $"[{nowTime}]: [Verbose] {message}" + Environment.NewLine + Environment.NewLine;
 
+            LogTarget?.AppendText(log, Color.Blue);
             OnLogged?.Invoke(log, Color.Blue);
         }
 
@@ -64,7 +108,6 @@ namespace StoreScraper.Core
                     {
                         //innored
                     }
-
                 }
             }
         }

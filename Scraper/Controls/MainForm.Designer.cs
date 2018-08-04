@@ -35,7 +35,6 @@
             this.Tabs = new System.Windows.Forms.TabControl();
             this.Tab_Main = new System.Windows.Forms.TabPage();
             this.Btn_RemoveMon = new System.Windows.Forms.Button();
-            this.l_MonInterval = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.CLbx_Monitor = new System.Windows.Forms.CheckedListBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -53,9 +52,9 @@
             this.label2 = new System.Windows.Forms.Label();
             this.PGrid_Settings = new System.Windows.Forms.PropertyGrid();
             this.Tab_ErrorLog = new System.Windows.Forms.TabPage();
+            this.Btn_ClearAllLogs = new System.Windows.Forms.Button();
             this.Rtbx_EventLog = new System.Windows.Forms.RichTextBox();
             this.Rtbx_DebugLog = new System.Windows.Forms.RichTextBox();
-            this.Btn_ClearAllLogs = new System.Windows.Forms.Button();
             this.toolStripContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.SuspendLayout();
@@ -115,13 +114,12 @@
             this.Tabs.Location = new System.Drawing.Point(12, 12);
             this.Tabs.Name = "Tabs";
             this.Tabs.SelectedIndex = 0;
-            this.Tabs.Size = new System.Drawing.Size(1049, 577);
+            this.Tabs.Size = new System.Drawing.Size(1049, 620);
             this.Tabs.TabIndex = 7;
             // 
             // Tab_Main
             // 
             this.Tab_Main.Controls.Add(this.Btn_RemoveMon);
-            this.Tab_Main.Controls.Add(this.l_MonInterval);
             this.Tab_Main.Controls.Add(this.label5);
             this.Tab_Main.Controls.Add(this.CLbx_Monitor);
             this.Tab_Main.Controls.Add(this.label1);
@@ -136,7 +134,7 @@
             this.Tab_Main.Location = new System.Drawing.Point(4, 22);
             this.Tab_Main.Name = "Tab_Main";
             this.Tab_Main.Padding = new System.Windows.Forms.Padding(3);
-            this.Tab_Main.Size = new System.Drawing.Size(1041, 551);
+            this.Tab_Main.Size = new System.Drawing.Size(1041, 594);
             this.Tab_Main.TabIndex = 0;
             this.Tab_Main.Text = "Main";
             this.Tab_Main.UseVisualStyleBackColor = true;
@@ -151,14 +149,6 @@
             this.Btn_RemoveMon.Text = "Remove Selected";
             this.Btn_RemoveMon.UseVisualStyleBackColor = true;
             this.Btn_RemoveMon.Click += new System.EventHandler(this.Btn_RemoveMon_Click);
-            // 
-            // l_MonInterval
-            // 
-            this.l_MonInterval.AutoSize = true;
-            this.l_MonInterval.Location = new System.Drawing.Point(497, 518);
-            this.l_MonInterval.Name = "l_MonInterval";
-            this.l_MonInterval.Size = new System.Drawing.Size(0, 13);
-            this.l_MonInterval.TabIndex = 21;
             // 
             // label5
             // 
@@ -213,7 +203,7 @@
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label3.AutoSize = true;
             this.label3.ForeColor = System.Drawing.Color.DimGray;
-            this.label3.Location = new System.Drawing.Point(17, 535);
+            this.label3.Location = new System.Drawing.Point(17, 578);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(195, 13);
             this.label3.TabIndex = 13;
@@ -248,7 +238,7 @@
             this.DGrid_FoundProducts.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.DGrid_FoundProducts.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.DGrid_FoundProducts.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.DGrid_FoundProducts.Location = new System.Drawing.Point(20, 183);
+            this.DGrid_FoundProducts.Location = new System.Drawing.Point(20, 226);
             this.DGrid_FoundProducts.Name = "DGrid_FoundProducts";
             this.DGrid_FoundProducts.ReadOnly = true;
             this.DGrid_FoundProducts.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
@@ -268,7 +258,7 @@
             this.Tab_Settings.Location = new System.Drawing.Point(4, 22);
             this.Tab_Settings.Name = "Tab_Settings";
             this.Tab_Settings.Padding = new System.Windows.Forms.Padding(3);
-            this.Tab_Settings.Size = new System.Drawing.Size(1041, 551);
+            this.Tab_Settings.Size = new System.Drawing.Size(1041, 594);
             this.Tab_Settings.TabIndex = 1;
             this.Tab_Settings.Text = "Settings";
             this.Tab_Settings.UseVisualStyleBackColor = true;
@@ -345,34 +335,16 @@
             this.Tab_ErrorLog.Controls.Add(this.Rtbx_DebugLog);
             this.Tab_ErrorLog.Location = new System.Drawing.Point(4, 22);
             this.Tab_ErrorLog.Name = "Tab_ErrorLog";
-            this.Tab_ErrorLog.Size = new System.Drawing.Size(1041, 551);
+            this.Tab_ErrorLog.Size = new System.Drawing.Size(1041, 594);
             this.Tab_ErrorLog.TabIndex = 2;
             this.Tab_ErrorLog.Text = "Error Log";
             this.Tab_ErrorLog.UseVisualStyleBackColor = true;
-            // 
-            // Rtbx_EventLog
-            // 
-            this.Rtbx_EventLog.ForeColor = System.Drawing.Color.DarkRed;
-            this.Rtbx_EventLog.Location = new System.Drawing.Point(3, 3);
-            this.Rtbx_EventLog.Name = "Rtbx_EventLog";
-            this.Rtbx_EventLog.Size = new System.Drawing.Size(1138, 227);
-            this.Rtbx_EventLog.TabIndex = 1;
-            this.Rtbx_EventLog.Text = "";
-            // 
-            // Rtbx_DebugLog
-            // 
-            this.Rtbx_DebugLog.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.Rtbx_DebugLog.Location = new System.Drawing.Point(0, 283);
-            this.Rtbx_DebugLog.Name = "Rtbx_DebugLog";
-            this.Rtbx_DebugLog.Size = new System.Drawing.Size(1041, 268);
-            this.Rtbx_DebugLog.TabIndex = 0;
-            this.Rtbx_DebugLog.Text = "";
             // 
             // Btn_ClearAllLogs
             // 
             this.Btn_ClearAllLogs.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
             this.Btn_ClearAllLogs.ForeColor = System.Drawing.Color.Red;
-            this.Btn_ClearAllLogs.Location = new System.Drawing.Point(374, 236);
+            this.Btn_ClearAllLogs.Location = new System.Drawing.Point(743, 269);
             this.Btn_ClearAllLogs.Name = "Btn_ClearAllLogs";
             this.Btn_ClearAllLogs.Size = new System.Drawing.Size(283, 32);
             this.Btn_ClearAllLogs.TabIndex = 2;
@@ -380,11 +352,29 @@
             this.Btn_ClearAllLogs.UseVisualStyleBackColor = true;
             this.Btn_ClearAllLogs.Click += new System.EventHandler(this.Btn_ClearAllLogs_Click);
             // 
+            // Rtbx_EventLog
+            // 
+            this.Rtbx_EventLog.ForeColor = System.Drawing.Color.DarkRed;
+            this.Rtbx_EventLog.Location = new System.Drawing.Point(3, 3);
+            this.Rtbx_EventLog.Name = "Rtbx_EventLog";
+            this.Rtbx_EventLog.Size = new System.Drawing.Size(1023, 260);
+            this.Rtbx_EventLog.TabIndex = 1;
+            this.Rtbx_EventLog.Text = "";
+            // 
+            // Rtbx_DebugLog
+            // 
+            this.Rtbx_DebugLog.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.Rtbx_DebugLog.Location = new System.Drawing.Point(0, 329);
+            this.Rtbx_DebugLog.Name = "Rtbx_DebugLog";
+            this.Rtbx_DebugLog.Size = new System.Drawing.Size(1041, 265);
+            this.Rtbx_DebugLog.TabIndex = 0;
+            this.Rtbx_DebugLog.Text = "";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1066, 601);
+            this.ClientSize = new System.Drawing.Size(1066, 657);
             this.Controls.Add(this.Tabs);
             this.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.Name = "MainForm";
@@ -431,7 +421,6 @@
         private System.Windows.Forms.Button Btn_Save;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.CheckedListBox CLbx_Monitor;
-        private System.Windows.Forms.Label l_MonInterval;
         private System.Windows.Forms.Button Btn_RemoveMon;
         private System.Windows.Forms.Button Btn_SaveRestart;
         private System.Windows.Forms.Button Btn_ClearAllLogs;

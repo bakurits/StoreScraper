@@ -225,9 +225,10 @@ namespace StoreScraper.Controls
 
         private void Btn_SaveRestart_Click(object sender, EventArgs e)
         {
-           this.Hide();
-           Task.Run(() => MainForm_FormClosed(null, null));
-           Process.Start(Application.ExecutablePath);
+            Btn_Save_Click(null, null);
+            this.Hide();
+            Task.Run(() => MainForm_FormClosed(null, null));
+            Process.Start(Application.ExecutablePath);
         }
 
         private void Btn_ClearAllLogs_Click(object sender, EventArgs e)
