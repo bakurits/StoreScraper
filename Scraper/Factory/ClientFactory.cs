@@ -144,7 +144,7 @@ namespace StoreScraper.Factory
             return client;
         }
 
-        public static FirefoxHttpClientStorage storage = new FirefoxHttpClientStorage();
+        public static FirefoxHttpClientStorage Storage = new FirefoxHttpClientStorage();
 
         public static HttpClient GetFirefoxHttpClient(WebProxy proxy = null, bool autoCookies = false)
         {
@@ -156,11 +156,11 @@ namespace StoreScraper.Factory
 
             if (proxy == null)
             {
-                return storage.GetHttpClient();
+                return Storage.GetHttpClient();
             }
             else
             {
-                return storage.GetHttpClient(proxy);
+                return Storage.GetHttpClient(proxy);
             }
         
         }
