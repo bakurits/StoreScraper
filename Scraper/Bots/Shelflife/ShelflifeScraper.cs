@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Net.Http;
 using System.Threading;
 using HtmlAgilityPack;
 using StoreScraper.Factory;
@@ -12,29 +10,28 @@ namespace StoreScraper.Bots.Shelflife
 {
     public class ShelflifeScraper : ScraperBase
     {
+        private const string SearchFormat = "https://www.shelflife.co.za/Search?search={0}";
         public override string WebsiteName { get; set; } = "Shelflife";
         public override string WebsiteBaseUrl { get; set; } = "https://www.shelflife.co.za/";
         public override bool Active { get; set; }
 
-        private const string SearchFormat = "https://www.shelflife.co.za/Search?search={0}";
-
-        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
+        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,
+            CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
-            
+            var itemCollection = GetProductCollection(settings, token);
+
             foreach (var item in itemCollection)
             {
                 token.ThrowIfCancellationRequested();
                 LoadSingleProduct(listOfProducts, settings, item);
             }
-
         }
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
             var document = GetWebpage(product.Url, token);
-            ProductDetails details = new ProductDetails();
+            var details = new ProductDetails();
 
             var node = document.SelectSingleNode("//*[@id='addToCart']/div/div/div/select[@id = 'size']");
 
@@ -42,12 +39,8 @@ namespace StoreScraper.Bots.Shelflife
 
             foreach (var size in sizeCollection)
             {
-                string sz = size.GetAttributeValue("value", "");
-                if (sz.Length > 0)
-                {
-                    details.SizesList.Add(sz);
-                }
-                
+                var sz = size.GetAttributeValue("value", "");
+                if (sz.Length > 0) details.SizesList.Add(sz);
             }
 
             return details;
@@ -55,24 +48,24 @@ namespace StoreScraper.Bots.Shelflife
 
         private HtmlNode GetWebpage(string url, CancellationToken token)
         {
-            HttpClient client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = client.GetDoc(url, token).DocumentNode;
             return document;
         }
 
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
-            string url = string.Format(SearchFormat, settings.KeyWords);
+            var url = string.Format(SearchFormat, settings.KeyWords);
             var document = GetWebpage(url, token);
             return document.SelectNodes("//body/div/div/div[contains(@class, 'col-xs-6 col-sm-3')]");
         }
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
-            string name = GetName(item);
-            string url = GetUrl(item);
-            double price = GetPrice(item);
-            string imageUrl = GetImageUrl(item);
+            var name = GetName(item);
+            var url = GetUrl(item);
+            var price = GetPrice(item);
+            var imageUrl = GetImageUrl(item);
             listOfProducts.Add(new Product(this, name, url, price, imageUrl, url, "R"));
         }
 
@@ -80,22 +73,26 @@ namespace StoreScraper.Bots.Shelflife
         {
             return item.SelectSingleNode("./a/div/div/div[contains(@class, 'title')]").InnerHtml;
         }
+
         private string GetUrl(HtmlNode item)
         {
-            string url = item.SelectSingleNode("./a").GetAttributeValue("href", "");
+            var url = item.SelectSingleNode("./a").GetAttributeValue("href", "");
             return WebsiteBaseUrl + url;
         }
+
         private double GetPrice(HtmlNode item)
         {
-            string priceContainer = item.SelectSingleNode("./a/div/div/div[contains(@class, 'price')]").InnerHtml.Substring(1);
-            int ind = priceContainer.IndexOf("<span>", StringComparison.Ordinal);
+            var priceContainer = item.SelectSingleNode("./a/div/div/div[contains(@class, 'price')]").InnerHtml
+                .Substring(1);
+            var ind = priceContainer.IndexOf("<span>", StringComparison.Ordinal);
             if (ind != -1) priceContainer = priceContainer.Substring(0, ind);
             double.TryParse(priceContainer, out var ans);
             return ans;
         }
+
         private string GetImageUrl(HtmlNode item)
         {
-            string url = item.SelectSingleNode("./a/div/img").GetAttributeValue("src", "");
+            var url = item.SelectSingleNode("./a/div/img").GetAttributeValue("src", "");
             return WebsiteBaseUrl + url;
         }
     }
