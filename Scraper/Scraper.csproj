@@ -122,6 +122,7 @@
     <Compile Include="AppSettings.cs" />
     <Compile Include="Bots\Shelflife\ShelflifeScraper.cs" />
     <Compile Include="Bots\Solebox\SoleboxScraper.cs" />
+    <Compile Include="Bots\TitoloShop\TitoloScraper.cs" />
     <Compile Include="Http\CookieCollector.cs" />
     <Compile Include="Helpers\Embed.cs" />
     <Compile Include="Http\FirefoxHttpClientStorage.cs" />

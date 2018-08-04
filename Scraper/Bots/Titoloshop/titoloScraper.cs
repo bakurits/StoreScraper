@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
@@ -15,11 +16,12 @@ using StoreScraper.Models;
 
 namespace StoreScraper.Bots.titoloshop
 {
-    class TitoloScraper : ScraperBase
+    public  class TitoloScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Titoloshop";
         public override string WebsiteBaseUrl { get; set; } = "https://en.titoloshop.com";
         public override bool Active { get; set; }
+
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
@@ -28,7 +30,7 @@ namespace StoreScraper.Bots.titoloshop
             var request = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = request.GetDoc(searchUrl, token);
             Logger.Instance.WriteErrorLog("Unexpected html!");
-            var nodes = document.DocumentNode.SelectSingleNode("//span[contains(@class, 'no-bullet') and contains(@class, 'small-block-grid-2')]");
+            var nodes = document.DocumentNode.SelectSingleNode("//ul[contains(@class, 'no-bullet') and contains(@class, 'small-block-grid-2')]");
             var children = nodes.SelectNodes("./li");
             if (children == null)
             {
@@ -40,12 +42,11 @@ namespace StoreScraper.Bots.titoloshop
             {
                 token.ThrowIfCancellationRequested();
 #if DEBUG
-                LoadSingleProduct(listOfProducts, child);
+                LoadSingleProduct(listOfProducts, child,settings);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts,child);
+                LoadSingleProductTryCatchWraper(listOfProducts,child,settings);
 #endif
             }
-            throw new NotImplementedException();
         }
 
 
@@ -56,11 +57,11 @@ namespace StoreScraper.Bots.titoloshop
         /// <param name="listOfProducts"></param>
         /// <param name="child"></param>
         /// <param name="info"></param>
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, HtmlNode child)
+        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, HtmlNode child,SearchSettingsBase settings)
         {
             try
             {
-                LoadSingleProduct(listOfProducts, child);
+                LoadSingleProduct(listOfProducts, child,settings);
             }
             catch (Exception e)
             {
@@ -68,18 +69,24 @@ namespace StoreScraper.Bots.titoloshop
             }
         }
 
-        private void LoadSingleProduct(List<Product> listOfProducts, HtmlNode child)
+        private void LoadSingleProduct(List<Product> listOfProducts, HtmlNode child, SearchSettingsBase settings)
         {
-            string imageURL = child.SelectSingleNode(".//a[contains(@class, 'product-image')]/img").GetAttributeValue("src", null);
+            string imageURL = child.SelectSingleNode(".//a[contains(@class, 'product-image')]/img")?.GetAttributeValue("src", null);
             string productName = child.SelectSingleNode(".//span[contains(@class,'name')]").InnerText;
-            string productURL = child.SelectSingleNode(".//a[contains(@class,'long-productname')]").GetAttributeValue("href",null);
-            string priceIntoString = child.SelectSingleNode(".//span[contains(@class,'price')]").InnerText;
+            string productURL = child.SelectSingleNode(".//a[contains(@class,'product-name')]").GetAttributeValue("href", null);
+            string priceIntoString = child.SelectSingleNode(".//span[@class='price']").InnerText;
             double price = getPrice(priceIntoString);
-            
+            var product = new Product(this, productName, productURL, price, imageURL, productURL);
+            if (Utils.SatisfiesCriteria(product, settings))
+            {
+                listOfProducts.Add(product);
+            }
+
         }
 
         private double getPrice(string priceIntoString)
         {
+            Debug.Print(priceIntoString);
             string result = Regex.Replace(priceIntoString, @"[^\d]", "");
             return Convert.ToDouble(result);
         }

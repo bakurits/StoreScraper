@@ -43,9 +43,9 @@ namespace StoreScraper.Bots.Nakedcph
             {
                 token.ThrowIfCancellationRequested();
 #if DEBUG
-                LoadSingleProduct(listOfProducts, child);
+                LoadSingleProduct(listOfProducts, child, settings);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts,child);
+                LoadSingleProductTryCatchWraper(listOfProducts,child,settings);
 #endif
             }
 
@@ -58,11 +58,13 @@ namespace StoreScraper.Bots.Nakedcph
         /// <param name="listOfProducts"></param>
         /// <param name="child"></param>
         /// <param name="info"></param>
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, HtmlNode child)
+        /// <param name="settings"></param>
+  
+        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, HtmlNode child, SearchSettingsBase settings)
         {
             try
             {
-                LoadSingleProduct(listOfProducts, child);
+                LoadSingleProduct(listOfProducts, child , settings);
             }
             catch (Exception e)
             {
@@ -95,7 +97,8 @@ namespace StoreScraper.Bots.Nakedcph
         /// </summary>
         /// <param name="listOfProducts"></param>
         /// <param name="child"></param>
-        private void LoadSingleProduct(List<Product> listOfProducts, HtmlNode child)
+        /// <param name="settings"></param>
+        private void LoadSingleProduct(List<Product> listOfProducts, HtmlNode child, SearchSettingsBase settings)
         {
             string priceStr = child.SelectSingleNode(".//span[contains(@class, 'price')]/del").InnerText;
 
@@ -107,7 +110,10 @@ namespace StoreScraper.Bots.Nakedcph
             string imageURL = new Uri(new Uri(this.WebsiteBaseUrl), image.GetAttributeValue("data-src", null)).ToString();  
 
             Product product = new Product(this, productName, productURL, price, imageURL, productURL);
-            listOfProducts.Add(product);
+            if (Utils.SatisfiesCriteria(product, settings))
+            {
+                listOfProducts.Add(product);
+            }
         }
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
