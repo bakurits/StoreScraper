@@ -19,10 +19,7 @@ namespace ScraperTest.Tests
             };
            
             scraper.FindItems(out var lst, settings, CancellationToken.None);
-            foreach (var item in lst)
-            {
-                Debug.WriteLine(item.ImageUrl);
-            }
+            Helper.PrintTestReuslts(lst);
             
         }
 

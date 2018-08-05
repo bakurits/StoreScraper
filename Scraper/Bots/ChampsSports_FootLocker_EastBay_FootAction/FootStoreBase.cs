@@ -38,8 +38,9 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay_FootAction
 
         private HtmlNode InitialNavigation(string url, CancellationToken token)
         {
-            HttpClient ClientGenerator() => ClientFactory.GetProxiedFirefoxClient(autoCookies:true).AddHeaders(ClientFactory.FireFoxHeaders);
-            var document = Utils.GetDoc(ClientGenerator, url, 3, 5, token);
+            HttpClient ClientGenerator() =>
+                ClientFactory.CreateProxiedHttpClient().AddHeaders(ClientFactory.HtmlOnlyHeader);
+            var document = Utils.GetDoc(ClientGenerator, url, 4, 5, token, true);
             return document.DocumentNode;
         }
 
@@ -76,9 +77,6 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay_FootAction
         /// This method is simple wrapper on LoadSingleProduct
         /// To catch all Exceptions during release
         /// </summary>
-        /// <param name="listOfProducts"></param>
-        /// <param name="child"></param>
-        /// <param name="info"></param>
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, HtmlNode child)
         {
             try
@@ -172,28 +170,30 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay_FootAction
             listOfProducts = new List<Product>();
 
             string searchUrl = WebsiteBaseUrl + $"/api/products/search?currentPage=0&pageSize=50&query={settings.KeyWords}&sort=newArrivals";
-            var request = ClientFactory.GetProxiedFirefoxClient(autoCookies:true);
-            var responseText = request.GetAsync(searchUrl, token).Result.Content.ReadAsStringAsync().Result;
-            var xmlDocument = new XmlDocument();
-            xmlDocument.LoadXml(responseText);
-            var products = xmlDocument.SelectNodes("productCategorySearchPage/products");
-            if (products == null)
+            using (var client = ClientFactory.CreateProxiedHttpClient().AddHeaders(ClientFactory.JsonXmlAcceptHeader))
             {
-                Logger.Instance.WriteVerboseLog("[Error] Uncexpected XML!!");
-                throw new WebException("Undexpected XML");
-            }
+                var responseText = client.GetAsync(searchUrl, token).Result.Content.ReadAsStringAsync().Result;
+                var xmlDocument = new XmlDocument();
+                xmlDocument.LoadXml(responseText);
+                var products = xmlDocument.SelectNodes("productCategorySearchPage/products");
+                if (products == null)
+                {
+                    Logger.Instance.WriteVerboseLog("[Error] Uncexpected XML!!");
+                    throw new WebException("Undexpected XML");
+                }
 
-            int sum = 0;
+                int sum = 0;
 
-            foreach (XmlNode singleContact in products)
-            {
-                token.ThrowIfCancellationRequested();
-                if (sum > 50) break;
+                foreach (XmlNode singleContact in products)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (sum > 50) break;
 #if DEBUG
-                LoadSingleProduct(listOfProducts, settings, singleContact, ref sum);
+                    LoadSingleProduct(listOfProducts, settings, singleContact, ref sum);
 #else
                 LoadSingleProductTryCatchWraper(listOfProducts, settings, singleContact, ref sum);
 #endif
+                }
             }
         }
 

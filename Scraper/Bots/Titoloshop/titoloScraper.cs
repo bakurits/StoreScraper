@@ -2,6 +2,7 @@
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
@@ -9,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Microsoft.CSharp.RuntimeBinder;
 using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
@@ -31,11 +33,14 @@ namespace StoreScraper.Bots.titoloshop
             var document = request.GetDoc(searchUrl, token);
             Logger.Instance.WriteErrorLog("Unexpected html!");
             var nodes = document.DocumentNode.SelectSingleNode("//ul[contains(@class, 'no-bullet') and contains(@class, 'small-block-grid-2')]");
+            if (nodes == null)
+            {
+                return;
+            }
             var children = nodes.SelectNodes("./li");
             if (children == null)
             {
-                Logger.Instance.WriteErrorLog("Unexpected html");
-                throw new HtmlWebException("Unexpected html");
+                return;
             }
 
             foreach (var child in children)
@@ -69,12 +74,17 @@ namespace StoreScraper.Bots.titoloshop
             }
         }
 
+       
         private void LoadSingleProduct(List<Product> listOfProducts, HtmlNode child, SearchSettingsBase settings)
         {
             string imageURL = child.SelectSingleNode(".//a[contains(@class, 'product-image')]/img")?.GetAttributeValue("src", null);
             string productName = child.SelectSingleNode(".//span[contains(@class,'name')]").InnerText;
             string productURL = child.SelectSingleNode(".//a[contains(@class,'product-name')]").GetAttributeValue("href", null);
-            string priceIntoString = child.SelectSingleNode(".//span[@class='price']").InnerText;
+            string priceIntoString = child.SelectSingleNode(".//span[@class='price']")?.InnerText;
+            if (priceIntoString == null)
+            {
+                return;
+            }
             double price = getPrice(priceIntoString);
             var product = new Product(this, productName, productURL, price, imageURL, productURL);
             if (Utils.SatisfiesCriteria(product, settings))
@@ -87,13 +97,32 @@ namespace StoreScraper.Bots.titoloshop
         private double getPrice(string priceIntoString)
         {
             Debug.Print(priceIntoString);
-            string result = Regex.Replace(priceIntoString, @"[^\d]", "");
-            return Convert.ToDouble(result);
+            string result = Regex.Match(priceIntoString, @"[\d\.]+").Value;
+            double.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
+            return price;
         }
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
-            throw new NotImplementedException();
+            var document = GetWebpage(product.Url, token);
+            ProductDetails details = new ProductDetails();
+            const string xPath = "//*[@id='attributesize-size_eu']/option";
+            var nodes = document.SelectNodes(xPath);
+            if (nodes == null)
+            {
+                throw new RuntimeBinderInternalCompilerException();
+            }
+            var sizes = nodes.Select(node => node.InnerText.Trim()).Where(element => !element.Contains("Choose")).ToList();
+            return new ProductDetails() { SizesList = sizes};
         }
+
+        private HtmlNode GetWebpage(string url, CancellationToken token)
+        {
+            using (var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true))
+            {
+                return client.GetDoc(url, token).DocumentNode;
+            }
+        }
+
     }
 }
