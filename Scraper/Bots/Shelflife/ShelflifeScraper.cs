@@ -66,7 +66,9 @@ namespace StoreScraper.Bots.Shelflife
             var url = GetUrl(item);
             var price = GetPrice(item);
             var imageUrl = GetImageUrl(item);
-            listOfProducts.Add(new Product(this, name, url, price, imageUrl, url, "R"));
+            Product product = new Product(this, name, url, price, imageUrl, url, "R");
+            if (Utils.SatisfiesCriteria(product, settings))
+                listOfProducts.Add(product);
         }
 
         private string GetName(HtmlNode item)

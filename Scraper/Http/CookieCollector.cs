@@ -47,7 +47,7 @@ namespace StoreScraper.Http
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         public const int MonitorInterval = 5000;
         private bool _diposed;
-        private Random rand = new Random();
+        private Random _rand = new Random();
 
         public CookieCollector()
         {
@@ -92,28 +92,25 @@ namespace StoreScraper.Http
         {
             if (AppSettings.Default.UseProxy && AppSettings.Default.Proxies.Count > 0)
             {
-               var newTask = Task.Run
-                   (() =>
-                   {
-                       _proxiedClients.AsParallel().WithExecutionMode(ParallelExecutionMode.ForceParallelism).ForAll(client => 
-                       {
-
-                           for (int i = 0; i < 5; i++)
-                           {
-                               try
-                               {
-                                   task.Func.Invoke(client, _cancellationTokenSource.Token);
-                                   break;
-                               }
-                               catch
-                               {
-                                   // ignored
-                               }
-                           }
-                       });
-                       
-                   }
-                  );
+                var newTask = Task.Run
+                (() =>
+                    {
+                        _proxiedClients.AsParallel().WithExecutionMode(ParallelExecutionMode.ForceParallelism).ForAll(
+                            client =>
+                            {
+                                for (var i = 0; i < 5; i++)
+                                    try
+                                    {
+                                        task.Func.Invoke(client, _cancellationTokenSource.Token);
+                                        break;
+                                    }
+                                    catch
+                                    {
+                                        // ignored
+                                    }
+                            });
+                    }
+                );
 
                 await newTask;
             }
@@ -153,7 +150,7 @@ namespace StoreScraper.Http
 
         public HttpClient GetClient() =>
                 AppSettings.Default.UseProxy && _proxiedClients.Count > 0 ?
-                _proxiedClients[rand.Next(_proxiedClients.Count - 1)] :
+                _proxiedClients[_rand.Next(_proxiedClients.Count - 1)] :
                 _proxylessClient;
 
 
