@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using Microsoft.CSharp.RuntimeBinder;
 using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
@@ -31,6 +32,11 @@ namespace StoreScraper.Bots.titoloshop
             var document = request.GetDoc(searchUrl, token);
             Logger.Instance.WriteErrorLog("Unexpected html!");
             var nodes = document.DocumentNode.SelectSingleNode("//ul[contains(@class, 'no-bullet') and contains(@class, 'small-block-grid-2')]");
+            if (nodes == null)
+            {
+                Logger.Instance.WriteErrorLog("Unexpected html");
+                throw new HtmlWebException("Unexpected html");
+            }
             var children = nodes.SelectNodes("./li");
             if (children == null)
             {
@@ -87,13 +93,31 @@ namespace StoreScraper.Bots.titoloshop
         private double getPrice(string priceIntoString)
         {
             Debug.Print(priceIntoString);
-            string result = Regex.Replace(priceIntoString, @"[^\d]", "");
+            string result = Regex.Match(priceIntoString, @"[\d\.]+").Value;
             return Convert.ToDouble(result);
         }
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
-            throw new NotImplementedException();
+            var document = GetWebpage(product.Url, token);
+            ProductDetails details = new ProductDetails();
+            const string xPath = "//*[@id='attributesize-size_eu']/option";
+            var nodes = document.SelectNodes(xPath);
+            if (nodes == null)
+            {
+                throw new RuntimeBinderInternalCompilerException();
+            }
+            var sizes = nodes.Select(node => node.InnerText.Trim()).Where(element => !element.Contains("Choose")).ToList();
+            return new ProductDetails() { SizesList = sizes};
         }
+
+        private HtmlNode GetWebpage(string url, CancellationToken token)
+        {
+            using (var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true))
+            {
+                return client.GetDoc(url, token).DocumentNode;
+            }
+        }
+
     }
 }
