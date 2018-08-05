@@ -2,6 +2,7 @@
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
@@ -93,7 +94,8 @@ namespace StoreScraper.Bots.titoloshop
         {
             Debug.Print(priceIntoString);
             string result = Regex.Match(priceIntoString, @"[\d\.]+").Value;
-            return Convert.ToDouble(result);
+            double.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
+            return price;
         }
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
