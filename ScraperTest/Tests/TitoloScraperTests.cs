@@ -19,7 +19,7 @@ namespace Tests
         [TestMethod()]
         public void FindItemsTest()
         {
-            scraper.FindItems(out var lst, Helper.SearchSettings, CancellationToken.None);
+           scraper.FindItems(out var lst, Helper.SearchSettings, CancellationToken.None);
 
            Helper.PrintTestReuslts(lst);
         }

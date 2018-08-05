@@ -34,14 +34,12 @@ namespace StoreScraper.Bots.titoloshop
             var nodes = document.DocumentNode.SelectSingleNode("//ul[contains(@class, 'no-bullet') and contains(@class, 'small-block-grid-2')]");
             if (nodes == null)
             {
-                Logger.Instance.WriteErrorLog("Unexpected html");
-                throw new HtmlWebException("Unexpected html");
+                return;
             }
             var children = nodes.SelectNodes("./li");
             if (children == null)
             {
-                Logger.Instance.WriteErrorLog("Unexpected html");
-                throw new HtmlWebException("Unexpected html");
+                return;
             }
 
             foreach (var child in children)
