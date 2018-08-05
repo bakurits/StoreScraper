@@ -116,6 +116,7 @@
   <ItemGroup>
     <Compile Include="Attributes\DisabledScraperAttribute.cs" />
     <Compile Include="Bots\ChampsSports_FootLocker_EastBay_FootAction\FootStoreBase.cs" />
+    <Compile Include="Bots\Endclothing\Endclothingscraper.cs" />
     <Compile Include="Bots\Mrporter\MrporterScraper.cs" />
     <Compile Include="Bots\Nakedcph\NakedcphScrapper.cs" />
     <Compile Include="Bots\OffWhite\OffWhiteScraper.cs" />

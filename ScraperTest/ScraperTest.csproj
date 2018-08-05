@@ -73,6 +73,7 @@
     <Compile Include="Tests\OffwhiteTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tests\SoleboxTest.cs" />
+    <Compile Include="Tests\EndclothingTest.cs" />
     <Compile Include="Tests\Urbanjunglestoretest.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -157,11 +157,11 @@ namespace StoreScraper.Factory
 
             if (proxy == null)
             {
-                return Storage.GetHttpClient();
+                return Storage.GetHttpClient().AddHeaders(FireFoxHeaders);
             }
             else
             {
-                return Storage.GetHttpClient(proxy);
+                return Storage.GetHttpClient(proxy).AddHeaders(FireFoxHeaders);
             }
         
         }
