@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Net;
@@ -139,7 +140,6 @@ namespace StoreScraper.Bots.OffWhite
         /// <param name="listOfProducts"></param>
         /// <param name="settings"></param>
         /// <param name="item"></param>
-        /// <param name="info"></param>
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             var url = "https://www.off---white.com" + item.SelectSingleNode("./a").GetAttributeValue("href", "");
@@ -205,7 +205,8 @@ namespace StoreScraper.Bots.OffWhite
             message.Method = HttpMethod.Get;
             message.RequestUri = new Uri(jsonUrl);
 
-            var response = client.SendAsync(message).Result;
+            Debug.Assert(client != null, nameof(client) + " != null");
+            var response = client.SendAsync(message, token).Result;
             response.EnsureSuccessStatusCode();
             var jsonStr = response.Content.ReadAsStringAsync().Result;
             JObject parsed = JObject.Parse(jsonStr);
@@ -272,7 +273,7 @@ namespace StoreScraper.Bots.OffWhite
                 var gga = engine.Evaluate(script);
                 var calc = engine.GetGlobalValue<string>("interop");
 
-                Task.Delay(5000, token).Wait();
+                Task.Delay(5000, token).Wait(token);
                 using (var message2 = new HttpRequestMessage())
                 {
                 

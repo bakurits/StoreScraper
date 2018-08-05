@@ -118,10 +118,9 @@ namespace StoreScraper.Bots.titoloshop
 
         private HtmlNode GetWebpage(string url, CancellationToken token)
         {
-            using (var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true))
-            {
-                return client.GetDoc(url, token).DocumentNode;
-            }
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            return client.GetDoc(url, token).DocumentNode;
+            
         }
 
     }

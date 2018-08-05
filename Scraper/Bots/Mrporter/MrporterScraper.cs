@@ -81,7 +81,6 @@ namespace StoreScraper.Bots.Mrporter
                 if (dataStock != "Low_Stock" && dataStock != "In_Stock") continue;
                 var val = GenerateRealSize(item.InnerHtml, sizeCaster);
 
-                Debug.WriteLine(val);
                 result.Add(val);
             }
 

@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper;
 using StoreScraper.Core;
 using StoreScraper.Http;
 using StoreScraper.Models;
 
-namespace ScraperTest
+namespace ScraperTest.Helpers
 {
     [TestClass]
     public class Helper
@@ -25,7 +23,12 @@ namespace ScraperTest
 
         public static void PrintTestReuslts(List<Product> list)
         {
-            Console.WriteLine(string.Join("\n", list));
+            Debug.WriteLine(string.Join("\n", list));
+        }
+
+        public static void PrintGetDetailsResult(List<String> sizes)
+        {
+            Debug.WriteLine(string.Join("\n", sizes));
         }
 
         [AssemblyInitialize]
@@ -35,7 +38,7 @@ namespace ScraperTest
             if (!Directory.Exists(AppSettings.DataDir)) Directory.CreateDirectory(AppSettings.DataDir);
             AppSettings.Default = AppSettings.Load();
 
-            Logger.Instance.OnLogged += (message, color) => Console.WriteLine(message);
+            Logger.Instance.OnLogged += (message, color) => Debug.WriteLine(message);
             CookieCollector.Default = new CookieCollector();
         }
     }

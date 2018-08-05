@@ -1,15 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StoreScraper.Bots.titoloshop;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
-using ScraperTest;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ScraperTest.Helpers;
+using StoreScraper.Bots.titoloshop;
 using StoreScraper.Models;
 
-namespace Tests
+namespace ScraperTest.Tests
 {
     [TestClass()]
     public class TitoloScraperTests

@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ScraperTest.Helpers;
 using StoreScraper.Bots.Mrporter;
 using StoreScraper.Models;
 
@@ -15,7 +16,7 @@ namespace ScraperTest.Tests
             MrporterScraper scraper = new MrporterScraper();
             SearchSettingsBase settings = new SearchSettingsBase()
             {
-                KeyWords = "watch"
+                KeyWords = "jacket"
             };
            
             scraper.FindItems(out var lst, settings, CancellationToken.None);
@@ -35,7 +36,7 @@ namespace ScraperTest.Tests
 
             MrporterScraper scraper = new MrporterScraper();
 
-            scraper.GetProductDetails(curProduct, CancellationToken.None);
+            Helper.PrintGetDetailsResult(scraper.GetProductDetails(curProduct, CancellationToken.None).SizesList);
         }
 
         [TestMethod]
@@ -50,7 +51,7 @@ namespace ScraperTest.Tests
 
             MrporterScraper scraper = new MrporterScraper();
 
-            scraper.GetProductDetails(curProduct, CancellationToken.None);
+            Helper.PrintGetDetailsResult(scraper.GetProductDetails(curProduct, CancellationToken.None).SizesList);
         }
     }
 }

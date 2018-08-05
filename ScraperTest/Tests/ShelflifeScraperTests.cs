@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ScraperTest.Helpers;
 using StoreScraper.Bots.Shelflife;
 using StoreScraper.Models;
 
@@ -19,15 +20,8 @@ namespace ScraperTest.Tests
             };
 
             scraper.FindItems(out var lst, settings, CancellationToken.None);
-            foreach (var item in lst)
-            {
-                Debug.WriteLine(item.Name);
-                Debug.WriteLine(item.Url);
-                Debug.WriteLine(item.ImageUrl);
-                Debug.WriteLine(item.Price);
-                Debug.WriteLine("");
-                Debug.WriteLine("");
-            }
+            Helper.PrintTestReuslts(lst);
+            
         }
 
         [TestMethod()]
@@ -43,10 +37,9 @@ namespace ScraperTest.Tests
             ShelflifeScraper scraper = new ShelflifeScraper();
 
             ProductDetails details = scraper.GetProductDetails(curProduct, CancellationToken.None);
-            foreach (var sz in details.SizesList)
-            {
-                Debug.WriteLine(sz);
-            }
+            
+            Helper.PrintGetDetailsResult(details.SizesList);
+            
         }
     }
 }

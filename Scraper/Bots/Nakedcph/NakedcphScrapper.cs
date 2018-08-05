@@ -119,14 +119,13 @@ namespace StoreScraper.Bots.Nakedcph
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
             const string xpath = "//*[@id='product-form']//div[contains(@class,'dropdown-menu')]/a";
-            using (var client = ClientFactory.GetProxiedFirefoxClient())
-            {
-                var doc = client.GetDoc(product.Url, token);
-
-                var nodes = doc.DocumentNode.SelectNodes(xpath);
-                var sizes = nodes.Select(node => node.InnerText.Trim());
-                return new ProductDetails() { SizesList = sizes.ToList() };
-            }
+            var client = ClientFactory.GetProxiedFirefoxClient();
+            
+            var doc = client.GetDoc(product.Url, token);
+        
+            var nodes = doc.DocumentNode.SelectNodes(xpath);
+            var sizes = nodes.Select(node => node.InnerText.Trim());
+            return new ProductDetails() { SizesList = sizes.ToList() };
         }
     }
 }

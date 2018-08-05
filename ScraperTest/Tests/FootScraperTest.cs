@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ScraperTest.Helpers;
 using StoreScraper.Bots.ChampsSports_FootLocker_EastBay_FootAction;
 
 namespace ScraperTest.Tests
