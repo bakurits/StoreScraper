@@ -80,7 +80,11 @@ namespace StoreScraper.Bots.titoloshop
             string imageURL = child.SelectSingleNode(".//a[contains(@class, 'product-image')]/img")?.GetAttributeValue("src", null);
             string productName = child.SelectSingleNode(".//span[contains(@class,'name')]").InnerText;
             string productURL = child.SelectSingleNode(".//a[contains(@class,'product-name')]").GetAttributeValue("href", null);
-            string priceIntoString = child.SelectSingleNode(".//span[@class='price']").InnerText;
+            string priceIntoString = child.SelectSingleNode(".//span[@class='price']")?.InnerText;
+            if (priceIntoString == null)
+            {
+                return;
+            }
             double price = getPrice(priceIntoString);
             var product = new Product(this, productName, productURL, price, imageURL, productURL);
             if (Utils.SatisfiesCriteria(product, settings))
