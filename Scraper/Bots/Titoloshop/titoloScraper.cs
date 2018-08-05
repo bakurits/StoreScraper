@@ -75,6 +75,7 @@ namespace StoreScraper.Bots.titoloshop
             }
         }
 
+        // it's my work now
         private void LoadSingleProduct(List<Product> listOfProducts, HtmlNode child, SearchSettingsBase settings)
         {
             string imageURL = child.SelectSingleNode(".//a[contains(@class, 'product-image')]/img")?.GetAttributeValue("src", null);
