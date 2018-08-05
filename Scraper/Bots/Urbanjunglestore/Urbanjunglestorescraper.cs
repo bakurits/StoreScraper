@@ -4,6 +4,7 @@ using HtmlAgilityPack;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
+using StoreScraper.Core;
 using System.Text.RegularExpressions;
 using System;
 
@@ -28,9 +29,25 @@ namespace StoreScraper.Bots.UrbanjunglestoreScraper
             foreach (var item in itemCollection)
             {
                 token.ThrowIfCancellationRequested();
+#if DEBUG
                 LoadSingleProduct(listOfProducts, settings, item);
+#else
+                LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
+#endif
             }
 
+        }
+
+        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
+        {
+            try
+            {
+                LoadSingleProduct(listOfProducts, settings, item);
+            }
+            catch (Exception e)
+            {
+                Logger.Instance.WriteErrorLog(e.Message);
+            }
         }
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
@@ -74,7 +91,11 @@ namespace StoreScraper.Bots.UrbanjunglestoreScraper
             double price = GetPrice(item);
             if (price < 0) return;
             string imageUrl = GetImageUrl(item);
-            listOfProducts.Add(new Product(this, name, url, price, imageUrl, url, "EUR"));
+            var product = new Product(this, name, url, price, imageUrl, url, "EUR");
+            if (Utils.SatisfiesCriteria(product, settings))
+            {
+                listOfProducts.Add(product);
+            }
         }
 
         

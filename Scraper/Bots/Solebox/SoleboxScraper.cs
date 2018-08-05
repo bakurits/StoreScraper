@@ -3,9 +3,11 @@ using System.Threading;
 using HtmlAgilityPack;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
+using StoreScraper.Core;
 using StoreScraper.Models;
 using System.Text.RegularExpressions;
 using System;
+
 
 namespace StoreScraper.Bots.Solebox
 {
@@ -25,10 +27,27 @@ namespace StoreScraper.Bots.Solebox
             foreach (var item in itemCollection)
             {
                 token.ThrowIfCancellationRequested();
+#if DEBUG
                 LoadSingleProduct(listOfProducts, settings, item);
+#else
+                LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
+#endif
             }
 
         }
+
+        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
+        {
+            try
+            {
+                LoadSingleProduct(listOfProducts, settings, item);
+            }
+            catch (Exception e)
+            {
+                Logger.Instance.WriteErrorLog(e.Message);
+            }
+        }
+
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
@@ -72,7 +91,11 @@ namespace StoreScraper.Bots.Solebox
             string url = GetUrl(item);
             double price = GetPrice(item);
             string imageUrl = GetImageUrl(item);
-            listOfProducts.Add(new Product(this, name, url, price, imageUrl, url, "EUR"));
+            var product = new Product(this, name, url, price, imageUrl, url, "EUR");
+            if (Utils.SatisfiesCriteria(product, settings))
+            {
+                listOfProducts.Add(product);
+            }
         }
 
         private bool GetStatus(HtmlNode item)
