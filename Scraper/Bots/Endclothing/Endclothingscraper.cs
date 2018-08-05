@@ -58,7 +58,7 @@ namespace StoreScraper.Bots.Endclothing
 
             while (match.Success)
             {
-                var sz = match.Groups[1].Value.ToString();
+                var sz = match.Groups[1].Value;
                 if (!details.SizesList.Contains(sz) && sz.Length > 0)
                 {
                     details.SizesList.Add(sz);
@@ -70,7 +70,7 @@ namespace StoreScraper.Bots.Endclothing
 
         private HtmlNode GetWebpage(string url, CancellationToken token)
         {
-            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var client = ClientFactory.GetProxiedFirefoxClient();
             var document = client.GetDoc(url, token).DocumentNode;
             return client.GetDoc(url, token).DocumentNode;
         }

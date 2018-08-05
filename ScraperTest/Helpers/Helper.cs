@@ -21,7 +21,7 @@ namespace ScraperTest.Helpers
             MaxPrice = 1000,
         };
 
-        public static void PrintTestReuslts(List<Product> list)
+        public static void PrintFindItemsResults(List<Product> list)
         {
             Debug.WriteLine(string.Join("\n", list));
         }

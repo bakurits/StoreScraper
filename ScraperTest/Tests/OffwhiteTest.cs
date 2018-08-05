@@ -17,7 +17,7 @@ namespace ScraperTest.Tests
         {
             var searchSettings = Helper.SearchSettings;
             Scraper.FindItems(out var listOfProducts, searchSettings, CancellationToken.None);
-            Helper.PrintTestReuslts(listOfProducts);
+            Helper.PrintFindItemsResults(listOfProducts);
         }
 
 

@@ -17,7 +17,7 @@ namespace ScraperTest.Tests
         {
            scraper.FindItems(out var lst, Helper.SearchSettings, CancellationToken.None);
 
-           Helper.PrintTestReuslts(lst);
+           Helper.PrintFindItemsResults(lst);
         }
 
         [TestMethod]

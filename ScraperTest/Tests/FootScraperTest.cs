@@ -14,7 +14,7 @@ namespace ScraperTest.Tests
         {
             FootSimpleBase.ChampsSportsScraper scraper = new FootSimpleBase.ChampsSportsScraper();
             scraper.FindItems(out var lst, Helper.SearchSettings, CancellationToken.None);
-            Helper.PrintTestReuslts(lst);
+            Helper.PrintFindItemsResults(lst);
         }
 
         [TestMethod]
@@ -22,7 +22,7 @@ namespace ScraperTest.Tests
         {
             FootSimpleBase.EastBayScraper scraper = new FootSimpleBase.EastBayScraper();
             scraper.FindItems(out var lst, Helper.SearchSettings, CancellationToken.None);
-            Helper.PrintTestReuslts(lst);
+            Helper.PrintFindItemsResults(lst);
         }
 
         [TestMethod]
@@ -30,7 +30,7 @@ namespace ScraperTest.Tests
         {
             FootAPIBase.FootLockerScraper scraper = new FootAPIBase.FootLockerScraper();
             scraper.FindItems(out var lst, Helper.SearchSettings, CancellationToken.None);
-            Helper.PrintTestReuslts(lst);
+            Helper.PrintFindItemsResults(lst);
         }
 
         [TestMethod]
@@ -38,7 +38,7 @@ namespace ScraperTest.Tests
         {
             FootAPIBase.FootActionScraper scraper = new FootAPIBase.FootActionScraper();
             scraper.FindItems(out var lst, Helper.SearchSettings, CancellationToken.None);
-            Helper.PrintTestReuslts(lst);
+            Helper.PrintFindItemsResults(lst);
         }
     }
 }

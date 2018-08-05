@@ -149,21 +149,12 @@ namespace StoreScraper.Factory
 
         public static HttpClient GetFirefoxHttpClient(WebProxy proxy = null, bool autoCookies = false)
         {
-
             if (!autoCookies)
             {
-                return CreateHttpCLient(proxy).AddHeaders(FireFoxHeaders);
+                return CreateProxiedHttpClient(proxy).AddHeaders(FireFoxHeaders);
             }
 
-            if (proxy == null)
-            {
-                return Storage.GetHttpClient().AddHeaders(FireFoxHeaders);
-            }
-            else
-            {
-                return Storage.GetHttpClient(proxy).AddHeaders(FireFoxHeaders);
-            }
-        
+            return proxy == null ? Storage.GetHttpClient() : Storage.GetHttpClient(proxy);
         }
 
         [DllImport("user32.dll")]
