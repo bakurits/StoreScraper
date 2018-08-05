@@ -79,7 +79,7 @@ namespace StoreScraper.Bots.Endclothing
         {
             string url = string.Format(SearchFormat, settings.KeyWords);
             var document = GetWebpage(url, token);
-            return document.SelectNodes("//div[@class='item product product-item col-xs-6 col-md-3  c-product-thumbnail c-product-thumbnail--product']");
+            return document.SelectNodes("//div[contains(@class, 'item product product-item')]");
         }
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
