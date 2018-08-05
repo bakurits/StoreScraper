@@ -14,6 +14,15 @@ namespace StoreScraper.Helpers
     public class SlackWebHook
     {
 
+        public static void PostStartMessage(string apiUrl)
+        {
+#pragma warning disable 4014
+            PostMessageAsync(@"{
+                ""text"": ""Test search started""  
+            }", apiUrl);
+#pragma warning restore 4014
+        }
+
         public static async Task PostMessage(Product product, string apiUrl)
         {
             const string formater = @"{{
@@ -35,7 +44,7 @@ namespace StoreScraper.Helpers
 
             try
             {
-                szs = string.Join(";  ", product.GetDetails(CancellationToken.None));
+                szs = string.Join(";  ", product.GetDetails(CancellationToken.None).SizesList);
             }
             catch (Exception e)
             {
@@ -43,8 +52,9 @@ namespace StoreScraper.Helpers
                 szs = "Error occured while getting details";
             }
 
+            string textMessage = $"*{product.Name}* added \\n *Available sizes are*:   {szs} \\n  *Price*:  {product.Price + product.Currency}\\n";
 
-            string myJson = string.Format(formater, product.Url, "*" + product.Name + "* added in site\n *available sizes are* : " + szs , product.ImageUrl);
+            string myJson = string.Format(formater, product.Url, textMessage, product.ImageUrl);
 
             await PostMessageAsync(myJson, apiUrl);
         }

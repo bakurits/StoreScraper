@@ -35,6 +35,7 @@ namespace StoreScraper.Controls
 
         private void btn_FindProducts_Click(object sender, EventArgs e)
         {
+            
             _findTokenSource = new CancellationTokenSource();
             _listOfProducts.Clear();
             DGrid_FoundProducts.Refresh();
@@ -48,9 +49,27 @@ namespace StoreScraper.Controls
 
         }
 
+        private void PostProduct(Product product)
+        {
+            foreach (var slackUrl in AppSettings.Default.SlackApiUrl)
+            {
+                SlackWebHook.PostMessage(product, slackUrl);
+            }
+            foreach (var discordUrl in AppSettings.Default.DiscordApiUrl)
+            {
+                DiscordWebhook.Send(discordUrl, product);
+            }
+
+        }
+
         private void FindAction(ScraperBase scraper)
         {
             scraper.FindItems(out var products, PGrid_Bot.SelectedObject as SearchSettingsBase, _findTokenSource.Token);
+            if (AppSettings.Default.PostStartMessage)
+            {
+                products.ForEach(product => PostProduct(product));
+            }
+
             DGrid_FoundProducts.Invoke(new Action(() =>
             {
                 lock (_listOfProducts)
