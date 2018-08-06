@@ -33,7 +33,7 @@ namespace StoreScraper.Helpers
                         ""title_link"": ""{0}"",
                         ""text"": ""{1}"",
                         ""thumb_url"": ""{2}"",
-                        ""color"": ""#764FA5""
+                        ""color"": ""#764FA5"",
                         ""ts"": ""{4}""
                     }}
                 ]
