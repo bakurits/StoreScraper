@@ -20,7 +20,7 @@ namespace ScraperTest.Tests
             };
 
             scraper.FindItems(out var lst, settings, CancellationToken.None);
-            Helper.PrintTestReuslts(lst);
+            Helper.PrintFindItemsResults(lst);
             
         }
 
