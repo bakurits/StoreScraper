@@ -79,31 +79,33 @@ namespace StoreScraper.Bots.Mrporter
             {
                 var dataStock = item.GetAttributeValue("data-stock", null);
                 if (dataStock != "Low_Stock" && dataStock != "In_Stock") continue;
-                var val = GenerateRealSize(item.InnerHtml, sizeCaster);
-
-                result.AddSize(val, "Unknown");
+                GenerateRealSize(result, item.InnerHtml, sizeCaster);
             }
 
             return result;
         }
 
-        private string GenerateRealSize(string html, string caster)
+        private void GenerateRealSize(ProductDetails resultDetails, string html, string caster)
         {
-            var result = html;
             var ind = html.IndexOf("-", StringComparison.Ordinal);
             var before = html.Substring(0, ind != -1 ? ind : html.Length).Trim();
+            var after = html.Substring(ind != -1 ? ind + 1 : html.Length).Trim();
+            after = after.Length > 0 ? after : "Unknown";
+            var result = before;
             if (int.TryParse(before, out var val))
             {
                 var indx = caster.IndexOf(val.ToString(), StringComparison.Ordinal);
-                if (indx == -1) return result;
+                if (indx == -1)
+                {
+                    resultDetails.AddSize(before, after);
+                    return;
+                }
                 var indOfEqualitySign = caster.IndexOf("=", indx, StringComparison.Ordinal);
                 var indOfTokenFinish = caster.IndexOf(",", indOfEqualitySign, StringComparison.Ordinal);
                 if (indOfTokenFinish == -1) indOfTokenFinish = caster.Length;
                 result = caster.Substring(indOfEqualitySign + 1, indOfTokenFinish - indOfEqualitySign - 1).Trim();
-                result += html.Substring(html.IndexOf("-", StringComparison.Ordinal) - 1);
             }
-
-            return result;
+            resultDetails.AddSize(result, after);
         }
 
 

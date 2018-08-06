@@ -38,7 +38,6 @@ namespace StoreScraper.Helpers
             string avatarUrl = null, bool isTTS = false)
         {
             string formatter = @"{{
-              ""content"": ""Added new item"",
               ""embeds"": [
                 {{
                   ""title"": ""{0}"",
@@ -65,7 +64,9 @@ namespace StoreScraper.Helpers
                 szs = "Error occured while getting details";
             }
 
-            string textMessage = $"*{product.Name}* added \\n *Available sizes are*:   {szs} \\n  *Price*:  {product.Price + product.Currency}\\n";
+            string textMessage = $"*Price*:\\n{product.Price + product.Currency}\\n" +
+                                 $"*Store link*:\\n{product.Url}\\n" +
+                                 $"*Available sizes are*:\\n{szs}\\n";
 
             string myJson = string.Format(formatter, product.Name, textMessage, product.Url, product.ImageUrl);
             

@@ -28,8 +28,8 @@ namespace StoreScraper.Helpers
             const string formater = @"{{
                 ""attachments"": [
                     {{
-                        ""fallback"": ""New item added"",
-                        ""title"": ""New item added"",
+                        ""fallback"": ""{3}"",
+                        ""title"": ""{3}"",
                         ""title_link"": ""{0}"",
                         ""text"": ""{1}"",
                         ""thumb_url"": ""{2}"",
@@ -52,12 +52,11 @@ namespace StoreScraper.Helpers
                 szs = "Error occured while getting details";
             }
 
-            string textMessage = $"*{product.Name}* added \\n" +
-                                 $"*Price*:  \\n{product.Price + product.Currency}\\n  " +
-                                 $"*Store link*:  \\n{product.Url}\\n  " +
-                                 $"*Available sizes are*:   \\n{szs} \\n  ";
+            string textMessage = $"*Price*:\\n{product.Price + product.Currency}\\n" +
+                                 $"*Store link*:\\n{product.Url}\\n" +
+                                 $"*Available sizes are*:\\n{szs}\\n";
 
-            string myJson = string.Format(formater, product.Url, textMessage, product.ImageUrl);
+            string myJson = string.Format(formater, product.Url, textMessage, product.ImageUrl, product.Name);
 
             await PostMessageAsync(myJson, apiUrl);
         }
