@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using StoreScraper.Core;
+using StoreScraper.Factory;
 using StoreScraper.Models;
 
 namespace StoreScraper.Helpers
@@ -34,7 +35,7 @@ namespace StoreScraper.Helpers
         }
 
         // ReSharper disable once InconsistentNaming
-        public static async Task Send(string webhookUrl, Product product, string username = null,
+        public static async Task<HttpResponseMessage> Send(string webhookUrl, Product product, string username = null,
             string avatarUrl = null, bool isTTS = false)
         {
             string formatter = @"{{
@@ -70,20 +71,17 @@ namespace StoreScraper.Helpers
                                  $"*Available sizes are*:\\n{szs}\\n";
 
             string myJson = string.Format(formatter, product.Name, textMessage, product.Url, 
-                product.ImageUrl, DateTime.Now.ToString("yyyy-MM-ddTHH':'mm':'sszzz"));
+                product.ImageUrl, DateTime.UtcNow.ToString("O"));
             
-            await PostMessage(webhookUrl, myJson);
+            return await PostMessage(webhookUrl, myJson);
             
         }
 
 
-        private static async Task PostMessage(string webhookUrl, string myJson)
+        private static async Task<HttpResponseMessage> PostMessage(string webhookUrl, string myJson)
         {
             var stringContent = new StringContent(myJson, Encoding.UTF8, "application/json");
-            using (var client = new HttpClient())
-            {
-                await client.PostAsync(webhookUrl, stringContent);
-            }
+            return await ClientFactory.GeneralClient.PostAsync(webhookUrl, stringContent);
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using StoreScraper.Core;
+using StoreScraper.Factory;
 using StoreScraper.Models;
 
 namespace StoreScraper.Helpers
@@ -23,7 +24,7 @@ namespace StoreScraper.Helpers
 #pragma warning restore 4014
         }
 
-        public static async Task PostMessage(Product product, string apiUrl)
+        public static async Task<HttpResponseMessage> PostMessage(Product product, string apiUrl)
         {
             const string formater = @"{{
                 ""attachments"": [
@@ -57,17 +58,14 @@ namespace StoreScraper.Helpers
                                  $"*Store link*:\\n{product.Url}\\n" +
                                  $"*Available sizes are*:\\n{szs}\\n";
 
-            string myJson = string.Format(formater, product.Url, textMessage, product.ImageUrl, product.Name, DateTime.UtcNow.Subtract(DateTime.MinValue.AddYears(1969)).TotalSeconds);
+            string myJson = string.Format(formater, product.Url, textMessage, product.ImageUrl, product.Name, DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds);
 
-            await PostMessageAsync(myJson, apiUrl);
+            return await PostMessageAsync(myJson, apiUrl);
         }
 
-        public static async Task PostMessageAsync(string messageJson, string apiUrl)
+        public static async Task<HttpResponseMessage> PostMessageAsync(string messageJson, string apiUrl)
         {
-            using (var client = new HttpClient())
-            {   
-                await client.PostAsync(apiUrl, new StringContent(messageJson, Encoding.UTF8, "application/json"));
-            }
+            return await ClientFactory.GeneralClient.PostAsync(apiUrl, new StringContent(messageJson, Encoding.UTF8, "application/json"));
         }
 
 

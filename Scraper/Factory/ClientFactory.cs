@@ -74,6 +74,8 @@ namespace StoreScraper.Factory
         };
 
 
+        public static HttpClient GeneralClient = new HttpClient();
+
         public static WebProxy ParseProxy(string proxy)
         {
 
