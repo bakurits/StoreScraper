@@ -19,7 +19,7 @@ namespace StoreScraper.Bots.UrbanjunglestoreScraper
         private const string SearchFormat = @"https://www.urbanjunglestore.com/it/catalogsearch/result/?cat=137&q={0}";
         private const string imageRegex = "src=\"https://www.urbanjunglestore.com/media/catalog/(.*?)\"";
         private const string imageRegexBase = "https://www.urbanjunglestore.com/media/catalog/";
-        private const string sizesRegex = "title=\"USA(\\d+,\\d+)-EU(\\d+,\\d+)\"";
+        private const string sizesRegex = "title=\"USA(\\d+(,\\d+)?)-EU(\\d+(,\\d+)?)\"";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
