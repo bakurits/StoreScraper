@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper;
 using StoreScraper.Core;
@@ -26,9 +27,9 @@ namespace ScraperTest.Helpers
             Debug.WriteLine(string.Join("\n", list));
         }
 
-        public static void PrintGetDetailsResult(List<String> sizes)
+        public static void PrintGetDetailsResult(List<StringPair> sizes)
         {
-            Debug.WriteLine(string.Join("\n", sizes));
+            Debug.WriteLine(string.Join("\n", sizes.Select(size => $"{size.Key}[{size.Value}]")));
         }
 
         [AssemblyInitialize]

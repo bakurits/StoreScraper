@@ -125,7 +125,15 @@ namespace StoreScraper.Bots.Nakedcph
         
             var nodes = doc.DocumentNode.SelectNodes(xpath);
             var sizes = nodes.Select(node => node.InnerText.Trim());
-            return new ProductDetails() { SizesList = sizes.ToList() };
+
+            var details = new ProductDetails();
+
+            foreach (var size in sizes)
+            {
+                details.AddSize(size, "Unknown");
+            }
+
+            return details;
         }
     }
 }

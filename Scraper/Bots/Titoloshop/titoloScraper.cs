@@ -105,15 +105,23 @@ namespace StoreScraper.Bots.titoloshop
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
             var document = GetWebpage(product.Url, token);
-            ProductDetails details = new ProductDetails();
             const string xPath = "//*[@id='attributesize-size_eu']/option";
             var nodes = document.SelectNodes(xPath);
             if (nodes == null)
             {
                 throw new RuntimeBinderInternalCompilerException();
             }
-            var sizes = nodes.Select(node => node.InnerText.Trim()).Where(element => !element.Contains("Choose")).ToList();
-            return new ProductDetails() { SizesList = sizes};
+
+            var sizes = nodes.Select(node => node.InnerText.Trim()).Where(element => !element.Contains("Choose"));
+            ProductDetails details = new ProductDetails();
+
+            foreach (var size in sizes)
+            {
+                details.AddSize(size, "Unknown");
+            }
+
+            return details;
+
         }
 
         private HtmlNode GetWebpage(string url, CancellationToken token)

@@ -60,9 +60,9 @@ namespace StoreScraper.Bots.UrbanjunglestoreScraper
             while (match.Success)
             {
                 var sz = match.Groups[2].Value.ToString();
-                if (!details.SizesList.Contains(sz) && sz.Length > 0)
+                if (!details.SizesList.Exists(szInfo => szInfo.Key == sz) && sz.Length > 0)
                 {
-                    details.SizesList.Add(sz);
+                    details.AddSize(sz, "Unknown");
                 }
                 match = match.NextMatch();
             }

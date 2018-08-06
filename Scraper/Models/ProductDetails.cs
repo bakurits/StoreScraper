@@ -1,20 +1,26 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace StoreScraper.Models
 {
     public class ProductDetails : Product
     {
-        public List<string> SizesList { set; get; } = new List<string>();
+        public List<StringPair> SizesList { set; get; } = new List<StringPair>();
 
 
         /// <summary>
         /// Adds new size in sizes array
         /// </summary>
         /// <param name="size"></param>
-        public void Add(string size)
+        public void AddSize(string sizeName, string sizeStockInfo)
         {
-            SizesList.Add(size);
+            SizesList.Add((sizeName, sizeStockInfo));
         }
 
+
+        public override string ToString()
+        {
+            return string.Join(", \n",SizesList.Select(sizInfo => $"{sizInfo.Key}[{sizInfo.Value}]"));
+        }
     }
 }
