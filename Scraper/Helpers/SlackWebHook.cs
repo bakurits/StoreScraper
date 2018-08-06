@@ -34,6 +34,7 @@ namespace StoreScraper.Helpers
                         ""text"": ""{1}"",
                         ""thumb_url"": ""{2}"",
                         ""color"": ""#764FA5""
+                        ""ts"": ""{4}""
                     }}
                 ]
             }}";
@@ -56,7 +57,7 @@ namespace StoreScraper.Helpers
                                  $"*Store link*:\\n{product.Url}\\n" +
                                  $"*Available sizes are*:\\n{szs}\\n";
 
-            string myJson = string.Format(formater, product.Url, textMessage, product.ImageUrl, product.Name);
+            string myJson = string.Format(formater, product.Url, textMessage, product.ImageUrl, product.Name, DateTime.UtcNow.Subtract(DateTime.MinValue.AddYears(1969)).TotalSeconds);
 
             await PostMessageAsync(myJson, apiUrl);
         }

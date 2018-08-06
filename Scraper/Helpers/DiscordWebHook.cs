@@ -47,7 +47,8 @@ namespace StoreScraper.Helpers
                   ""color"": ""7753637"",
                   ""image"": {{
                     ""url"": ""{3}""
-                  }}
+                  }},
+                  ""timestamp"": ""{4}""
                 }}
               ]
             }}";
@@ -68,7 +69,8 @@ namespace StoreScraper.Helpers
                                  $"*Store link*:\\n{product.Url}\\n" +
                                  $"*Available sizes are*:\\n{szs}\\n";
 
-            string myJson = string.Format(formatter, product.Name, textMessage, product.Url, product.ImageUrl);
+            string myJson = string.Format(formatter, product.Name, textMessage, product.Url, 
+                product.ImageUrl, DateTime.Now.ToString("yyyy-MM-ddTHH':'mm':'sszzz"));
             
             await PostMessage(webhookUrl, myJson);
             
