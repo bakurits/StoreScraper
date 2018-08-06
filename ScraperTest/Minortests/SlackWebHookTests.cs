@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Diagnostics;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper.Bots.Mrporter;
 using StoreScraper.Helpers;
@@ -17,7 +18,19 @@ namespace ScraperTest.Minortests
                 120.83,
                 "https://cache.mrporter.com/images/products/1012326/1012326_mrp_in_l.jpg",
                 "id");
-            SlackWebHook.PostMessage(product, "https://hooks.slack.com/services/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").Wait();
+            var task = SlackWebHook.PostMessage(product,
+                "https://hooks.slack.com/services/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");
+
+
+            try
+            {
+                task.Result.EnsureSuccessStatusCode();
+            }
+            finally
+            {
+                Debug.WriteLine(task.Result.Content.ReadAsStringAsync().Result);
+            }
+
             Thread.Sleep(5000);
 
         }

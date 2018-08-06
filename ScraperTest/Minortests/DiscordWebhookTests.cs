@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Diagnostics;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper.Bots.Mrporter;
 using StoreScraper.Helpers;
@@ -17,10 +18,18 @@ namespace ScraperTest.Minortests
                 120.83,
                 "https://cache.mrporter.com/images/products/1069726/1069726_mrp_in_m2.jpg",
                 "id");
-            DiscordWebhook.Send(
+            var task = DiscordWebhook.Send(
                 "https://discordapp.com/api/webhooks/468240680414609429/kKJB9L4I8AfQWWDcqf0vpAj9OYDqxLAJ9gHl1b2B5xg8c5X2Ic4FpcSHAE8_0vKqZBoP",
-                product).Wait();
-            Thread.Sleep(5000);
+                product);
+
+            try
+            {
+                task.Result.EnsureSuccessStatusCode();
+            }
+            finally
+            {
+                Debug.WriteLine(task.Result.Content.ReadAsStringAsync().Result);
+            }
         }
     }
 }
