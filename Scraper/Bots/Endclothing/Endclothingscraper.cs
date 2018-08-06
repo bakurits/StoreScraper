@@ -18,7 +18,8 @@ namespace StoreScraper.Bots.Endclothing
 
         private const string SearchFormat = @"https://www.endclothing.com/us/catalogsearch/result/?q={0}";
         private const string priceRegex = "<span class=\"price\">\\$(\\d+)</span>";
-        private const string sizesRegex = "\"label\":\"UK (\\d+.\\d+)\",\"products\"";
+        private const string sizesRegex = "\"label\":\"UK (\\d+(\\.\\d+)?)\",\"products\"";
+        private const string idRegex = "data-product-id=\"(\\d+)\"";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
@@ -34,7 +35,6 @@ namespace StoreScraper.Bots.Endclothing
                 LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
 #endif
             }
-
         }
 
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
@@ -94,7 +94,7 @@ namespace StoreScraper.Bots.Endclothing
                 listOfProducts.Add(product);
             }
         }
-        
+
         private string GetName(HtmlNode item)
         {
             return item.SelectSingleNode("./div[@class='product-item-info']/a/div/img[1]").GetAttributeValue("alt", null);
