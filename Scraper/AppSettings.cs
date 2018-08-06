@@ -36,6 +36,8 @@ namespace StoreScraper
         [Category("Discord"), DisplayName("Discord api urls")]
         public List<UrlString> DiscordApiUrl { get; set; } = new List<UrlString>();
 
+        public bool PostStartMessage { get; set; } = true;
+
         public static void Init()
         {
             DataDir = Path.Combine(
