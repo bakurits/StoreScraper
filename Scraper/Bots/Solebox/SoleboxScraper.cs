@@ -18,6 +18,7 @@ namespace StoreScraper.Bots.Solebox
         public override bool Active { get; set; }
 
         private const string SearchFormat = @"https://www.solebox.com/en/variant/?ldtype=grid&_artperpage=240&listorderby=oxinsert&listorder=desc&pgNr=0&searchparam={0}";
+        private const string noResults = "Sorry, no results found for your searchterm";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
@@ -53,7 +54,6 @@ namespace StoreScraper.Bots.Solebox
         {
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
-
             
             var sizeCollection = document.SelectNodes("//div[@class='size ']");
       
@@ -81,6 +81,7 @@ namespace StoreScraper.Bots.Solebox
         {
             string url = string.Format(SearchFormat, settings.KeyWords);
             var document = GetWebpage(url, token);
+            if (document.InnerHtml.Contains(noResults)) return null;
             return document.SelectNodes("//li[@class='productData']");
         }
 
