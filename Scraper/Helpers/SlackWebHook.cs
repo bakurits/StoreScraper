@@ -32,7 +32,7 @@ namespace StoreScraper.Helpers
                         ""title"": ""New item added"",
                         ""title_link"": ""{0}"",
                         ""text"": ""{1}"",
-                        ""image_url"": ""{2}"",
+                        ""thumb_url"": ""{2}"",
                         ""color"": ""#764FA5""
                     }}
                 ]
@@ -44,7 +44,7 @@ namespace StoreScraper.Helpers
 
             try
             {
-                szs = string.Join(";  ", product.GetDetails(CancellationToken.None).SizesList);
+                szs = string.Join("\\n", product.GetDetails(CancellationToken.None).SizesList);
             }
             catch (Exception e)
             {
@@ -52,7 +52,10 @@ namespace StoreScraper.Helpers
                 szs = "Error occured while getting details";
             }
 
-            string textMessage = $"*{product.Name}* added \\n *Available sizes are*:   {szs} \\n  *Price*:  {product.Price + product.Currency}\\n";
+            string textMessage = $"*{product.Name}* added \\n" +
+                                 $"*Price*:  \\n{product.Price + product.Currency}\\n  " +
+                                 $"*Store link*:  \\n{product.Url}\\n  " +
+                                 $"*Available sizes are*:   \\n{szs} \\n  ";
 
             string myJson = string.Format(formater, product.Url, textMessage, product.ImageUrl);
 

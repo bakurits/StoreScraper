@@ -60,13 +60,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Minortests\SlackWebHookTests.cs" />
     <Compile Include="Tests\TitoloScraperTests.cs" />
     <Compile Include="Minortests\LoggerTest.cs" />
     <Compile Include="Tests\ShelflifeScraperTests.cs" />
     <Compile Include="Helpers\Helper.cs" />
     <Compile Include="Tests\FootScraperTest.cs" />
     <Compile Include="Minortests\DiscordWebhookTests.cs" />
-    <Compile Include="Minortests\SlackWebHookTests.cs" />
     <Compile Include="Models\LoggerTests.cs" />
     <Compile Include="Tests\MrporterTest.cs" />
     <Compile Include="Tests\NakedcphTest.cs" />
