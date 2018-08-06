@@ -215,7 +215,7 @@ namespace StoreScraper.Bots.OffWhite
             foreach (JToken size in sizes.Children())
             {
                 var sizeName = (string) size.SelectToken("name");
-                result.SizesList.Add(sizeName);
+                result.AddSize(sizeName, "Unknown");
             }
 
             return result;

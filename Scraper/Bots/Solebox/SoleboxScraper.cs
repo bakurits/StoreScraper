@@ -62,7 +62,7 @@ namespace StoreScraper.Bots.Solebox
                 string sz = size.SelectSingleNode("./a").GetAttributeValue("data-size-eu", null);
                 if (sz.Length > 0)
                 {
-                    details.SizesList.Add(sz);
+                    details.AddSize(sz, "Unknown");
                 }
 
             }

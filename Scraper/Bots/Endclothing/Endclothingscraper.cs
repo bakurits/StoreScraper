@@ -59,9 +59,9 @@ namespace StoreScraper.Bots.Endclothing
             while (match.Success)
             {
                 var sz = match.Groups[1].Value;
-                if (!details.SizesList.Contains(sz) && sz.Length > 0)
+                if (!details.SizesList.Exists(size => size.Key == sz) && sz.Length > 0)
                 {
-                    details.SizesList.Add(sz);
+                    details.AddSize(sz,"Unknown");
                 }
                 match = match.NextMatch();
             }

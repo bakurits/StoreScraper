@@ -44,7 +44,7 @@ namespace StoreScraper.Helpers
 
             try
             {
-                szs = string.Join("\\n", product.GetDetails(CancellationToken.None).SizesList);
+                szs = product.GetDetails(CancellationToken.None).ToString();
             }
             catch (Exception e)
             {

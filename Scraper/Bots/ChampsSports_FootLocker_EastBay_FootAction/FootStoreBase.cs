@@ -131,7 +131,12 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay_FootAction
             var node = client.GetDoc(product.Url, token)
                 .DocumentNode;
             HtmlNodeCollection sizes = node.SelectNodes("//*[@class=\"product_sizes\"]//*[@class=\"button\"]");
-            ProductDetails details = new ProductDetails {SizesList = sizes.Select(size => size.InnerText).ToList()};
+            ProductDetails details = new ProductDetails();
+            foreach (var s in sizes.Select(size => size.InnerText.Trim()))
+            {
+                details.AddSize(s, "Unknown");
+            }
+
             return details;
         }
 

@@ -40,7 +40,7 @@ namespace StoreScraper.Bots.Shelflife
             foreach (var size in sizeCollection)
             {
                 var sz = size.GetAttributeValue("value", "");
-                if (sz.Length > 0) details.SizesList.Add(sz);
+                if (sz.Length > 0) details.AddSize(sz,"Unknown");
             }
 
             return details;
