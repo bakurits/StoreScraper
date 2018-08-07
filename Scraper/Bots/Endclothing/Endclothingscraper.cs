@@ -18,7 +18,7 @@ namespace StoreScraper.Bots.Endclothing
 
         private const string SearchFormat = @"https://www.endclothing.com/us/catalogsearch/result/?q={0}";
         private const string priceRegex = "<span class=\"price\">\\$(\\d+)</span>";
-        private const string sizesRegex = "\"label\":\"UK (\\d+(\\.\\d+)?)\",\"products\"";
+        private const string sizesRegex = "\"label\":\"(.*?)\",\"products\":\\[(\\d+)\\]";
         private const string idRegex = "data-product-id=\"(\\d+)\"";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
