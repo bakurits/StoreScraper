@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Minortests\SlackWebHookTests.cs" />
+    <Compile Include="Tests\BSTNTest.cs" />
     <Compile Include="Tests\TitoloScraperTests.cs" />
     <Compile Include="Minortests\LoggerTest.cs" />
     <Compile Include="Tests\ShelflifeScraperTests.cs" />

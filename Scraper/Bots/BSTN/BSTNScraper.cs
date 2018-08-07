@@ -19,7 +19,7 @@ using StoreScraper.Models;
 namespace StoreScraper.Bots.BSTN
 {
     [DisabledScraper]
-    class BSTNScraper : ScraperBase
+    public class BSTNScraper : ScraperBase
     {
         public sealed override string WebsiteName { get; set; }
         public sealed override string WebsiteBaseUrl { get; set; }
