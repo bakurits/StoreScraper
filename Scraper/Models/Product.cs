@@ -15,7 +15,7 @@ namespace StoreScraper.Models
         [Browsable(false)]
         public ScraperBase ScrapedBy { get; set; }
 
-        public string Name { get; } = "";
+        public string Name { get; set; } = "";
 
         public double Price { get; set; }
 
@@ -51,7 +51,7 @@ namespace StoreScraper.Models
         }
 
 
-        public ProductDetails GetDetails(CancellationToken token)
+        public virtual ProductDetails GetDetails(CancellationToken token)
         {
            return this.ScrapedBy.GetProductDetails(this, token);
         }

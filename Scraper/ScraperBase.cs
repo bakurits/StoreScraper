@@ -54,7 +54,7 @@ namespace StoreScraper
 
         public override string ToString()
         {
-            return this.WebsiteName;
+            return this.WebsiteName ?? "Not Implemented" ;
         }
     }
 }

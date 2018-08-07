@@ -25,6 +25,7 @@ namespace StoreScraper.Controls
         {
             InitializeComponent();
             DGrid_FoundProducts.DataSource = _listOfProducts;
+            Cbx_ChooseStore.MaxDropDownItems = 100;
             Cbx_ChooseStore.Items.AddRange(AppSettings.Default.AvaibleBots.ToArray());
             PGrid_Settings.SelectedObject = AppSettings.Default;
             RTbx_Proxies.Text = string.Join("\r\n", AppSettings.Default.Proxies);
