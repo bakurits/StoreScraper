@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using StoreScraper.Attributes;
 using StoreScraper.Models;
 
 namespace StoreScraper.Bots.Antonioli
 {
+    [DisabledScraper]
     public class AntonioliScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Antonioli";

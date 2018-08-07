@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using StoreScraper.Attributes;
 using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
@@ -15,6 +16,7 @@ using StoreScraper.Models;
 namespace StoreScraper.Bots.Einhalb
 {
 
+    [DisabledScraper]
     public class EinhalbScrapper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "43Einhalb";
@@ -125,7 +127,13 @@ namespace StoreScraper.Bots.Einhalb
 
             var nodes = doc.DocumentNode.SelectNodes(xpath);
             var sizes = nodes.Select(node => node.InnerText.Trim());
-            return new ProductDetails() { SizesList = sizes.ToList() };
+            var details = new ProductDetails();
+            foreach (var size in sizes)
+            {
+                details.AddSize(size, "Unknown");
+            }
+
+            return details;
         }
     }
 }
