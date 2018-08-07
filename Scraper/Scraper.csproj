@@ -118,6 +118,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\DisabledScraperAttribute.cs" />
+    <Compile Include="Bots\43Einhalb\EinhalbScrapper.cs" />
+    <Compile Include="Bots\Antonioli\AntonioliScraper.cs" />
+    <Compile Include="Bots\Antonioli\AntonioliSearchSettingsBase.cs" />
     <Compile Include="Bots\BSTN\BSTNScraper.cs" />
     <Compile Include="Bots\ChampsSports_FootLocker_EastBay_FootAction\FootStoreBase.cs" />
     <Compile Include="Bots\Consortium\ConsortiumScraper.cs" />
