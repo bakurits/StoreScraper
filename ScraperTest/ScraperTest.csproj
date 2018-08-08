@@ -95,6 +95,7 @@
     <Compile Include="Tests\EndclothingTest.cs" />
     <Compile Include="Tests\ConsortiumScraperTests.cs" />
     <Compile Include="Tests\AsphaltgoldTests.cs" />
+    <Compile Include="Tests\OverkillScraperTests.cs" />
     <Compile Include="Tests\YcmcScraperTests.cs" />
     <Compile Include="Tests\Urbanjunglestoretest.cs" />
   </ItemGroup>
