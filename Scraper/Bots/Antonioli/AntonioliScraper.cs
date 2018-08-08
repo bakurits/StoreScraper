@@ -27,21 +27,21 @@ namespace StoreScraper.Bots.Antonioli
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             AntonioliSearchSettings.GenderEnum genderEnum = ((AntonioliSearchSettings) settings).Gender;
-            string gender = Gender[(int)genderEnum];
-            string url = string.Format(_searchformat, settings.KeyWords, gender);
-            var document = GetWebpage(url, token);
-            HtmlNodeCollection itemCollection = document.SelectNodes("//*[@id='content']/section/article");
             listOfProducts = new List<Product>();
-
-            foreach (HtmlNode item in itemCollection)
+            switch (genderEnum)
             {
-                token.ThrowIfCancellationRequested();
-                Product product = GetProduct(item);
-                if (product != null && Utils.SatisfiesCriteria(product, settings))
-                {
-                    listOfProducts.Add(product);
-                }
+                case AntonioliSearchSettings.GenderEnum.Man:
+                    FindItemsForGender(listOfProducts, settings, token, "men");
+                    break;
+                case AntonioliSearchSettings.GenderEnum.Woman:
+                    FindItemsForGender(listOfProducts, settings, token, "women");
+                    break;
+                default:
+                    FindItemsForGender(listOfProducts, settings, token, "men");
+                    FindItemsForGender(listOfProducts, settings, token, "women");
+                    break;
             }
+
 
         }
 
@@ -69,6 +69,24 @@ namespace StoreScraper.Bots.Antonioli
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = client.GetDoc(url, token).DocumentNode;
             return document;
+        }
+
+        private void FindItemsForGender(List<Product> listOfProducts, SearchSettingsBase settings,
+            CancellationToken token, string gender)
+        {
+            string url = string.Format(_searchformat, settings.KeyWords, gender);
+            var document = GetWebpage(url, token);
+            HtmlNodeCollection itemCollection = document.SelectNodes("//*[@id='content']/section/article");
+
+            foreach (HtmlNode item in itemCollection)
+            {
+                token.ThrowIfCancellationRequested();
+                Product product = GetProduct(item);
+                if (product != null && Utils.SatisfiesCriteria(product, settings))
+                {
+                    listOfProducts.Add(product);
+                }
+            }
         }
 
         private Product GetProduct(HtmlNode item)
