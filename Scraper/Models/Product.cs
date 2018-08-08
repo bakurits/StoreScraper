@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
 using StoreScraper.Factory;
@@ -70,7 +71,7 @@ namespace StoreScraper.Models
 
         public override string ToString()
         {
-            return $"{this.Name}-{this.Price}$";
+            return $"{this.Name} - {this.Price + this.Currency} {Environment.NewLine + this.Url}";
         }
     }
 }

@@ -35,9 +35,9 @@ namespace StoreScraper.Core
                         // ignored
                     }
 
-                    Task.Delay(AppSettings.Default.MonitoringDelay, token).Wait();
+                    Task.Delay(AppSettings.Default.MonitoringDelay, token).Wait(token);
                 }
-            });
+            }, token);
         }
 
         public bool MonitorOnce(CancellationToken token)
@@ -64,6 +64,7 @@ namespace StoreScraper.Core
 
             var result = false;
             Logger.Instance.WriteVerboseLog($"({SearchSettings}) epoch completed");
+            Debug.Assert(lst != null, nameof(lst) + " != null");
             foreach (var product in lst)
             {
                 if (OldItems.Contains(product)) continue;
@@ -80,7 +81,7 @@ namespace StoreScraper.Core
                                 {                               
                                     if(task.IsCompleted) Logger.Instance.WriteErrorLog($"({product}) Sent To Slack");
                                     if (task.IsFaulted) Logger.Instance.WriteErrorLog($"({product}) Slack Send Error");
-                                });
+                                }, token);
                             }
 
                             break;
@@ -91,7 +92,7 @@ namespace StoreScraper.Core
                                 {
                                     if (task.IsCompleted) Logger.Instance.WriteErrorLog($"({product}) Sent To Discord");
                                     if (task.IsFaulted) Logger.Instance.WriteErrorLog($"({product}) Discord Send Error");
-                                });
+                                }, token);
                             }
 
                             break;
