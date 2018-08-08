@@ -11,10 +11,11 @@ namespace ScraperTest.Tests
         [TestMethod]
         public void FindItemsTest()
         {
-            AsphaltgoldApparelScraper scraper = new AsphaltgoldApparelScraper();
-            SearchSettingsBase settings = new SearchSettingsBase()
+            AsphaltgoldScraper scraper = new AsphaltgoldScraper();
+            AsphaltgoldSearchSettings settings = new AsphaltgoldSearchSettings()
             {
-                KeyWords = "jordan"
+                KeyWords = "jordan",
+                ItemType = 0
             };
 
             scraper.FindItems(out var lst, settings, CancellationToken.None);
@@ -24,7 +25,7 @@ namespace ScraperTest.Tests
         [TestMethod()]
         public void GetProductDetailsTest()
         {
-            AsphaltgoldApparelScraper scraper = new AsphaltgoldApparelScraper();
+            AsphaltgoldScraper scraper = new AsphaltgoldScraper();
             Product curProduct = new Product(scraper,
                 "Whatever",
                 "https://asphaltgold.de/en/nike-s-s-top-taped-poly-sail-black.html",

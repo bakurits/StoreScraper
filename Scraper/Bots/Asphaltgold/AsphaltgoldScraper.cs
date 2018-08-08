@@ -11,19 +11,14 @@ using System;
 
 namespace StoreScraper.Bots.Asphaltgold
 {
-    [DisabledScraper]
-    public class AsphaltgoldScraperBase : ScraperBase
+    public class AsphaltgoldScraper : ScraperBase
     {
         public override string WebsiteName { get; set; }
-        public string SearchFormat { get; set; }
+        public string SearchFormat;
         public override string WebsiteBaseUrl { get; set; } = "https://asphaltgold.de";
         public override bool Active { get; set; }
-
-        public AsphaltgoldScraperBase(string websiteName, string searchFormat)
-        {
-            this.WebsiteName = websiteName;
-            this.SearchFormat = searchFormat;
-        }
+        public override Type SearchSettings { get; set; } = typeof(AsphaltgoldSearchSettings);
+        private static readonly string[] Links = { "https://asphaltgold.de/en/sneaker/", "https://asphaltgold.de/en/apparel/" };
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
@@ -78,7 +73,8 @@ namespace StoreScraper.Bots.Asphaltgold
 
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
-            string url = SearchFormat;
+            AsphaltgoldSearchSettings.ItemTypeEnum typeEnum = ((AsphaltgoldSearchSettings)settings).ItemType;
+            string url = Links[(int)typeEnum];
             var document = GetWebpage(url, token);
             return document.SelectNodes("//section[@class='item']");
         }
@@ -116,20 +112,6 @@ namespace StoreScraper.Bots.Asphaltgold
         private string GetImageUrl(HtmlNode item)
         {
             return item.SelectSingleNode("./a/img").GetAttributeValue("src", null);
-        }
-    }
-
-    public class AsphaltgoldSneakersScraper : AsphaltgoldScraperBase
-    {
-        public AsphaltgoldSneakersScraper() : base("AsphaltgoldSneakers", "https://asphaltgold.de/en/sneaker/")
-        {
-        }
-    }
-
-    public class AsphaltgoldApparelScraper : AsphaltgoldScraperBase
-    {
-        public AsphaltgoldApparelScraper() : base("AsphaltgoldApparel", "https://asphaltgold.de/en/apparel/")
-        {
         }
     }
 }
