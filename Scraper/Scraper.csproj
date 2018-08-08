@@ -109,6 +109,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Serialization" />
     <Reference Include="WebDriver, Version=3.14.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Selenium.WebDriver.3.14.0\lib\net45\WebDriver.dll</HintPath>
     </Reference>
@@ -120,7 +121,7 @@
     <Compile Include="Attributes\DisabledScraperAttribute.cs" />
     <Compile Include="Bots\43Einhalb\EinhalbScrapper.cs" />
     <Compile Include="Bots\Antonioli\AntonioliScraper.cs" />
-    <Compile Include="Bots\Antonioli\AntonioliSearchSettings.cs" />
+    <Compile Include="Bots\Antonioli\AntonioliSearchSettingsBase.cs" />
     <Compile Include="Bots\Asphaltgold\AsphaltgoldScraper.cs" />
     <Compile Include="Bots\Asphaltgold\AsphaltgoldSearchSettings.cs" />
     <Compile Include="Bots\BSTN\BSTNScraper.cs" />
