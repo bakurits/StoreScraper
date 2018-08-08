@@ -16,10 +16,10 @@ namespace ScraperTest.Tests
         public void FindItemsTest()
         {
             AntonioliScraper scraper = new AntonioliScraper();
-            AntonioliSearchSettingsBase settings = new AntonioliSearchSettingsBase()
+            AntonioliSearchSettings settings = new AntonioliSearchSettings()
             {
                 KeyWords = "Boots",
-                Gender = AntonioliSearchSettingsBase.GenderEnum.Woman
+                Gender = AntonioliSearchSettings.GenderEnum.Woman
             };
 
             scraper.FindItems(out var lst, settings, CancellationToken.None);
