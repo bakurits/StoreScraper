@@ -137,6 +137,8 @@
     <Compile Include="Bots\Solebox\SoleboxScraper.cs" />
     <Compile Include="Bots\TitoloShop\TitoloScraper.cs" />
     <Compile Include="Bots\Urbanjunglestore\Urbanjunglestorescraper.cs" />
+    <Compile Include="Bots\Woodwood\WoodwoodScraper.cs" />
+    <Compile Include="Bots\Woodwood\WoodwoodSearchSettings.cs" />
     <Compile Include="Bots\Ycmc\YcmcScraper.cs" />
     <Compile Include="Http\CookieCollector.cs" />
     <Compile Include="Helpers\Embed.cs" />
