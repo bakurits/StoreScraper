@@ -132,7 +132,7 @@ namespace StoreScraper.Bots.BSTN
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
-            var client = ClientFactory.GetProxiedFirefoxClient().AddHeaders(ClientFactory.HtmlOnlyHeader);
+            var client = ClientFactory.GetProxiedFirefoxClient();
             var node = client.GetDoc(product.Url, token)
                 .DocumentNode;
             HtmlNodeCollection sizes = node.SelectNodes("//*[@class=\"product_sizes\"]//*[@class=\"button\"]");
