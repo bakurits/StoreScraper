@@ -116,9 +116,13 @@ namespace StoreScraper.Helpers
                 {
                     return client.GetDoc(url, token);
                 }
-                catch
+                catch(Exception e)
                 {
-                    //ignored
+                    if (i == maxTries - 1)
+                    {
+                        Logger.Instance.WriteErrorLog($"Can't connect to webiste url: {url}. ErrorMessage: {e.Message}");
+                        throw;
+                    }
                 }
                 finally
                 {
