@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace StoreScraper.Models
@@ -10,7 +11,8 @@ namespace StoreScraper.Models
         protected const string CommonCatName = "Common";
 
 
-        [Category(FilterCatName)] public string KeyWords { get; set; } = "";
+        [Category(FilterCatName), DisplayName("Search Text:")]
+        public string KeyWords { get; set; } = "";
 
         [Category(FilterCatName), DisplayName("Negative Keywords")]
         public string NegKeyWrods { get; set; } = "";

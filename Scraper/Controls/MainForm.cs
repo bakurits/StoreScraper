@@ -25,9 +25,9 @@ namespace StoreScraper.Controls
         {
             InitializeComponent();
             DGrid_FoundProducts.DataSource = _listOfProducts;
-            Cbx_ChooseStore.MaxDropDownItems = 100;
-            Cbx_ChooseStore.Items.AddRange(AppSettings.Default.AvaibleBots.ToArray());
+            Clbx_Websites.Items.AddRange(AppSettings.Default.AvaibleBots.ToArray());
             PGrid_Settings.SelectedObject = AppSettings.Default;
+            PGrid_Bot.SelectedObject = new SearchSettingsBase();
             RTbx_Proxies.Text = string.Join("\r\n", AppSettings.Default.Proxies);
             Logger.Instance.OnLogged += (message, color) => Rtbx_EventLog.AppendText(message,color);
             CultureInfo.CurrentUICulture = new CultureInfo("en-US");
@@ -44,10 +44,17 @@ namespace StoreScraper.Controls
             label_FindingStatus.ForeColor = Color.SaddleBrown;
             label_FindingStatus.Text = @"Processing...";
 
-            var scraper = Cbx_ChooseStore.SelectedItem as ScraperBase;
+            var scrapers = Clbx_Websites.CheckedItems;
 
-            Task.Run(() => FindAction(scraper)).ContinueWith(FindProductsTaskCompleted);
+            var tasks = new List<Task>();
 
+            foreach (var obj in scrapers)
+            {
+                var scraper = (ScraperBase) obj;
+                tasks.Add(Task.Run(() => FindAction(scraper)));
+            }
+
+            Task.WhenAll(tasks).ContinueWith(FindProductsTaskCompleted);
         }
 
         private void PostProduct(Product product)
@@ -70,6 +77,7 @@ namespace StoreScraper.Controls
             {
                products.ForEach(PostProduct);
             }
+
 
             DGrid_FoundProducts.Invoke(new Action(() =>
             {
@@ -184,7 +192,6 @@ namespace StoreScraper.Controls
 
         private void Btn_AddToMonitor_Click(object sender, EventArgs e)
         {
-            var storeIndex = Cbx_ChooseStore.SelectedIndex;
             var searchOptions = (SearchSettingsBase)PGrid_Bot.SelectedObject;
 
             ActionChooser form = new ActionChooser();
@@ -197,26 +204,31 @@ namespace StoreScraper.Controls
             }
             else return;
 
-            var scraper = AppSettings.Default.AvaibleBots[storeIndex];
-            List<Product> curProductsList = null;
-            try
-            {
-                scraper.FindItems(out curProductsList, searchOptions, CancellationToken.None);
-            }
-            catch
-            {
-                MessageBox.Show($"Error Occured while trying to obtain current products with specified search criteria on {scraper.WebsiteName}");
+            var stores = Clbx_Websites.CheckedItems;
 
-                return;
-            }
-
-            var item = new MonitoringTask()
+            var monTask = new MonitoringTask()
             {
                 SearchSettings = searchOptions,
-                Bot = scraper,
-                FinalActions = actions,
-                OldItems = curProductsList
+                FinalActions = actions
             };
+
+
+
+            foreach (var obj in stores)
+            {
+                var store = (ScraperBase) obj;
+                monTask.Stores.Add(store);
+                try
+                {
+                    store.FindItems(out var curProductsList, searchOptions, CancellationToken.None);
+                    monTask.OldItems.Add(curProductsList);
+                }
+                catch
+                {
+                    MessageBox.Show($"Error Occured while trying to obtain current products with specified search criteria on {store.WebsiteName}");
+                    return;
+                }
+            }
 
             MessageBox.Show(@"searching filter is now adding to monitor list. 
                               That may take several mins...
@@ -226,9 +238,9 @@ namespace StoreScraper.Controls
             Task.Run(() =>
             {
 
-                item.Bot.Active = true;
-                CLbx_Monitor.Invoke(new Action(() => CLbx_Monitor.Items.Add(item, true)));
-                item.Start(_monitorCancellation.Token);
+                monTask.Stores.ForEach(store => store.Active = true);
+                CLbx_Monitor.Invoke(new Action(() => CLbx_Monitor.Items.Add(monTask, true)));
+                monTask.Start(_monitorCancellation.Token);
             });
         }
 
@@ -255,6 +267,13 @@ namespace StoreScraper.Controls
         {
             Rtbx_EventLog.Clear();
             Rtbx_DebugLog.Clear();
+        }
+
+        private void Clbx_Websites_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            var items = (sender as CheckedListBox).CheckedItems;
+            
+
         }
     }
 }
