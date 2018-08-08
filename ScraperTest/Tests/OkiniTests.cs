@@ -1,34 +1,32 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StoreScraper.Bots.Asphaltgold;
+using StoreScraper.Bots.Okini;
 using StoreScraper.Models;
 namespace ScraperTest.Tests
 {
     [TestClass]
-    public class AsphaltgoldTests
+    public class OkiniTests
     {
         [TestMethod]
         public void FindItemsTest()
         {
-            AsphaltgoldScraper scraper = new AsphaltgoldScraper();
-            AsphaltgoldSearchSettings settings = new AsphaltgoldSearchSettings()
+            OkiniScraper scraper = new OkiniScraper();
+            SearchSettingsBase settings = new SearchSettingsBase()
             {
-                KeyWords = "jordan",
-                ItemType = 0
+                KeyWords = "jordan"
             };
 
             scraper.FindItems(out var lst, settings, CancellationToken.None);
         }
 
-
         [TestMethod()]
         public void GetProductDetailsTest()
         {
-            AsphaltgoldScraper scraper = new AsphaltgoldScraper();
+            OkiniScraper scraper = new OkiniScraper();
             Product curProduct = new Product(scraper,
-                "Whatever",
-                "https://asphaltgold.de/en/nike-s-s-top-taped-poly-sail-black.html",
+                "What",
+                "https://row.oki-ni.com/nike-air-max-180-sneaker-in-black-wolf-grey-pink-blast-aq9974-001-68nikm2470blk",
                 1,
                 "whatever",
                 "whatever",
@@ -42,6 +40,4 @@ namespace ScraperTest.Tests
         }
 
     }
-
-
 }
