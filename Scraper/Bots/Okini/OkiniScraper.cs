@@ -12,8 +12,8 @@ namespace StoreScraper.Bots.Okini
 {
     public class OkiniScraper : ScraperBase
     {
-        public override string WebsiteName { get; set; } = "Solebox";
-        public override string WebsiteBaseUrl { get; set; } = "https://www.solebox.com";
+        public override string WebsiteName { get; set; } = "Okini";
+        public override string WebsiteBaseUrl { get; set; } = "https://row.oki-ni.com/catalogsearch/result/?q=sneaker&product_list_order=created_at";
         public override bool Active { get; set; }
 
         private const string SearchFormat = @"https://www.solebox.com/en/variant/?ldtype=grid&_artperpage=240&listorderby=oxinsert&listorder=desc&pgNr=0&searchparam={0}";
