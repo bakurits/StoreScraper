@@ -37,8 +37,6 @@
             this.Btn_RemoveMon = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.CLbx_Monitor = new System.Windows.Forms.CheckedListBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.Cbx_ChooseStore = new System.Windows.Forms.ComboBox();
             this.Btn_AddCriteriaToMonitor = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.Btn_Stop = new System.Windows.Forms.Button();
@@ -55,6 +53,7 @@
             this.Btn_ClearAllLogs = new System.Windows.Forms.Button();
             this.Rtbx_EventLog = new System.Windows.Forms.RichTextBox();
             this.Rtbx_DebugLog = new System.Windows.Forms.RichTextBox();
+            this.Clbx_Websites = new System.Windows.Forms.CheckedListBox();
             this.toolStripContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.SuspendLayout();
@@ -86,19 +85,21 @@
             // 
             // PGrid_Bot
             // 
+            this.PGrid_Bot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.PGrid_Bot.CanShowVisualStyleGlyphs = false;
             this.PGrid_Bot.HelpVisible = false;
-            this.PGrid_Bot.Location = new System.Drawing.Point(24, 33);
+            this.PGrid_Bot.Location = new System.Drawing.Point(459, 6);
             this.PGrid_Bot.Name = "PGrid_Bot";
             this.PGrid_Bot.PropertySort = System.Windows.Forms.PropertySort.Categorized;
-            this.PGrid_Bot.Size = new System.Drawing.Size(287, 144);
+            this.PGrid_Bot.Size = new System.Drawing.Size(433, 192);
             this.PGrid_Bot.TabIndex = 2;
             this.PGrid_Bot.ToolbarVisible = false;
             // 
             // btn_FindProducts
             // 
+            this.btn_FindProducts.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btn_FindProducts.ForeColor = System.Drawing.Color.DarkCyan;
-            this.btn_FindProducts.Location = new System.Drawing.Point(315, 33);
+            this.btn_FindProducts.Location = new System.Drawing.Point(896, 6);
             this.btn_FindProducts.Name = "btn_FindProducts";
             this.btn_FindProducts.Size = new System.Drawing.Size(126, 23);
             this.btn_FindProducts.TabIndex = 3;
@@ -119,11 +120,10 @@
             // 
             // Tab_Main
             // 
+            this.Tab_Main.Controls.Add(this.Clbx_Websites);
             this.Tab_Main.Controls.Add(this.Btn_RemoveMon);
             this.Tab_Main.Controls.Add(this.label5);
             this.Tab_Main.Controls.Add(this.CLbx_Monitor);
-            this.Tab_Main.Controls.Add(this.label1);
-            this.Tab_Main.Controls.Add(this.Cbx_ChooseStore);
             this.Tab_Main.Controls.Add(this.Btn_AddCriteriaToMonitor);
             this.Tab_Main.Controls.Add(this.label3);
             this.Tab_Main.Controls.Add(this.Btn_Stop);
@@ -142,9 +142,9 @@
             // Btn_RemoveMon
             // 
             this.Btn_RemoveMon.ForeColor = System.Drawing.Color.Crimson;
-            this.Btn_RemoveMon.Location = new System.Drawing.Point(842, 208);
+            this.Btn_RemoveMon.Location = new System.Drawing.Point(784, 463);
             this.Btn_RemoveMon.Name = "Btn_RemoveMon";
-            this.Btn_RemoveMon.Size = new System.Drawing.Size(181, 23);
+            this.Btn_RemoveMon.Size = new System.Drawing.Size(236, 23);
             this.Btn_RemoveMon.TabIndex = 22;
             this.Btn_RemoveMon.Text = "Remove Selected";
             this.Btn_RemoveMon.UseVisualStyleBackColor = true;
@@ -154,7 +154,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(665, 10);
+            this.label5.Location = new System.Drawing.Point(672, 220);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(69, 20);
             this.label5.TabIndex = 18;
@@ -163,34 +163,16 @@
             // CLbx_Monitor
             // 
             this.CLbx_Monitor.FormattingEnabled = true;
-            this.CLbx_Monitor.Location = new System.Drawing.Point(517, 33);
+            this.CLbx_Monitor.Location = new System.Drawing.Point(459, 246);
             this.CLbx_Monitor.Name = "CLbx_Monitor";
-            this.CLbx_Monitor.Size = new System.Drawing.Size(506, 169);
+            this.CLbx_Monitor.Size = new System.Drawing.Size(561, 214);
             this.CLbx_Monitor.TabIndex = 17;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(21, 10);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(93, 17);
-            this.label1.TabIndex = 16;
-            this.label1.Text = "Select Store :";
-            // 
-            // Cbx_ChooseStore
-            // 
-            this.Cbx_ChooseStore.FormattingEnabled = true;
-            this.Cbx_ChooseStore.Location = new System.Drawing.Point(120, 6);
-            this.Cbx_ChooseStore.Name = "Cbx_ChooseStore";
-            this.Cbx_ChooseStore.Size = new System.Drawing.Size(321, 21);
-            this.Cbx_ChooseStore.TabIndex = 15;
-            this.Cbx_ChooseStore.SelectedIndexChanged += new System.EventHandler(this.Cbx_ChooseStore_SelectedIndexChanged);
             // 
             // Btn_AddCriteriaToMonitor
             // 
+            this.Btn_AddCriteriaToMonitor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Btn_AddCriteriaToMonitor.ForeColor = System.Drawing.Color.DarkGreen;
-            this.Btn_AddCriteriaToMonitor.Location = new System.Drawing.Point(315, 137);
+            this.Btn_AddCriteriaToMonitor.Location = new System.Drawing.Point(896, 64);
             this.Btn_AddCriteriaToMonitor.Name = "Btn_AddCriteriaToMonitor";
             this.Btn_AddCriteriaToMonitor.Size = new System.Drawing.Size(126, 40);
             this.Btn_AddCriteriaToMonitor.TabIndex = 14;
@@ -211,8 +193,9 @@
             // 
             // Btn_Stop
             // 
+            this.Btn_Stop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Btn_Stop.ForeColor = System.Drawing.Color.Crimson;
-            this.Btn_Stop.Location = new System.Drawing.Point(315, 62);
+            this.Btn_Stop.Location = new System.Drawing.Point(896, 35);
             this.Btn_Stop.Name = "Btn_Stop";
             this.Btn_Stop.Size = new System.Drawing.Size(126, 23);
             this.Btn_Stop.TabIndex = 7;
@@ -222,9 +205,10 @@
             // 
             // label_FindingStatus
             // 
+            this.label_FindingStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label_FindingStatus.AutoSize = true;
             this.label_FindingStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.label_FindingStatus.Location = new System.Drawing.Point(311, 140);
+            this.label_FindingStatus.Location = new System.Drawing.Point(892, 113);
             this.label_FindingStatus.Name = "label_FindingStatus";
             this.label_FindingStatus.Size = new System.Drawing.Size(0, 20);
             this.label_FindingStatus.TabIndex = 6;
@@ -242,7 +226,7 @@
             this.DGrid_FoundProducts.Name = "DGrid_FoundProducts";
             this.DGrid_FoundProducts.ReadOnly = true;
             this.DGrid_FoundProducts.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.DGrid_FoundProducts.Size = new System.Drawing.Size(421, 349);
+            this.DGrid_FoundProducts.Size = new System.Drawing.Size(433, 349);
             this.DGrid_FoundProducts.TabIndex = 5;
             this.DGrid_FoundProducts.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ProductGrids_OnDoubleClick);
             this.DGrid_FoundProducts.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.Grids_CellFormatting);
@@ -370,6 +354,16 @@
             this.Rtbx_DebugLog.TabIndex = 0;
             this.Rtbx_DebugLog.Text = "";
             // 
+            // Clbx_Websites
+            // 
+            this.Clbx_Websites.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Clbx_Websites.FormattingEnabled = true;
+            this.Clbx_Websites.Location = new System.Drawing.Point(154, 6);
+            this.Clbx_Websites.Name = "Clbx_Websites";
+            this.Clbx_Websites.Size = new System.Drawing.Size(299, 199);
+            this.Clbx_Websites.TabIndex = 23;
+            this.Clbx_Websites.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.Clbx_Websites_ItemCheck);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -414,8 +408,6 @@
         private System.Windows.Forms.RichTextBox Rtbx_DebugLog;
         private System.Windows.Forms.RichTextBox Rtbx_EventLog;
         private System.Windows.Forms.Button Btn_AddCriteriaToMonitor;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox Cbx_ChooseStore;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox RTbx_Proxies;
         private System.Windows.Forms.Button Btn_Save;
@@ -424,6 +416,7 @@
         private System.Windows.Forms.Button Btn_RemoveMon;
         private System.Windows.Forms.Button Btn_SaveRestart;
         private System.Windows.Forms.Button Btn_ClearAllLogs;
+        private System.Windows.Forms.CheckedListBox Clbx_Websites;
     }
 }
 

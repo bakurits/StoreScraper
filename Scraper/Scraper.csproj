@@ -118,7 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\DisabledScraperAttribute.cs" />
-    <Compile Include="Bots\43Einhalb\EinhalbScrapper.cs" />
+    <Compile Include="Bots\43Einhalb\EinhalbScraper.cs" />
     <Compile Include="Bots\Antonioli\AntonioliScraper.cs" />
     <Compile Include="Bots\Antonioli\AntonioliSearchSettings.cs" />
     <Compile Include="Bots\Asphaltgold\AsphaltgoldScraper.cs" />
@@ -138,6 +138,8 @@
     <Compile Include="Bots\Solebox\SoleboxScraper.cs" />
     <Compile Include="Bots\TitoloShop\TitoloScraper.cs" />
     <Compile Include="Bots\Urbanjunglestore\Urbanjunglestorescraper.cs" />
+    <Compile Include="Bots\Woodwood\WoodwoodScraper.cs" />
+    <Compile Include="Bots\Woodwood\WoodwoodSearchSettings.cs" />
     <Compile Include="Bots\Ycmc\YcmcScraper.cs" />
     <Compile Include="Http\CookieCollector.cs" />
     <Compile Include="Helpers\Embed.cs" />
