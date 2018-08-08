@@ -2,12 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Security.Policy;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using HtmlAgilityPack;
-using StoreScraper.Attributes;
 using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
@@ -15,9 +11,7 @@ using StoreScraper.Models;
 
 namespace StoreScraper.Bots.Einhalb
 {
-
-    [DisabledScraper]
-    public class EinhalbScrapper : ScraperBase
+    public class EinhalbScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "43Einhalb";
         public override string WebsiteBaseUrl { get; set; } = "https://www.43einhalb.com/";
@@ -28,7 +22,7 @@ namespace StoreScraper.Bots.Einhalb
         {
             listOfProducts = new List<Product>();
             var searchUrl =
-                $"https://www.43einhalb.com/suche/{settings.KeyWords}/page/1/sort/date_new/perpage/36";
+                $"https://www.43einhalb.com/en/search/{settings.KeyWords}/page/1/sort/date_new/perpage/72";
             var request = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = request.GetDoc(searchUrl, token);
             Logger.Instance.WriteErrorLog("Unexpected html!");

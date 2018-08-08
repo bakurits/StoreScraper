@@ -119,7 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\DisabledScraperAttribute.cs" />
-    <Compile Include="Bots\43Einhalb\EinhalbScrapper.cs" />
+    <Compile Include="Bots\43Einhalb\EinhalbScraper.cs" />
     <Compile Include="Bots\Antonioli\AntonioliScraper.cs" />
     <Compile Include="Bots\Antonioli\AntonioliSearchSettings.cs" />
     <Compile Include="Bots\Asphaltgold\AsphaltgoldScraper.cs" />
