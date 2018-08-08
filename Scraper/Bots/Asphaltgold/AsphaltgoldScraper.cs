@@ -6,18 +6,17 @@ using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Core;
 using StoreScraper.Models;
-using StoreScraper.Attributes;
 using System;
 
 namespace StoreScraper.Bots.Asphaltgold
 {
     public class AsphaltgoldScraper : ScraperBase
     {
-        public override string WebsiteName { get; set; }
-        public string SearchFormat;
+        public override string WebsiteName { get; set; } = "Asphaltgold";
         public override string WebsiteBaseUrl { get; set; } = "https://asphaltgold.de";
         public override bool Active { get; set; }
         public override Type SearchSettings { get; set; } = typeof(AsphaltgoldSearchSettings);
+
         private static readonly string[] Links = { "https://asphaltgold.de/en/sneaker/", "https://asphaltgold.de/en/apparel/" };
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
