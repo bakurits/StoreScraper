@@ -120,7 +120,7 @@
     <Compile Include="Attributes\DisabledScraperAttribute.cs" />
     <Compile Include="Bots\43Einhalb\EinhalbScrapper.cs" />
     <Compile Include="Bots\Antonioli\AntonioliScraper.cs" />
-    <Compile Include="Bots\Antonioli\AntonioliSearchSettingsBase.cs" />
+    <Compile Include="Bots\Antonioli\AntonioliSearchSettings.cs" />
     <Compile Include="Bots\Asphaltgold\AsphaltgoldScraper.cs" />
     <Compile Include="Bots\Asphaltgold\AsphaltgoldSearchSettings.cs" />
     <Compile Include="Bots\BSTN\BSTNScraper.cs" />

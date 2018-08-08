@@ -4,7 +4,7 @@ using StoreScraper.Models;
 
 namespace StoreScraper.Bots.Antonioli
 {
-    public class AntonioliSearchSettingsBase : SearchSettingsBase
+    public class AntonioliSearchSettings : SearchSettingsBase
     {
         public enum GenderEnum
         {

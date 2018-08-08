@@ -68,7 +68,7 @@ namespace StoreScraper.Controls
             scraper.FindItems(out var products, PGrid_Bot.SelectedObject as SearchSettingsBase, _findTokenSource.Token);
             if (AppSettings.Default.PostStartMessage)
             {
-                products.ForEach(PostProduct);
+               products.ForEach(PostProduct);
             }
 
             DGrid_FoundProducts.Invoke(new Action(() =>

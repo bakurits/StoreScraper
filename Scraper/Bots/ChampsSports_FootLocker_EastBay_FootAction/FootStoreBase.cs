@@ -39,8 +39,8 @@ namespace StoreScraper.Bots.ChampsSports_FootLocker_EastBay_FootAction
         private HtmlNode InitialNavigation(string url, CancellationToken token)
         {
             HttpClient ClientGenerator() =>
-                ClientFactory.CreateProxiedHttpClient().AddHeaders(ClientFactory.HtmlOnlyHeader);
-            var document = Utils.GetDoc(ClientGenerator, url, 4, 5, token, true);
+                ClientFactory.GetProxiedFirefoxClient();
+            var document = Utils.GetDoc(ClientGenerator, url, 4, 5, token);
             return document.DocumentNode;
         }
 

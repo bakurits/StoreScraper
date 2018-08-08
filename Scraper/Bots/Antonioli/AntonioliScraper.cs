@@ -17,7 +17,7 @@ namespace StoreScraper.Bots.Antonioli
         public override string WebsiteBaseUrl { get; set; } = "https://www.antonioli.eu";
         public override bool Active { get; set; }
 
-        public override Type SearchSettings { get; set; } = typeof(AntonioliSearchSettingsBase);
+        public override Type SearchSettings { get; set; } = typeof(AntonioliSearchSettings);
 
 
         private readonly string _searchformat = @"https://www.antonioli.eu/en/search?utf8=✓&q={0}&gender={1}";
@@ -25,7 +25,7 @@ namespace StoreScraper.Bots.Antonioli
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
-            AntonioliSearchSettingsBase.GenderEnum genderEnum = ((AntonioliSearchSettingsBase) settings).Gender;
+            AntonioliSearchSettings.GenderEnum genderEnum = ((AntonioliSearchSettings) settings).Gender;
             string gender = Gender[(int)genderEnum];
             string url = string.Format(_searchformat, settings.KeyWords, gender);
             var document = GetWebpage(url, token);
