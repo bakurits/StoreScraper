@@ -93,6 +93,7 @@
     <Compile Include="Tests\SoleboxTest.cs" />
     <Compile Include="Tests\EndclothingTest.cs" />
     <Compile Include="Tests\ConsortiumScraperTests.cs" />
+    <Compile Include="Tests\AntonioliScraperTest.cs" />
     <Compile Include="Tests\Urbanjunglestoretest.cs" />
   </ItemGroup>
   <ItemGroup>

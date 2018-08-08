@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
@@ -17,8 +18,8 @@ namespace ScraperTest.Tests
             AntonioliScraper scraper = new AntonioliScraper();
             AntonioliSearchSettingsBase settings = new AntonioliSearchSettingsBase()
             {
-                KeyWords = "watch",
-                Gender = AntonioliSearchSettingsBase.GenderEnum.Men
+                KeyWords = "Boots",
+                Gender = AntonioliSearchSettingsBase.GenderEnum.Woman
             };
 
             scraper.FindItems(out var lst, settings, CancellationToken.None);
@@ -29,10 +30,10 @@ namespace ScraperTest.Tests
         [TestMethod()]
         public void GetProductDetailsTest()
         {
-            Product curProduct = new Product(new AntonioliScraper(), "INCOTEX Slim - Fit Pleated Brushed Stretch - Cotton Trousers",
-                "https://www.shelflife.co.za/products/Nike-Air-More-Money-Olive",
-                2399,
-                "pics/product/large/aj2998-200-side.jpg",
+            Product curProduct = new Product(new AntonioliScraper(), "Unknown",
+                "https://www.antonioli.eu/en/GE/women/products/jc8230w115-black",
+                420,
+                "https://d3hed5rtv63hp1.cloudfront.net/products/280972/large/JC8230W115-BLACK-6014.jpg?1519741368",
                 "id");
 
 
@@ -41,6 +42,7 @@ namespace ScraperTest.Tests
             ProductDetails details = scraper.GetProductDetails(curProduct, CancellationToken.None);
 
             Helper.PrintGetDetailsResult(details.SizesList);
+            Debug.WriteLine(curProduct.Name);
 
         }
     }
