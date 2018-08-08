@@ -23,7 +23,6 @@ namespace StoreScraper.Bots.Mrporter
         private bool _active;
         public override string WebsiteName { get; set; } = "Mrporter";
         public override string WebsiteBaseUrl { get; set; } = "https://www.mrporter.com/";
-        public override Type SearchSettings { get; set; } = typeof(SearchSettingsBase);
 
         public override bool Active
         {

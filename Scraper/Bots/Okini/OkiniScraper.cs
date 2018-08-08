@@ -1,23 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
-using System.Linq;
 using HtmlAgilityPack;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Core;
 using StoreScraper.Models;
+using System.Text.RegularExpressions;
 using System;
 
-namespace StoreScraper.Bots.Asphaltgold
+namespace StoreScraper.Bots.Okini
 {
-    public class AsphaltgoldScraper : ScraperBase
+    public class OkiniScraper : ScraperBase
     {
-        public override string WebsiteName { get; set; } = "Asphaltgold";
-        public override string WebsiteBaseUrl { get; set; } = "https://asphaltgold.de";
+        public override string WebsiteName { get; set; } = "Okini";
+        public override string WebsiteBaseUrl { get; set; } = "https://row.oki-ni.com";
         public override bool Active { get; set; }
-        public override Type SearchSettings { get; set; } = typeof(AsphaltgoldSearchSettings);
 
-        private static readonly string[] Links = { "https://asphaltgold.de/en/sneaker/", "https://asphaltgold.de/en/apparel/" };
+        private const string SearchFormat = @"https://row.oki-ni.com/catalogsearch/result/?q=sneaker&product_list_order=created_at";
+        private const string priceRegex = "class=\"price\">\\$(\\d+(\\.\\d+)?)<";
+        private const string sizesRegex = "\"label\":\"(.*?)\",\"products\":\\[\"(\\d+)\"\\]";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
@@ -53,29 +54,32 @@ namespace StoreScraper.Bots.Asphaltgold
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            HtmlNodeCollection sizesNodeCollection = document.SelectNodes("//li[contains(@id, 'option_')]");
+            Match match = Regex.Match(document.InnerHtml, sizesRegex);
 
-            foreach(var sizeNode in sizesNodeCollection)
+            while (match.Success)
             {
-                    details.AddSize(sizeNode.SelectSingleNode("./div").InnerText, "Unknown");
-                
+                var sz = match.Groups[1].Value;
+                if (!details.SizesList.Exists(size => size.Key == sz) && sz.Length > 0 && !(sz.Contains("{")))
+                {
+                    details.AddSize(sz, "Unknown");
+                }
+                match = match.NextMatch();
             }
             return details;
         }
 
         private HtmlNode GetWebpage(string url, CancellationToken token)
         {
-            var client = ClientFactory.GetProxiedFirefoxClient();
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = client.GetDoc(url, token).DocumentNode;
             return client.GetDoc(url, token).DocumentNode;
         }
 
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
-            AsphaltgoldSearchSettings.ItemTypeEnum typeEnum = ((AsphaltgoldSearchSettings)settings).ItemType;
-            string url = Links[(int)typeEnum];
+            string url = string.Format(SearchFormat, settings.KeyWords);
             var document = GetWebpage(url, token);
-            return document.SelectNodes("//section[@class='item']");
+            return document.SelectNodes("//li[@class='item product product-item']");
         }
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
@@ -84,33 +88,38 @@ namespace StoreScraper.Bots.Asphaltgold
             string url = GetUrl(item);
             double price = GetPrice(item);
             string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "EUR");
+            var product = new Product(this, name, url, price, imageUrl, url, "USD");
             if (Utils.SatisfiesCriteria(product, settings))
             {
-                var keyWordSplit = settings.KeyWords.Split(' ');
-                if (keyWordSplit.All(keyWord => product.Name.ToLower().Contains(keyWord.ToLower())))
-                    listOfProducts.Add(product);
+                listOfProducts.Add(product);
             }
         }
 
         private string GetName(HtmlNode item)
         {
-            return item.SelectSingleNode("./a").GetAttributeValue("title", null);
+            return item.SelectSingleNode(".//img").GetAttributeValue("alt", null);
         }
 
         private string GetUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./a").GetAttributeValue("href", null);
+            return item.SelectSingleNode("./div/a").GetAttributeValue("href", null);
         }
 
         private double GetPrice(HtmlNode item)
         {
-            return Convert.ToDouble(item.SelectSingleNode("./a").GetAttributeValue("data-price", null));
+            Match match = Regex.Match(item.InnerHtml, priceRegex);
+            double price = -1;
+            while (match.Success)
+            {
+                price = Convert.ToDouble(match.Groups[1].Value);
+                match = match.NextMatch();
+            }
+            return price;
         }
 
         private string GetImageUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./a/img").GetAttributeValue("src", null);
+            return item.SelectSingleNode(".//img").GetAttributeValue("src", null);
         }
     }
 }
