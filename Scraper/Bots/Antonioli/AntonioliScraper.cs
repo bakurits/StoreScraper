@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
 using StoreScraper.Attributes;
@@ -75,7 +76,7 @@ namespace StoreScraper.Bots.Antonioli
             try
             {
                 var url = GetUrl(item);
-                var name = "default name";
+                var name = GetName(item);
                 var imageUrl = GetImageUrl(item);
                 var price = GetPrice(item);
                 var currency = GetCurrency(item);
@@ -87,6 +88,16 @@ namespace StoreScraper.Bots.Antonioli
             }
         }
 
+        private string GetName(HtmlNode item)
+        {
+            string brand = item.SelectSingleNode("./a/figure/figcaption/div[contains(@class, 'brand-name')]").InnerHtml;
+            string category = 
+                item.SelectSingleNode("./a/figure/figcaption/div[contains(@class, 'category-and-season')]/span[contains(@class, 'category')]").InnerHtml;
+            string seasson =
+                item.SelectSingleNode("./a/figure/figcaption/div[contains(@class, 'category-and-season')]/span[contains(@class, 'season')]").InnerHtml;
+            brand = Regex.Replace(brand, @"\t|\n|\r", "");
+            return $"{brand} - {category} {seasson}";
+        }
         private string GetUrl(HtmlNode item)
         {
             return WebsiteBaseUrl + item.SelectSingleNode("./a").GetAttributeValue("href", "");
