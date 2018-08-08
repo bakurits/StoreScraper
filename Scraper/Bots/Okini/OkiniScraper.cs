@@ -13,11 +13,12 @@ namespace StoreScraper.Bots.Okini
     public class OkiniScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Okini";
-        public override string WebsiteBaseUrl { get; set; } = "https://row.oki-ni.com/catalogsearch/result/?q=sneaker&product_list_order=created_at";
+        public override string WebsiteBaseUrl { get; set; } = "https://row.oki-ni.com";
         public override bool Active { get; set; }
 
-        private const string SearchFormat = @"https://www.solebox.com/en/variant/?ldtype=grid&_artperpage=240&listorderby=oxinsert&listorder=desc&pgNr=0&searchparam={0}";
-        private const string noResults = "Sorry, no results found for your searchterm";
+        private const string SearchFormat = @"https://row.oki-ni.com/catalogsearch/result/?q=sneaker&product_list_order=created_at";
+        private const string priceRegex = "class=\"price\">\\$(\\d+(\\.\\d+)?)<";
+        private const string sizesRegex = "\"label\":\"(.*?)\",\"products\":\\[\"(\\d+)\"\\]";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
@@ -48,24 +49,22 @@ namespace StoreScraper.Bots.Okini
             }
         }
 
-
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//div[@class='size ']");
+            Match match = Regex.Match(document.InnerHtml, sizesRegex);
 
-            foreach (var size in sizeCollection)
+            while (match.Success)
             {
-                string sz = size.SelectSingleNode("./a").GetAttributeValue("data-size-eu", null);
-                if (sz.Length > 0)
+                var sz = match.Groups[1].Value;
+                if (!details.SizesList.Exists(size => size.Key == sz) && sz.Length > 0 && !(sz.Contains("{")))
                 {
                     details.AddSize(sz, "Unknown");
                 }
-
+                match = match.NextMatch();
             }
-
             return details;
         }
 
@@ -80,48 +79,47 @@ namespace StoreScraper.Bots.Okini
         {
             string url = string.Format(SearchFormat, settings.KeyWords);
             var document = GetWebpage(url, token);
-            if (document.InnerHtml.Contains(noResults)) return null;
-            return document.SelectNodes("//li[@class='productData']");
+            return document.SelectNodes("//li[@class='item product product-item']");
         }
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
-            if (GetStatus(item)) return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             double price = GetPrice(item);
             string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "EUR");
+            var product = new Product(this, name, url, price, imageUrl, url, "USD");
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
             }
         }
 
-        private bool GetStatus(HtmlNode item)
-        {
-            return !(item.SelectNodes(".//div[@class='release']") == null);
-        }
-
         private string GetName(HtmlNode item)
         {
-            return item.SelectSingleNode("./a/div[@class='titleBlock title']").SelectNodes("./div")[1].InnerHtml;
+            return item.SelectSingleNode(".//img").GetAttributeValue("alt", null);
         }
 
         private string GetUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./a").GetAttributeValue("href", null);
+            return item.SelectSingleNode("./div/a").GetAttributeValue("href", null);
         }
 
         private double GetPrice(HtmlNode item)
         {
-            string priceDiv = item.SelectSingleNode("./a/div[@class='priceBlock']/div").InnerHtml;
-            return Convert.ToDouble(Regex.Match(priceDiv, @"(\d+,\d+)").Groups[0].Value.Replace(",", "."));
+            Match match = Regex.Match(item.InnerHtml, priceRegex);
+            double price = -1;
+            while (match.Success)
+            {
+                price = Convert.ToDouble(match.Groups[1].Value);
+                match = match.NextMatch();
+            }
+            return price;
         }
 
         private string GetImageUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./a/div[@class='gridPicture']/img").GetAttributeValue("src", null);
+            return item.SelectSingleNode(".//img").GetAttributeValue("src", null);
         }
     }
 }
