@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
+using System.Linq;
 using HtmlAgilityPack;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
@@ -8,18 +9,18 @@ using StoreScraper.Models;
 using System.Text.RegularExpressions;
 using System;
 
-namespace StoreScraper.Bots.Endclothing
+
+namespace StoreScraper.Bots.Ycmc
 {
-    public class EndclothingScraper : ScraperBase
+    public class YcmcScraper : ScraperBase
     {
-        public override string WebsiteName { get; set; } = "Endclothing";
-        public override string WebsiteBaseUrl { get; set; } = "https://www.endclothing.com";
+        public override string WebsiteName { get; set; } = "Ycmc";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.ycmc.com/";
         public override bool Active { get; set; }
 
-        private const string SearchFormat = @"https://www.endclothing.com/us/catalogsearch/result/?q={0}";
-        private const string priceRegex = "<span class=\"price\">\\$(\\d+)</span>";
-        private const string sizesRegex = "\"label\":\"(.*?)\",\"products\":\\[(\\d+)\\]";
-        private const string idRegex = "data-product-id=\"(\\d+)\"";
+        private const string SearchFormat = @"https://www.ycmc.com/new-arrivals.html?limit=120";
+        private const string priceRegex = "\\$(\\d+(\\.\\d+)?)";
+
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
@@ -35,6 +36,7 @@ namespace StoreScraper.Bots.Endclothing
                 LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
 #endif
             }
+
         }
 
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
@@ -54,32 +56,28 @@ namespace StoreScraper.Bots.Endclothing
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            Match match = Regex.Match(document.InnerHtml, sizesRegex);
+            HtmlNodeCollection sizesNodeCollection = document.SelectNodes("//span[contains(@class, 'size_group_code_item')]");
 
-            while (match.Success)
+            foreach (var sizeNode in sizesNodeCollection)
             {
-                var sz = match.Groups[1].Value;
-                if (!details.SizesList.Exists(size => size.Key == sz) && sz.Length > 0)
-                {
-                    details.AddSize(sz,"Unknown");
-                }
-                match = match.NextMatch();
+                details.AddSize(sizeNode.SelectSingleNode("./a").InnerText, "Unknown");
+
             }
             return details;
         }
 
         private HtmlNode GetWebpage(string url, CancellationToken token)
         {
-            var client = ClientFactory.GetProxiedFirefoxClient();
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = client.GetDoc(url, token).DocumentNode;
             return client.GetDoc(url, token).DocumentNode;
         }
 
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
-            string url = string.Format(SearchFormat, settings.KeyWords);
+            string url = SearchFormat;
             var document = GetWebpage(url, token);
-            return document.SelectNodes("//div[contains(@class, 'item product product-item')]");
+            return document.SelectNodes("//li[@class='item']");
         }
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
@@ -88,21 +86,23 @@ namespace StoreScraper.Bots.Endclothing
             string url = GetUrl(item);
             double price = GetPrice(item);
             string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "EUR");
+            var product = new Product(this, name, url, price, imageUrl, url, "USD");
             if (Utils.SatisfiesCriteria(product, settings))
             {
-                listOfProducts.Add(product);
+                var keyWordSplit = settings.KeyWords.Split(' ');
+                if (keyWordSplit.All(keyWord => product.Name.ToLower().Contains(keyWord.ToLower())))
+                    listOfProducts.Add(product);
             }
         }
 
         private string GetName(HtmlNode item)
         {
-            return item.SelectSingleNode("./div[@class='product-item-info']/a/div/img[1]").GetAttributeValue("alt", null);
+            return item.SelectSingleNode("./*[@class='product-name']/a").GetAttributeValue("title", null);
         }
 
         private string GetUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./div[@class='product-item-info']/a").GetAttributeValue("href", null);
+            return item.SelectSingleNode("./h2/a").GetAttributeValue("href", null);
         }
 
         private double GetPrice(HtmlNode item)
@@ -119,7 +119,7 @@ namespace StoreScraper.Bots.Endclothing
 
         private string GetImageUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./div[@class='product-item-info']/a/div/img[1]").GetAttributeValue("src", null);
+            return item.SelectSingleNode("./div[@class='product-image-wrapper']/a/img").GetAttributeValue("src", null);
         }
     }
 }

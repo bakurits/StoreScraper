@@ -1,25 +1,29 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
+using System.Linq;
 using HtmlAgilityPack;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Core;
 using StoreScraper.Models;
-using System.Text.RegularExpressions;
+using StoreScraper.Attributes;
 using System;
 
-namespace StoreScraper.Bots.Endclothing
+namespace StoreScraper.Bots.Asphaltgold
 {
-    public class EndclothingScraper : ScraperBase
+    [DisabledScraper]
+    public class AsphaltgoldScraperBase : ScraperBase
     {
-        public override string WebsiteName { get; set; } = "Endclothing";
-        public override string WebsiteBaseUrl { get; set; } = "https://www.endclothing.com";
+        public override string WebsiteName { get; set; }
+        public string SearchFormat { get; set; }
+        public override string WebsiteBaseUrl { get; set; } = "https://asphaltgold.de";
         public override bool Active { get; set; }
 
-        private const string SearchFormat = @"https://www.endclothing.com/us/catalogsearch/result/?q={0}";
-        private const string priceRegex = "<span class=\"price\">\\$(\\d+)</span>";
-        private const string sizesRegex = "\"label\":\"(.*?)\",\"products\":\\[(\\d+)\\]";
-        private const string idRegex = "data-product-id=\"(\\d+)\"";
+        public AsphaltgoldScraperBase(string websiteName, string searchFormat)
+        {
+            this.WebsiteName = websiteName;
+            this.SearchFormat = searchFormat;
+        }
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
@@ -35,6 +39,7 @@ namespace StoreScraper.Bots.Endclothing
                 LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
 #endif
             }
+
         }
 
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
@@ -54,16 +59,12 @@ namespace StoreScraper.Bots.Endclothing
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            Match match = Regex.Match(document.InnerHtml, sizesRegex);
+            HtmlNodeCollection sizesNodeCollection = document.SelectNodes("//li[contains(@id, 'option_')]");
 
-            while (match.Success)
+            foreach(var sizeNode in sizesNodeCollection)
             {
-                var sz = match.Groups[1].Value;
-                if (!details.SizesList.Exists(size => size.Key == sz) && sz.Length > 0)
-                {
-                    details.AddSize(sz,"Unknown");
-                }
-                match = match.NextMatch();
+                    details.AddSize(sizeNode.SelectSingleNode("./div").InnerText, "Unknown");
+                
             }
             return details;
         }
@@ -77,9 +78,9 @@ namespace StoreScraper.Bots.Endclothing
 
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
-            string url = string.Format(SearchFormat, settings.KeyWords);
+            string url = SearchFormat;
             var document = GetWebpage(url, token);
-            return document.SelectNodes("//div[contains(@class, 'item product product-item')]");
+            return document.SelectNodes("//section[@class='item']");
         }
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
@@ -91,35 +92,44 @@ namespace StoreScraper.Bots.Endclothing
             var product = new Product(this, name, url, price, imageUrl, url, "EUR");
             if (Utils.SatisfiesCriteria(product, settings))
             {
-                listOfProducts.Add(product);
+                var keyWordSplit = settings.KeyWords.Split(' ');
+                if (keyWordSplit.All(keyWord => product.Name.ToLower().Contains(keyWord.ToLower())))
+                    listOfProducts.Add(product);
             }
         }
 
         private string GetName(HtmlNode item)
         {
-            return item.SelectSingleNode("./div[@class='product-item-info']/a/div/img[1]").GetAttributeValue("alt", null);
+            return item.SelectSingleNode("./a").GetAttributeValue("title", null);
         }
 
         private string GetUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./div[@class='product-item-info']/a").GetAttributeValue("href", null);
+            return item.SelectSingleNode("./a").GetAttributeValue("href", null);
         }
 
         private double GetPrice(HtmlNode item)
         {
-            Match match = Regex.Match(item.InnerHtml, priceRegex);
-            double price = -1;
-            while (match.Success)
-            {
-                price = Convert.ToDouble(match.Groups[1].Value);
-                match = match.NextMatch();
-            }
-            return price;
+            return Convert.ToDouble(item.SelectSingleNode("./a").GetAttributeValue("data-price", null));
         }
 
         private string GetImageUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./div[@class='product-item-info']/a/div/img[1]").GetAttributeValue("src", null);
+            return item.SelectSingleNode("./a/img").GetAttributeValue("src", null);
+        }
+    }
+
+    public class AsphaltgoldSneakersScraper : AsphaltgoldScraperBase
+    {
+        public AsphaltgoldSneakersScraper() : base("AsphaltgoldSneakers", "https://asphaltgold.de/en/sneaker/")
+        {
+        }
+    }
+
+    public class AsphaltgoldApparelScraper : AsphaltgoldScraperBase
+    {
+        public AsphaltgoldApparelScraper() : base("AsphaltgoldApparel", "https://asphaltgold.de/en/apparel/")
+        {
         }
     }
 }

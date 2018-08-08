@@ -174,5 +174,27 @@ namespace StoreScraper.Helpers
             int index = r.Next(0, list.Count);
             return list[index];
         }
+
+
+        /// <summary>
+        /// Method return currency string by recognising
+        /// the first charracter in the price string
+        /// consider adding more currency strings
+        /// in the cases
+        /// </summary>
+        /// <param name="priceString"></param>
+        /// <returns>List of sizes</returns>
+        public static string GetCurrency (string priceString)
+        {
+            char currencyChar = priceString[0];
+
+            switch (currencyChar)
+            {
+                case '€':
+                    return "EUR";
+                default:
+                    return "USD";
+            }
+        }
     }
 }
