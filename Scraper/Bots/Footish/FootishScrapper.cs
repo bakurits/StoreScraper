@@ -54,7 +54,7 @@ namespace StoreScraper.Bots.Footish
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//select[@name='group_1']/option");
+            var sizeCollection = document.SelectNodes("//select[@onchange='Products_UpdateAttributeValue(this);']/option");
 
             foreach (var size in sizeCollection)
             {
