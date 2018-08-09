@@ -53,7 +53,7 @@ namespace StoreScraper.Bots.UebervartShop
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//select[@id='size-select']/option");
+            var sizeCollection = document.SelectNodes("//td[@class='value']/label");
 
             foreach (var size in sizeCollection)
             {
@@ -78,18 +78,18 @@ namespace StoreScraper.Bots.UebervartShop
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/en/1551-latest/categories-mens_shoes-womens_shoes-kids_shoes";
+            string url = WebsiteBaseUrl + "/new/";
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;
 
-            return document.SelectNodes("//a[@class='product']");
+            return document.SelectNodes("//article");
 
         }
 
         private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
         {
-            string title = item.SelectSingleNode("./div[@class='product__name']/h3").InnerText.ToLower();
+            string title = item.SelectSingleNode("./a/h3").InnerText.ToLower();
             var validKeywords = settings.KeyWords.ToLower().Split(' ');
             var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
             foreach (var keyword in validKeywords)
@@ -143,20 +143,20 @@ namespace StoreScraper.Bots.UebervartShop
             //Console.WriteLine("GetName");
             //Console.WriteLine(item.SelectSingleNode("./a").GetAttributeValue("title", ""));
 
-            return item.SelectSingleNode("./div[@class='product__name']/h3").InnerText;
+            return item.SelectSingleNode("./a/h3").InnerText;
         }
 
         private string GetUrl(HtmlNode item)
         {
-            return WebsiteBaseUrl + item.SelectSingleNode(".").GetAttributeValue("href", null);
+            return item.SelectSingleNode("./a").GetAttributeValue("href", null);
         }
 
         private double GetPrice(HtmlNode item)
         {
-            var node = item.SelectSingleNode("./div[@class='product__price']/b");
+            var node = item.SelectSingleNode("./a/span/span");
             if (node != null)
             {
-                string priceDiv = item.SelectSingleNode("./div[@class='product__price']/b").InnerHtml.Replace("€", "").Replace("&euro;", "").Replace("$", "").Replace(",", ".");
+                string priceDiv = item.SelectSingleNode("./a/span/span").InnerText.Replace("€", "").Replace("&euro;", "").Replace("&nbsp;","").Replace("$", "").Replace(",", ".");
 
                 return double.Parse(priceDiv);
             }
@@ -168,7 +168,7 @@ namespace StoreScraper.Bots.UebervartShop
 
         private string GetImageUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./div/img").GetAttributeValue("src", null);
+            return item.SelectSingleNode("./a/img").GetAttributeValue("src", null);
         }
     }
 }
