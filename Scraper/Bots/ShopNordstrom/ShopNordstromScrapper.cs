@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using HtmlAgilityPack;
 using StoreScraper.Factory;
@@ -7,41 +7,31 @@ using StoreScraper.Core;
 using StoreScraper.Models;
 using System.Text.RegularExpressions;
 using System;
-using System.Threading.Tasks;
-using System.Collections.Concurrent;
 
 
-namespace StoreScraper.Bots.JimmyJazz
+namespace StoreScraper.Bots.ShopNordstrom
 {
 
-    public class JimmyJazzScraper : ScraperBase
+    public class ShopNordstromScrapper : ScraperBase
     {
-        public override string WebsiteName { get; set; } = "JimmyJazz";
-        public override string WebsiteBaseUrl { get; set; } = "http://www.jimmyjazz.com";
+        public override string WebsiteName { get; set; } = "Nordstrom Online";
+        public override string WebsiteBaseUrl { get; set; } = "https://shop.nordstrom.com";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";
-        private ConcurrentBag<HtmlNodeCollection> cb = new ConcurrentBag<HtmlNodeCollection>();
-        private const int pageDepth = 2;
-
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            //HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
-            GetProductCollection(settings, token);
-
-            foreach (var itemCollection in cb)
+            HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
+            foreach (var item in itemCollection)
             {
-                foreach (var item in itemCollection)
-                {
-                    token.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();
 #if DEBUG
-                    LoadSingleProduct(listOfProducts, settings, item);
+                LoadSingleProduct(listOfProducts, settings, item);
 #else
                 LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
 #endif
-                }
             }
 
         }
@@ -64,18 +54,18 @@ namespace StoreScraper.Bots.JimmyJazz
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//div[@class='psizeoptioncontainer']/div");
+            /*var sizeCollection = document.SelectNodes("//header[.='Size guide']/../div/table/tbody/tr/td[1][@width='25%']");
 
             foreach (var size in sizeCollection)
             {
-                string sz = size.SelectSingleNode("./a").InnerHtml;
+                string sz = size.InnerHtml;
                 if (sz.Length > 0)
                 {
                     details.AddSize(sz, "Unknown");
                 }
 
             }
-
+            */
             return details;
         }
 
@@ -86,57 +76,21 @@ namespace StoreScraper.Bots.JimmyJazz
             return client.GetDoc(url, token).DocumentNode;
         }
 
-        private void GetProductCollection(SearchSettingsBase settings, CancellationToken token)
+        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/mens/specials/new-arrivals?ppg=104";
+            string url = WebsiteBaseUrl + "/c/mens-shoes-whats-new?breadcrumb=Home%2FMen%2FNew%20Arrivals%2FShoes";
 
             var document = GetWebpage(url, token);
-            if (document.InnerHtml.Contains(noResults)) return;
+            if (document.InnerHtml.Contains(noResults)) return null;
 
-            string[] pagesText = document.SelectSingleNode("//*[@class='pagination_info']").InnerText.Trim().Split(' ');
-            int numOfPages = int.Parse(pagesText[pagesText.Length-1]);
-            if (numOfPages > pageDepth)
-            {
-                numOfPages = pageDepth;
-            }
+            return document.SelectNodes("//article[contains(@class,'npr-product-module')]");
 
-            List<Task> tasks = new List<Task>();
-
-            for (int i = 1; i <= numOfPages; i++)
-            {
-
-                object arg = i;
-                tasks.Add(new TaskFactory().StartNew(new Action<object>((test) =>
-               {
-                   scrapePage((int)test, token);
-               }), arg)
-
-                );
-            }
-
-            Task.WaitAll(tasks.ToArray());
-
-
-
-            //return document.SelectNodes("//div[@class='product_grid_image quicklook-unprocessed']");
-            
-        }
-
-        private void scrapePage(int pg, CancellationToken token)
-        {
-            string url = WebsiteBaseUrl + "/mens/specials/new-arrivals?ppg=104&page="+pg.ToString();
-
-            var document = GetWebpage(url, token);
-            if (document.InnerHtml.Contains(noResults)) return;
-            Console.WriteLine(pg);
-            Console.WriteLine(document.SelectNodes("//div[@class='product_grid_image quicklook-unprocessed']"));
-            cb.Add(document.SelectNodes("//div[@class='product_grid_image quicklook-unprocessed']"));
         }
 
         private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
         {
-            string title = item.SelectSingleNode("./a").GetAttributeValue("title", "").ToLower();
+            string title = item.SelectSingleNode("./h3/a/span/span").InnerHtml.ToLower();
             var validKeywords = settings.KeyWords.ToLower().Split(' ');
             var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
             foreach (var keyword in validKeywords)
@@ -145,15 +99,15 @@ namespace StoreScraper.Bots.JimmyJazz
                     return false;
             }
 
-            
-                foreach (var keyword in invalidKeywords)
-                {
+
+            foreach (var keyword in invalidKeywords)
+            {
                 if (keyword == "")
                     continue;
-                    if (title.Contains(keyword))
-                        return false;
-                }
-            
+                if (title.Contains(keyword))
+                    return false;
+            }
+
 
             return true;
 
@@ -165,12 +119,6 @@ namespace StoreScraper.Bots.JimmyJazz
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             double price = GetPrice(item);
-
-            if ( !(price >= settings.MinPrice && price <= settings.MaxPrice))
-            {
-                return;
-            }
-
             string imageUrl = GetImageUrl(item);
             var product = new Product(this, name, url, price, imageUrl, url, "USD");
             if (Utils.SatisfiesCriteria(product, settings))
@@ -189,24 +137,24 @@ namespace StoreScraper.Bots.JimmyJazz
             //Console.WriteLine("GetName");
             //Console.WriteLine(item.SelectSingleNode("./a").GetAttributeValue("title", ""));
 
-            return item.SelectSingleNode("./a").GetAttributeValue("title", "");
+            return item.SelectSingleNode("./h3/a/span/span").InnerHtml;
         }
 
         private string GetUrl(HtmlNode item)
         {
-            return WebsiteBaseUrl + item.SelectSingleNode("./a").GetAttributeValue("href", null);
+            return item.SelectSingleNode("./h3/a").GetAttributeValue("href", null);
         }
 
         private double GetPrice(HtmlNode item)
         {
-            string priceDiv = item.SelectSingleNode("../div[contains(@class,'product_grid_price')]/span").InnerHtml.Replace("$", "");
+            string priceDiv = item.SelectSingleNode("./div/div/span[2]").InnerHtml.Replace("$", "").Replace(",", ".");
 
             return double.Parse(priceDiv);
         }
 
         private string GetImageUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./a/img").GetAttributeValue("src", null);
+            return item.SelectSingleNode("./div/img").GetAttributeValue("src", null);
         }
     }
 }

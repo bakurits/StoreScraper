@@ -9,13 +9,13 @@ using System.Text.RegularExpressions;
 using System;
 
 
-namespace StoreScraper.Bots.Sneakers76
+namespace StoreScraper.Bots.Snkrs
 {
 
-    public class Sneakers76Scrapper : ScraperBase
+    public class SnkrsScrapper : ScraperBase
     {
-        public override string WebsiteName { get; set; } = "Sneakers76";
-        public override string WebsiteBaseUrl { get; set; } = "https://www.sneakers76.com";
+        public override string WebsiteName { get; set; } = "SNKRS";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.snkrs.com";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";
@@ -54,7 +54,7 @@ namespace StoreScraper.Bots.Sneakers76
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//select[contains(@id,'attribute')/option]");
+            /*var sizeCollection = document.SelectNodes("//header[.='Size guide']/../div/table/tbody/tr/td[1][@width='25%']");
 
             foreach (var size in sizeCollection)
             {
@@ -65,7 +65,7 @@ namespace StoreScraper.Bots.Sneakers76
                 }
 
             }
-
+            */
             return details;
         }
 
@@ -79,18 +79,18 @@ namespace StoreScraper.Bots.Sneakers76
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/en/new-products?n=150";
+            string url = WebsiteBaseUrl + "/en/166-new";
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;
 
-            return document.SelectNodes("//div[@class='product-container product-block']");
+            return document.SelectNodes("//div[@class='product-container']");
 
         }
 
         private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
         {
-            string title = item.SelectSingleNode("./div/div/h5/a").InnerHtml.ToLower();
+            string title = item.SelectSingleNode("./div/a/span[@class='product-name']").InnerHtml.ToLower();
             var validKeywords = settings.KeyWords.ToLower().Split(' ');
             var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
             foreach (var keyword in validKeywords)
@@ -119,13 +119,6 @@ namespace StoreScraper.Bots.Sneakers76
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             double price = GetPrice(item);
-
-            if (!(price >= settings.MinPrice && price <= settings.MaxPrice))
-            {
-                return;
-            }
-
-
             string imageUrl = GetImageUrl(item);
             var product = new Product(this, name, url, price, imageUrl, url, "EUR");
             if (Utils.SatisfiesCriteria(product, settings))
@@ -144,24 +137,24 @@ namespace StoreScraper.Bots.Sneakers76
             //Console.WriteLine("GetName");
             //Console.WriteLine(item.SelectSingleNode("./a").GetAttributeValue("title", ""));
 
-            return item.SelectSingleNode("./div/div/h5/a").InnerHtml;
+            return item.SelectSingleNode("./div/a/span[@class='product-name']").InnerHtml;
         }
 
         private string GetUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./div/div/a[@class='product_img_link']").GetAttributeValue("href", null);
+            return item.SelectSingleNode("./div/a").GetAttributeValue("href", null);
         }
 
         private double GetPrice(HtmlNode item)
         {
-            string priceDiv = item.SelectSingleNode("./div/div/div[@class='content_price']/span").InnerHtml.Replace("€", "").Replace(",", ".");
+            string priceDiv = item.SelectSingleNode("./div/a/span/span[@class='price product-price']").InnerHtml.Replace("€", "").Replace(",", ".");
 
             return double.Parse(priceDiv);
         }
 
         private string GetImageUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./div/div/a[@class='product_img_link']/img").GetAttributeValue("src", null);
+            return item.SelectSingleNode("./div/div/a/img").GetAttributeValue("src", null);
         }
     }
 }
