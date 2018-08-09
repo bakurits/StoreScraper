@@ -79,18 +79,18 @@ namespace StoreScraper.Bots.Excelsiormilano
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/new-products/triads-mens-c1/footwear-c24";
+            string url = WebsiteBaseUrl + "/1018-shoes";
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;
 
-            return document.SelectNodes("//div[contains(@class,'product product--')]");
+            return document.SelectNodes("//div[@class='product-container']");
 
         }
 
         private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
         {
-            string title = item.SelectSingleNode("./div/a").GetAttributeValue("title", "").ToLower();
+            string title = item.SelectSingleNode("./div[2]/h5[@itemprop='name']/a").GetAttributeValue("title", "").ToLower();
             var validKeywords = settings.KeyWords.ToLower().Split(' ');
             var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
             foreach (var keyword in validKeywords)
@@ -120,7 +120,7 @@ namespace StoreScraper.Bots.Excelsiormilano
             string url = GetUrl(item);
             double price = GetPrice(item);
             string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "USD");
+            var product = new Product(this, name, url, price, imageUrl, url, "EUR");
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
@@ -137,24 +137,24 @@ namespace StoreScraper.Bots.Excelsiormilano
             //Console.WriteLine("GetName");
             //Console.WriteLine(item.SelectSingleNode("./a").GetAttributeValue("title", ""));
 
-            return item.SelectSingleNode("./div/a").GetAttributeValue("title", "");
+            return item.SelectSingleNode("./div[2]/h5[@itemprop='name']/a").GetAttributeValue("title", "");
         }
 
         private string GetUrl(HtmlNode item)
         {
-            return WebsiteBaseUrl + item.SelectSingleNode("./div/a").GetAttributeValue("href", null);
+            return WebsiteBaseUrl + item.SelectSingleNode("./div/div/a").GetAttributeValue("href", null);
         }
 
         private double GetPrice(HtmlNode item)
         {
-            string priceDiv = item.SelectSingleNode("./div[3]/div/div/span/span/span/span").InnerHtml.Replace("$", "").Replace("£", "").Replace(",", ".");
+            string priceDiv = item.SelectSingleNode("./div[2]/div/span").InnerHtml.Replace("€", "").Replace("€", "").Replace(",", ".");
 
             return double.Parse(priceDiv);
         }
 
         private string GetImageUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./div[2]/a/img").GetAttributeValue("src", null);
+            return item.SelectSingleNode("./div/div/a/img").GetAttributeValue("src", null);
         }
     }
 }
