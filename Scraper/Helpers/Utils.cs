@@ -212,19 +212,14 @@ namespace StoreScraper.Helpers
         /// </summary>
         /// <param name="priceString"></param>
         /// <returns>List of sizes</returns>
-        public static Price ParsePrice (string priceString)
+        public static Price ParsePrice (string priceString, string decimalDelimiter = ".", string tousandsDelimiter = ",")
         {
-            //char currencyChar = priceString[0];
 
-            //switch (currencyChar)
-            //{
-            //    case '€':
-            //        return "EUR";
-            //    default:
-            //        return "USD";
-            //}
+            priceString = priceString.Trim().Replace(" ", "");
+            if (!string.IsNullOrEmpty(tousandsDelimiter)) priceString = priceString.Replace(tousandsDelimiter, "");
 
-            priceString = priceString.Trim().Replace(" ", "").Replace(",", "");
+            priceString = priceString.Replace(decimalDelimiter, ".");
+
             string number = Regex.Match(priceString, $@"[\d\.]+").Value;
             var parsed = double.Parse(number, CultureInfo.InvariantCulture);
             var c = priceString.Replace(number, "").ToUpper();
