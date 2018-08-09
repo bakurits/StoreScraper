@@ -54,11 +54,11 @@ namespace StoreScraper.Bots.Ntrstore
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//div[@class='psizeoptioncontainer']/div");
+            var sizeCollection = document.SelectNodes("//select[contains(@id,'attribute')/option]");
 
             foreach (var size in sizeCollection)
             {
-                string sz = size.SelectSingleNode("./a").InnerHtml;
+                string sz = size.InnerHtml;
                 if (sz.Length > 0)
                 {
                     details.AddSize(sz, "Unknown");
