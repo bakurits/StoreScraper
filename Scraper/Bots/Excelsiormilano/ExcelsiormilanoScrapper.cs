@@ -79,7 +79,7 @@ namespace StoreScraper.Bots.Excelsiormilano
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/1018-shoes";
+            string url = WebsiteBaseUrl + "/cerca?controller=search&orderby=position&orderway=desc&search_query="+settings.KeyWords.Replace(" ", "+")+"&submit_search=";
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;
