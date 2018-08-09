@@ -12,7 +12,6 @@ using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
-
 namespace StoreScraper.Bots.Nakedcph
 {
     

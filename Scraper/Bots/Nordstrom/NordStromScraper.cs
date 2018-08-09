@@ -29,7 +29,6 @@ namespace StoreScraper.Bots.Nordstrom
                 $"https://shop.nordstrom.com/sr?origin=keywordsearch&keyword={settings.KeyWords}&top=72&offset=0&page=1&sort=Newest";
             var request = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = request.GetDoc(searchUrl, token);
-            Logger.Instance.WriteErrorLog("Unexpected html!");
             var nodes = document.DocumentNode.SelectSingleNode("//div[contains(@class, 'resultSet_5ymz9')]/div");
             if (nodes == null)
             {
@@ -89,7 +88,9 @@ namespace StoreScraper.Bots.Nordstrom
 
         private string getProductUrl(HtmlNode child)
         {
-            return new Uri(new Uri(this.WebsiteBaseUrl), child.SelectSingleNode(".//a[contains(@class,link_22Nhi)]").GetAttributeValue("href", null)).ToString();
+            string url = child.SelectSingleNode(".//a[contains(@class,link_22Nhi)]").GetAttributeValue("href", null);
+            url = this.WebsiteBaseUrl + url;
+            return url;
         }
 
         private string getProductName(HtmlNode child)

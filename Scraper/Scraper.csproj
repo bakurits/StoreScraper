@@ -128,14 +128,17 @@
     <Compile Include="Bots\ChampsSports_FootLocker_EastBay_FootAction\FootStoreBase.cs" />
     <Compile Include="Bots\Consortium\ConsortiumScraper.cs" />
     <Compile Include="Bots\Endclothing\Endclothingscraper.cs" />
+    <Compile Include="Bots\JimmyJazz\JimmyJazzScraper.cs" />
     <Compile Include="Bots\Mrporter\MrporterScraper.cs" />
     <Compile Include="Bots\Nakedcph\NakedcphScrapper.cs" />
     <Compile Include="Bots\Nordstrom\NordStromScraper.cs" />
+    <Compile Include="Bots\Ntrstore\NtrstoreScrapper.cs" />
     <Compile Include="Bots\OffWhite\OffWhiteScraper.cs" />
     <Compile Include="AppSettings.cs" />
     <Compile Include="Bots\Okini\OkiniScraper.cs" />
     <Compile Include="Bots\Overkill\OverkillScraper.cs" />
     <Compile Include="Bots\Shelflife\ShelflifeScraper.cs" />
+    <Compile Include="Bots\Sneakers76\Sneakers76Scrapper.cs" />
     <Compile Include="Bots\Solebox\SoleboxScraper.cs" />
     <Compile Include="Bots\TitoloShop\TitoloScraper.cs" />
     <Compile Include="Bots\Urbanjunglestore\Urbanjunglestorescraper.cs" />
