@@ -22,8 +22,9 @@ namespace StoreScraper.Bots.Sneakersnstuff
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
+            string gender = null;
             listOfProducts = new List<Product>();
-            HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
+            HtmlNodeCollection itemCollection = GetProductCollection(settings, gender, token);
             foreach (var item in itemCollection)
             {
                 token.ThrowIfCancellationRequested();
@@ -76,10 +77,26 @@ namespace StoreScraper.Bots.Sneakersnstuff
             return document;
         }
 
-        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
+        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, string gender, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/en/1/new%20arrivals?p=406887&orderBy=Published";
+            string url = WebsiteBaseUrl + "/en/search/searchbytext/"+settings.KeyWords;
+
+            if (gender != null)
+            {
+                if (gender == "men")
+                {
+                    url += "?p=950&orderBy=Published";
+                }
+                else if (gender == "women")
+                {
+                    url += "?p=820&orderBy=Published";
+                }
+                else if (gender == "unisex")
+                {
+                    url += "?p=807&orderBy=Published";
+                }
+            }
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;
@@ -88,43 +105,15 @@ namespace StoreScraper.Bots.Sneakersnstuff
 
         }
 
-        private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
-        {
-            string title = item.SelectSingleNode("./div/h4/a").InnerHtml.ToLower();
-            var validKeywords = settings.KeyWords.ToLower().Split(' ');
-            var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
-            foreach (var keyword in validKeywords)
-            {
-                if (!title.Contains(keyword))
-                    return false;
-            }
-
-
-            foreach (var keyword in invalidKeywords)
-            {
-                if (keyword == "")
-                    continue;
-                if (title.Contains(keyword))
-                    return false;
-            }
-
-
-            return true;
-
-        }
+      
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
-            if (!CheckForValidProduct(item, settings)) return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             double price = GetPrice(item);
 
-            if (!(price >= settings.MinPrice && price <= settings.MaxPrice) && (settings.MinPrice != 0 && settings.MaxPrice != 0))
-            {
-                return;
-            }
-
+           
 
             string imageUrl = GetImageUrl(item);
             var product = new Product(this, name, url, price, imageUrl, url, "USD");
