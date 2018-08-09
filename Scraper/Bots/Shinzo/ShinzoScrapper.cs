@@ -7,6 +7,7 @@ using StoreScraper.Core;
 using StoreScraper.Models;
 using System.Text.RegularExpressions;
 using System;
+using System.Net.Http;
 
 namespace StoreScraper.Bots.Shinzo
 {
@@ -75,12 +76,32 @@ namespace StoreScraper.Bots.Shinzo
             return document;
         }
 
+        private HtmlNode GetPostWebPage(string url, FormUrlEncodedContent fields, CancellationToken token)
+        {
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+
+            var document = client.PostDoc(url, token, fields).DocumentNode;
+            return document;
+        }
+
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
-            //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/en/63-new-releases";
+            var values = new Dictionary<string, string>
+            {
+                {"controller", "search" },
+                {"orderby", "position"},
+                {"orderway", "desc"},
+                {"search_query", settings.KeyWords},
 
-            var document = GetWebpage(url, token);
+            };
+
+            var postParams = new FormUrlEncodedContent(values);
+
+
+
+            string url = WebsiteBaseUrl + "/en/search";
+
+            var document = GetPostWebPage(url, postParams, token);
             if (document.InnerHtml.Contains(noResults)) return null;
 
             return document.SelectNodes("//div[@class='product-inner']");

@@ -85,6 +85,7 @@
     <Compile Include="Tests\GoodHoodStoreTest.cs" />
     <Compile Include="Tests\JimmyJazzTest.cs" />
     <Compile Include="Tests\NordStromScraperTest.cs" />
+    <Compile Include="Tests\NtrstoreTest.cs" />
     <Compile Include="Tests\TitoloScraperTests.cs" />
     <Compile Include="MinorTests\LoggerTest.cs" />
     <Compile Include="Tests\ShelflifeScraperTests.cs" />
