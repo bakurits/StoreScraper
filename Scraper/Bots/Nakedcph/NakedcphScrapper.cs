@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Security.Policy;
@@ -11,7 +12,6 @@ using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
-
 namespace StoreScraper.Bots.Nakedcph
 {
     
@@ -30,7 +30,7 @@ namespace StoreScraper.Bots.Nakedcph
             var request = ClientFactory.GetProxiedFirefoxClient(autoCookies:true);
             var document = request.GetDoc(searchUrl, token);
             Logger.Instance.WriteErrorLog("Unexpected html!");
-            var nodes = document.DocumentNode.SelectSingleNode("//*[@id='products']");
+            var nodes = document.DocumentNode.SelectSingleNode("//div[@id='products']");
             HtmlNodeCollection children = nodes.SelectNodes("./div");
 
             if (children == null)

@@ -80,6 +80,8 @@
   <ItemGroup>
     <Compile Include="Minortests\SlackWebHookTests.cs" />
     <Compile Include="Tests\BSTNTest.cs" />
+    <Compile Include="Tests\JimmyJazzTest.cs" />
+    <Compile Include="Tests\NordStromScraperTest.cs" />
     <Compile Include="Tests\TitoloScraperTests.cs" />
     <Compile Include="Minortests\LoggerTest.cs" />
     <Compile Include="Tests\ShelflifeScraperTests.cs" />
@@ -99,6 +101,8 @@
     <Compile Include="Tests\OverkillScraperTests.cs" />
     <Compile Include="Tests\OkiniTests.cs" />
     <Compile Include="Tests\EinhalbScraperTest.cs" />
+    <Compile Include="Tests\BasketrevolutionTests.cs" />
+    <Compile Include="Tests\NighShopTests.cs" />
     <Compile Include="Tests\WoodwoodScraperTests.cs" />
     <Compile Include="Tests\YcmcScraperTests.cs" />
     <Compile Include="Tests\Urbanjunglestoretest.cs" />
@@ -106,6 +110,9 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Tests\GenericTest1.GenericTest">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Scraper\Scraper.csproj">

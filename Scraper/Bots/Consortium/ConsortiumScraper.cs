@@ -19,7 +19,7 @@ namespace StoreScraper.Bots.Consortium
 
         private const string SearchFormat = @"https://www.consortium.co.uk/latest";
         private const string priceRegex = "£(\\d+.\\d+)";
-        private const string sizesRegex = "\"label\":\"(.*?)\",\"products\":\\[(\\d+)\\]";
+        private const string sizesRegex = "\"label\":\"([^\\{]*?)\",\"products\":\\[(\\d+)\\]";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {

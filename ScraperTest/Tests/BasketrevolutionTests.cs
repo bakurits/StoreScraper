@@ -1,34 +1,33 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StoreScraper.Bots.Einhalb;
+using StoreScraper.Bots.Basketrevolution;
 using StoreScraper.Models;
 
 namespace ScraperTest.Tests
 {
     [TestClass]
-    public class EinhalbScraperTest
+    public class BasketrevolutionTests
     {
         [TestMethod]
         public void FindItemsTest()
         {
-            EinhalbScraper scraper = new EinhalbScraper();
+            BasketrevolutionScraper scraper = new BasketrevolutionScraper();
             SearchSettingsBase settings = new SearchSettingsBase()
             {
-                KeyWords = "jordan shoes"
+                KeyWords = "jordan"
             };
 
             scraper.FindItems(out var lst, settings, CancellationToken.None);
         }
 
-
         [TestMethod()]
         public void GetProductDetailsTest()
         {
-            EinhalbScraper scraper = new EinhalbScraper();
+            BasketrevolutionScraper scraper = new BasketrevolutionScraper();
             Product curProduct = new Product(scraper,
-                "Nike Air Jordan Wmns 1 Retro",
-                "https://www.43einhalb.com/en/nike-air-jordan-1-retro-high-premium-white-221783",
+                "Wut",
+                "https://www.basketrevolution.es/jordan-super-fly-2017-black-infrared/",
                 1,
                 "whatever",
                 "whatever",
@@ -40,6 +39,5 @@ namespace ScraperTest.Tests
                 Debug.WriteLine(sz);
             }
         }
-
     }
 }

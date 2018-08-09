@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 using StoreScraper.Models;
 
+
 namespace StoreScraper
 {
     [Serializable]
