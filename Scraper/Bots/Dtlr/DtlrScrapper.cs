@@ -24,6 +24,7 @@ namespace StoreScraper.Bots.Dtlr
         {
             listOfProducts = new List<Product>();
             HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
+            Console.WriteLine(itemCollection.Count);
             foreach (var item in itemCollection)
             {
                 token.ThrowIfCancellationRequested();
@@ -54,7 +55,7 @@ namespace StoreScraper.Bots.Dtlr
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//select[@name='id']/option");
+            var sizeCollection = document.SelectNodes("//div[@class='sizeBox']/ul/li");
 
             foreach (var size in sizeCollection)
             {
@@ -91,7 +92,6 @@ namespace StoreScraper.Bots.Dtlr
         private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
         {
             string title = item.SelectSingleNode("./div/p[@class='product-name']").InnerText.ToLower();
-            Console.WriteLine(title);
             var validKeywords = settings.KeyWords.ToLower().Split(' ');
             var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
             foreach (var keyword in validKeywords)
@@ -121,7 +121,7 @@ namespace StoreScraper.Bots.Dtlr
             string url = GetUrl(item);
             double price = GetPrice(item);
 
-            if (!(price >= settings.MinPrice && price <= settings.MaxPrice))
+            if (!(price >= settings.MinPrice && price <= settings.MaxPrice) && (settings.MaxPrice != 0 && settings.MinPrice != 0))
             {
                 return;
             }
