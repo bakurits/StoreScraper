@@ -54,7 +54,7 @@ namespace StoreScraper.Bots.Cruvoir
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//select[@onchange='Products_UpdateAttributeValue(this);']/option");
+            var sizeCollection = document.SelectNodes("//select[@name='id']/option");
 
             foreach (var size in sizeCollection)
             {
@@ -79,18 +79,18 @@ namespace StoreScraper.Bots.Cruvoir
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/en/sneakers";
+            string url = WebsiteBaseUrl + "/collections/sneakers";
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;
 
-            return document.SelectNodes("//article[@class='product-wrapper']");
+            return document.SelectNodes("//article[@class='product']");
 
         }
 
         private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
         {
-            string title = item.SelectSingleNode("./div[3]/div/h3/a").GetAttributeValue("title", "").ToLower();
+            string title = item.SelectSingleNode("./div/p[2]").InnerHtml.ToLower();
             var validKeywords = settings.KeyWords.ToLower().Split(' ');
             var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
             foreach (var keyword in validKeywords)
@@ -137,19 +137,19 @@ namespace StoreScraper.Bots.Cruvoir
             //Console.WriteLine("GetName");
             //Console.WriteLine(item.SelectSingleNode("./a").GetAttributeValue("title", ""));
 
-            return item.SelectSingleNode("./div[3]/div/h3/a").GetAttributeValue("title", "");
+            return item.SelectSingleNode("./div/p[2]").InnerHtml;
         }
 
         private string GetUrl(HtmlNode item)
         {
-            return WebsiteBaseUrl + item.SelectSingleNode("./div[3]/div/h3/a").GetAttributeValue("href", null);
+            return WebsiteBaseUrl + item.SelectSingleNode("./a").GetAttributeValue("href", null);
         }
 
         private double GetPrice(HtmlNode item)
         {
             try
             {
-                string priceDiv = item.SelectSingleNode("./div[3]/div[3]/div/span").InnerHtml.Replace("&nbsp;", "").Replace("kr", "").Replace("$", "").Replace("€", "").Replace(",", ".");
+                string priceDiv = item.SelectSingleNode("./div/p[3]/span").InnerHtml.Replace("$", "").Replace("USD", "").Replace("€", "").Replace(",", ".");
 
                 return double.Parse(priceDiv);
             }
@@ -161,7 +161,7 @@ namespace StoreScraper.Bots.Cruvoir
 
         private string GetImageUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./div/a/img").GetAttributeValue("src", null);
+            return item.SelectSingleNode("./a/img").GetAttributeValue("src", null);
         }
     }
 }
