@@ -172,15 +172,4 @@ namespace StoreScraper.Bots.FootShop
         }
     }
 }
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace StoreScraper.Bots.FootShop
-{
-    class FootShopScrapper
-    {
-    }
-}
