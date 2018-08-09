@@ -16,7 +16,7 @@ namespace StoreScraper.Bots.Okini
         public override string WebsiteBaseUrl { get; set; } = "https://row.oki-ni.com";
         public override bool Active { get; set; }
 
-        private const string SearchFormat = @"https://row.oki-ni.com/catalogsearch/result/?q=sneaker&product_list_order=created_at";
+        private const string SearchFormat = @"https://row.oki-ni.com/catalogsearch/result/?q={0}&product_list_order=created_at";
         private const string priceRegex = "class=\"price\">\\$(\\d+(\\.\\d+)?)<";
         private const string sizesRegex = "\"label\":\"(.*?)\",\"products\":\\[\"(\\d+)\"\\]";
 
