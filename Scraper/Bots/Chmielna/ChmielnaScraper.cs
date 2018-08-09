@@ -8,7 +8,6 @@ using StoreScraper.Models;
 using System.Text.RegularExpressions;
 using System;
 
-
 namespace StoreScraper.Bots.Chmielna
 {
     public class ChmielnaScraper : ScraperBase
