@@ -142,7 +142,7 @@ namespace StoreScraper.Bots.JimmyJazz
 
         private string GetUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./a").GetAttributeValue("href", null);
+            return WebsiteBaseUrl + item.SelectSingleNode("./a").GetAttributeValue("href", null);
         }
 
         private double GetPrice(HtmlNode item)
