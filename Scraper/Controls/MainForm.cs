@@ -73,7 +73,12 @@ namespace StoreScraper.Controls
         private void FindAction(ScraperBase scraper)
         {
             var searchOptions = (SearchSettingsBase) PGrid_Bot.SelectedObject;
-            var convertedFilter = SearchSettingsBase.ConvertToChild(searchOptions, scraper.SearchSettingsType);
+            var convertedFilter = searchOptions;
+            if (searchOptions.GetType() != scraper.SearchSettingsType)
+            {
+                convertedFilter = SearchSettingsBase.ConvertToChild(searchOptions, scraper.SearchSettingsType);
+            }
+            
             scraper.FindItems(out var products, convertedFilter, _findTokenSource.Token);
             if (AppSettings.Default.PostStartMessage)
             {
@@ -275,8 +280,18 @@ namespace StoreScraper.Controls
         private void Clbx_Websites_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             var items = (sender as CheckedListBox).CheckedItems;
-            
+            if (items.Count == 1)
+            {
+                PGrid_Bot.SelectedObject = Activator.CreateInstance((items[0] as ScraperBase).SearchSettingsType);
+            }
+        }
 
+        private void Btn_Reset_Click(object sender, EventArgs e)
+        {
+            var proxies = AppSettings.Default.Proxies;
+            AppSettings.Default = new AppSettings();
+            AppSettings.Default.Proxies = proxies;
+            AppSettings.Default.Save();
         }
     }
 }
