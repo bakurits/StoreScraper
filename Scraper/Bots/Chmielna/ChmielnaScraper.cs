@@ -72,7 +72,7 @@ namespace StoreScraper.Bots.Chmielna
         {
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = client.GetDoc(url, token).DocumentNode;
-            return client.GetDoc(url, token).DocumentNode;
+            return document;
         }
 
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
