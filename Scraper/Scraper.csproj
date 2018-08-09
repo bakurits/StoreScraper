@@ -132,6 +132,7 @@
     <Compile Include="Bots\Dtlr\DtlrScrapper.cs" />
     <Compile Include="Bots\Endclothing\Endclothingscraper.cs" />
     <Compile Include="Bots\Excelsiormilano\ExcelsiormilanoScrapper.cs" />
+    <Compile Include="Bots\Footish\FootishScrapper.cs" />
     <Compile Include="Bots\FootShop\FootShopScrapper.cs" />
     <Compile Include="Bots\GoodHoodStore\GoodHoodStoreScrapper.cs" />
     <Compile Include="Bots\JimmyJazz\JimmyJazzScraper.cs" />
