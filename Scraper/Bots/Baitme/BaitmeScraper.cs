@@ -37,7 +37,19 @@ namespace StoreScraper.Bots.Baitme
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
-            throw new System.NotImplementedException();
+            var page = GetWebpage(product.Url, token);
+            HtmlNodeCollection sizeCollection = page.SelectNodes("//select[@id = 'attribute188']/option");
+            ProductDetails details = new ProductDetails();
+
+            product.ImageUrl = page.SelectSingleNode("//img[@id = 'image-main']").GetAttributeValue("src", null);
+
+            foreach (var sizeItem in sizeCollection)
+            {
+                string size = sizeItem.InnerHtml;
+                details.AddSize(size, "Unknown");
+            }
+
+            return details;
         }
 
         private HtmlNode GetWebpage(string url, CancellationToken token)
