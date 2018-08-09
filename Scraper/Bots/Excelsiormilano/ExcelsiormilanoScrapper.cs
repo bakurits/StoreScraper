@@ -9,13 +9,13 @@ using System.Text.RegularExpressions;
 using System;
 
 
-namespace StoreScraper.Bots.Triads
+namespace StoreScraper.Bots.Excelsiormilano
 {
 
-    public class TriadsScrapper : ScraperBase
+    public class ExcelsiormilanoScrapper : ScraperBase
     {
-        public override string WebsiteName { get; set; } = "Triads";
-        public override string WebsiteBaseUrl { get; set; } = "https://www.triads.co.uk";
+        public override string WebsiteName { get; set; } = "Excelsiormilano";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.excelsiormilano.com";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";
@@ -65,7 +65,7 @@ namespace StoreScraper.Bots.Triads
                 }
 
             }
-            
+
             return details;
         }
 
@@ -90,7 +90,7 @@ namespace StoreScraper.Bots.Triads
 
         private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
         {
-            string title = item.SelectSingleNode("./div/a").GetAttributeValue("title","").ToLower();
+            string title = item.SelectSingleNode("./div/a").GetAttributeValue("title", "").ToLower();
             var validKeywords = settings.KeyWords.ToLower().Split(' ');
             var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
             foreach (var keyword in validKeywords)

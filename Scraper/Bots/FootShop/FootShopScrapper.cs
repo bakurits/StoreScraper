@@ -8,14 +8,12 @@ using StoreScraper.Models;
 using System.Text.RegularExpressions;
 using System;
 
-
-namespace StoreScraper.Bots.Triads
+namespace StoreScraper.Bots.FootShop
 {
-
-    public class TriadsScrapper : ScraperBase
+    public class FootShopScrapper : ScraperBase
     {
-        public override string WebsiteName { get; set; } = "Triads";
-        public override string WebsiteBaseUrl { get; set; } = "https://www.triads.co.uk";
+        public override string WebsiteName { get; set; } = "FootShop";
+        public override string WebsiteBaseUrl { get; set; } = "http://www.footshop.eu";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";
@@ -24,6 +22,7 @@ namespace StoreScraper.Bots.Triads
         {
             listOfProducts = new List<Product>();
             HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
+            Console.WriteLine(itemCollection.Count);
             foreach (var item in itemCollection)
             {
                 token.ThrowIfCancellationRequested();
@@ -54,7 +53,7 @@ namespace StoreScraper.Bots.Triads
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//select[@class='attributes-select']/option[.='Choose a UK Size']/../option");
+            var sizeCollection = document.SelectNodes("//select[@id='size-select']/option");
 
             foreach (var size in sizeCollection)
             {
@@ -65,7 +64,7 @@ namespace StoreScraper.Bots.Triads
                 }
 
             }
-            
+
             return details;
         }
 
@@ -79,18 +78,18 @@ namespace StoreScraper.Bots.Triads
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/new-products/triads-mens-c1/footwear-c24";
+            string url = WebsiteBaseUrl + "/en/1551-latest/categories-mens_shoes-womens_shoes-kids_shoes";
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;
 
-            return document.SelectNodes("//div[contains(@class,'product product--')]");
+            return document.SelectNodes("//a[@class='product']");
 
         }
 
         private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
         {
-            string title = item.SelectSingleNode("./div/a").GetAttributeValue("title","").ToLower();
+            string title = item.SelectSingleNode("./div[@class='product__name']/h3").InnerText.ToLower();
             var validKeywords = settings.KeyWords.ToLower().Split(' ');
             var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
             foreach (var keyword in validKeywords)
@@ -119,8 +118,15 @@ namespace StoreScraper.Bots.Triads
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             double price = GetPrice(item);
+
+            /*if (!(price >= settings.MinPrice && price <= settings.MaxPrice) && (settings.MaxPrice != 0 && settings.MinPrice != 0))
+            {
+                return;
+            }*/
+
+
             string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "USD");
+            var product = new Product(this, name, url, price, imageUrl, url, "EUR");
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
@@ -137,24 +143,33 @@ namespace StoreScraper.Bots.Triads
             //Console.WriteLine("GetName");
             //Console.WriteLine(item.SelectSingleNode("./a").GetAttributeValue("title", ""));
 
-            return item.SelectSingleNode("./div/a").GetAttributeValue("title", "");
+            return item.SelectSingleNode("./div[@class='product__name']/h3").InnerText;
         }
 
         private string GetUrl(HtmlNode item)
         {
-            return WebsiteBaseUrl + item.SelectSingleNode("./div/a").GetAttributeValue("href", null);
+            return WebsiteBaseUrl + item.SelectSingleNode(".").GetAttributeValue("href", null);
         }
 
         private double GetPrice(HtmlNode item)
         {
-            string priceDiv = item.SelectSingleNode("./div[3]/div/div/span/span/span/span").InnerHtml.Replace("$", "").Replace("£", "").Replace(",", ".");
+            var node = item.SelectSingleNode("./div[@class='product__price']/b");
+            if (node != null)
+            {
+                string priceDiv = item.SelectSingleNode("./div[@class='product__price']/b").InnerHtml.Replace("€", "").Replace("&euro;", "").Replace("$", "").Replace(",", ".");
 
-            return double.Parse(priceDiv);
+                return double.Parse(priceDiv);
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         private string GetImageUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./div[2]/a/img").GetAttributeValue("src", null);
+            return item.SelectSingleNode("./div/img").GetAttributeValue("src", null);
         }
     }
 }
+
