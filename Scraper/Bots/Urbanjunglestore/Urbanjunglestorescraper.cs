@@ -123,7 +123,7 @@ namespace StoreScraper.Bots.UrbanjunglestoreScraper
                 priceNode = item.SelectSingleNode(".//p[@class='special-price']/span");
             }
             if (priceNode == null) { return -1; }
-            return Convert.ToDouble(Regex.Match(priceNode.InnerText, @"(\d+.\d+)").Groups[0].Value.Replace(",", "."));
+            return Convert.ToDouble(Regex.Match(priceNode.InnerText, @"(\d+(,\d+)?)").Groups[0].Value.Replace(",", "."));
         }
 
         private string GetImageUrl(HtmlNode item)

@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -21,7 +23,7 @@ using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 
 namespace StoreScraper.Helpers
 {
-    static class Utils
+    static public class Utils
     {
         public static IEnumerable<HtmlNode> SelectChildren(this HtmlNode parent, string tagName)
         {
@@ -210,17 +212,26 @@ namespace StoreScraper.Helpers
         /// </summary>
         /// <param name="priceString"></param>
         /// <returns>List of sizes</returns>
-        public static string GetCurrency (string priceString)
+        public static Price ParsePrice (string priceString)
         {
-            char currencyChar = priceString[0];
+            //char currencyChar = priceString[0];
 
-            switch (currencyChar)
-            {
-                case '€':
-                    return "EUR";
-                default:
-                    return "USD";
-            }
+            //switch (currencyChar)
+            //{
+            //    case '€':
+            //        return "EUR";
+            //    default:
+            //        return "USD";
+            //}
+
+            priceString = priceString.Trim().Replace(" ", "").Replace(",", "");
+            string number = Regex.Match(priceString, $@"[\d\.]+").Value;
+            var parsed = double.Parse(number, CultureInfo.InvariantCulture);
+            var c = priceString.Replace(number, "").ToUpper();
+
+            c = c == "$" ? "USD" : c == "€" ? "EUR" : c;
+
+            return new Price(parsed ,c);
         }
     }
 }

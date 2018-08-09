@@ -1,18 +1,18 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StoreScraper.Bots.Nighshop;
+using StoreScraper.Bots.Chmielna;
 using StoreScraper.Models;
 
 namespace ScraperTest.Tests
 {
     [TestClass]
-    public class NighShopTests
+    public class ChmielnaScraperTests
     {
         [TestMethod]
         public void FindItemsTest()
         {
-            NighshopScraper scraper = new NighshopScraper();
+            ChmielnaScraper scraper = new ChmielnaScraper();
             SearchSettingsBase settings = new SearchSettingsBase()
             {
                 KeyWords = "jordan"
@@ -20,13 +20,14 @@ namespace ScraperTest.Tests
 
             scraper.FindItems(out var lst, settings, CancellationToken.None);
         }
+
         [TestMethod()]
         public void GetProductDetailsTest()
         {
-            NighshopScraper scraper = new NighshopScraper();
+            ChmielnaScraper scraper = new ChmielnaScraper();
             Product curProduct = new Product(scraper,
                 "Nike Air Jordan Wmns 1 Retro",
-                "https://www.nighshop.com/adidas-by-raf-simons-replicant-ozweego-belgium-schwarz-rot-gelb-f34234",
+                "https://chmielna20.pl/en/puma-x-fenty-chelsea-sneaker-boot-sterling-blue-36626601.html",
                 1,
                 "whatever",
                 "whatever",

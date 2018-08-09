@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
-using System.Linq;
 using HtmlAgilityPack;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
@@ -9,21 +8,21 @@ using StoreScraper.Models;
 using System.Text.RegularExpressions;
 using System;
 
-namespace StoreScraper.Bots.Nighshop
+namespace StoreScraper.Bots.Shinzo
 {
-    public class NighshopScraper : ScraperBase
+    public class ShinzoScrapper : ScraperBase
     {
-        public override string WebsiteName { get; set; } = "Nighshop";
-        public override string WebsiteBaseUrl { get; set; } = "https://www.nighshop.com/";
+        public override string WebsiteName { get; set; } = "Shinzo";
+        public override string WebsiteBaseUrl { get; set; } = "http://www.shinzo.paris";
         public override bool Active { get; set; }
 
-        private const string SearchFormat = @"https://www.nighshop.com/";
+        private const string noResults = "Sorry, no results found for your searchterm";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
             HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
-
+            Console.WriteLine(itemCollection.Count);
             foreach (var item in itemCollection)
             {
                 token.ThrowIfCancellationRequested();
@@ -48,24 +47,24 @@ namespace StoreScraper.Bots.Nighshop
             }
         }
 
+
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//div[contains(@class, 'attribute-item')]");
+            var sizeCollection = document.SelectNodes("//div[@class='attribute_list']/ul/li/label");
+
             foreach (var size in sizeCollection)
             {
-                string sz = size.InnerText.Trim();
+                string sz = size.InnerHtml;
                 if (sz.Length > 0)
                 {
-                    if(size.GetAttributeValue("class", null).Contains("disabled"))
-                        details.AddSize(sz, "None in stock");
-                    else
-                        details.AddSize(sz, "Unknown");
+                    details.AddSize(sz, "Unknown");
                 }
 
             }
+
             return details;
         }
 
@@ -78,56 +77,98 @@ namespace StoreScraper.Bots.Nighshop
 
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
-            string url = SearchFormat;
+            //string url = string.Format(SearchFormat, settings.KeyWords);
+            string url = WebsiteBaseUrl + "/en/63-new-releases";
+
             var document = GetWebpage(url, token);
-            return document.SelectNodes("//li[contains(@class, 'item col')]/div");
+            if (document.InnerHtml.Contains(noResults)) return null;
+
+            return document.SelectNodes("//div[@class='product-inner']");
+
+        }
+
+        private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
+        {
+            string title = item.SelectSingleNode("./div[@class='product-info']/h3/a").InnerText.ToLower();
+            var validKeywords = settings.KeyWords.ToLower().Split(' ');
+            var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
+            foreach (var keyword in validKeywords)
+            {
+                if (!title.Contains(keyword))
+                    return false;
+            }
+
+
+            foreach (var keyword in invalidKeywords)
+            {
+                if (keyword == "")
+                    continue;
+                if (title.Contains(keyword))
+                    return false;
+            }
+
+
+            return true;
+
         }
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
-            if (GetStatus(item)) return;
+            //if (!CheckForValidProduct(item, settings)) return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             double price = GetPrice(item);
+
+            /*if (!(price >= settings.MinPrice && price <= settings.MaxPrice) && (settings.MaxPrice != 0 && settings.MinPrice != 0))
+            {
+                return;
+            }*/
+
+
             string imageUrl = GetImageUrl(item);
             var product = new Product(this, name, url, price, imageUrl, url, "EUR");
             if (Utils.SatisfiesCriteria(product, settings))
             {
-                var keyWordSplit = settings.KeyWords.Split(' ');
-                if (keyWordSplit.All(keyWord => product.Name.ToLower().Contains(keyWord.ToLower())))
-                    listOfProducts.Add(product);
+                listOfProducts.Add(product);
             }
         }
-       
+
         private bool GetStatus(HtmlNode item)
         {
-            return item.InnerHtml.Contains("soon") || item.InnerHtml.Contains("sold-out");
+            return true;
         }
 
         private string GetName(HtmlNode item)
         {
-            return item.SelectSingleNode("./a").GetAttributeValue("title", null);
+            //Console.WriteLine("GetName");
+            //Console.WriteLine(item.SelectSingleNode("./a").GetAttributeValue("title", ""));
+
+            return item.SelectSingleNode("./div[@class='product-info']/h3/a").InnerText;
         }
 
         private string GetUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./a").GetAttributeValue("href", null);
+            return item.SelectSingleNode("./div[@class='product-info']/h3/a").GetAttributeValue("href", null);
         }
 
         private double GetPrice(HtmlNode item)
         {
-            var priceNode = item.SelectSingleNode(".//span[@class='regular-price']/span");
-            if (priceNode == null)
+            var node = item.SelectSingleNode("./div[@class='product-info']/div[@class='content_price']/a/span");
+            if (node != null)
             {
-                priceNode = item.SelectSingleNode(".//p[@class='special-price']/span");
+                string priceDiv = item.SelectSingleNode("./div[@class='product-info']/div[@class='content_price']/a/span").InnerHtml.Replace("€", "").Replace("&euro;", "").Replace("$", "").Replace(",",".");
+
+                return double.Parse(priceDiv);
             }
-            if (priceNode == null) { return -1; }
-            return Convert.ToDouble(Regex.Match(priceNode.InnerText, @"(\d+(\\.\d+)?)").Groups[0].Value);
+            else
+            {
+                return 0;
+            }
         }
 
         private string GetImageUrl(HtmlNode item)
         {
-            return item.SelectSingleNode(".//img").GetAttributeValue("src", null);
+            return item.SelectSingleNode("./div[@class='product-thumb']/div/a/img").GetAttributeValue("src", null);
         }
     }
 }

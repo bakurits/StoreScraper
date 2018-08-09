@@ -88,21 +88,6 @@ namespace StoreScraper.Bots.BSTN
             }
         }
 
-        private string ProcessPrice(string priceStr)
-        {
-            int i = 0;
-
-            for (i = 0; i < priceStr.Length; i++)
-            {
-                if (!((priceStr[i] >= '0' && priceStr[i] <= '9') || priceStr[i] == '.'))
-                {
-                    break;
-                }
-            }
-
-            return priceStr.Substring(0, i);
-        }
-
         /// <summary>
         /// This method handles single product's creation 
         /// </summary>
@@ -116,17 +101,11 @@ namespace StoreScraper.Bots.BSTN
             string id = link.Substring(6);
 
             var priceNode = child.SelectSingleNode("./div[2]/a/span[1]");
-            string salePriceStr = child.SelectSingleNode("/div[2]/a/span[2]")?.InnerText;
 
-            string priceStr = (salePriceStr ?? priceNode.InnerText).Trim().Substring(1);
-            string currency = Utils.GetCurrency(priceNode.InnerText);
-            priceStr = ProcessPrice(priceStr);
-
-            double.TryParse(priceStr, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
-
+            Price price = Utils.ParsePrice(priceNode.InnerText);
             var imgUrl = child.SelectSingleNode("./div[1]/a/img")?.GetAttributeValue("src", null);
 
-            Product product = new Product(this, name, link, price, id, imgUrl, currency);
+            Product product = new Product(this, name, link, price.Value, id, imgUrl, price.Currency);
             listOfProducts.Add(product);
         }
 
