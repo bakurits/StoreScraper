@@ -1,28 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
+﻿using System.Collections.Generic;
 using System.Threading;
 using HtmlAgilityPack;
-using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
+using StoreScraper.Core;
 using StoreScraper.Models;
+using System.Text.RegularExpressions;
+using System;
 
-namespace StoreScraper.Bots.Einhalb
+
+namespace StoreScraper.Bots.Ntrstore
 {
-    public class EinhalbScraper : ScraperBase
+
+    public class NtrstoreScraper : ScraperBase
     {
-        public override string WebsiteName { get; set; } = "43Einhalb";
-        public override string WebsiteBaseUrl { get; set; } = "https://www.43einhalb.com";
+        public override string WebsiteName { get; set; } = "NTR store";
+        public override string WebsiteBaseUrl { get; set; } = "http://www.ntrstore.com";
         public override bool Active { get; set; }
-        private const string SearchFormat = @"https://www.43einhalb.com/en/search/{0}/page/1/sort/date_new/perpage/72";
+
         private const string noResults = "Sorry, no results found for your searchterm";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
             HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
-
             foreach (var item in itemCollection)
             {
                 token.ThrowIfCancellationRequested();
@@ -53,11 +54,11 @@ namespace StoreScraper.Bots.Einhalb
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//select[@class='customSelectBox']/option[@class='']");
+            var sizeCollection = document.SelectNodes("//select[contains(@id,'attribute')/option]");
 
             foreach (var size in sizeCollection)
             {
-                string sz = size.InnerText.Trim();
+                string sz = size.InnerHtml;
                 if (sz.Length > 0)
                 {
                     details.AddSize(sz, "Unknown");
@@ -77,48 +78,83 @@ namespace StoreScraper.Bots.Einhalb
 
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
-            string url = string.Format(SearchFormat, settings.KeyWords);
+            //string url = string.Format(SearchFormat, settings.KeyWords);
+            string url = WebsiteBaseUrl + "/catalogsearch/result/index/?limit=36&q=" + settings.KeyWords;
+
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;
-            return document.SelectNodes("//li[@class='item']");
+
+            return document.SelectNodes("//div[@class='item-area']");
+
+        }
+
+        private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
+        {
+            string title = item.SelectSingleNode("./div/h2[@class='product-name']").InnerHtml.ToLower();
+            var validKeywords = settings.KeyWords.ToLower().Split(' ');
+            var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
+            foreach (var keyword in validKeywords)
+            {
+                if (!title.Contains(keyword))
+                    return false;
+            }
+
+
+            foreach (var keyword in invalidKeywords)
+            {
+                if (keyword == "")
+                    continue;
+                if (title.Contains(keyword))
+                    return false;
+            }
+
+
+            return true;
+
         }
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
+            if (!CheckForValidProduct(item, settings)) return;
             string name = GetName(item).TrimEnd();
-            string url = WebsiteBaseUrl + GetUrl(item);
+            string url = GetUrl(item);
             double price = GetPrice(item);
-            string imageUrl = WebsiteBaseUrl + GetImageUrl(item);
+            string imageUrl = GetImageUrl(item);
             var product = new Product(this, name, url, price, imageUrl, url, "EUR");
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
             }
         }
-        
+
+        private bool GetStatus(HtmlNode item)
+        {
+            return true;
+        }
+
         private string GetName(HtmlNode item)
         {
-            return item.SelectSingleNode(".//img[@class='current']").GetAttributeValue("alt", null);
+            //Console.WriteLine("GetName");
+            //Console.WriteLine(item.SelectSingleNode("./a").GetAttributeValue("title", ""));
+
+            return item.SelectSingleNode("./div/h2[@class='product-name']/a").InnerHtml;
         }
 
         private string GetUrl(HtmlNode item)
         {
-            return item.SelectSingleNode(".//a[1]").GetAttributeValue("href", null);
+            return item.SelectSingleNode("./div/h2[@class='product-name']/a").GetAttributeValue("href", null);
         }
 
         private double GetPrice(HtmlNode item)
         {
-            var priceSpan = item.SelectSingleNode(".//span[@class='pPrice']");
-            var priceSpanSecond = priceSpan.SelectSingleNode(".//span[@class='newPrice']");
-            if (priceSpanSecond != null) priceSpan = priceSpanSecond;
-            string priceDiv = priceSpan.InnerText.Trim();
+            string priceDiv = item.SelectSingleNode("./div/div/span[@class='regular-price']/span").InnerHtml.Replace("€", "");
 
-            return Convert.ToDouble(Regex.Match(priceDiv, "(\\d+(\\.\\d+)?)").Groups[1].Value);
+            return double.Parse(priceDiv);
         }
 
         private string GetImageUrl(HtmlNode item)
         {
-            return item.SelectSingleNode(".//img[@class='current']").GetAttributeValue("src", null);
+            return item.SelectSingleNode("./div/a/img").GetAttributeValue("src", null);
         }
     }
 }
