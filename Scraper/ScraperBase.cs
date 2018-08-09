@@ -20,7 +20,7 @@ namespace StoreScraper
         /// Object of this type will be provided in FindItems method as settings parameter.
         /// Any bot can use or implement any custom type for this field.
         /// </summary>
-        public virtual Type SearchSettings { get; set; } = typeof(SearchSettingsBase);
+        public virtual Type SearchSettingsType { get; set; } = typeof(SearchSettingsBase);
 
 
         /// <summary>

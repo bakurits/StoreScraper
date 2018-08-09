@@ -15,7 +15,7 @@ namespace StoreScraper.Bots.Woodwood
         public override string WebsiteName { get; set; } = "Woodwood";
         public override string WebsiteBaseUrl { get; set; } = "https://www.woodwood.com/";
         public override bool Active { get; set; }
-        public override Type SearchSettings { get; set; } = typeof(WoodwoodSearchSettings);
+        public override Type SearchSettingsType { get; set; } = typeof(WoodwoodSearchSettings);
         private static readonly string[] Links = { "https://www.woodwood.com/men/new-arrivals", "https://www.woodwood.com/women/new-arrivals" };
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)

@@ -15,7 +15,7 @@ namespace StoreScraper.Bots.Asphaltgold
         public override string WebsiteName { get; set; } = "Asphaltgold";
         public override string WebsiteBaseUrl { get; set; } = "https://asphaltgold.de";
         public override bool Active { get; set; }
-        public override Type SearchSettings { get; set; } = typeof(AsphaltgoldSearchSettings);
+        public override Type SearchSettingsType { get; set; } = typeof(AsphaltgoldSearchSettings);
 
         private static readonly string[] Links = { "https://asphaltgold.de/en/sneaker/", "https://asphaltgold.de/en/apparel/" };
 

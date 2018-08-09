@@ -119,6 +119,13 @@ namespace StoreScraper.Bots.Ntrstore
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             double price = GetPrice(item);
+
+            if (!(price >= settings.MinPrice && price <= settings.MaxPrice))
+            {
+                return;
+            }
+
+
             string imageUrl = GetImageUrl(item);
             var product = new Product(this, name, url, price, imageUrl, url, "EUR");
             if (Utils.SatisfiesCriteria(product, settings))

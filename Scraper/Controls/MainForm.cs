@@ -72,7 +72,9 @@ namespace StoreScraper.Controls
 
         private void FindAction(ScraperBase scraper)
         {
-            scraper.FindItems(out var products, PGrid_Bot.SelectedObject as SearchSettingsBase, _findTokenSource.Token);
+            var searchOptions = (SearchSettingsBase) PGrid_Bot.SelectedObject;
+            var convertedFilter = SearchSettingsBase.ConvertToChild(searchOptions, scraper.SearchSettingsType);
+            scraper.FindItems(out var products, convertedFilter, _findTokenSource.Token);
             if (AppSettings.Default.PostStartMessage)
             {
                products.ForEach(PostProduct);
@@ -167,7 +169,7 @@ namespace StoreScraper.Controls
         private void Cbx_ChooseStore_SelectedIndexChanged(object sender, EventArgs e)
         {
             var bot = (sender as ComboBox).SelectedItem as ScraperBase;
-            var sType = bot.SearchSettings;
+            var sType = bot.SearchSettingsType;
             PGrid_Bot.SelectedObject = Activator.CreateInstance(sType);
         }
 
@@ -218,9 +220,10 @@ namespace StoreScraper.Controls
             {
                 var store = (ScraperBase) obj;
                 monTask.Stores.Add(store);
+                var convertedFilter = SearchSettingsBase.ConvertToChild(searchOptions, store.SearchSettingsType);
                 try
                 {
-                    store.FindItems(out var curProductsList, searchOptions, CancellationToken.None);
+                    store.FindItems(out var curProductsList, convertedFilter, CancellationToken.None);
                     monTask.OldItems.Add(curProductsList);
                 }
                 catch

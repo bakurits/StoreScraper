@@ -127,7 +127,9 @@
     <Compile Include="Bots\Basketrevolution\BasketrevolutionScraper.cs" />
     <Compile Include="Bots\BSTN\BSTNScraper.cs" />
     <Compile Include="Bots\ChampsSports_FootLocker_EastBay_FootAction\FootStoreBase.cs" />
+    <Compile Include="Bots\Chmielna\ChmielnaScraper.cs" />
     <Compile Include="Bots\Consortium\ConsortiumScraper.cs" />
+    <Compile Include="Bots\Dtlr\DtlrScrapper.cs" />
     <Compile Include="Bots\Endclothing\Endclothingscraper.cs" />
     <Compile Include="Bots\GoodHoodStore\GoodHoodStoreScrapper.cs" />
     <Compile Include="Bots\JimmyJazz\JimmyJazzScraper.cs" />
@@ -141,10 +143,14 @@
     <Compile Include="Bots\Okini\OkiniScraper.cs" />
     <Compile Include="Bots\Overkill\OverkillScraper.cs" />
     <Compile Include="Bots\Shelflife\ShelflifeScraper.cs" />
+    <Compile Include="Bots\Shinzo\ShinzoScrapper.cs" />
+    <Compile Include="Bots\ShopNordstrom\ShopNordstromScrapper.cs" />
     <Compile Include="Bots\Sneakers76\Sneakers76Scrapper.cs" />
     <Compile Include="Bots\Sneakersnstuff\SneakersnstuffScrapper.cs" />
+    <Compile Include="Bots\Snkrs\SnkrsScrapper.cs" />
     <Compile Include="Bots\Solebox\SoleboxScraper.cs" />
     <Compile Include="Bots\TitoloShop\TitoloScraper.cs" />
+    <Compile Include="Bots\Triads\TriadsScrapper.cs" />
     <Compile Include="Bots\Uptherestore\UptherestoreScraper.cs" />
     <Compile Include="Bots\Urbanjunglestore\Urbanjunglestorescraper.cs" />
     <Compile Include="Bots\Woodwood\WoodwoodScraper.cs" />
