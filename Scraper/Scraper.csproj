@@ -137,6 +137,7 @@
     <Compile Include="Bots\Okini\OkiniScraper.cs" />
     <Compile Include="Bots\Overkill\OverkillScraper.cs" />
     <Compile Include="Bots\Shelflife\ShelflifeScraper.cs" />
+    <Compile Include="Bots\Sneakers76\Sneakers76Scrapper.cs" />
     <Compile Include="Bots\Solebox\SoleboxScraper.cs" />
     <Compile Include="Bots\TitoloShop\TitoloScraper.cs" />
     <Compile Include="Bots\Urbanjunglestore\Urbanjunglestorescraper.cs" />
@@ -231,8 +232,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Bots\NewFolder1\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
