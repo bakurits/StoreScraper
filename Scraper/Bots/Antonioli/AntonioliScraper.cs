@@ -26,7 +26,15 @@ namespace StoreScraper.Bots.Antonioli
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
-            AntonioliSearchSettings.GenderEnum genderEnum = ((AntonioliSearchSettings) settings).Gender;
+            AntonioliSearchSettings.GenderEnum genderEnum;
+            try
+            {
+                genderEnum = ((AntonioliSearchSettings) settings).Gender;
+            }
+            catch
+            {
+                genderEnum = AntonioliSearchSettings.GenderEnum.Both;
+            }
             listOfProducts = new List<Product>();
             switch (genderEnum)
             {
@@ -60,6 +68,7 @@ namespace StoreScraper.Bots.Antonioli
             int ind = name.IndexOf("<br>", StringComparison.Ordinal);
             ind = ind == -1 ? name.Length : ind;
             name = name.Substring(0, ind);
+            name = Regex.Replace(name, @"\t|\n|\r", "");
             product.Name = name;
             return details;
         }

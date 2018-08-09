@@ -7,6 +7,8 @@ using StoreScraper.Core;
 using StoreScraper.Models;
 using System.Text.RegularExpressions;
 using System;
+using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 
 namespace StoreScraper.Bots.JimmyJazz
@@ -19,19 +21,27 @@ namespace StoreScraper.Bots.JimmyJazz
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";
+        private ConcurrentBag<HtmlNodeCollection> cb = new ConcurrentBag<HtmlNodeCollection>();
+        private const int pageDepth = 2;
+
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
-            foreach (var item in itemCollection)
+            //HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
+            GetProductCollection(settings, token);
+
+            foreach (var itemCollection in cb)
             {
-                token.ThrowIfCancellationRequested();
+                foreach (var item in itemCollection)
+                {
+                    token.ThrowIfCancellationRequested();
 #if DEBUG
-                LoadSingleProduct(listOfProducts, settings, item);
+                    LoadSingleProduct(listOfProducts, settings, item);
 #else
                 LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
 #endif
+                }
             }
 
         }
@@ -76,16 +86,52 @@ namespace StoreScraper.Bots.JimmyJazz
             return client.GetDoc(url, token).DocumentNode;
         }
 
-        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
+        private void GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
             string url = WebsiteBaseUrl + "/mens/specials/new-arrivals?ppg=104";
 
             var document = GetWebpage(url, token);
-            if (document.InnerHtml.Contains(noResults)) return null;
+            if (document.InnerHtml.Contains(noResults)) return;
 
-            return document.SelectNodes("//div[@class='product_grid_image quicklook-unprocessed']");
+            string[] pagesText = document.SelectSingleNode("//*[@class='pagination_info']").InnerText.Trim().Split(' ');
+            int numOfPages = int.Parse(pagesText[pagesText.Length-1]);
+            if (numOfPages > pageDepth)
+            {
+                numOfPages = pageDepth;
+            }
+
+            List<Task> tasks = new List<Task>();
+
+            for (int i = 1; i <= numOfPages; i++)
+            {
+
+                object arg = i;
+                tasks.Add(new TaskFactory().StartNew(new Action<object>((test) =>
+               {
+                   scrapePage((int)test, token);
+               }), arg)
+
+                );
+            }
+
+            Task.WaitAll(tasks.ToArray());
+
+
+
+            //return document.SelectNodes("//div[@class='product_grid_image quicklook-unprocessed']");
             
+        }
+
+        private void scrapePage(int pg, CancellationToken token)
+        {
+            string url = WebsiteBaseUrl + "/mens/specials/new-arrivals?ppg=104&page="+pg.ToString();
+
+            var document = GetWebpage(url, token);
+            if (document.InnerHtml.Contains(noResults)) return;
+            Console.WriteLine(pg);
+            Console.WriteLine(document.SelectNodes("//div[@class='product_grid_image quicklook-unprocessed']"));
+            cb.Add(document.SelectNodes("//div[@class='product_grid_image quicklook-unprocessed']"));
         }
 
         private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
