@@ -87,6 +87,7 @@
     <Compile Include="Tests\JimmyJazzTest.cs" />
     <Compile Include="Tests\NordStromScraperTest.cs" />
     <Compile Include="Tests\NtrstoreTest.cs" />
+    <Compile Include="Tests\Sneakers76Test.cs" />
     <Compile Include="Tests\TitoloScraperTests.cs" />
     <Compile Include="MinorTests\LoggerTest.cs" />
     <Compile Include="Tests\ShelflifeScraperTests.cs" />
@@ -111,6 +112,7 @@
     <Compile Include="Tests\BaitmeScraperTest.cs" />
     <Compile Include="Tests\ChmielnaScraperTests.cs" />
     <Compile Include="Tests\ShoezgalleryScraperTests.cs" />
+    <Compile Include="Tests\ShinzoTest.cs" />
     <Compile Include="Tests\UptherestoreScraperTests.cs" />
     <Compile Include="Tests\WoodwoodScraperTests.cs" />
     <Compile Include="Tests\YcmcScraperTests.cs" />

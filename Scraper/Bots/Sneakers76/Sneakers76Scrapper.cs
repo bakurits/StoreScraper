@@ -24,6 +24,7 @@ namespace StoreScraper.Bots.Sneakers76
         {
             listOfProducts = new List<Product>();
             HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
+            Console.WriteLine(itemCollection.Count);
             foreach (var item in itemCollection)
             {
                 token.ThrowIfCancellationRequested();
@@ -54,7 +55,7 @@ namespace StoreScraper.Bots.Sneakers76
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//select[contains(@id,'attribute')/option]");
+            var sizeCollection = document.SelectNodes("//div[@class='attribute_list']/select/option");
 
             foreach (var size in sizeCollection)
             {
@@ -79,8 +80,8 @@ namespace StoreScraper.Bots.Sneakers76
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/en/new-products?n=150";
-
+            string url = WebsiteBaseUrl + "/en/search?search_query="+settings.KeyWords.Replace(" ", "+")+"&search_query="+settings.KeyWords.Replace(" ", "+")+"&orderby=position&orderway=desc&submit_search=&n=336";
+            Console.WriteLine(url);
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;
 
@@ -115,15 +116,9 @@ namespace StoreScraper.Bots.Sneakers76
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
-            if (!CheckForValidProduct(item, settings)) return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             double price = GetPrice(item);
-
-            if (!(price >= settings.MinPrice && price <= settings.MaxPrice))
-            {
-                return;
-            }
 
 
             string imageUrl = GetImageUrl(item);
