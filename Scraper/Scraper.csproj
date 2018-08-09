@@ -123,6 +123,7 @@
     <Compile Include="Bots\Antonioli\AntonioliSearchSettings.cs" />
     <Compile Include="Bots\Asphaltgold\AsphaltgoldScraper.cs" />
     <Compile Include="Bots\Asphaltgold\AsphaltgoldSearchSettings.cs" />
+    <Compile Include="Bots\Basketrevolution\BasketrevolutionScraper.cs" />
     <Compile Include="Bots\BSTN\BSTNScraper.cs" />
     <Compile Include="Bots\ChampsSports_FootLocker_EastBay_FootAction\FootStoreBase.cs" />
     <Compile Include="Bots\Consortium\ConsortiumScraper.cs" />
