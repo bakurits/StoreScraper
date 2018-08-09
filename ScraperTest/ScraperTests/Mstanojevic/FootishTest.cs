@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Diagnostics;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper.Bots.Mstanojevic.Footish;
 using StoreScraper.Models;
@@ -13,7 +14,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         {
             FootishScrapper scraper = new FootishScrapper();
             SearchSettingsBase settings = new SearchSettingsBase();
-            settings.KeyWords = "vault";
+            settings.KeyWords = "nike air";
 
 
             scraper.FindItems(out var lst, settings, CancellationToken.None);
@@ -24,8 +25,8 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         [TestMethod()]
         public void GetProductDetailsTest()
         {
-          /*  Product curProduct = new Product(new FootishScrapper(), "Unknown",
-                "https://www.footish.se/en/campaigns/rabble-signup/nike-air-max-2017-at0044-001",
+            Product curProduct = new Product(new FootishScrapper(), "Unknown",
+                "https://www.footish.se/en/sneakers/nike-wmns-air-max-90-essential-616730-111",
                 420,
                 "https://www.footish.se/pub_images/large/nike-air-max-2017-at0044-001-p21554.jpg",
                 "id");
@@ -34,10 +35,9 @@ namespace ScraperTest.ScraperTests.Mstanojevic
             FootishScrapper scraper = new FootishScrapper();
 
             ProductDetails details = scraper.GetProductDetails(curProduct, CancellationToken.None);
-
-            Helper.PrintGetDetailsResult(details.SizesList);
+            Helpers.Helper.PrintGetDetailsResult(details.SizesList);
             Debug.WriteLine(curProduct.Name);
-            */
+            
         }
     }
 }
