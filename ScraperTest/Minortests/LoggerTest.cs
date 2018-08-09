@@ -1,11 +1,9 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using HtmlAgilityPack;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper.Core;
-using StoreScraper.Http;
 
-namespace ScraperTest.Minortests
+namespace ScraperTest.MinorTests
 {
     [TestClass]
     public class LoggerTest

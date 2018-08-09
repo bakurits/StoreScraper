@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StoreScraper.Bots.Shelflife;
+using StoreScraper.Bots.Bakurits.Shelflife;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
-namespace ScraperTest.Minortests
+namespace ScraperTest.MinorTests
 {
     [TestClass]
     public class DiscordWebhookTests

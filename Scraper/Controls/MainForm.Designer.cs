@@ -34,6 +34,7 @@
             this.btn_FindProducts = new System.Windows.Forms.Button();
             this.Tabs = new System.Windows.Forms.TabControl();
             this.Tab_Main = new System.Windows.Forms.TabPage();
+            this.Clbx_Websites = new System.Windows.Forms.CheckedListBox();
             this.Btn_RemoveMon = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.CLbx_Monitor = new System.Windows.Forms.CheckedListBox();
@@ -53,7 +54,7 @@
             this.Btn_ClearAllLogs = new System.Windows.Forms.Button();
             this.Rtbx_EventLog = new System.Windows.Forms.RichTextBox();
             this.Rtbx_DebugLog = new System.Windows.Forms.RichTextBox();
-            this.Clbx_Websites = new System.Windows.Forms.CheckedListBox();
+            this.Btn_Reset = new System.Windows.Forms.Button();
             this.toolStripContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.SuspendLayout();
@@ -139,6 +140,16 @@
             this.Tab_Main.Text = "Main";
             this.Tab_Main.UseVisualStyleBackColor = true;
             // 
+            // Clbx_Websites
+            // 
+            this.Clbx_Websites.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Clbx_Websites.FormattingEnabled = true;
+            this.Clbx_Websites.Location = new System.Drawing.Point(154, 14);
+            this.Clbx_Websites.Name = "Clbx_Websites";
+            this.Clbx_Websites.Size = new System.Drawing.Size(299, 184);
+            this.Clbx_Websites.TabIndex = 23;
+            this.Clbx_Websites.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.Clbx_Websites_ItemCheck);
+            // 
             // Btn_RemoveMon
             // 
             this.Btn_RemoveMon.ForeColor = System.Drawing.Color.Crimson;
@@ -154,7 +165,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(672, 220);
+            this.label5.Location = new System.Drawing.Point(746, 238);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(69, 20);
             this.label5.TabIndex = 18;
@@ -163,9 +174,9 @@
             // CLbx_Monitor
             // 
             this.CLbx_Monitor.FormattingEnabled = true;
-            this.CLbx_Monitor.Location = new System.Drawing.Point(459, 246);
+            this.CLbx_Monitor.Location = new System.Drawing.Point(526, 261);
             this.CLbx_Monitor.Name = "CLbx_Monitor";
-            this.CLbx_Monitor.Size = new System.Drawing.Size(561, 214);
+            this.CLbx_Monitor.Size = new System.Drawing.Size(494, 199);
             this.CLbx_Monitor.TabIndex = 17;
             // 
             // Btn_AddCriteriaToMonitor
@@ -226,13 +237,14 @@
             this.DGrid_FoundProducts.Name = "DGrid_FoundProducts";
             this.DGrid_FoundProducts.ReadOnly = true;
             this.DGrid_FoundProducts.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.DGrid_FoundProducts.Size = new System.Drawing.Size(433, 349);
+            this.DGrid_FoundProducts.Size = new System.Drawing.Size(500, 349);
             this.DGrid_FoundProducts.TabIndex = 5;
             this.DGrid_FoundProducts.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ProductGrids_OnDoubleClick);
             this.DGrid_FoundProducts.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.Grids_CellFormatting);
             // 
             // Tab_Settings
             // 
+            this.Tab_Settings.Controls.Add(this.Btn_Reset);
             this.Tab_Settings.Controls.Add(this.Btn_SaveRestart);
             this.Tab_Settings.Controls.Add(this.Btn_Save);
             this.Tab_Settings.Controls.Add(this.label4);
@@ -354,15 +366,15 @@
             this.Rtbx_DebugLog.TabIndex = 0;
             this.Rtbx_DebugLog.Text = "";
             // 
-            // Clbx_Websites
+            // Btn_Reset
             // 
-            this.Clbx_Websites.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Clbx_Websites.FormattingEnabled = true;
-            this.Clbx_Websites.Location = new System.Drawing.Point(154, 6);
-            this.Clbx_Websites.Name = "Clbx_Websites";
-            this.Clbx_Websites.Size = new System.Drawing.Size(299, 199);
-            this.Clbx_Websites.TabIndex = 23;
-            this.Clbx_Websites.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.Clbx_Websites_ItemCheck);
+            this.Btn_Reset.Location = new System.Drawing.Point(478, 226);
+            this.Btn_Reset.Name = "Btn_Reset";
+            this.Btn_Reset.Size = new System.Drawing.Size(131, 23);
+            this.Btn_Reset.TabIndex = 10;
+            this.Btn_Reset.Text = "Reset Settings";
+            this.Btn_Reset.UseVisualStyleBackColor = true;
+            this.Btn_Reset.Click += new System.EventHandler(this.Btn_Reset_Click);
             // 
             // MainForm
             // 
@@ -417,6 +429,7 @@
         private System.Windows.Forms.Button Btn_SaveRestart;
         private System.Windows.Forms.Button Btn_ClearAllLogs;
         private System.Windows.Forms.CheckedListBox Clbx_Websites;
+        private System.Windows.Forms.Button Btn_Reset;
     }
 }
 
