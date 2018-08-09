@@ -54,7 +54,7 @@ namespace StoreScraper.Bots.Excelsiormilano
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//select[@name='group_1']/option[.='Choose Size']/../option");
+            var sizeCollection = document.SelectNodes("//select[@name='group_1']/option");
 
             foreach (var size in sizeCollection)
             {
@@ -147,7 +147,7 @@ namespace StoreScraper.Bots.Excelsiormilano
 
         private double GetPrice(HtmlNode item)
         {
-            string priceDiv = item.SelectSingleNode("./div[2]/div/span").InnerHtml.Replace("€", "").Replace("€", "").Replace(",", ".");
+            string priceDiv = item.SelectSingleNode("./div[2]/div/span").InnerHtml.Replace("$", "").Replace("€", "").Replace(",", ".");
 
             return double.Parse(priceDiv);
         }
