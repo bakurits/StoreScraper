@@ -140,6 +140,7 @@
     <Compile Include="Bots\Okini\OkiniScraper.cs" />
     <Compile Include="Bots\Overkill\OverkillScraper.cs" />
     <Compile Include="Bots\Shelflife\ShelflifeScraper.cs" />
+    <Compile Include="Bots\ShopNordstrom\ShopNordstromScrapper.cs" />
     <Compile Include="Bots\Sneakers76\Sneakers76Scrapper.cs" />
     <Compile Include="Bots\Sneakersnstuff\SneakersnstuffScrapper.cs" />
     <Compile Include="Bots\Snkrs\SnkrsScrapper.cs" />
