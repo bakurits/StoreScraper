@@ -6,7 +6,7 @@ namespace StoreScraper.Bots.Antonioli
 {
     public class AntonioliSearchSettings : SearchSettingsBase
     {
-        public enum GenderEnum{Man, Woman, Both}
+        public enum GenderEnum{Both, Man, Woman}
 
         public GenderEnum Gender { get; set; }
     }
