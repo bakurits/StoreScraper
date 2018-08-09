@@ -78,7 +78,7 @@ namespace StoreScraper.Bots.UebervartShop
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/new/";
+            string url = WebsiteBaseUrl + "/?s="+settings.KeyWords.Replace(" ", "+")+"&post_type=product";
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;
@@ -87,44 +87,14 @@ namespace StoreScraper.Bots.UebervartShop
 
         }
 
-        private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
-        {
-            string title = item.SelectSingleNode("./a/h3").InnerText.ToLower();
-            var validKeywords = settings.KeyWords.ToLower().Split(' ');
-            var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
-            foreach (var keyword in validKeywords)
-            {
-                if (!title.Contains(keyword))
-                    return false;
-            }
-
-
-            foreach (var keyword in invalidKeywords)
-            {
-                if (keyword == "")
-                    continue;
-                if (title.Contains(keyword))
-                    return false;
-            }
-
-
-            return true;
-
-        }
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
-            //if (!CheckForValidProduct(item, settings)) return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             double price = GetPrice(item);
 
-            /*if (!(price >= settings.MinPrice && price <= settings.MaxPrice) && (settings.MaxPrice != 0 && settings.MinPrice != 0))
-            {
-                return;
-            }*/
-
-
+        
             string imageUrl = GetImageUrl(item);
             var product = new Product(this, name, url, price, imageUrl, url, "EUR");
             if (Utils.SatisfiesCriteria(product, settings))
