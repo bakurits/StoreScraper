@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -107,6 +108,27 @@ namespace StoreScraper.Helpers
                 throw;
             }
         }
+        
+        public static HtmlDocument PostDoc(this HttpClient client, string url, CancellationToken token, FormUrlEncodedContent postParams)
+        {
+            
+            try
+            {
+                using (var response = client.PostAsync(url, postParams, token).Result)
+                {
+                    var result = response.Content.ReadAsStringAsync().Result;
+                    var doc = new HtmlDocument();
+                    doc.LoadHtml(result);
+                    return doc;
+                }
+            }
+            catch (WebException)
+            {
+                Logger.Instance.WriteErrorLog("Can't connect to website");
+                throw;
+            }
+        }
+        
 
         public static HtmlDocument GetDoc(Func<HttpClient> clientGenerator, string url, int timeoutSeconds, int maxTries, 
             CancellationToken token, bool autoDispose = false)
