@@ -22,6 +22,7 @@ namespace StoreScraper.Bots.JimmyJazz
 
         private const string noResults = "Sorry, no results found for your searchterm";
         private ConcurrentBag<HtmlNodeCollection> cb = new ConcurrentBag<HtmlNodeCollection>();
+        private const int pageDepth = 2;
 
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
@@ -95,6 +96,10 @@ namespace StoreScraper.Bots.JimmyJazz
 
             string[] pagesText = document.SelectSingleNode("//*[@class='pagination_info']").InnerText.Trim().Split(' ');
             int numOfPages = int.Parse(pagesText[pagesText.Length-1]);
+            if (numOfPages > pageDepth)
+            {
+                numOfPages = pageDepth;
+            }
 
             List<Task> tasks = new List<Task>();
 
