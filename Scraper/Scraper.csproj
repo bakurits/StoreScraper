@@ -165,6 +165,7 @@
     <Compile Include="Helpers\Embed.cs" />
     <Compile Include="Http\FirefoxHttpClientStorage.cs" />
     <Compile Include="Interfaces\DisabledScraperAttribute.cs" />
+    <Compile Include="Models\Price.cs" />
     <Compile Include="Models\ProductDetails.cs" />
     <Compile Include="Models\StringPair.cs" />
     <Compile Include="ScraperBase.cs" />
