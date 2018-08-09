@@ -10,13 +10,20 @@ namespace ScraperTest.MinorTests
         [TestMethod()]
         public void ParsePriceTest()
         {
-            var prices = new string[] {"500.23 EUR"};
+            var prices = new string[] {"500.23 EUR", "USD 1, 300.45"};
 
             foreach (var price in prices)
             {
                 var parsed = Utils.ParsePrice(price);
-                Console.WriteLine(parsed.Value);
-                Console.WriteLine(parsed.Currency);
+                Console.WriteLine(parsed);
+            }
+
+            var prices2 = new string[] { "500,23 EUR", "USD 300,45" };
+
+            foreach (var price in prices2)
+            {
+                var parsed = Utils.ParsePrice(price, decimalDelimiter:",", tousandsDelimiter:"");
+                Console.WriteLine(parsed);
             }
         }
     }
