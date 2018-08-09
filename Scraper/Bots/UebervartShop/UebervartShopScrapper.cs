@@ -8,14 +8,12 @@ using StoreScraper.Models;
 using System.Text.RegularExpressions;
 using System;
 
-
-namespace StoreScraper.Bots.GoodHoodStore
+namespace StoreScraper.Bots.UebervartShop
 {
-
-    public class GoodHoodStoreScrapper : ScraperBase
+    public class UebervartShopScrapper : ScraperBase
     {
-        public override string WebsiteName { get; set; } = "GoodHoodStore";
-        public override string WebsiteBaseUrl { get; set; } = "http://www.goodhoodstore.com";
+        public override string WebsiteName { get; set; } = "UebervartShop";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.uebervart-shop.de";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";
@@ -24,6 +22,7 @@ namespace StoreScraper.Bots.GoodHoodStore
         {
             listOfProducts = new List<Product>();
             HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
+            Console.WriteLine(itemCollection.Count);
             foreach (var item in itemCollection)
             {
                 token.ThrowIfCancellationRequested();
@@ -54,7 +53,7 @@ namespace StoreScraper.Bots.GoodHoodStore
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//select[@name='id']/option");
+            var sizeCollection = document.SelectNodes("//td[@class='value']/label");
 
             foreach (var size in sizeCollection)
             {
@@ -79,18 +78,18 @@ namespace StoreScraper.Bots.GoodHoodStore
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/search?n=all&q=" + settings.KeyWords;
+            string url = WebsiteBaseUrl + "/new/";
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;
 
-            return document.SelectNodes("//div[@class='overview']");
+            return document.SelectNodes("//article");
 
         }
 
         private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
         {
-            string title = item.SelectSingleNode("./p/span[@class='Title']").InnerHtml.ToLower();
+            string title = item.SelectSingleNode("./a/h3").InnerText.ToLower();
             var validKeywords = settings.KeyWords.ToLower().Split(' ');
             var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
             foreach (var keyword in validKeywords)
@@ -115,15 +114,15 @@ namespace StoreScraper.Bots.GoodHoodStore
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
-            if (!CheckForValidProduct(item, settings)) return;
+            //if (!CheckForValidProduct(item, settings)) return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             double price = GetPrice(item);
 
-            if (!(price >= settings.MinPrice && price <= settings.MaxPrice))
+            /*if (!(price >= settings.MinPrice && price <= settings.MaxPrice) && (settings.MaxPrice != 0 && settings.MinPrice != 0))
             {
                 return;
-            }
+            }*/
 
 
             string imageUrl = GetImageUrl(item);
@@ -144,7 +143,7 @@ namespace StoreScraper.Bots.GoodHoodStore
             //Console.WriteLine("GetName");
             //Console.WriteLine(item.SelectSingleNode("./a").GetAttributeValue("title", ""));
 
-            return item.SelectSingleNode("./p/span[@class='Title']").InnerHtml;
+            return item.SelectSingleNode("./a/h3").InnerText;
         }
 
         private string GetUrl(HtmlNode item)
@@ -154,9 +153,17 @@ namespace StoreScraper.Bots.GoodHoodStore
 
         private double GetPrice(HtmlNode item)
         {
-            string priceDiv = item.SelectSingleNode("./p/span[@class='Price']/span").InnerHtml.Replace("€", "").Replace("&euro;", ""); ;
+            var node = item.SelectSingleNode("./a/span/span");
+            if (node != null)
+            {
+                string priceDiv = item.SelectSingleNode("./a/span/span").InnerText.Replace("€", "").Replace("&euro;", "").Replace("&nbsp;","").Replace("$", "").Replace(",", ".");
 
-            return double.Parse(priceDiv);
+                return double.Parse(priceDiv);
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         private string GetImageUrl(HtmlNode item)
@@ -165,3 +172,4 @@ namespace StoreScraper.Bots.GoodHoodStore
         }
     }
 }
+

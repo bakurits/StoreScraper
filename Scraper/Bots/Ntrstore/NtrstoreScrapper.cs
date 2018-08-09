@@ -54,7 +54,7 @@ namespace StoreScraper.Bots.Ntrstore
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//select[contains(@id,'attribute')/option]");
+            /*var sizeCollection = document.SelectNodes("//select[contains(@id,'attribute')/option]");
 
             foreach (var size in sizeCollection)
             {
@@ -65,6 +65,7 @@ namespace StoreScraper.Bots.Ntrstore
                 }
 
             }
+            */
 
             return details;
         }
@@ -73,13 +74,13 @@ namespace StoreScraper.Bots.Ntrstore
         {
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = client.GetDoc(url, token).DocumentNode;
-            return client.GetDoc(url, token).DocumentNode;
+            return document;
         }
 
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/catalogsearch/result/index/?limit=36&q=" + settings.KeyWords;
+            string url = WebsiteBaseUrl + "/catalogsearch/result/index/?dir=asc&limit=36&order=entity_id&q=" + settings.KeyWords;
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;

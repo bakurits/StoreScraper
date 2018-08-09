@@ -117,7 +117,6 @@ namespace StoreScraper.Bots.Nordstrom
         {
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             return client.GetDoc(url, token).DocumentNode;
-
         }
 
 

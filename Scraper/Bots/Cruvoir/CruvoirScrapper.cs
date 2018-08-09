@@ -9,13 +9,13 @@ using System.Text.RegularExpressions;
 using System;
 
 
-namespace StoreScraper.Bots.GoodHoodStore
+namespace StoreScraper.Bots.Cruvoir
 {
 
-    public class GoodHoodStoreScrapper : ScraperBase
+    public class CruvoirScrapper : ScraperBase
     {
-        public override string WebsiteName { get; set; } = "GoodHoodStore";
-        public override string WebsiteBaseUrl { get; set; } = "http://www.goodhoodstore.com";
+        public override string WebsiteName { get; set; } = "Cruvoir";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.Cruvoir.com";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";
@@ -79,18 +79,18 @@ namespace StoreScraper.Bots.GoodHoodStore
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/search?n=all&q=" + settings.KeyWords;
+            string url = WebsiteBaseUrl + "/collections/sneakers";
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;
 
-            return document.SelectNodes("//div[@class='overview']");
+            return document.SelectNodes("//article[@class='product']");
 
         }
 
         private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
         {
-            string title = item.SelectSingleNode("./p/span[@class='Title']").InnerHtml.ToLower();
+            string title = item.SelectSingleNode("./div/p[2]").InnerHtml.ToLower();
             var validKeywords = settings.KeyWords.ToLower().Split(' ');
             var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
             foreach (var keyword in validKeywords)
@@ -115,19 +115,12 @@ namespace StoreScraper.Bots.GoodHoodStore
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
-            if (!CheckForValidProduct(item, settings)) return;
+            //if (!CheckForValidProduct(item, settings)) return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             double price = GetPrice(item);
-
-            if (!(price >= settings.MinPrice && price <= settings.MaxPrice))
-            {
-                return;
-            }
-
-
             string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "EUR");
+            var product = new Product(this, name, url, price, imageUrl, url, "USD");
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
@@ -144,19 +137,26 @@ namespace StoreScraper.Bots.GoodHoodStore
             //Console.WriteLine("GetName");
             //Console.WriteLine(item.SelectSingleNode("./a").GetAttributeValue("title", ""));
 
-            return item.SelectSingleNode("./p/span[@class='Title']").InnerHtml;
+            return item.SelectSingleNode("./div/p[2]").InnerHtml;
         }
 
         private string GetUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./a").GetAttributeValue("href", null);
+            return WebsiteBaseUrl + item.SelectSingleNode("./a").GetAttributeValue("href", null);
         }
 
         private double GetPrice(HtmlNode item)
         {
-            string priceDiv = item.SelectSingleNode("./p/span[@class='Price']/span").InnerHtml.Replace("€", "").Replace("&euro;", ""); ;
+            try
+            {
+                string priceDiv = item.SelectSingleNode("./div/p[3]/span").InnerHtml.Replace("$", "").Replace("USD", "").Replace("€", "").Replace(",", ".");
 
-            return double.Parse(priceDiv);
+                return double.Parse(priceDiv);
+            }
+            catch
+            {
+                return 0;
+            }
         }
 
         private string GetImageUrl(HtmlNode item)

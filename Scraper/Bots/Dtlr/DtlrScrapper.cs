@@ -22,8 +22,11 @@ namespace StoreScraper.Bots.Dtlr
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
+
+            string gender = "Boys";
+
             listOfProducts = new List<Product>();
-            HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
+            HtmlNodeCollection itemCollection = GetProductCollection(settings, gender, token);
             Console.WriteLine(itemCollection.Count);
             foreach (var item in itemCollection)
             {
@@ -55,7 +58,8 @@ namespace StoreScraper.Bots.Dtlr
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//div[@class='sizeBox']/ul/li");
+            // need to parse javascript to extract prices
+            /*var sizeCollection = document.SelectNodes("//div[@class='sizeBox']/ul/li");
 
             foreach (var size in sizeCollection)
             {
@@ -65,7 +69,7 @@ namespace StoreScraper.Bots.Dtlr
                     details.AddSize(sz, "Unknown");
                 }
 
-            }
+            }*/
 
             return details;
         }
@@ -74,13 +78,18 @@ namespace StoreScraper.Bots.Dtlr
         {
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = client.GetDoc(url, token).DocumentNode;
-            return client.GetDoc(url, token).DocumentNode;
+            return document;
         }
 
-        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
+        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, string gender, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/men/footwear/new.html";
+            string url = WebsiteBaseUrl + "/catalogsearch/result/?q="+settings.KeyWords.Replace(" ", "+");
+
+            if (gender != null)
+            {
+                url += "&gender=" + gender;
+            }
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;

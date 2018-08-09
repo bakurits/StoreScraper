@@ -7,15 +7,16 @@ using StoreScraper.Core;
 using StoreScraper.Models;
 using System.Text.RegularExpressions;
 using System;
+using Newtonsoft.Json;
 
 
-namespace StoreScraper.Bots.GoodHoodStore
+namespace StoreScraper.Bots.Footish
 {
 
-    public class GoodHoodStoreScrapper : ScraperBase
+    public class FootishScrapper : ScraperBase
     {
-        public override string WebsiteName { get; set; } = "GoodHoodStore";
-        public override string WebsiteBaseUrl { get; set; } = "http://www.goodhoodstore.com";
+        public override string WebsiteName { get; set; } = "Footish.se";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.footish.se";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";
@@ -23,7 +24,11 @@ namespace StoreScraper.Bots.GoodHoodStore
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
+
+
+
+
+            /*HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
             foreach (var item in itemCollection)
             {
                 token.ThrowIfCancellationRequested();
@@ -32,10 +37,18 @@ namespace StoreScraper.Bots.GoodHoodStore
 #else
                 LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
 #endif
-            }
+            }*/
 
         }
 
+        private void fetchApi(SearchSettingsBase settings, CancellationToken token)
+        {
+
+            string restApiUrl = "https://www.footish.se/Services/Rest/v2/json/en-GB/EUR/search/full/nike/42/2";
+            var document = GetWebpage(restApiUrl, token);
+
+
+        }
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
@@ -54,7 +67,7 @@ namespace StoreScraper.Bots.GoodHoodStore
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//select[@name='id']/option");
+            var sizeCollection = document.SelectNodes("//select[@onchange='Products_UpdateAttributeValue(this);']/option");
 
             foreach (var size in sizeCollection)
             {
@@ -79,18 +92,18 @@ namespace StoreScraper.Bots.GoodHoodStore
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/search?n=all&q=" + settings.KeyWords;
+            string url = WebsiteBaseUrl + "/en/sneakers";
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;
 
-            return document.SelectNodes("//div[@class='overview']");
+            return document.SelectNodes("//article[@class='product-wrapper']");
 
         }
 
         private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
         {
-            string title = item.SelectSingleNode("./p/span[@class='Title']").InnerHtml.ToLower();
+            string title = item.SelectSingleNode("./div[3]/div/h3/a").GetAttributeValue("title", "").ToLower();
             var validKeywords = settings.KeyWords.ToLower().Split(' ');
             var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
             foreach (var keyword in validKeywords)
@@ -115,19 +128,12 @@ namespace StoreScraper.Bots.GoodHoodStore
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
-            if (!CheckForValidProduct(item, settings)) return;
+            //if (!CheckForValidProduct(item, settings)) return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             double price = GetPrice(item);
-
-            if (!(price >= settings.MinPrice && price <= settings.MaxPrice))
-            {
-                return;
-            }
-
-
             string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "EUR");
+            var product = new Product(this, name, url, price, imageUrl, url, "USD");
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
@@ -144,24 +150,30 @@ namespace StoreScraper.Bots.GoodHoodStore
             //Console.WriteLine("GetName");
             //Console.WriteLine(item.SelectSingleNode("./a").GetAttributeValue("title", ""));
 
-            return item.SelectSingleNode("./p/span[@class='Title']").InnerHtml;
+            return item.SelectSingleNode("./div[3]/div/h3/a").GetAttributeValue("title", "");
         }
 
         private string GetUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./a").GetAttributeValue("href", null);
+            return WebsiteBaseUrl + item.SelectSingleNode("./div[3]/div/h3/a").GetAttributeValue("href", null);
         }
 
         private double GetPrice(HtmlNode item)
         {
-            string priceDiv = item.SelectSingleNode("./p/span[@class='Price']/span").InnerHtml.Replace("€", "").Replace("&euro;", ""); ;
+            try
+            {
+                string priceDiv = item.SelectSingleNode("./div[3]/div[3]/div/span").InnerHtml.Replace("&nbsp;", "").Replace("kr", "").Replace("$", "").Replace("€", "").Replace(",", ".");
 
-            return double.Parse(priceDiv);
+                return double.Parse(priceDiv);
+            } catch
+            {
+                return 0;
+            }
         }
 
         private string GetImageUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./a/img").GetAttributeValue("src", null);
+            return item.SelectSingleNode("./div/a/img").GetAttributeValue("src", null);
         }
     }
 }

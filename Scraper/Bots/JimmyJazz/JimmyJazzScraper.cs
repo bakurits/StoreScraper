@@ -27,12 +27,16 @@ namespace StoreScraper.Bots.JimmyJazz
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
-            listOfProducts = new List<Product>();
-            //HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
-            GetProductCollection(settings, token);
 
-            foreach (var itemCollection in cb)
-            {
+            string gender = "MENS";
+
+            listOfProducts = new List<Product>();
+         
+            HtmlNodeCollection itemCollection = GetProductCollection(settings, gender, token);
+            //GetProductCollection(settings, token);
+
+            //foreach (var itemCollection in cb)
+            //{
                 foreach (var item in itemCollection)
                 {
                     token.ThrowIfCancellationRequested();
@@ -42,7 +46,7 @@ namespace StoreScraper.Bots.JimmyJazz
                 LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
 #endif
                 }
-            }
+            //}
 
         }
 
@@ -83,18 +87,29 @@ namespace StoreScraper.Bots.JimmyJazz
         {
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = client.GetDoc(url, token).DocumentNode;
-            return client.GetDoc(url, token).DocumentNode;
+            return document;
         }
 
-        private void GetProductCollection(SearchSettingsBase settings, CancellationToken token)
+        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, string gender, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/mens/specials/new-arrivals?ppg=104";
+            string url = "http://search.jimmyjazz.com/search/keywords-"+settings.KeyWords.Replace(" ", "_") + "--res_per_page-100";
 
+            if (settings.MaxPrice > 0)
+            {   
+                url += "--Price-" + settings.MinPrice.ToString() + "%7C%7C" + settings.MaxPrice.ToString();
+            }
+
+            if (gender != "")
+            {
+                url += "--Gender-" + gender;
+            }
+
+            Console.WriteLine(url);
             var document = GetWebpage(url, token);
-            if (document.InnerHtml.Contains(noResults)) return;
+            if (document.InnerHtml.Contains(noResults)) return null;
 
-            string[] pagesText = document.SelectSingleNode("//*[@class='pagination_info']").InnerText.Trim().Split(' ');
+            /*string[] pagesText = document.SelectSingleNode("//*[@class='pagination_info']").InnerText.Trim().Split(' ');
             int numOfPages = int.Parse(pagesText[pagesText.Length-1]);
             if (numOfPages > pageDepth)
             {
@@ -117,13 +132,13 @@ namespace StoreScraper.Bots.JimmyJazz
 
             Task.WaitAll(tasks.ToArray());
 
+    */
 
-
-            //return document.SelectNodes("//div[@class='product_grid_image quicklook-unprocessed']");
+            return document.SelectNodes("//div[contains(@class,'product_grid_item')]");
             
         }
 
-        private void scrapePage(int pg, CancellationToken token)
+        /*private void scrapePage(int pg, CancellationToken token)
         {
             string url = WebsiteBaseUrl + "/mens/specials/new-arrivals?ppg=104&page="+pg.ToString();
 
@@ -132,9 +147,9 @@ namespace StoreScraper.Bots.JimmyJazz
             Console.WriteLine(pg);
             Console.WriteLine(document.SelectNodes("//div[@class='product_grid_image quicklook-unprocessed']"));
             cb.Add(document.SelectNodes("//div[@class='product_grid_image quicklook-unprocessed']"));
-        }
+        }*/
 
-        private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
+       /* private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
         {
             string title = item.SelectSingleNode("./a").GetAttributeValue("title", "").ToLower();
             var validKeywords = settings.KeyWords.ToLower().Split(' ');
@@ -157,19 +172,14 @@ namespace StoreScraper.Bots.JimmyJazz
 
             return true;
 
-        }
+        }*/
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
-            if (!CheckForValidProduct(item, settings)) return;
+            //if (!CheckForValidProduct(item, settings)) return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             double price = GetPrice(item);
-
-            if ( !(price >= settings.MinPrice && price <= settings.MaxPrice))
-            {
-                return;
-            }
 
             string imageUrl = GetImageUrl(item);
             var product = new Product(this, name, url, price, imageUrl, url, "USD");
@@ -189,24 +199,31 @@ namespace StoreScraper.Bots.JimmyJazz
             //Console.WriteLine("GetName");
             //Console.WriteLine(item.SelectSingleNode("./a").GetAttributeValue("title", ""));
 
-            return item.SelectSingleNode("./a").GetAttributeValue("title", "");
+            return item.SelectSingleNode("./div/a").GetAttributeValue("title", "");
         }
 
         private string GetUrl(HtmlNode item)
         {
-            return WebsiteBaseUrl + item.SelectSingleNode("./a").GetAttributeValue("href", null);
+            return item.SelectSingleNode("./div/a").GetAttributeValue("href", null);
         }
 
         private double GetPrice(HtmlNode item)
         {
-            string priceDiv = item.SelectSingleNode("../div[contains(@class,'product_grid_price')]/span").InnerHtml.Replace("$", "");
+            try
+            {
+                string priceDiv = item.SelectSingleNode("./div[contains(@class,'product_grid_price ')]/span").InnerHtml.Replace("$", "");
 
-            return double.Parse(priceDiv);
+                return double.Parse(priceDiv);
+            }
+            catch
+            {
+                return 0;
+            }
         }
 
         private string GetImageUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./a/img").GetAttributeValue("src", null);
+            return item.SelectSingleNode("./div/a/img").GetAttributeValue("src", null);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace StoreScraper.Bots.Consortium
         public override bool Active { get; set; }
 
         private const string SearchFormat = @"https://www.consortium.co.uk/latest";
-        private const string priceRegex = "£(\\d+.\\d+)";
+        private const string priceRegex = "£(\\d+(\\.\\d+)?)";
         private const string sizesRegex = "\"label\":\"([^\\{]*?)\",\"products\":\\[(\\d+)\\]";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
@@ -71,9 +71,9 @@ namespace StoreScraper.Bots.Consortium
 
         private HtmlNode GetWebpage(string url, CancellationToken token)
         {
-            var client = ClientFactory.GetProxiedFirefoxClient();
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = client.GetDoc(url, token).DocumentNode;
-            return client.GetDoc(url, token).DocumentNode;
+            return document;
         }
 
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
