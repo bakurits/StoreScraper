@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
+using Newtonsoft.Json.Linq;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
@@ -43,12 +44,15 @@ namespace StoreScraper.Bots.Baitme
 
             product.ImageUrl = page.SelectSingleNode("//img[@id = 'image-main']").GetAttributeValue("src", null);
 
-            foreach (var sizeItem in sizeCollection)
-            {
-                string size = sizeItem.InnerHtml;
-                details.AddSize(size, "Unknown");
-            }
+            var jsonStr = Regex.Match(page.InnerHtml, @"var spConfig = new Product.Config\((.*)\)").Groups[1].Value;
+            JObject parsed = JObject.Parse(jsonStr);
 
+            var sizes = parsed.SelectToken("attributes").SelectToken("188").SelectToken("options");
+            foreach (JToken sz in sizes.Children())
+            {
+                var sizeName = (string) sz.SelectToken("label");
+                details.AddSize(sizeName, "Unknown");
+            }
             return details;
         }
 
