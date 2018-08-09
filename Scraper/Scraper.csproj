@@ -126,6 +126,7 @@
     <Compile Include="Bots\Basketrevolution\BasketrevolutionScraper.cs" />
     <Compile Include="Bots\BSTN\BSTNScraper.cs" />
     <Compile Include="Bots\ChampsSports_FootLocker_EastBay_FootAction\FootStoreBase.cs" />
+    <Compile Include="Bots\Chmielna\ChmielnaScraper.cs" />
     <Compile Include="Bots\Consortium\ConsortiumScraper.cs" />
     <Compile Include="Bots\Dtlr\DtlrScrapper.cs" />
     <Compile Include="Bots\Endclothing\Endclothingscraper.cs" />
