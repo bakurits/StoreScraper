@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
 using StoreScraper.Core;
@@ -14,53 +13,33 @@ namespace StoreScraper.Bots.Einhalb
     public class EinhalbScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "43Einhalb";
-        public override string WebsiteBaseUrl { get; set; } = "https://www.43einhalb.com/";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.43einhalb.com";
         public override bool Active { get; set; }
-
+        private const string SearchFormat = @"https://www.43einhalb.com/en/search/{0}/page/1/sort/date_new/perpage/72";
+        private const string noResults = "Sorry, no results found for your searchterm";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            var searchUrl =
-                $"https://www.43einhalb.com/en/search/{settings.KeyWords}/page/1/sort/date_new/perpage/72";
-            var request = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
-            var document = request.GetDoc(searchUrl, token);
-            Logger.Instance.WriteErrorLog("Unexpected html!");
-            var nodes = document.DocumentNode.SelectSingleNode("//*[@id='products']");
-            HtmlNodeCollection children = nodes.SelectNodes("./div");
+            HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
 
-            if (children == null)
-            {
-                Logger.Instance.WriteErrorLog("Unexpected html");
-                throw new HtmlWebException("Unexpected html");
-            }
-
-            foreach (var child in children)
+            foreach (var item in itemCollection)
             {
                 token.ThrowIfCancellationRequested();
 #if DEBUG
-                LoadSingleProduct(listOfProducts, child, settings);
+                LoadSingleProduct(listOfProducts, settings, item);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts,child,settings);
+                LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
 #endif
             }
 
         }
 
-        /// <summary>
-        /// This method is simple wrapper on LoadSingleProduct
-        /// To catch all Exceptions during release
-        /// </summary>
-        /// <param name="listOfProducts"></param>
-        /// <param name="child"></param>
-        /// <param name="info"></param>
-        /// <param name="settings"></param>
-
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, HtmlNode child, SearchSettingsBase settings)
+        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
             {
-                LoadSingleProduct(listOfProducts, child, settings);
+                LoadSingleProduct(listOfProducts, settings, item);
             }
             catch (Exception e)
             {
@@ -69,65 +48,77 @@ namespace StoreScraper.Bots.Einhalb
         }
 
 
-
-        private double changeStrIntoDouble(string priceStr)
+        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
-            int i = 0;
+            var document = GetWebpage(product.Url, token);
+            ProductDetails details = new ProductDetails();
 
-            for (i = 0; i < priceStr.Length; i++)
+            var sizeCollection = document.SelectNodes("//select[@class='customSelectBox']/option[@class='']");
+
+            foreach (var size in sizeCollection)
             {
-                if (!((priceStr[i] >= '0' && priceStr[i] <= '9') || priceStr[i] == '.'))
+                string sz = size.InnerText.Trim();
+                if (sz.Length > 0)
                 {
-                    break;
+                    details.AddSize(sz, "Unknown");
                 }
+
             }
 
-            priceStr = priceStr.Substring(0, i);
-            double.TryParse(priceStr, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
-            return price;
+            return details;
         }
 
-
-        /// <summary>
-        /// This method handles single product's creation 
-        /// </summary>
-        /// <param name="listOfProducts"></param>
-        /// <param name="child"></param>
-        /// <param name="settings"></param>
-        private void LoadSingleProduct(List<Product> listOfProducts, HtmlNode child, SearchSettingsBase settings)
+        private HtmlNode GetWebpage(string url, CancellationToken token)
         {
-            string priceStr = child.SelectSingleNode(".//span[contains(@class, 'price')]/del").InnerText;
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var document = client.GetDoc(url, token).DocumentNode;
+            return client.GetDoc(url, token).DocumentNode;
+        }
 
-            var urlNode = child.SelectSingleNode("./a");
-            string productURL = new Uri(new Uri(this.WebsiteBaseUrl), urlNode.GetAttributeValue("href", null)).ToString();
-            double price = changeStrIntoDouble(priceStr);
-            var productName = child.SelectSingleNode(".//span[contains(@class, 'product-name d-block')]").InnerText;
-            var image = child.SelectSingleNode(".//img[contains(@class,'card-img-top')]");
-            string imageURL = new Uri(new Uri(this.WebsiteBaseUrl), image.GetAttributeValue("data-src", null)).ToString();
+        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
+        {
+            string url = string.Format(SearchFormat, settings.KeyWords);
+            var document = GetWebpage(url, token);
+            if (document.InnerHtml.Contains(noResults)) return null;
+            return document.SelectNodes("//li[@class='item']");
+        }
 
-            Product product = new Product(this, productName, productURL, price, imageURL, productURL);
+        private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
+        {
+            string name = GetName(item).TrimEnd();
+            string url = WebsiteBaseUrl + GetUrl(item);
+            double price = GetPrice(item);
+            string imageUrl = WebsiteBaseUrl + GetImageUrl(item);
+            var product = new Product(this, name, url, price, imageUrl, url, "EUR");
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
             }
         }
-
-        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        
+        private string GetName(HtmlNode item)
         {
-            const string xpath = "//*[@id='product-form']//div[contains(@class,'dropdown-menu')]/a";
-            var client = ClientFactory.GetProxiedFirefoxClient();
+            return item.SelectSingleNode(".//img[@class='current']").GetAttributeValue("alt", null);
+        }
 
-            var doc = client.GetDoc(product.Url, token);
+        private string GetUrl(HtmlNode item)
+        {
+            return item.SelectSingleNode(".//a[1]").GetAttributeValue("href", null);
+        }
 
-            var nodes = doc.DocumentNode.SelectNodes(xpath);
-            var sizes = nodes.Select(node => node.InnerText.Trim());
-            var details = new ProductDetails();
-            foreach (var size in sizes)
-            {
-                details.AddSize(size, "Unknown");
-            }
+        private double GetPrice(HtmlNode item)
+        {
+            var priceSpan = item.SelectSingleNode(".//span[@class='pPrice']");
+            var priceSpanSecond = priceSpan.SelectSingleNode(".//span[@class='newPrice']");
+            if (priceSpanSecond != null) priceSpan = priceSpanSecond;
+            string priceDiv = priceSpan.InnerText.Trim();
 
-            return details;
+            return Convert.ToDouble(Regex.Match(priceDiv, "(\\d+(\\.\\d+)?)").Groups[1].Value);
+        }
+
+        private string GetImageUrl(HtmlNode item)
+        {
+            return item.SelectSingleNode(".//img[@class='current']").GetAttributeValue("src", null);
         }
     }
 }
