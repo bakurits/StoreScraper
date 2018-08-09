@@ -12,9 +12,9 @@ using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
-namespace StoreScraper.Bots.BounceWear
+namespace StoreScraper.Bots.Byparra
 {
-    public class BounceWearScrape: ScraperBase
+    public class ByparraScraper: ScraperBase
     {
         public override string WebsiteName { get; set; } = "Byparra";
         public override string WebsiteBaseUrl { get; set; } = "https://byparra.com/";
