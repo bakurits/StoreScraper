@@ -131,6 +131,7 @@
     <Compile Include="Bots\Mrporter\MrporterScraper.cs" />
     <Compile Include="Bots\Nakedcph\NakedcphScrapper.cs" />
     <Compile Include="Bots\Nordstrom\NordStromScraper.cs" />
+    <Compile Include="Bots\Ntrstore\NtrstoreScrapper.cs" />
     <Compile Include="Bots\OffWhite\OffWhiteScraper.cs" />
     <Compile Include="AppSettings.cs" />
     <Compile Include="Bots\Okini\OkiniScraper.cs" />
