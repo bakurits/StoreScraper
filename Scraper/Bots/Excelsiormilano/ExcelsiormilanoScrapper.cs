@@ -54,7 +54,7 @@ namespace StoreScraper.Bots.Excelsiormilano
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//select[@class='attributes-select']/option[.='Choose a UK Size']/../option");
+            var sizeCollection = document.SelectNodes("//select[@name='group_1']/option[.='Choose Size']/../option");
 
             foreach (var size in sizeCollection)
             {
