@@ -12,26 +12,46 @@ using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
-namespace StoreScraper.Bots.Byparra
+namespace StoreScraper.Bots.VooBerlin
 {
-    public class ByparraScraper: ScraperBase
+    public class VooScraper: ScraperBase
     {
-        public override string WebsiteName { get; set; } = "Byparra";
-        public override string WebsiteBaseUrl { get; set; } = "https://byparra.com/";
+        public override string WebsiteName { get; set; } = "VooBerlin";
+        public override string WebsiteBaseUrl { get; set; } = "https://vooberlin.com/";
         public override bool Active { get; set; }
         
-        private const string SearchUrl = @"https://byparra.com/?q={0}";
+        private const string SearchUrl = @"https://www.vooberlin.com/search?sSearch={0}&p={1}";
         
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
-          
-            foreach (var item in itemCollection)
+            var pageOne = GetWebpage(String.Format(SearchUrl, settings.KeyWords, "1"), token);
+            
+            var firstResults = pageOne.SelectNodes("//div[contains(@class, 'product--box')]");
+            foreach (var item in firstResults)
             {
                 token.ThrowIfCancellationRequested();
                 LoadSingleProduct(listOfProducts, settings, item, token);
             }
+
+            var count = pageOne.SelectSingleNode("//span[contains(@class, 'headline--product-count')]").InnerHtml;
+            var scrapeAmount = Math.Ceiling(decimal.Parse(count) / 12) -1 ;
+            IEnumerable<int> toScrape = Enumerable.Range(2, (int)scrapeAmount);
+
+            foreach (int num in toScrape)
+            {
+                var page = GetWebpage(String.Format(SearchUrl, settings.KeyWords, num.ToString()), token);
+                var results =  page.SelectNodes("//div[contains(@class, 'product--box')]");
+                foreach (var item in results)
+                {
+                    token.ThrowIfCancellationRequested();
+                    LoadSingleProduct(listOfProducts, settings, item, token);
+                }
+                
+            }
+            
+            
+         
 
         }
 
@@ -40,7 +60,7 @@ namespace StoreScraper.Bots.Byparra
            
             string name = GetName(item);
             string url = GetUrl(item);
-            double price = GetPrice(url, token);
+            double price = GetPrice(item);
             string imgurl = GetImg(item);
             var product = new Product(this, name, url, price, imgurl, url, "EUR");
             if (Utils.SatisfiesCriteria(product, settings))
@@ -52,7 +72,7 @@ namespace StoreScraper.Bots.Byparra
 
         private string GetImg(HtmlNode item)
         {
-            return item.SelectSingleNode(".//img").GetAttributeValue("src", null);
+            return item.SelectSingleNode("//img[1]").GetAttributeValue("srcset", null);
         }
 
         private double ParsePrice(string pricee)
@@ -63,23 +83,20 @@ namespace StoreScraper.Bots.Byparra
             return price;
         }
 
-        private double GetPrice(string url, CancellationToken token)
+        private double GetPrice(HtmlNode item)
         {
-            var urlNew = "https://byparra.com" + url.Substring(1);
-            var resp = GetWebpage(urlNew, token);    
-            var price = resp.SelectSingleNode("//p[contains(@class, 'price')]/b").InnerHtml;
-            return ParsePrice(price);
+            return ParsePrice(item.SelectSingleNode("//span[@class='price--discount is--nowrap'][1]").InnerHtml);
 
         }
         
         private string GetName(HtmlNode item)
         {
-            return item.GetAttributeValue("title", null);
+            return item.SelectSingleNode("//a[@class='product--title'][1]").GetAttributeValue("title", null);
         }
 
         private string GetUrl(HtmlNode item)
         {
-            return item.GetAttributeValue("href", null);
+            return item.SelectSingleNode("//a[@class='product--image'][1]").GetAttributeValue("href", null);
         }
 
         private HtmlNode GetWebpage(string url, CancellationToken token)
