@@ -10,6 +10,18 @@ namespace StoreScraper.Models
         protected const string FilterCatName = "Filters";
         protected const string CommonCatName = "Common";
 
+        public static SearchSettingsBase ConvertToChild(SearchSettingsBase source, Type childType)
+        {
+            var childIntance =  (SearchSettingsBase)Activator.CreateInstance(childType);
+
+            childIntance.KeyWords = source.KeyWords;
+            childIntance.MaxPrice = source.MaxPrice;
+            childIntance.MinPrice = source.MinPrice;
+            childIntance.NegKeyWrods = source.NegKeyWrods;
+
+            return childIntance;
+        }
+
 
         [Category(FilterCatName), DisplayName("Search Text:")]
         public string KeyWords { get; set; } = "";
@@ -22,7 +34,6 @@ namespace StoreScraper.Models
 
         [Category(FilterCatName), DisplayName("Min. Price")]
         public double MinPrice { get; set; } = 0;
-
 
         public override string ToString()
         {

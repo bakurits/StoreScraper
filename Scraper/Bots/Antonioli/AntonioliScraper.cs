@@ -18,7 +18,7 @@ namespace StoreScraper.Bots.Antonioli
         public override string WebsiteBaseUrl { get; set; } = "https://www.antonioli.eu";
         public override bool Active { get; set; }
 
-        public override Type SearchSettings { get; set; } = typeof(AntonioliSearchSettings);
+        public override Type SearchSettingsType { get; set; } = typeof(AntonioliSearchSettings);
 
 
         private readonly string _searchformat = @"https://www.antonioli.eu/en/search?utf8=✓&q={0}&gender={1}";
