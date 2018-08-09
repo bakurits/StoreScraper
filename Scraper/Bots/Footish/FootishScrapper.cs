@@ -7,8 +7,6 @@ using StoreScraper.Core;
 using StoreScraper.Models;
 using System.Text.RegularExpressions;
 using System;
-using Newtonsoft.Json;
-
 
 namespace StoreScraper.Bots.Footish
 {
@@ -25,6 +23,7 @@ namespace StoreScraper.Bots.Footish
         {
             listOfProducts = new List<Product>();
 
+            fetchApi(settings, token);
 
 
 
@@ -44,9 +43,11 @@ namespace StoreScraper.Bots.Footish
         private void fetchApi(SearchSettingsBase settings, CancellationToken token)
         {
 
-            string restApiUrl = "https://www.footish.se/Services/Rest/v2/json/en-GB/EUR/search/full/nike/42/2";
-            var document = GetWebpage(restApiUrl, token);
+            string restApiUrl = "https://www.footish.se/Services/Rest/v2/json/en-GB/EUR/search/full/nike%20air/400/1";
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
 
+            var response = Utils.GetParsedJson(client, restApiUrl, token);
+            Console.WriteLine(response["TotalProducts"]);
 
         }
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
