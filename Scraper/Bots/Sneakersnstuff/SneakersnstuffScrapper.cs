@@ -119,6 +119,13 @@ namespace StoreScraper.Bots.Sneakersnstuff
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             double price = GetPrice(item);
+
+            if (!(price >= settings.MinPrice && price <= settings.MaxPrice) && (settings.MinPrice != 0 && settings.MaxPrice != 0))
+            {
+                return;
+            }
+
+
             string imageUrl = GetImageUrl(item);
             var product = new Product(this, name, url, price, imageUrl, url, "USD");
             if (Utils.SatisfiesCriteria(product, settings))
