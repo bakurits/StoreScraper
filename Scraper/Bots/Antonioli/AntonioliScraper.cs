@@ -55,7 +55,6 @@ namespace StoreScraper.Bots.Antonioli
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
-            product.Name = "";
             var page = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
             HtmlNodeCollection collection = page.SelectNodes("//div[@id = 'product-variants']/div/label");
