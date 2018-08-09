@@ -1,25 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
-using System.Linq;
 using HtmlAgilityPack;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
-using StoreScraper.Core;
 using StoreScraper.Models;
+using StoreScraper.Core;
 using System.Text.RegularExpressions;
 using System;
 
-namespace StoreScraper.Bots.Consortium
+namespace StoreScraper.Bots.Basketrevolution
 {
-    public class ConsortiumScraper : ScraperBase
+    public class BasketrevolutionScraper : ScraperBase
     {
-        public override string WebsiteName { get; set; } = "Consortium";
-        public override string WebsiteBaseUrl { get; set; } = "http://www.consortium.co.uk";
+        public override string WebsiteName { get; set; } = "Basketrevolution";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.basketrevolution.es";
         public override bool Active { get; set; }
 
-        private const string SearchFormat = @"https://www.consortium.co.uk/latest";
-        private const string priceRegex = "£(\\d+.\\d+)";
-        private const string sizesRegex = "\"label\":\"([^\\{]*?)\",\"products\":\\[(\\d+)\\]";
+        private const string SearchFormat = @"https://www.basketrevolution.es/catalogsearch/result/index/?dir=asc&limit=all&order=created_at&q={0}";
+        private const string sizesRegex = "label\":\"([^\\{]*?)\",\"price\":\"0\",\"oldPrice\":\"0\",\"products\":\\[\"(\\d+)\"\\]";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
@@ -60,7 +58,7 @@ namespace StoreScraper.Bots.Consortium
             while (match.Success)
             {
                 var sz = match.Groups[1].Value;
-                if (!details.SizesList.Exists(szInfo => szInfo.Key == sz) && sz.Length > 0)
+                if (!details.SizesList.Exists(size => size.Key == sz) && sz.Length > 0 && !(sz.Contains("{")))
                 {
                     details.AddSize(sz, "Unknown");
                 }
@@ -71,16 +69,16 @@ namespace StoreScraper.Bots.Consortium
 
         private HtmlNode GetWebpage(string url, CancellationToken token)
         {
-            var client = ClientFactory.GetProxiedFirefoxClient();
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = client.GetDoc(url, token).DocumentNode;
             return client.GetDoc(url, token).DocumentNode;
         }
 
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
-            string url = SearchFormat;
+            string url = string.Format(SearchFormat, settings.KeyWords);
             var document = GetWebpage(url, token);
-            return document.SelectNodes("//li[@class='item text-center']");
+            return document.SelectNodes("//div[@class='item-box']");
         }
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
@@ -89,40 +87,32 @@ namespace StoreScraper.Bots.Consortium
             string url = GetUrl(item);
             double price = GetPrice(item);
             string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "GBP");
+            var product = new Product(this, name, url, price, imageUrl, url, "EUR");
             if (Utils.SatisfiesCriteria(product, settings))
             {
-                var keyWordSplit = settings.KeyWords.Split(' ');
-                if (keyWordSplit.All(keyWord => product.Name.ToLower().Contains(keyWord.ToLower())))
-                    listOfProducts.Add(product);
+                listOfProducts.Add(product);
             }
         }
 
         private string GetName(HtmlNode item)
         {
-            return item.SelectSingleNode("./img").GetAttributeValue("alt", null);
+            return item.SelectSingleNode("./div[@class='product-image']/a").GetAttributeValue("title", null);
         }
 
         private string GetUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./img").GetAttributeValue("onclick", null).Split('=')[1].Replace("'", "");
+            return item.SelectSingleNode("./div[@class='product-image']/a").GetAttributeValue("href", null);
         }
 
         private double GetPrice(HtmlNode item)
         {
-            Match match = Regex.Match(item.InnerHtml, priceRegex);
-            double price = -1;
-            while (match.Success)
-            {
-                price = Convert.ToDouble(match.Groups[1].Value);
-                match = match.NextMatch();
-            }
-            return price;
+            var priceNode = item.SelectSingleNode(".//span[@class='price']");
+            return Convert.ToDouble(Regex.Match(priceNode.InnerText, "(\\d+(,\\d+)?)").Groups[1].Value.Replace(",", "."));
         }
 
         private string GetImageUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./img").GetAttributeValue("src", null);
+            return item.SelectSingleNode("./div[@class='product-image']/a/img").GetAttributeValue("src", null);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace StoreScraper.Bots.Overkill
 
         private const string SearchFormat = @"https://www.overkillshop.com/en/new-products.html?limit=150";
         private const string priceRegex = "\\€(\\d+(\\.\\d+)?)";
-        private const string sizesRegex = "label\":\"(.*?)\",\"price\":\"0\",\"oldPrice\":\"0\",\"products\":\\[\"(\\d+)\"\\]";
+        private const string sizesRegex = "label\":\"([^\\{]*?)\",\"price\":\"0\",\"oldPrice\":\"0\",\"products\":\\[\"(\\d+)\"\\]";
         // "label":"36","price":"0","oldPrice":"0","products"
 
 
@@ -69,7 +69,7 @@ namespace StoreScraper.Bots.Overkill
                 }
                 match = match.NextMatch();
             }
-            return details; ;
+            return details;
         }
 
         private HtmlNode GetWebpage(string url, CancellationToken token)
