@@ -1,45 +1,46 @@
+﻿using System;
 using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StoreScraper.Bots.JimmyJazz;
 using ScraperTest.Helpers;
+using StoreScraper.Bots.Sneakersnstuff;
 using StoreScraper.Models;
 
 namespace ScraperTest.Tests
 {
     [TestClass]
-    public class JimmyJazz
+    public class SneakersnstuffTest
     {
-        [TestMethod]
+        [TestMethod()]
         public void FindItemsTest()
         {
-            JimmyJazzScraper scraper = new JimmyJazzScraper();
-            SearchSettingsBase settings = new SearchSettingsBase()
-            {
-                KeyWords = "puma"
-            };
+            SneakersnstuffScrapper scraper = new SneakersnstuffScrapper();
+            SearchSettingsBase settings = new SearchSettingsBase();
+            settings.KeyWords = "nike";
+
 
             scraper.FindItems(out var lst, settings, CancellationToken.None);
+            Helpers.Helper.PrintFindItemsResults(lst);
+
         }
 
         [TestMethod()]
         public void GetProductDetailsTest()
         {
-            Product curProduct = new Product(new JimmyJazzScraper(), "Unknown",
-                "http://www.jimmyjazz.com/mens/footwear/nike-nike-flyknit-trainer/AH8396-102?color=White",
+        /*    Product curProduct = new Product(new SneakersnstuffScrapper(), "Unknown",
+                "https://www.sneakersnstuff.com/en/product/30856/nike-air-safari-se",
                 420,
-                "https://44a54cd7e43cae68d339-79fdfac25b5b7a089d2cf87c8db56622.ssl.cf2.rackcdn.com/AH8396-102/AH8396-102_white_1000_1.jpg",
+                "https://www.sneakersnstuff.com/images/205337/large.jpg",
                 "id");
 
 
-            JimmyJazzScraper scraper = new JimmyJazzScraper();
+            SneakersnstuffScrapper scraper = new SneakersnstuffScrapper();
 
             ProductDetails details = scraper.GetProductDetails(curProduct, CancellationToken.None);
 
             Helper.PrintGetDetailsResult(details.SizesList);
             Debug.WriteLine(curProduct.Name);
-
+*/
         }
-
     }
 }

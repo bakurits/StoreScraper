@@ -83,11 +83,13 @@
     <Compile Include="Tests\BSTNTest.cs" />
     <Compile Include="Tests\DtlrTest.cs" />
     <Compile Include="Tests\ExcelsiormilanoTest.cs" />
+    <Compile Include="Tests\FootishTest.cs" />
     <Compile Include="Tests\GoodHoodStoreTest.cs" />
     <Compile Include="Tests\JimmyJazzTest.cs" />
     <Compile Include="Tests\NordStromScraperTest.cs" />
     <Compile Include="Tests\NtrstoreTest.cs" />
     <Compile Include="Tests\Sneakers76Test.cs" />
+    <Compile Include="Tests\SneakersnstuffTest.cs" />
     <Compile Include="Tests\TitoloScraperTests.cs" />
     <Compile Include="MinorTests\LoggerTest.cs" />
     <Compile Include="Tests\ShelflifeScraperTests.cs" />
@@ -113,6 +115,7 @@
     <Compile Include="Tests\ChmielnaScraperTests.cs" />
     <Compile Include="Tests\ShoezgalleryScraperTests.cs" />
     <Compile Include="Tests\ShinzoTest.cs" />
+    <Compile Include="Tests\UebervartShopTest.cs" />
     <Compile Include="Tests\UptherestoreScraperTests.cs" />
     <Compile Include="Tests\WoodwoodScraperTests.cs" />
     <Compile Include="Tests\YcmcScraperTests.cs" />
