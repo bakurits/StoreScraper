@@ -123,6 +123,7 @@
     <Compile Include="Bots\Antonioli\AntonioliSearchSettings.cs" />
     <Compile Include="Bots\Asphaltgold\AsphaltgoldScraper.cs" />
     <Compile Include="Bots\Asphaltgold\AsphaltgoldSearchSettings.cs" />
+    <Compile Include="Bots\Baitme\BaitmeScraper.cs" />
     <Compile Include="Bots\Basketrevolution\BasketrevolutionScraper.cs" />
     <Compile Include="Bots\BSTN\BSTNScraper.cs" />
     <Compile Include="Bots\ChampsSports_FootLocker_EastBay_FootAction\FootStoreBase.cs" />
@@ -142,6 +143,7 @@
     <Compile Include="Bots\Okini\OkiniScraper.cs" />
     <Compile Include="Bots\Overkill\OverkillScraper.cs" />
     <Compile Include="Bots\Shelflife\ShelflifeScraper.cs" />
+    <Compile Include="Bots\Shinzo\ShinzoScrapper.cs" />
     <Compile Include="Bots\ShopNordstrom\ShopNordstromScrapper.cs" />
     <Compile Include="Bots\Sneakers76\Sneakers76Scrapper.cs" />
     <Compile Include="Bots\Sneakersnstuff\SneakersnstuffScrapper.cs" />
