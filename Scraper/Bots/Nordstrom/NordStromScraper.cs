@@ -89,7 +89,9 @@ namespace StoreScraper.Bots.Nordstrom
 
         private string getProductUrl(HtmlNode child)
         {
-            return new Uri(new Uri(this.WebsiteBaseUrl), child.SelectSingleNode(".//a[contains(@class,link_22Nhi)]").GetAttributeValue("href", null)).ToString();
+            string url = child.SelectSingleNode(".//a[contains(@class,link_22Nhi)]").GetAttributeValue("href", null);
+            url = this.WebsiteBaseUrl + url;
+            return url;
         }
 
         private string getProductName(HtmlNode child)
@@ -125,14 +127,7 @@ namespace StoreScraper.Bots.Nordstrom
             int startIndx = document.InnerHtml.IndexOf("\"size\"" + ":[", StringComparison.Ordinal);
             if (startIndx == -1) return null;
             int endIndx = -1;
-            for (int k = startIndx; k < innerHtml.Length; ++k)
-            {
-                if (innerHtml[k] == ']')
-                {
-                    endIndx = k;
-                    break;;
-                }
-            }
+            endIndx = innerHtml.IndexOf("]", startIndx, StringComparison.Ordinal);
             if (endIndx == -1)
                 return null;
 

@@ -28,7 +28,7 @@ namespace ScraperTest.Tests
         {
             var product = new Product()
             {
-                Url = "https://shop.nordstrom.com/s/j-crew-cameron-seasonless-stretch-pants-regular-petite/4882060?origin=keywordsearch-personalizedsort&color=navy",
+                Url = "https://shop.nordstrom.com/s/good-hyouman-lexi-new-day-tee/4983229?origin=keywordsearch-personalize...",
                 ScrapedBy = Scraper
             };
 
