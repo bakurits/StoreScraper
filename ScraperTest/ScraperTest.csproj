@@ -104,6 +104,7 @@
     <Compile Include="Tests\EinhalbScraperTest.cs" />
     <Compile Include="Tests\BasketrevolutionTests.cs" />
     <Compile Include="Tests\NighShopTests.cs" />
+    <Compile Include="Tests\UptherestoreScraperTests.cs" />
     <Compile Include="Tests\WoodwoodScraperTests.cs" />
     <Compile Include="Tests\YcmcScraperTests.cs" />
     <Compile Include="Tests\Urbanjunglestoretest.cs" />

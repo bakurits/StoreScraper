@@ -141,8 +141,10 @@
     <Compile Include="Bots\Overkill\OverkillScraper.cs" />
     <Compile Include="Bots\Shelflife\ShelflifeScraper.cs" />
     <Compile Include="Bots\Sneakers76\Sneakers76Scrapper.cs" />
+    <Compile Include="Bots\Sneakersnstuff\SneakersnstuffScrapper.cs" />
     <Compile Include="Bots\Solebox\SoleboxScraper.cs" />
     <Compile Include="Bots\TitoloShop\TitoloScraper.cs" />
+    <Compile Include="Bots\Uptherestore\UptherestoreScraper.cs" />
     <Compile Include="Bots\Urbanjunglestore\Urbanjunglestorescraper.cs" />
     <Compile Include="Bots\Woodwood\WoodwoodScraper.cs" />
     <Compile Include="Bots\Woodwood\WoodwoodSearchSettings.cs" />
