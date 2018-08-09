@@ -152,6 +152,7 @@
     <Compile Include="Bots\Solebox\SoleboxScraper.cs" />
     <Compile Include="Bots\TitoloShop\TitoloScraper.cs" />
     <Compile Include="Bots\Triads\TriadsScrapper.cs" />
+    <Compile Include="Bots\UebervartShop\UebervartShopScrapper.cs" />
     <Compile Include="Bots\Uptherestore\UptherestoreScraper.cs" />
     <Compile Include="Bots\Urbanjunglestore\Urbanjunglestorescraper.cs" />
     <Compile Include="Bots\Woodwood\WoodwoodScraper.cs" />
