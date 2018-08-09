@@ -54,7 +54,7 @@ namespace StoreScraper.Bots.Triads
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            /*var sizeCollection = document.SelectNodes("//header[.='Size guide']/../div/table/tbody/tr/td[1][@width='25%']");
+            var sizeCollection = document.SelectNodes("//select[@class='attributes-select']/option[.='Choose a UK Size']/../option");
 
             foreach (var size in sizeCollection)
             {
@@ -65,7 +65,7 @@ namespace StoreScraper.Bots.Triads
                 }
 
             }
-            */
+            
             return details;
         }
 
@@ -79,18 +79,18 @@ namespace StoreScraper.Bots.Triads
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/c/mens-shoes-whats-new?breadcrumb=Home%2FMen%2FNew%20Arrivals%2FShoes";
+            string url = WebsiteBaseUrl + "/new-products/triads-mens-c1/footwear-c24";
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;
 
-            return document.SelectNodes("//article[contains(@class,'npr-product-module')]");
+            return document.SelectNodes("//div[contains(@class,'product product--')]");
 
         }
 
         private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
         {
-            string title = item.SelectSingleNode("./h3/a/span/span").InnerHtml.ToLower();
+            string title = item.SelectSingleNode("./div/a").GetAttributeValue("title","").ToLower();
             var validKeywords = settings.KeyWords.ToLower().Split(' ');
             var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
             foreach (var keyword in validKeywords)
@@ -115,7 +115,7 @@ namespace StoreScraper.Bots.Triads
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
-            if (!CheckForValidProduct(item, settings)) return;
+            //if (!CheckForValidProduct(item, settings)) return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             double price = GetPrice(item);
@@ -137,24 +137,24 @@ namespace StoreScraper.Bots.Triads
             //Console.WriteLine("GetName");
             //Console.WriteLine(item.SelectSingleNode("./a").GetAttributeValue("title", ""));
 
-            return item.SelectSingleNode("./h3/a/span/span").InnerHtml;
+            return item.SelectSingleNode("./div/a").GetAttributeValue("title", "");
         }
 
         private string GetUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./h3/a").GetAttributeValue("href", null);
+            return WebsiteBaseUrl + item.SelectSingleNode("./div/a").GetAttributeValue("href", null);
         }
 
         private double GetPrice(HtmlNode item)
         {
-            string priceDiv = item.SelectSingleNode("./div/div/span[2]").InnerHtml.Replace("$", "").Replace(",", ".");
+            string priceDiv = item.SelectSingleNode("./div[3]/div/div/span/span/span/span").InnerHtml.Replace("$", "").Replace("£", "").Replace(",", ".");
 
             return double.Parse(priceDiv);
         }
 
         private string GetImageUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./div/img").GetAttributeValue("src", null);
+            return item.SelectSingleNode("./div[2]/a/img").GetAttributeValue("src", null);
         }
     }
 }
