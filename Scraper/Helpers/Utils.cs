@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net;
@@ -106,11 +107,12 @@ namespace StoreScraper.Helpers
             }
         }
         
-        public static HtmlDocument PostDoc(this HttpClient client, string url, CancellationToken token, string postParams)
+        public static HtmlDocument PostDoc(this HttpClient client, string url, CancellationToken token, FormUrlEncodedContent postParams)
         {
+            
             try
             {
-                using (var response = client.PostAsync(url, new StringContent(postParams), token).Result)
+                using (var response = client.PostAsync(url, postParams, token).Result)
                 {
                     var result = response.Content.ReadAsStringAsync().Result;
                     var doc = new HtmlDocument();
