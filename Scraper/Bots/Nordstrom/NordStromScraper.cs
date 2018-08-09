@@ -29,6 +29,7 @@ namespace StoreScraper.Bots.Nordstrom
                 $"https://shop.nordstrom.com/sr?origin=keywordsearch&keyword={settings.KeyWords}&top=72&offset=0&page=1&sort=Newest";
             var request = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = request.GetDoc(searchUrl, token);
+            Logger.Instance.WriteErrorLog("Unexpected html!");
             var nodes = document.DocumentNode.SelectSingleNode("//div[contains(@class, 'resultSet_5ymz9')]/div");
             if (nodes == null)
             {
@@ -126,14 +127,7 @@ namespace StoreScraper.Bots.Nordstrom
             int startIndx = document.InnerHtml.IndexOf("\"size\"" + ":[", StringComparison.Ordinal);
             if (startIndx == -1) return null;
             int endIndx = -1;
-            for (int k = startIndx; k < innerHtml.Length; ++k)
-            {
-                if (innerHtml[k] == ']')
-                {
-                    endIndx = k;
-                    break;;
-                }
-            }
+            endIndx = innerHtml.IndexOf("]", startIndx, StringComparison.Ordinal);
             if (endIndx == -1)
                 return null;
 
