@@ -78,17 +78,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Minortests\SlackWebHookTests.cs" />
+    <Compile Include="MinorTests\UtilsTests.cs" />
+    <Compile Include="MinorTests\SlackWebHookTests.cs" />
     <Compile Include="Tests\BSTNTest.cs" />
     <Compile Include="Tests\GoodHoodStoreTest.cs" />
     <Compile Include="Tests\JimmyJazzTest.cs" />
     <Compile Include="Tests\NordStromScraperTest.cs" />
     <Compile Include="Tests\TitoloScraperTests.cs" />
-    <Compile Include="Minortests\LoggerTest.cs" />
+    <Compile Include="MinorTests\LoggerTest.cs" />
     <Compile Include="Tests\ShelflifeScraperTests.cs" />
     <Compile Include="Helpers\Helper.cs" />
     <Compile Include="Tests\FootScraperTest.cs" />
-    <Compile Include="Minortests\DiscordWebhookTests.cs" />
+    <Compile Include="MinorTests\DiscordWebhookTests.cs" />
     <Compile Include="Models\LoggerTests.cs" />
     <Compile Include="Tests\MrporterTest.cs" />
     <Compile Include="Tests\NakedcphTest.cs" />
@@ -115,9 +116,6 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <None Include="Tests\GenericTest1.GenericTest">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Scraper\Scraper.csproj">
