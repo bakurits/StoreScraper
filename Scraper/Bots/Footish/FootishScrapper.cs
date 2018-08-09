@@ -7,6 +7,7 @@ using StoreScraper.Core;
 using StoreScraper.Models;
 using System.Text.RegularExpressions;
 using System;
+using Newtonsoft.Json;
 
 
 namespace StoreScraper.Bots.Footish
@@ -23,7 +24,11 @@ namespace StoreScraper.Bots.Footish
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
+
+
+
+
+            /*HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
             foreach (var item in itemCollection)
             {
                 token.ThrowIfCancellationRequested();
@@ -32,10 +37,18 @@ namespace StoreScraper.Bots.Footish
 #else
                 LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
 #endif
-            }
+            }*/
 
         }
 
+        private void fetchApi(SearchSettingsBase settings, CancellationToken token)
+        {
+
+            string restApiUrl = "https://www.footish.se/Services/Rest/v2/json/en-GB/EUR/search/full/nike/42/2";
+            var document = GetWebpage(restApiUrl, token);
+
+
+        }
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
