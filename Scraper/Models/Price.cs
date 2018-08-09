@@ -16,5 +16,10 @@ namespace StoreScraper.Models
             Value = value;
             Currency = currency;
         }
+
+        public override string ToString()
+        {
+            return $"Value={Value}  Currecy={Currency}";
+        }
     }
 }
