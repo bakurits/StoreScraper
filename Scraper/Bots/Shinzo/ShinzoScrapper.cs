@@ -12,7 +12,7 @@ namespace StoreScraper.Bots.Shinzo
 {
     public class ShinzoScrapper : ScraperBase
     {
-        public override string WebsiteName { get; set; } = "DTLR";
+        public override string WebsiteName { get; set; } = "Shinzo";
         public override string WebsiteBaseUrl { get; set; } = "http://www.shinzo.paris";
         public override bool Active { get; set; }
 
@@ -53,7 +53,7 @@ namespace StoreScraper.Bots.Shinzo
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//div[@class='sizeBox']/ul/li");
+            var sizeCollection = document.SelectNodes("//div[@class='attribute_list']/ul/li/label");
 
             foreach (var size in sizeCollection)
             {
@@ -78,18 +78,18 @@ namespace StoreScraper.Bots.Shinzo
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/men/footwear/new.html";
+            string url = WebsiteBaseUrl + "/en/63-new-releases";
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;
 
-            return document.SelectNodes("//li[@class='notmobile item last']");
+            return document.SelectNodes("//div[@class='product-inner']");
 
         }
 
         private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
         {
-            string title = item.SelectSingleNode("./div/p[@class='product-name']").InnerText.ToLower();
+            string title = item.SelectSingleNode("./div[@class='product-info']/h3/a").InnerText.ToLower();
             var validKeywords = settings.KeyWords.ToLower().Split(' ');
             var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
             foreach (var keyword in validKeywords)
@@ -114,19 +114,19 @@ namespace StoreScraper.Bots.Shinzo
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
-            if (!CheckForValidProduct(item, settings)) return;
+            //if (!CheckForValidProduct(item, settings)) return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             double price = GetPrice(item);
 
-            if (!(price >= settings.MinPrice && price <= settings.MaxPrice) && (settings.MaxPrice != 0 && settings.MinPrice != 0))
+            /*if (!(price >= settings.MinPrice && price <= settings.MaxPrice) && (settings.MaxPrice != 0 && settings.MinPrice != 0))
             {
                 return;
-            }
+            }*/
 
 
             string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "USD");
+            var product = new Product(this, name, url, price, imageUrl, url, "EUR");
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
@@ -143,20 +143,20 @@ namespace StoreScraper.Bots.Shinzo
             //Console.WriteLine("GetName");
             //Console.WriteLine(item.SelectSingleNode("./a").GetAttributeValue("title", ""));
 
-            return item.SelectSingleNode("./div/p[@class='product-name']").InnerText;
+            return item.SelectSingleNode("./div[@class='product-info']/h3/a").InnerText;
         }
 
         private string GetUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./a").GetAttributeValue("href", null);
+            return item.SelectSingleNode("./div[@class='product-info']/h3/a").GetAttributeValue("href", null);
         }
 
         private double GetPrice(HtmlNode item)
         {
-            var node = item.SelectSingleNode("./div/div[@class='price-box']/span/span");
+            var node = item.SelectSingleNode("./div[@class='product-info']/div[@class='content_price']/a/span");
             if (node != null)
             {
-                string priceDiv = item.SelectSingleNode("./div/div[@class='price-box']/span/span").InnerHtml.Replace("€", "").Replace("&euro;", "").Replace("$", "");
+                string priceDiv = item.SelectSingleNode("./div[@class='product-info']/div[@class='content_price']/a/span").InnerHtml.Replace("€", "").Replace("&euro;", "").Replace("$", "").Replace(",",".");
 
                 return double.Parse(priceDiv);
             }
@@ -168,7 +168,7 @@ namespace StoreScraper.Bots.Shinzo
 
         private string GetImageUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./a/img").GetAttributeValue("src", null);
+            return item.SelectSingleNode("./div[@class='product-thumb']/div/a/img").GetAttributeValue("src", null);
         }
     }
 }
