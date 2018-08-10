@@ -158,7 +158,7 @@
     <Compile Include="Bots\Mstanojevic\Snkrs\SnkrsScrapper.cs" />
     <Compile Include="Bots\Higuhigu\Solebox\SoleboxScraper.cs" />
     <Compile Include="Bots\GiorgiBaghdavadze\TitoloShop\TitoloScraper.cs" />
-    <Compile Include="Bots\Higuhigu\Triads\TriadsScrapper.cs" />
+    <Compile Include="Bots\Mstanojevic\Triads\TriadsScrapper.cs" />
     <Compile Include="Bots\Mstanojevic\UebervartShop\UebervartShopScrapper.cs" />
     <Compile Include="Bots\Higuhigu\Uptherestore\UptherestoreScraper.cs" />
     <Compile Include="Bots\Higuhigu\Urbanjunglestore\Urbanjunglestorescraper.cs" />
