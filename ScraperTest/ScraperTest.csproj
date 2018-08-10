@@ -80,44 +80,47 @@
   <ItemGroup>
     <Compile Include="MinorTests\UtilsTests.cs" />
     <Compile Include="MinorTests\SlackWebHookTests.cs" />
-    <Compile Include="Tests\290sqmTest.cs" />
-    <Compile Include="Tests\BSTNTest.cs" />
-    <Compile Include="Tests\DtlrTest.cs" />
-    <Compile Include="Tests\ExcelsiormilanoTest.cs" />
-    <Compile Include="Tests\GoodHoodStoreTest.cs" />
-    <Compile Include="Tests\JimmyJazzTest.cs" />
-    <Compile Include="Tests\NordStromScraperTest.cs" />
-    <Compile Include="Tests\NtrstoreTest.cs" />
-    <Compile Include="Tests\Sneakers76Test.cs" />
-    <Compile Include="Tests\TitoloScraperTests.cs" />
+    <Compile Include="ScraperTests\Stycky_bit\BSTNTest.cs" />
+    <Compile Include="ScraperTests\Mstanojevic\DtlrTest.cs" />
+    <Compile Include="ScraperTests\Mstanojevic\ExcelsiormilanoTest.cs" />
+    <Compile Include="ScraperTests\Mstanojevic\GoodHoodStoreTest.cs" />
+    <Compile Include="ScraperTests\Mstanojevic\JimmyJazzTest.cs" />
+    <Compile Include="ScraperTests\GiorgiBaghdavadze\NordStromScraperTest.cs" />
+    <Compile Include="ScraperTests\Mstanojevic\NtrstoreTest.cs" />
+    <Compile Include="ScraperTests\Mstanojevic\Sneakers76Test.cs" />
+    <Compile Include="ScraperTests\GiorgiBaghdavadze\TitoloScraperTests.cs" />
     <Compile Include="MinorTests\LoggerTest.cs" />
-    <Compile Include="Tests\ShelflifeScraperTests.cs" />
+    <Compile Include="ScraperTests\Bakurits\ShelflifeScraperTests.cs" />
     <Compile Include="Helpers\Helper.cs" />
-    <Compile Include="Tests\FootScraperTest.cs" />
+    <Compile Include="ScraperTests\Stycky_bit\FootScraperTest.cs" />
     <Compile Include="MinorTests\DiscordWebhookTests.cs" />
     <Compile Include="Models\LoggerTests.cs" />
-    <Compile Include="Tests\MrporterTest.cs" />
-    <Compile Include="Tests\NakedcphTest.cs" />
-    <Compile Include="Tests\OffwhiteTest.cs" />
+    <Compile Include="ScraperTests\Bakurits\MrporterTest.cs" />
+    <Compile Include="ScraperTests\GiorgiChkhikvadze\NakedcphTest.cs" />
+    <Compile Include="ScraperTests\GiorgiChkhikvadze\OffwhiteTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tests\SoleboxTest.cs" />
-    <Compile Include="Tests\EndclothingTest.cs" />
-    <Compile Include="Tests\ConsortiumScraperTests.cs" />
-    <Compile Include="Tests\AntonioliScraperTest.cs" />
-    <Compile Include="Tests\AsphaltgoldTests.cs" />
-    <Compile Include="Tests\OverkillScraperTests.cs" />
-    <Compile Include="Tests\OkiniTests.cs" />
-    <Compile Include="Tests\EinhalbScraperTest.cs" />
-    <Compile Include="Tests\BasketrevolutionTests.cs" />
-    <Compile Include="Tests\NighShopTests.cs" />
-    <Compile Include="Tests\BaitmeScraperTest.cs" />
-    <Compile Include="Tests\ChmielnaScraperTests.cs" />
-    <Compile Include="Tests\ShoezgalleryScraperTests.cs" />
-    <Compile Include="Tests\ShinzoTest.cs" />
-    <Compile Include="Tests\UptherestoreScraperTests.cs" />
-    <Compile Include="Tests\WoodwoodScraperTests.cs" />
-    <Compile Include="Tests\YcmcScraperTests.cs" />
-    <Compile Include="Tests\Urbanjunglestoretest.cs" />
+    <Compile Include="ScraperTests\Higuhigu\SoleboxTest.cs" />
+    <Compile Include="ScraperTests\Higuhigu\EndclothingTest.cs" />
+    <Compile Include="ScraperTests\Higuhigu\ConsortiumScraperTests.cs" />
+    <Compile Include="ScraperTests\Bakurits\AntonioliScraperTest.cs" />
+    <Compile Include="ScraperTests\Higuhigu\AsphaltgoldTests.cs" />
+    <Compile Include="ScraperTests\Higuhigu\OverkillScraperTests.cs" />
+    <Compile Include="ScraperTests\Higuhigu\OkiniTests.cs" />
+    <Compile Include="ScraperTests\Higuhigu\EinhalbScraperTest.cs" />
+    <Compile Include="ScraperTests\Higuhigu\BasketrevolutionTests.cs" />
+    <Compile Include="ScraperTests\Higuhigu\NighShopTests.cs" />
+    <Compile Include="ScraperTests\Bakurits\BaitmeScraperTest.cs" />
+    <Compile Include="ScraperTests\Higuhigu\ChmielnaScraperTests.cs" />
+    <Compile Include="ScraperTests\Higuhigu\ShoezgalleryScraperTests.cs" />
+    <Compile Include="ScraperTests\Mstanojevic\ShinzoTest.cs" />
+    <Compile Include="ScraperTests\Higuhigu\UptherestoreScraperTests.cs" />
+    <Compile Include="ScraperTests\Higuhigu\WoodwoodScraperTests.cs" />
+    <Compile Include="ScraperTests\Higuhigu\YcmcScraperTests.cs" />
+    <Compile Include="ScraperTests\Higuhigu\Urbanjunglestoretest.cs" />
+    <Compile Include="ScraperTests\Mstanojevic\CruvoirTest.cs" />
+    <Compile Include="ScraperTests\Mstanojevic\FootishTest.cs" />
+    <Compile Include="ScraperTests\Mstanojevic\SneakersnstuffTest.cs" />
+    <Compile Include="ScraperTests\Mstanojevic\UebervartShopTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -128,6 +131,9 @@
       <Project>{102caa56-c642-4afe-a235-3b8e614e6c32}</Project>
       <Name>Scraper</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ScraperTests\Jordan\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
