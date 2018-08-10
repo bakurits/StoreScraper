@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using StoreScraper.Models;
 
 namespace StoreScraper
@@ -46,6 +48,19 @@ namespace StoreScraper
         /// <returns>List of sizes</returns>
         public abstract ProductDetails GetProductDetails(Product product, CancellationToken token);
 
+        public void ScrapeItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
+        {
+            List<Product> products = new List<Product>();
+            listOfProducts = products;
+            settings.KeyWords.Split(',').AsParallel().ForAll(k =>
+            {
+                k = k.Trim();
+                var s = (SearchSettingsBase)settings.Clone();
+                s.KeyWords = k;
+                FindItems(out var list, s, token);
+                products.AddRange(list);
+            });
+        }
 
         public virtual void Initialize()
         {
