@@ -132,10 +132,10 @@ namespace StoreScraper.Bots.Sticky_bit.BSTN
             listOfProducts.Add(product);
         }
 
-        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var client = ClientFactory.GetProxiedFirefoxClient();
-            var node = client.GetDoc(product.Url, token)
+            var node = client.GetDoc(productUrl, token)
                 .DocumentNode;
             HtmlNodeCollection sizes = node.SelectNodes("//*[@class=\"product_sizes\"]//*[@class=\"button\"]");
             ProductDetails details = new ProductDetails();

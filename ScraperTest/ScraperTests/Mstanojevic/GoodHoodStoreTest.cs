@@ -35,7 +35,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
 
             GoodHoodStoreScrapper scraper = new GoodHoodStoreScrapper();
 
-            ProductDetails details = scraper.GetProductDetails(curProduct, CancellationToken.None);
+            ProductDetails details = scraper.GetProductDetails(curProduct.Url, CancellationToken.None);
 
             Helper.PrintGetDetailsResult(details.SizesList);
             Debug.WriteLine(curProduct.Name);

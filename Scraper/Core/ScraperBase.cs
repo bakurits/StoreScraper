@@ -46,8 +46,15 @@ namespace StoreScraper
         /// <param name="product"></param>
         /// <param name="token"></param>
         /// <returns>List of sizes</returns>
-        public abstract ProductDetails GetProductDetails(Product product, CancellationToken token);
+        public abstract ProductDetails GetProductDetails(string productUrl, CancellationToken token);
 
+
+        /// <summary>
+        /// Wrapper for FinItems Methods. It does some search settings refractoring before executing FindItems
+        /// </summary>
+        /// <param name="listOfProducts"></param>
+        /// <param name="settings"></param>
+        /// <param name="token"></param>
         public void ScrapeItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             List<Product> products = new List<Product>();

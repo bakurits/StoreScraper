@@ -34,7 +34,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
 
             Sneakers76Scrapper scraper = new Sneakers76Scrapper();
 
-            ProductDetails details = scraper.GetProductDetails(curProduct, CancellationToken.None);
+            ProductDetails details = scraper.GetProductDetails(curProduct.Url, CancellationToken.None);
 
             Helper.PrintGetDetailsResult(details.SizesList);
             Debug.WriteLine(curProduct.Name);

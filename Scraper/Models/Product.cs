@@ -54,7 +54,7 @@ namespace StoreScraper.Models
 
         public virtual ProductDetails GetDetails(CancellationToken token)
         {
-           return this.ScrapedBy.GetProductDetails(this, token);
+           return this.ScrapedBy.GetProductDetails(this.Url, token);
         }
 
         public override bool Equals(object obj)

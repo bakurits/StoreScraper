@@ -35,7 +35,7 @@ namespace ScraperTest.ScraperTests.Bakurits
 
             MrporterScraper scraper = new MrporterScraper();
 
-            Helper.PrintGetDetailsResult(scraper.GetProductDetails(curProduct, CancellationToken.None).SizesList);
+            Helper.PrintGetDetailsResult(scraper.GetProductDetails(curProduct.Url, CancellationToken.None).SizesList);
         }
 
         [TestMethod]
@@ -50,7 +50,7 @@ namespace ScraperTest.ScraperTests.Bakurits
 
             MrporterScraper scraper = new MrporterScraper();
 
-            Helper.PrintGetDetailsResult(scraper.GetProductDetails(curProduct, CancellationToken.None).SizesList);
+            Helper.PrintGetDetailsResult(scraper.GetProductDetails(curProduct.Url, CancellationToken.None).SizesList);
         }
     }
 }

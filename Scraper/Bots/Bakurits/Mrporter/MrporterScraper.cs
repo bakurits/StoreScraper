@@ -54,10 +54,10 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
             Worker(listOfProducts, settings, node, token);
         }
 
-        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var result = new ProductDetails();
-            var doc = GetPage(product.Url, token);
+            var doc = GetPage(productUrl, token);
             var node = doc.SelectSingleNode("//select[contains(@class, 'select-option-style')]");
 
             var sizeCaster = "";

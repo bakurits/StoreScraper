@@ -25,7 +25,7 @@ namespace ScraperTest.ScraperTests.GiorgiChkhikvadze
         public void TestGetDetails()
         {
             var testProduct = new Product(){Id = "/en/GE/men/products/omca072e188200111001.json" };
-            var details = new OffWhiteScraper().GetProductDetails(testProduct,CancellationToken.None);
+            var details = new OffWhiteScraper().GetProductDetails(testProduct.Url, CancellationToken.None);
 
             Console.WriteLine(string.Join(" ",details.SizesList));
         }
@@ -35,7 +35,7 @@ namespace ScraperTest.ScraperTests.GiorgiChkhikvadze
         {
             var testProduct = new Product() { Id = "/en/GE/men/products/omca072e188200111001.json" };
             var scraper = new OffWhiteScraper {Active = true};
-            var details = scraper.GetProductDetails(testProduct, CancellationToken.None);
+            var details = scraper.GetProductDetails(testProduct.Url, CancellationToken.None);
 
             Console.WriteLine(string.Join(" ", details.SizesList));
         }

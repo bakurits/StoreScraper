@@ -120,7 +120,7 @@
     <Compile Include="Attributes\DisabledScraperAttribute.cs" />
     <Compile Include="Bots\GiorgiBaghdavadze\290sqm\IstSqm.cs" />
     <Compile Include="Bots\Bakurits\Rimowa\RimowaScraper.cs" />
-    <Compile Include="Bots\DavitBezhanishvili\AwLabScraper.cs" />
+    <Compile Include="Bots\DavitBezhanishvili\AwlLab\AwLabScraper.cs" />
     <Compile Include="Bots\Jordan\Byparra\ByparraScraper.cs" />
     <Compile Include="Bots\Mstanojevic\Cruvoir\CruvoirScrapper.cs" />
     <Compile Include="Bots\Higuhigu\43Einhalb\EinhalbScraper.cs" />
@@ -171,14 +171,15 @@
     <Compile Include="Bots\Jordan\VooBerlin\VooScraper.cs" />
     <Compile Include="Bots\GiorgiBaghdavadze\tres-bien\tresBienScrapper.cs" />
     <Compile Include="Bots\Sticky_bit\YOOX\YOOXScraper.cs" />
+    <Compile Include="Core\UrlMonitoringTask.cs" />
     <Compile Include="Http\CookieCollector.cs" />
     <Compile Include="Helpers\Embed.cs" />
     <Compile Include="Http\FirefoxHttpClientStorage.cs" />
-    <Compile Include="Interfaces\DisabledScraperAttribute.cs" />
+    <Compile Include="Core\MonitoringTaskBase.cs" />
     <Compile Include="Models\Price.cs" />
     <Compile Include="Models\ProductDetails.cs" />
     <Compile Include="Models\StringPair.cs" />
-    <Compile Include="ScraperBase.cs" />
+    <Compile Include="Core\ScraperBase.cs" />
     <Compile Include="Controls\ActionChooser.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -198,7 +199,7 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Core\BrowserManager.cs" />
-    <Compile Include="Core\MonitoringTask.cs" />
+    <Compile Include="Core\SearchMonitoringTask.cs" />
     <Compile Include="Helpers\DiscordWebHook.cs" />
     <Compile Include="Helpers\SlackWebHook.cs" />
     <Compile Include="Interfaces\ISearchSettingsValidator.cs" />

@@ -143,7 +143,7 @@ namespace StoreScraper.Bots.Jordan.SlamJamSocialism
             
         }
 
-        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             throw new System.NotImplementedException();
         }

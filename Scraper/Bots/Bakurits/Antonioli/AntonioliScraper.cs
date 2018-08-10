@@ -51,9 +51,9 @@ namespace StoreScraper.Bots.Bakurits.Antonioli
 
         }
 
-        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            var page = GetWebpage(product.Url, token);
+            var page = GetWebpage(productUrl, token);
             ProductDetails details = new ProductDetails();
             HtmlNodeCollection collection = page.SelectNodes("//div[@id = 'product-variants']/div/label");
             foreach (var item in collection)
@@ -66,7 +66,6 @@ namespace StoreScraper.Bots.Bakurits.Antonioli
             ind = ind == -1 ? name.Length : ind;
             name = name.Substring(0, ind);
             name = Regex.Replace(name, @"\t|\n|\r", "");
-            product.Name = name;
             return details;
         }
 

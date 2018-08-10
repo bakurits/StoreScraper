@@ -50,9 +50,9 @@ namespace StoreScraper.Bots.Higuhigu.Ycmc
             }
         }
 
-        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            var document = GetWebpage(product.Url, token);
+            var document = GetWebpage(productUrl, token);
             ProductDetails details = new ProductDetails();
 
             HtmlNodeCollection sizesNodeCollection = document.SelectNodes("//span[contains(@class, 'size_group_code_item')]");

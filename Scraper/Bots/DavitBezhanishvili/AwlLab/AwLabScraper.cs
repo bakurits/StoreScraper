@@ -114,9 +114,9 @@ namespace StoreScraper.Bots.DavitBezhanishvili
         }
 
 
-        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            var webPage = GetWebpage(product.Url, token);
+            var webPage = GetWebpage(productUrl, token);
             ProductDetails details = new ProductDetails();
             var jsonStr = Regex.Match(webPage.InnerHtml, @"var spConfig = new Product.Config\((.*)\)").Groups[1].Value;
             JObject parsed = JObject.Parse(jsonStr);

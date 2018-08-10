@@ -27,13 +27,7 @@ namespace StoreScraper.Helpers
     {
         public static IEnumerable<HtmlNode> SelectChildren(this HtmlNode parent, string tagName)
         {
-            foreach (var child in parent.ChildNodes)
-            {
-                if (child.Name == tagName)
-                {
-                    yield return child;
-                }            
-            }
+            return parent.ChildNodes.Where(child => child.Name == tagName);
         }
 
         /// <summary>

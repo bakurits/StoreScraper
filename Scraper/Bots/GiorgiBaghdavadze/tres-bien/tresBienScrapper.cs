@@ -104,7 +104,7 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze
                 listOfProducts.Add(product);
             }
         }
-        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             throw new NotImplementedException();
         }

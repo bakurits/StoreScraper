@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Windows.Forms;
 using StoreScraper.Attributes;
 using StoreScraper.Controls;
@@ -36,8 +37,9 @@ namespace StoreScraper
 
 
             ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
-            
-            AppSettings.Default.AvaibleBots = GetScrapers().ToList();
+
+            AppSettings.Default.AvailableScrapers = GetScrapers().ToList();
+            AppSettings.Default.AvailableScrapers.Sort((s1, s2) => string.Compare(s1.WebsiteName, s2.WebsiteName));
 
             Application.Run(new MainForm());
         }

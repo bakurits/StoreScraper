@@ -35,7 +35,7 @@ namespace ScraperTest.ScraperTests.Bakurits
 
             ShelflifeScraper scraper = new ShelflifeScraper();
 
-            ProductDetails details = scraper.GetProductDetails(curProduct, CancellationToken.None);
+            ProductDetails details = scraper.GetProductDetails(curProduct.Url, CancellationToken.None);
             
             Helper.PrintGetDetailsResult(details.SizesList);
             

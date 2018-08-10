@@ -67,7 +67,7 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze
             }
             else
             {
-                for (int i = 0; i < 5; i++)
+                for (int i = 0; i < AppSettings.Default.ProxyRotationRetryCount; i++)
                 {
                     try
                     {
@@ -77,7 +77,9 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze
                     }
                     catch
                     {
-                        //ignore
+                        if (i != AppSettings.Default.ProxyRotationRetryCount - 1) continue;
+                        Logger.Instance.WriteErrorLog($"Can't Connect to off---white");
+                        throw new WebException("Can't connect to website");
                     }
 
                 }
@@ -144,10 +146,8 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze
             var url = "https://www.off---white.com" + item.SelectSingleNode("./a").GetAttributeValue("href", "");
             string name = item.SelectSingleNode("./a/figure/figcaption/div").InnerText;
             var priceNode = item.SelectSingleNode("./a/figure/figcaption/div[4]/span[1]/strong");
-            bool parseSuccess = double.TryParse(priceNode.InnerText.Substring(2), NumberStyles.Any,
-                CultureInfo.InvariantCulture, out var price);
 
-            if (!parseSuccess) throw new WebException("Couldn't get price of product");
+            var price = Utils.ParsePrice(priceNode.InnerText);
 
             string imagePath = item.SelectSingleNode("./a/figure/img").GetAttributeValue("src", null);
             if (imagePath == null)
@@ -158,7 +158,7 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze
             string id = item.GetAttributeValue("data-json-url", null);
 
 
-            Product p = new Product(this, name, url, price, imagePath, id);
+            Product p = new Product(this, name, url, price.Value, imagePath, id, price.Currency);
             if (!Utils.SatisfiesCriteria(p, settings)) return;
 
             p.ImageUrl = imagePath;
@@ -166,9 +166,9 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze
             listOfProducts.Add(p);
         }
 
-        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            var jsonUrl = this.WebsiteBaseUrl + product.Id;
+            var jsonUrl = productUrl;
             ProductDetails result = new ProductDetails();
 
             HttpClient client = null;

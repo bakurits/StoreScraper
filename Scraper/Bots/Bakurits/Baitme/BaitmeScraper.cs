@@ -36,13 +36,12 @@ namespace StoreScraper.Bots.Bakurits.Baitme
 
         }
 
-        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            var page = GetWebpage(product.Url, token);
-            HtmlNodeCollection sizeCollection = page.SelectNodes("//select[@id = 'attribute188']/option");
+            var page = GetWebpage(productUrl, token);
             ProductDetails details = new ProductDetails();
 
-            product.ImageUrl = page.SelectSingleNode("//img[@id = 'image-main']").GetAttributeValue("src", null);
+            //product.ImageUrl = page.SelectSingleNode("//img[@id = 'image-main']").GetAttributeValue("src", null);
 
             var jsonStr = Regex.Match(page.InnerHtml, @"var spConfig = new Product.Config\((.*)\)").Groups[1].Value;
             JObject parsed = JObject.Parse(jsonStr);

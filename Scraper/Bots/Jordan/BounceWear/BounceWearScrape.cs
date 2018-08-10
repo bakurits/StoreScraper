@@ -103,7 +103,7 @@ namespace StoreScraper.Bots.Jordan.BounceWear
             
         }
 
-        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             throw new System.NotImplementedException();
         }

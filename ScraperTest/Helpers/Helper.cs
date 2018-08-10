@@ -6,7 +6,6 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper;
 using StoreScraper.Core;
-using StoreScraper.Http;
 using StoreScraper.Models;
 
 namespace ScraperTest.Helpers

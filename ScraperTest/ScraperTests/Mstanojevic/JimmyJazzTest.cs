@@ -33,7 +33,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
 
             JimmyJazzScraper scraper = new JimmyJazzScraper();
 
-            ProductDetails details = scraper.GetProductDetails(curProduct, CancellationToken.None);
+            ProductDetails details = scraper.GetProductDetails(curProduct.Url, CancellationToken.None);
 
             Helpers.Helper.PrintGetDetailsResult(details.SizesList);
             Debug.WriteLine(curProduct.Name);

@@ -55,7 +55,7 @@ namespace StoreScraper.Bots.Bakurits.Rimowa
         }
 
 
-        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             throw new NotImplementedException();
         }

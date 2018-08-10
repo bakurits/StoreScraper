@@ -34,7 +34,7 @@ namespace ScraperTest.ScraperTests.Bakurits
 
             BaitmeScraper scraper = new BaitmeScraper();
 
-            ProductDetails details = scraper.GetProductDetails(curProduct, CancellationToken.None);
+            ProductDetails details = scraper.GetProductDetails(curProduct.Url, CancellationToken.None);
 
             Helper.PrintGetDetailsResult(details.SizesList);
             Debug.WriteLine(curProduct.ImageUrl);

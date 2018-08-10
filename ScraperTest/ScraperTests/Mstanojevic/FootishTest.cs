@@ -34,7 +34,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
 
             FootishScrapper scraper = new FootishScrapper();
 
-            ProductDetails details = scraper.GetProductDetails(curProduct, CancellationToken.None);
+            ProductDetails details = scraper.GetProductDetails(curProduct.Url, CancellationToken.None);
             Helpers.Helper.PrintGetDetailsResult(details.SizesList);
             Debug.WriteLine(curProduct.Name);
             

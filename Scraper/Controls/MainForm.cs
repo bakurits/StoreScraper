@@ -25,7 +25,7 @@ namespace StoreScraper.Controls
         {
             InitializeComponent();
             DGrid_FoundProducts.DataSource = _listOfProducts;
-            Clbx_Websites.Items.AddRange(AppSettings.Default.AvaibleBots.ToArray());
+            Clbx_Websites.Items.AddRange(AppSettings.Default.AvailableScrapers.ToArray());
             PGrid_Settings.SelectedObject = AppSettings.Default;
             PGrid_Bot.SelectedObject = new SearchSettingsBase();
             RTbx_Proxies.Text = string.Join("\r\n", AppSettings.Default.Proxies);
@@ -203,7 +203,7 @@ namespace StoreScraper.Controls
 
             ActionChooser form = new ActionChooser();
             form.ShowDialog();
-            var actions = new List<MonitoringTask.FinalAction>();
+            var actions = new List<MonitoringTaskBase.FinalAction>();
 
             if (form.DialogResult == DialogResult.OK)
             {
@@ -213,7 +213,7 @@ namespace StoreScraper.Controls
 
             var stores = Clbx_Websites.CheckedItems;
 
-            var monTask = new MonitoringTask()
+            var monTask = new SearchMonitoringTask()
             {
                 SearchSettings = searchOptions,
                 FinalActions = actions
@@ -225,7 +225,13 @@ namespace StoreScraper.Controls
             {
                 var store = (ScraperBase) obj;
                 monTask.Stores.Add(store);
-                var convertedFilter = SearchSettingsBase.ConvertToChild(searchOptions, store.SearchSettingsType);
+
+                var convertedFilter = searchOptions;
+                if(searchOptions.GetType() != store.SearchSettingsType && !searchOptions.GetType().IsSubclassOf(store.SearchSettingsType))
+                {
+                    convertedFilter = SearchSettingsBase.ConvertToChild(searchOptions, store.SearchSettingsType);
+                }
+            
                 try
                 {
                     store.ScrapeItems(out var curProductsList, convertedFilter, CancellationToken.None);
@@ -248,7 +254,7 @@ namespace StoreScraper.Controls
 
                 monTask.Stores.ForEach(store => store.Active = true);
                 CLbx_Monitor.Invoke(new Action(() => CLbx_Monitor.Items.Add(monTask, true)));
-                monTask.Start(_monitorCancellation.Token);
+                monTask.Start(monTask.TokenSource.Token);
             });
         }
 
@@ -259,7 +265,12 @@ namespace StoreScraper.Controls
             if (CLbx_Monitor.SelectedIndex != -1)
             {
                 for (int i = selectedItems.Count - 1; i >= 0; i--)
+                {
+                    var item = selectedItems[i];
+                    (item as MonitoringTaskBase).TokenSource.Cancel();
                     CLbx_Monitor.Items.Remove(selectedItems[i]);
+                }
+                    
             }
         }
 
@@ -279,11 +290,18 @@ namespace StoreScraper.Controls
 
         private void Clbx_Websites_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            var items = (sender as CheckedListBox).CheckedItems;
-            if (items.Count == 1)
+            Task.Run(() =>
             {
-                PGrid_Bot.SelectedObject = Activator.CreateInstance((items[0] as ScraperBase).SearchSettingsType);
-            }
+                Thread.Sleep(500);
+                CLbx_Monitor.BeginInvoke((MethodInvoker) delegate
+                {
+                
+                    if (Clbx_Websites.CheckedIndices.Count == 1)
+                    {
+                        PGrid_Bot.SelectedObject = Activator.CreateInstance((Clbx_Websites.CheckedItems[0] as ScraperBase).SearchSettingsType);
+                    }
+                });
+            });
         }
 
         private void Btn_Reset_Click(object sender, EventArgs e)
@@ -292,6 +310,18 @@ namespace StoreScraper.Controls
             AppSettings.Default = new AppSettings();
             AppSettings.Default.Proxies = proxies;
             AppSettings.Default.Save();
+        }
+
+        private void Btn_UrlMon_Click(object sender, EventArgs e)
+        {
+            UrlMonitoringTask task = new UrlMonitoringTask(Tbx_Url.Text);
+            task.Start(task.TokenSource.Token);
+            CLbx_Monitor.Items.Add(task);
+        }
+
+        private void Clbx_Websites_MouseUp(object sender, MouseEventArgs e)
+        {
+            
         }
     }
 }

@@ -113,12 +113,12 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze.Nakedcph
             }
         }
 
-        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             const string xpath = "//*[@id='product-form']//div[contains(@class,'dropdown-menu')]/a";
             var client = ClientFactory.GetProxiedFirefoxClient();
             
-            var doc = client.GetDoc(product.Url, token);
+            var doc = client.GetDoc(productUrl, token);
         
             var nodes = doc.DocumentNode.SelectNodes(xpath);
             var sizes = nodes.Select(node => node.InnerText.Trim());

@@ -48,10 +48,10 @@ namespace StoreScraper.Bots.Higuhigu.Uptherestore
             }
         }
 
-        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             //li
-            var document = GetWebpage(product.Url, token);
+            var document = GetWebpage(productUrl, token);
             ProductDetails details = new ProductDetails();
 
             var sizeCollection = document.SelectNodes("//li[contains(@id, 'option')]/a/span");

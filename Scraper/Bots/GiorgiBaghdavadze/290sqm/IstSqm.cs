@@ -106,9 +106,9 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze._290sqm
 
 
 
-        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            var document = GetWebpage(product.Url, token);
+            var document = GetWebpage(productUrl, token);
             var asd = document.InnerHtml;
             const string xPath = "//select[@id='input-option11842']/option";
             var nodes = document.SelectNodes(xPath);

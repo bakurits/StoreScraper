@@ -98,9 +98,9 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.TitoloShop
             return price;
         }
 
-        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            var document = GetWebpage(product.Url, token);
+            var document = GetWebpage(productUrl, token);
             const string xPath = "//*[@id='attributesize-size_eu']/option";
             var nodes = document.SelectNodes(xPath);
             if (nodes == null)

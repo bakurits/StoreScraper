@@ -47,10 +47,10 @@ namespace StoreScraper.Bots.Higuhigu.Chmielna
             }
         }
 
-        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
 
-            var document = GetWebpage(product.Url, token);
+            var document = GetWebpage(productUrl, token);
             ProductDetails details = new ProductDetails();
 
             var sizeCollection = document.SelectNodes("//div[@class='selector']/ul/li");

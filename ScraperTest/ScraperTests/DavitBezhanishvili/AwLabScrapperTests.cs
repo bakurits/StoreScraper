@@ -37,7 +37,7 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
 
 
 
-            var details = scraper.GetProductDetails(testProduct, CancellationToken.None);
+            var details = scraper.GetProductDetails(testProduct.Url, CancellationToken.None);
 
             Helper.PrintGetDetailsResult(details.SizesList);
         }

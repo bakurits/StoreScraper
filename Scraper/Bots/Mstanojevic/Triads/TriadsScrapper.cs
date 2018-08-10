@@ -47,12 +47,12 @@ namespace StoreScraper.Bots.Mstanojevic.Triads
         }
 
 
-        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            var document = GetWebpage(product.Url, token);
+            var document = GetWebpage(productUrl, token);
             ProductDetails details = new ProductDetails();
 
-            string id = product.Url.Substring(product.Url.Length - 5);
+            string id = productUrl.Substring(productUrl.Length - 5);
             string restApiUrl = "https://www.triads.co.uk/ajax/get_product_options/"+id;
 
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);

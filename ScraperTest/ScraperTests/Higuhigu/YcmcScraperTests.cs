@@ -33,7 +33,7 @@ namespace ScraperTest.ScraperTests.Higuhigu
                 "whatever",
                 "USD");
 
-            ProductDetails details = scraper.GetProductDetails(curProduct, CancellationToken.None);
+            ProductDetails details = scraper.GetProductDetails(curProduct.Url, CancellationToken.None);
             foreach (var sz in details.SizesList)
             {
                 Debug.WriteLine(sz);

@@ -67,7 +67,7 @@ namespace StoreScraper.Bots.Mstanojevic.Footish
         }
 
 
-        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             //var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
@@ -85,7 +85,8 @@ namespace StoreScraper.Bots.Mstanojevic.Footish
             }*/
 
 
-            string restApiUrl = "https://www.footish.se/Services/Rest/v2/json/en-GB/EUR/products/"+product.Id;
+            throw new NotImplementedException(); //needs refractor
+            string restApiUrl = "https://www.footish.se/Services/Rest/v2/json/en-GB/EUR/products/";
             //Console.WriteLine(restApiUrl);
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var response = Utils.GetParsedJson(client, restApiUrl, token);

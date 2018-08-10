@@ -28,9 +28,9 @@ namespace StoreScraper.Bots.Bakurits.Shelflife
             }
         }
 
-        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            var document = GetWebpage(product.Url, token);
+            var document = GetWebpage(productUrl, token);
             var details = new ProductDetails();
 
             var node = document.SelectSingleNode("//*[@id='addToCart']/div/div/div/select[@id = 'size']");

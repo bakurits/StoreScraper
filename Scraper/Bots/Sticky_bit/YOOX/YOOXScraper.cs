@@ -78,7 +78,7 @@ namespace StoreScraper.Bots.Sticky_bit.YOOX
             
         }
 
-        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             return null;
         }

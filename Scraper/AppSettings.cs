@@ -17,7 +17,7 @@ namespace StoreScraper
         public static string DataDir;
         [XmlIgnore] public static string DataFilePath;
 
-        [XmlIgnore] [Browsable(false)] public List<ScraperBase> AvaibleBots;
+        [XmlIgnore] [Browsable(false)] public List<ScraperBase> AvailableScrapers;
 
 
         public int MaxThreadCount { get; set; } = 10;
@@ -27,6 +27,8 @@ namespace StoreScraper
         public List<string> Proxies { get; set; } = new List<string>();
 
         public bool UseProxy { get; set; } = false;
+
+        public int ProxyRotationRetryCount { get; set; } = 5;
 
         [DisplayName("Monitring Delay(ms)")]
         public int MonitoringDelay { get; set; } = 100;

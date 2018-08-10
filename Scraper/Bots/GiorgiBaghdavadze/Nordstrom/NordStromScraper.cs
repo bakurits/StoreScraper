@@ -116,9 +116,9 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.Nordstrom
         }
 
 
-        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            var document = GetWebpage(product.Url, token);
+            var document = GetWebpage(productUrl, token);
             string innerHtml = document.InnerHtml;
             int startIndx = document.InnerHtml.IndexOf("\"size\"" + ":[", StringComparison.Ordinal);
             if (startIndx == -1) return null;

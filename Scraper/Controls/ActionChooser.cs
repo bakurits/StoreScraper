@@ -11,19 +11,19 @@ namespace StoreScraper.Controls
         {
             InitializeComponent();
 
-            string[] names = Enum.GetNames(typeof(MonitoringTask.FinalAction));
+            string[] names = Enum.GetNames(typeof(SearchMonitoringTask.FinalAction));
 
             CLbx_Actions.Items.AddRange(names);
         }
 
 
-        public IEnumerable<MonitoringTask.FinalAction> GetFinalActions()
+        public IEnumerable<SearchMonitoringTask.FinalAction> GetFinalActions()
         {
-            List<MonitoringTask.FinalAction> result = new List<MonitoringTask.FinalAction>();
+            List<SearchMonitoringTask.FinalAction> result = new List<SearchMonitoringTask.FinalAction>();
 
             foreach (string checkedItem in CLbx_Actions.CheckedItems)
             {
-                result.Add((MonitoringTask.FinalAction) Enum.Parse(typeof(MonitoringTask.FinalAction), checkedItem));
+                result.Add((SearchMonitoringTask.FinalAction) Enum.Parse(typeof(SearchMonitoringTask.FinalAction), checkedItem));
             }
 
             return result;

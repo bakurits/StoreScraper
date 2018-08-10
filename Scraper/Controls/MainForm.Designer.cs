@@ -34,6 +34,8 @@
             this.btn_FindProducts = new System.Windows.Forms.Button();
             this.Tabs = new System.Windows.Forms.TabControl();
             this.Tab_Main = new System.Windows.Forms.TabPage();
+            this.Btn_UrlMon = new System.Windows.Forms.Button();
+            this.Tbx_Url = new System.Windows.Forms.TextBox();
             this.Clbx_Websites = new System.Windows.Forms.CheckedListBox();
             this.Btn_RemoveMon = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
@@ -44,6 +46,7 @@
             this.label_FindingStatus = new System.Windows.Forms.Label();
             this.DGrid_FoundProducts = new System.Windows.Forms.DataGridView();
             this.Tab_Settings = new System.Windows.Forms.TabPage();
+            this.Btn_Reset = new System.Windows.Forms.Button();
             this.Btn_SaveRestart = new System.Windows.Forms.Button();
             this.Btn_Save = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
@@ -54,7 +57,6 @@
             this.Btn_ClearAllLogs = new System.Windows.Forms.Button();
             this.Rtbx_EventLog = new System.Windows.Forms.RichTextBox();
             this.Rtbx_DebugLog = new System.Windows.Forms.RichTextBox();
-            this.Btn_Reset = new System.Windows.Forms.Button();
             this.toolStripContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.SuspendLayout();
@@ -121,6 +123,8 @@
             // 
             // Tab_Main
             // 
+            this.Tab_Main.Controls.Add(this.Btn_UrlMon);
+            this.Tab_Main.Controls.Add(this.Tbx_Url);
             this.Tab_Main.Controls.Add(this.Clbx_Websites);
             this.Tab_Main.Controls.Add(this.Btn_RemoveMon);
             this.Tab_Main.Controls.Add(this.label5);
@@ -140,6 +144,23 @@
             this.Tab_Main.Text = "Main";
             this.Tab_Main.UseVisualStyleBackColor = true;
             // 
+            // Btn_UrlMon
+            // 
+            this.Btn_UrlMon.Location = new System.Drawing.Point(914, 274);
+            this.Btn_UrlMon.Name = "Btn_UrlMon";
+            this.Btn_UrlMon.Size = new System.Drawing.Size(106, 23);
+            this.Btn_UrlMon.TabIndex = 25;
+            this.Btn_UrlMon.Text = "Monitor Url";
+            this.Btn_UrlMon.UseVisualStyleBackColor = true;
+            this.Btn_UrlMon.Click += new System.EventHandler(this.Btn_UrlMon_Click);
+            // 
+            // Tbx_Url
+            // 
+            this.Tbx_Url.Location = new System.Drawing.Point(526, 277);
+            this.Tbx_Url.Name = "Tbx_Url";
+            this.Tbx_Url.Size = new System.Drawing.Size(382, 20);
+            this.Tbx_Url.TabIndex = 24;
+            // 
             // Clbx_Websites
             // 
             this.Clbx_Websites.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -149,11 +170,12 @@
             this.Clbx_Websites.Size = new System.Drawing.Size(299, 184);
             this.Clbx_Websites.TabIndex = 23;
             this.Clbx_Websites.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.Clbx_Websites_ItemCheck);
+            this.Clbx_Websites.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Clbx_Websites_MouseUp);
             // 
             // Btn_RemoveMon
             // 
             this.Btn_RemoveMon.ForeColor = System.Drawing.Color.Crimson;
-            this.Btn_RemoveMon.Location = new System.Drawing.Point(784, 463);
+            this.Btn_RemoveMon.Location = new System.Drawing.Point(784, 547);
             this.Btn_RemoveMon.Name = "Btn_RemoveMon";
             this.Btn_RemoveMon.Size = new System.Drawing.Size(236, 23);
             this.Btn_RemoveMon.TabIndex = 22;
@@ -165,7 +187,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(746, 238);
+            this.label5.Location = new System.Drawing.Point(746, 322);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(69, 20);
             this.label5.TabIndex = 18;
@@ -174,7 +196,7 @@
             // CLbx_Monitor
             // 
             this.CLbx_Monitor.FormattingEnabled = true;
-            this.CLbx_Monitor.Location = new System.Drawing.Point(526, 261);
+            this.CLbx_Monitor.Location = new System.Drawing.Point(526, 345);
             this.CLbx_Monitor.Name = "CLbx_Monitor";
             this.CLbx_Monitor.Size = new System.Drawing.Size(494, 199);
             this.CLbx_Monitor.TabIndex = 17;
@@ -258,6 +280,16 @@
             this.Tab_Settings.TabIndex = 1;
             this.Tab_Settings.Text = "Settings";
             this.Tab_Settings.UseVisualStyleBackColor = true;
+            // 
+            // Btn_Reset
+            // 
+            this.Btn_Reset.Location = new System.Drawing.Point(478, 226);
+            this.Btn_Reset.Name = "Btn_Reset";
+            this.Btn_Reset.Size = new System.Drawing.Size(131, 23);
+            this.Btn_Reset.TabIndex = 10;
+            this.Btn_Reset.Text = "Reset Settings";
+            this.Btn_Reset.UseVisualStyleBackColor = true;
+            this.Btn_Reset.Click += new System.EventHandler(this.Btn_Reset_Click);
             // 
             // Btn_SaveRestart
             // 
@@ -366,16 +398,6 @@
             this.Rtbx_DebugLog.TabIndex = 0;
             this.Rtbx_DebugLog.Text = "";
             // 
-            // Btn_Reset
-            // 
-            this.Btn_Reset.Location = new System.Drawing.Point(478, 226);
-            this.Btn_Reset.Name = "Btn_Reset";
-            this.Btn_Reset.Size = new System.Drawing.Size(131, 23);
-            this.Btn_Reset.TabIndex = 10;
-            this.Btn_Reset.Text = "Reset Settings";
-            this.Btn_Reset.UseVisualStyleBackColor = true;
-            this.Btn_Reset.Click += new System.EventHandler(this.Btn_Reset_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -430,6 +452,8 @@
         private System.Windows.Forms.Button Btn_ClearAllLogs;
         private System.Windows.Forms.CheckedListBox Clbx_Websites;
         private System.Windows.Forms.Button Btn_Reset;
+        private System.Windows.Forms.Button Btn_UrlMon;
+        private System.Windows.Forms.TextBox Tbx_Url;
     }
 }
 

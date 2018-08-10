@@ -133,13 +133,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="ScraperTests\Jordan\" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Scraper\Scraper.csproj">
       <Project>{102caa56-c642-4afe-a235-3b8e614e6c32}</Project>
       <Name>Scraper</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ScraperTests\Jordan\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

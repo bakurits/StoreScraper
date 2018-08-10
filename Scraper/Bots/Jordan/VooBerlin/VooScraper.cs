@@ -111,7 +111,7 @@ namespace StoreScraper.Bots.Jordan.VooBerlin
             
         }
 
-        public override ProductDetails GetProductDetails(Product product, CancellationToken token)
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             throw new System.NotImplementedException();
         }
