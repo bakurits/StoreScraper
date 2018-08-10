@@ -15,7 +15,7 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
         [TestMethod]
         public void FindItemsTest()
         {
-            var scraper = new AwLabScrapper();
+            var scraper = new AwLabScraper();
             var settings = new SearchSettingsBase()
             {
                 KeyWords = "shoes"
@@ -28,7 +28,7 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
         [TestMethod]
         public void GetProductDetailsTest()
         {
-            var scraper = new AwLabScrapper();
+            var scraper = new AwLabScraper();
             var testProduct = new Product(scraper, "Unknown",
                 "https://en.aw-lab.com/shop/adidas-nizza-5895145?___SID=U",
                 34.90,

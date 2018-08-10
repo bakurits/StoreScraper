@@ -12,11 +12,12 @@ using StoreScraper.Models;
 
 namespace StoreScraper.Bots.DavitBezhanishvili
 {
-    public class AwLabScrapper : ScraperBase
+    public class AwLabScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Aw-lab";
         public override string WebsiteBaseUrl { get; set; } = "https://en.aw-lab.com";
         public override bool Active { get; set; }
+
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
@@ -134,8 +135,9 @@ namespace StoreScraper.Bots.DavitBezhanishvili
         {
             var sizes = sizeName.Split(' ');
             if (sizes.Length == 1) return sizes[0];
-            var numerator = Regex.Match(sizes[1], @"[\d]+").Groups[1].Value;
-            var denominator = Regex.Match(sizes[1], @"[\d]+").Groups[2].Value;
+            var match = Regex.Match(sizes[1], @"([\d])");
+            var numerator = match.Value;
+            var denominator = match.NextMatch().Value;
 
             return sizes[0] + " " + numerator + "/" + denominator;
         }

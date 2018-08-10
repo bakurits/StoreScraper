@@ -40,7 +40,7 @@ namespace ScraperTest.Helpers
             AppSettings.Default = AppSettings.Load();
 
             Logger.Instance.OnLogged += (message, color) => Debug.WriteLine(message);
-            CookieCollector.Default = new CookieCollector();
+            //CookieCollector.Default = new CookieCollector();
         }
     }
 }
