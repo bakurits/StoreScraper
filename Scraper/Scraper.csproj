@@ -170,6 +170,7 @@
     <Compile Include="Bots\Higuhigu\Ycmc\YcmcScraper.cs" />
     <Compile Include="Bots\Jordan\VooBerlin\VooScraper.cs" />
     <Compile Include="Bots\GiorgiBaghdavadze\tres-bien\tresBienScrapper.cs" />
+    <Compile Include="Bots\Sticky_bit\YOOX\YOOXScraper.cs" />
     <Compile Include="Http\CookieCollector.cs" />
     <Compile Include="Helpers\Embed.cs" />
     <Compile Include="Http\FirefoxHttpClientStorage.cs" />

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
+using System.Windows.Forms;
 using HtmlAgilityPack;
 using StoreScraper.Attributes;
 using StoreScraper.Core;
@@ -32,6 +35,31 @@ namespace StoreScraper.Bots.Sticky_bit.BSTN
             this.Active = true;
         }
 
+        private bool HTMLChecker(string html)
+        {
+            int openLiCnt = 0;
+            int closeLiCnt = 0;
+
+            byte[] arrayOfMyString = Encoding.UTF8.GetBytes(html);
+            using (var memoryStream = new MemoryStream(arrayOfMyString))
+            {
+                using (var reader = new StreamReader(memoryStream))
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        string line = reader.ReadLine();
+
+                        openLiCnt += line.Split(new string[] { "<li" }, StringSplitOptions.None).Length - 1;
+                        closeLiCnt += line.Split(new string[] { "</li" }, StringSplitOptions.None).Length - 1;
+                    }
+                }
+            }
+
+            Console.WriteLine(openLiCnt);
+            Console.WriteLine(closeLiCnt);
+            return openLiCnt == closeLiCnt;
+        }
+
         private HtmlNode InitialNavigation(string url, CancellationToken token)
         {
             var request = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
@@ -50,6 +78,8 @@ namespace StoreScraper.Bots.Sticky_bit.BSTN
             HtmlNode container = null;
             HtmlNode node = InitialNavigation(searchUrl, token);
             container = node.SelectSingleNode(UlXpath);
+            HTMLChecker(container.InnerHtml);
+            return;
 
             HtmlNodeCollection children = container.SelectNodes("./li/div");
 
