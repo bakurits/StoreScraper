@@ -3,18 +3,18 @@ using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
-using StoreScraper.Bots.UebervartShop;
+using StoreScraper.Bots.Mstanojevic.Cruvoir;
 using StoreScraper.Models;
 
 namespace ScraperTest.Tests
 {
     [TestClass]
-    public class UebervartShopTest
+    public class CruvoirTest
     {
         [TestMethod()]
         public void FindItemsTest()
         {
-            UebervartShopScrapper scraper = new UebervartShopScrapper();
+            CruvoirScrapper scraper = new CruvoirScrapper();
             SearchSettingsBase settings = new SearchSettingsBase();
             settings.KeyWords = "vault";
 
@@ -27,14 +27,14 @@ namespace ScraperTest.Tests
         [TestMethod()]
         public void GetProductDetailsTest()
         {
-            Product curProduct = new Product(new UebervartShopScrapper(), "Unknown",
-                "https://www.uebervart-shop.de/nike-air-revarderchi-red-brown/",
+            Product curProduct = new Product(new CruvoirScrapper(), "Unknown",
+                "https://cruvoir.com/collections/sneakers/products/black-pod-s3-1-sneaker",
                 420,
-                "",
+                "https://cdn.shopify.com/s/files/1/2666/2006/products/13029260_13855022_1000_1400x.jpg?v=1529190499",
                 "id");
 
 
-            UebervartShopScrapper scraper = new UebervartShopScrapper();
+            CruvoirScrapper scraper = new CruvoirScrapper();
 
             ProductDetails details = scraper.GetProductDetails(curProduct, CancellationToken.None);
 

@@ -117,6 +117,10 @@
     <Compile Include="ScraperTests\Higuhigu\WoodwoodScraperTests.cs" />
     <Compile Include="ScraperTests\Higuhigu\YcmcScraperTests.cs" />
     <Compile Include="ScraperTests\Higuhigu\Urbanjunglestoretest.cs" />
+    <Compile Include="ScraperTests\Mstanojevic\CruvoirTest.cs" />
+    <Compile Include="ScraperTests\Mstanojevic\FootishTest.cs" />
+    <Compile Include="ScraperTests\Mstanojevic\SneakersnstuffTest.cs" />
+    <Compile Include="ScraperTests\Mstanojevic\UebervartShopTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

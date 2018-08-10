@@ -3,18 +3,18 @@ using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
-using StoreScraper.Bots.Cruvoir;
+using StoreScraper.Bots.Mstanojevic.Footish;
 using StoreScraper.Models;
 
 namespace ScraperTest.Tests
 {
     [TestClass]
-    public class CruvoirTest
+    public class FootishTest
     {
         [TestMethod()]
         public void FindItemsTest()
         {
-            CruvoirScrapper scraper = new CruvoirScrapper();
+            FootishScrapper scraper = new FootishScrapper();
             SearchSettingsBase settings = new SearchSettingsBase();
             settings.KeyWords = "vault";
 
@@ -27,20 +27,20 @@ namespace ScraperTest.Tests
         [TestMethod()]
         public void GetProductDetailsTest()
         {
-            Product curProduct = new Product(new CruvoirScrapper(), "Unknown",
-                "https://cruvoir.com/collections/sneakers/products/black-pod-s3-1-sneaker",
+          /*  Product curProduct = new Product(new FootishScrapper(), "Unknown",
+                "https://www.footish.se/en/campaigns/rabble-signup/nike-air-max-2017-at0044-001",
                 420,
-                "https://cdn.shopify.com/s/files/1/2666/2006/products/13029260_13855022_1000_1400x.jpg?v=1529190499",
+                "https://www.footish.se/pub_images/large/nike-air-max-2017-at0044-001-p21554.jpg",
                 "id");
 
 
-            CruvoirScrapper scraper = new CruvoirScrapper();
+            FootishScrapper scraper = new FootishScrapper();
 
             ProductDetails details = scraper.GetProductDetails(curProduct, CancellationToken.None);
 
             Helper.PrintGetDetailsResult(details.SizesList);
             Debug.WriteLine(curProduct.Name);
-
+            */
         }
     }
 }

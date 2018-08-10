@@ -3,18 +3,18 @@ using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
-using StoreScraper.Bots.Footish;
+using StoreScraper.Bots.Mstanojevic.UebervartShop;
 using StoreScraper.Models;
 
 namespace ScraperTest.Tests
 {
     [TestClass]
-    public class FootishTest
+    public class UebervartShopTest
     {
         [TestMethod()]
         public void FindItemsTest()
         {
-            FootishScrapper scraper = new FootishScrapper();
+            UebervartShopScrapper scraper = new UebervartShopScrapper();
             SearchSettingsBase settings = new SearchSettingsBase();
             settings.KeyWords = "vault";
 
@@ -27,20 +27,20 @@ namespace ScraperTest.Tests
         [TestMethod()]
         public void GetProductDetailsTest()
         {
-          /*  Product curProduct = new Product(new FootishScrapper(), "Unknown",
-                "https://www.footish.se/en/campaigns/rabble-signup/nike-air-max-2017-at0044-001",
+            Product curProduct = new Product(new UebervartShopScrapper(), "Unknown",
+                "https://www.uebervart-shop.de/nike-air-revarderchi-red-brown/",
                 420,
-                "https://www.footish.se/pub_images/large/nike-air-max-2017-at0044-001-p21554.jpg",
+                "",
                 "id");
 
 
-            FootishScrapper scraper = new FootishScrapper();
+            UebervartShopScrapper scraper = new UebervartShopScrapper();
 
             ProductDetails details = scraper.GetProductDetails(curProduct, CancellationToken.None);
 
             Helper.PrintGetDetailsResult(details.SizesList);
             Debug.WriteLine(curProduct.Name);
-            */
+
         }
     }
 }
