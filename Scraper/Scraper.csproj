@@ -118,6 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\DisabledScraperAttribute.cs" />
+    <Compile Include="Bots\GiorgiBaghdavadze\290sqm\IstSqm.cs" />
     <Compile Include="Bots\Bakurits\Rimowa\RimowaScraper.cs" />
     <Compile Include="Bots\Jordan\Byparra\ByparraScraper.cs" />
     <Compile Include="Bots\Mstanojevic\Cruvoir\CruvoirScrapper.cs" />

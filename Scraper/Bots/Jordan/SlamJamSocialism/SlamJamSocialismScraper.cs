@@ -12,7 +12,7 @@ using StoreScraper.Models;
 
 namespace StoreScraper.Bots.Jordan.SlamJamSocialism
 {
-    public class SlamJamSocialismScraper: ScraperBase
+    public class SlamJamSocialismScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "SlamJamSocialism";
         public override string WebsiteBaseUrl { get; set; } = "https://slamjamsocialism.com/";
@@ -38,7 +38,7 @@ namespace StoreScraper.Bots.Jordan.SlamJamSocialism
             }
            
            
-            var stopNumb = Int32.Parse(lasstPage);
+            var stopNumb = int.Parse(lasstPage);
           
             
             foreach (var item in firstResults)
