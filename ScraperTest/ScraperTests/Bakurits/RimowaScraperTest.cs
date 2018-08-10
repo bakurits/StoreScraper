@@ -1,26 +1,28 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
+using StoreScraper.Bots.Bakurits.Rimowa;
 using StoreScraper.Bots.Bakurits.Shelflife;
 using StoreScraper.Models;
 
 namespace ScraperTest.ScraperTests.Bakurits
 {
-    [TestClass()]
-    public class ShelflifeScraperTests
+    [TestClass]
+    public class RimowaScraperTest
     {
         [TestMethod()]
         public void FindItemsTest()
         {
-            ShelflifeScraper scraper = new ShelflifeScraper();
+            RimowaScraper scraper = new RimowaScraper();
             SearchSettingsBase settings = new SearchSettingsBase()
             {
-                KeyWords = "watch"
+                KeyWords = "luggage"
             };
 
             scraper.FindItems(out var lst, settings, CancellationToken.None);
             Helpers.Helper.PrintFindItemsResults(lst);
-            
+
         }
 
         [TestMethod()]
@@ -36,9 +38,10 @@ namespace ScraperTest.ScraperTests.Bakurits
             ShelflifeScraper scraper = new ShelflifeScraper();
 
             ProductDetails details = scraper.GetProductDetails(curProduct, CancellationToken.None);
-            
+
             Helper.PrintGetDetailsResult(details.SizesList);
-            
+
         }
     }
+    
 }
