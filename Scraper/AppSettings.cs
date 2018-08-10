@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 using StoreScraper.Models;
 
+
 namespace StoreScraper
 {
     [Serializable]
@@ -36,7 +37,7 @@ namespace StoreScraper
         [Category("Discord"), DisplayName("Discord api urls")]
         public List<UrlString> DiscordApiUrl { get; set; } = new List<UrlString>();
 
-        public bool PostStartMessage { get; set; } = true;
+        public bool PostStartMessage { get; set; } = false;
 
         public static void Init()
         {

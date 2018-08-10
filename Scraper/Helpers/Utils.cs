@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -20,7 +23,7 @@ using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 
 namespace StoreScraper.Helpers
 {
-    static class Utils
+    static public class Utils
     {
         public static IEnumerable<HtmlNode> SelectChildren(this HtmlNode parent, string tagName)
         {
@@ -105,6 +108,27 @@ namespace StoreScraper.Helpers
                 throw;
             }
         }
+        
+        public static HtmlDocument PostDoc(this HttpClient client, string url, CancellationToken token, FormUrlEncodedContent postParams)
+        {
+            
+            try
+            {
+                using (var response = client.PostAsync(url, postParams, token).Result)
+                {
+                    var result = response.Content.ReadAsStringAsync().Result;
+                    var doc = new HtmlDocument();
+                    doc.LoadHtml(result);
+                    return doc;
+                }
+            }
+            catch (WebException)
+            {
+                Logger.Instance.WriteErrorLog("Can't connect to website");
+                throw;
+            }
+        }
+        
 
         public static HtmlDocument GetDoc(Func<HttpClient> clientGenerator, string url, int timeoutSeconds, int maxTries, 
             CancellationToken token, bool autoDispose = false)
@@ -116,9 +140,13 @@ namespace StoreScraper.Helpers
                 {
                     return client.GetDoc(url, token);
                 }
-                catch
+                catch(Exception e)
                 {
-                    //ignored
+                    if (i == maxTries - 1)
+                    {
+                        Logger.Instance.WriteErrorLog($"Can't connect to webiste url: {url}. ErrorMessage: {e.Message}");
+                        throw;
+                    }
                 }
                 finally
                 {
@@ -184,17 +212,21 @@ namespace StoreScraper.Helpers
         /// </summary>
         /// <param name="priceString"></param>
         /// <returns>List of sizes</returns>
-        public static string GetCurrency (string priceString)
+        public static Price ParsePrice (string priceString, string decimalDelimiter = ".", string tousandsDelimiter = ",")
         {
-            char currencyChar = priceString[0];
 
-            switch (currencyChar)
-            {
-                case '€':
-                    return "EUR";
-                default:
-                    return "USD";
-            }
+            priceString = priceString.Trim().Replace(" ", "");
+            if (!string.IsNullOrEmpty(tousandsDelimiter)) priceString = priceString.Replace(tousandsDelimiter, "");
+
+            priceString = priceString.Replace(decimalDelimiter, ".");
+
+            string number = Regex.Match(priceString, $@"[\d\.]+").Value;
+            var parsed = double.Parse(number, CultureInfo.InvariantCulture);
+            var c = priceString.Replace(number, "").ToUpper();
+
+            c = c == "$" ? "USD" : c == "€" ? "EUR" : c;
+
+            return new Price(parsed ,c);
         }
     }
 }
