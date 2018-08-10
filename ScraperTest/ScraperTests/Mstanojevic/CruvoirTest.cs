@@ -1,12 +1,11 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
 using StoreScraper.Bots.Mstanojevic.Cruvoir;
 using StoreScraper.Models;
 
-namespace ScraperTest.Tests
+namespace ScraperTest.ScraperTests.Mstanojevic
 {
     [TestClass]
     public class CruvoirTest

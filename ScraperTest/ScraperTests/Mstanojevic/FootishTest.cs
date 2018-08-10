@@ -1,12 +1,9 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading;
+﻿using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ScraperTest.Helpers;
 using StoreScraper.Bots.Mstanojevic.Footish;
 using StoreScraper.Models;
 
-namespace ScraperTest.Tests
+namespace ScraperTest.ScraperTests.Mstanojevic
 {
     [TestClass]
     public class FootishTest

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper.Bots.Mstanojevic.JimmyJazz;
@@ -34,7 +35,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
 
             ProductDetails details = scraper.GetProductDetails(curProduct, CancellationToken.None);
 
-            Helper.PrintGetDetailsResult(details.SizesList);
+            Helpers.Helper.PrintGetDetailsResult(details.SizesList);
             Debug.WriteLine(curProduct.Name);
 
         }
