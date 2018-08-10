@@ -7,7 +7,7 @@ using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
-namespace StoreScraper.Bots.Higuhigu.Triads
+namespace StoreScraper.Bots.Mstanojevic.Triads
 {
 
     public class TriadsScrapper : ScraperBase
