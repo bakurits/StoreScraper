@@ -66,21 +66,23 @@ namespace StoreScraper.Bots.Mstanojevic.JimmyJazz
             ProductDetails details = new ProductDetails();
 
             var sizeCollection = document.SelectNodes("//div[@class='psizeoptioncontainer']/div/a");
-
-            foreach (var size in sizeCollection)
+            if (sizeCollection != null)
             {
-
-                if (!size.GetAttributeValue("class", "").Contains("piunavailable"))
+                foreach (var size in sizeCollection)
                 {
-                    string sz = size.InnerHtml;
-                    
 
-                    if (sz.Length > 0)
+                    if (!size.GetAttributeValue("class", "").Contains("piunavailable"))
                     {
-                        details.AddSize(sz, "Unknown");
-                    }
-                }
+                        string sz = size.InnerHtml;
 
+
+                        if (sz.Length > 0)
+                        {
+                            details.AddSize(sz, "Unknown");
+                        }
+                    }
+
+                }
             }
 
             return details;

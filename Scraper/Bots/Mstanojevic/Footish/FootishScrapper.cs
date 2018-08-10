@@ -95,7 +95,10 @@ namespace StoreScraper.Bots.Mstanojevic.Footish
             {
                 foreach(var attr in item["Attributes"])
                 {
-                    details.AddSize(attr["Value"].ToString(), attr["StockLevel"].ToString());
+                    if (int.Parse(attr["StockLevel"].ToString()) > 0)
+                    {
+                        details.AddSize(attr["Value"].ToString(), attr["StockLevel"].ToString());
+                    }
 
                 }
             }
