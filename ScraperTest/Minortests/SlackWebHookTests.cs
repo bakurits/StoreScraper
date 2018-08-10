@@ -1,11 +1,11 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StoreScraper.Bots.Mrporter;
+using StoreScraper.Bots.Bakurits.Mrporter;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
-namespace ScraperTest.Minortests
+namespace ScraperTest.MinorTests
 {
     [TestClass()]
     public class SlackWebHookTests
