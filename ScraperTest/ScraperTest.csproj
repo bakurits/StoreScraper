@@ -81,6 +81,7 @@
     <Compile Include="MinorTests\UtilsTests.cs" />
     <Compile Include="MinorTests\SlackWebHookTests.cs" />
     <Compile Include="Tests\BSTNTest.cs" />
+    <Compile Include="Tests\CruvoirTest.cs" />
     <Compile Include="Tests\DtlrTest.cs" />
     <Compile Include="Tests\ExcelsiormilanoTest.cs" />
     <Compile Include="Tests\FootishTest.cs" />
