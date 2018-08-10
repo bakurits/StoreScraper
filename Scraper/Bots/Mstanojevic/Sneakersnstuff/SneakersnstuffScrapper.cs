@@ -53,11 +53,11 @@ namespace StoreScraper.Bots.Mstanojevic.Sneakersnstuff
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//header[.='Size guide']/../div/table/tbody/tr/td[1][@width='25%']");
+            var sizeCollection = document.SelectNodes("//span[@class='size-type']");
 
             foreach (var size in sizeCollection)
             {
-                string sz = size.InnerHtml;
+                string sz = size.InnerText.Trim();
                 if (sz.Length > 0)
                 {
                     details.AddSize(sz, "Unknown");

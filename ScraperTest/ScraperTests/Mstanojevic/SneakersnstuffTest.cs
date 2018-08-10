@@ -1,8 +1,9 @@
-﻿using System.Threading;
+﻿using System.Diagnostics;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ScraperTest.Helpers;
 using StoreScraper.Bots.Mstanojevic.Sneakersnstuff;
 using StoreScraper.Models;
-
 namespace ScraperTest.ScraperTests.Mstanojevic
 {
     [TestClass]
@@ -24,7 +25,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         [TestMethod()]
         public void GetProductDetailsTest()
         {
-        /*    Product curProduct = new Product(new SneakersnstuffScrapper(), "Unknown",
+            Product curProduct = new Product(new SneakersnstuffScrapper(), "Unknown",
                 "https://www.sneakersnstuff.com/en/product/30856/nike-air-safari-se",
                 420,
                 "https://www.sneakersnstuff.com/images/205337/large.jpg",
@@ -37,7 +38,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
 
             Helper.PrintGetDetailsResult(details.SizesList);
             Debug.WriteLine(curProduct.Name);
-*/
+
         }
     }
 }

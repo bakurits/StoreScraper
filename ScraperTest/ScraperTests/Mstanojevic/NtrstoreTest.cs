@@ -27,7 +27,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         public void GetProductDetailsTest()
         {
             Product curProduct = new Product(new NtrstoreScraper(), "Unknown",
-                "https://www.ntrstore.com/air-epic-qs",
+                "https://www.ntrstore.com/nike-flyknit-lunar-3",
                 420,
                 "",
                 "id");
