@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -11,7 +12,7 @@ using StoreScraper.Models;
 
 namespace StoreScraper.Bots.Jordan.SlamJamSocialism
 {
-    public class SlamJamSocialismScraper: ScraperBase
+    public class SlamJamSocialismScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "SlamJamSocialism";
         public override string WebsiteBaseUrl { get; set; } = "https://slamjamsocialism.com/";
@@ -25,7 +26,19 @@ namespace StoreScraper.Bots.Jordan.SlamJamSocialism
             var keywordUrl = String.Format(SearchUrl, settings.KeyWords);
             var pageOne = GetWebpage(keywordUrl, token);
             var firstResults = pageOne.SelectNodes("//div[contains(@class, 'product-container')]");
-            
+            string lasstPage;
+            try
+            {
+                 lasstPage = pageOne.SelectSingleNode("//div[contains(@id, 'pagination_bottom')]/ul/li[6]/a/span")
+                    .InnerHtml;
+            }
+            catch (Exception e)
+            {
+                lasstPage = pageOne.SelectSingleNode("//div[contains(@id, 'pagination_bottom')]/ul/li[5]/a/span").InnerHtml;
+            }
+           
+           
+            var stopNumb = int.Parse(lasstPage);
           
             
             foreach (var item in firstResults)
@@ -34,26 +47,30 @@ namespace StoreScraper.Bots.Jordan.SlamJamSocialism
                 LoadSingleProduct(listOfProducts, settings, item, token);
             }
 
-         
+            
 
             var temp = pageOne;
-            
+            var x = 1;
             while(true)
             {
-                var nextPage = temp.SelectSingleNode("//li[contains(@id, 'pagination_next_bottom')]/a").GetAttributeValue("href", null);
+                x += 1;
+                
+              
                
-                if (nextPage == null)
-                {
-                    return;
-                }
-                var page = GetWebpage("https://slamjamsocialism.com"+nextPage, token);
-                temp = page;
+                var page = GetWebpage("https://www.slamjamsocialism.com/module/ambjolisearch/jolisearch?search_query="+settings.KeyWords+"&p="+x.ToString(), token);
+               
                 var results =  page.SelectNodes("//div[contains(@class, 'product-container')]");
                 foreach (var item in results)
                 {
                     token.ThrowIfCancellationRequested();
                     LoadSingleProduct(listOfProducts, settings, item, token);
                 }
+
+                if (x == stopNumb)
+                {
+                    return;
+                }
+
                 
             }
             
@@ -62,7 +79,7 @@ namespace StoreScraper.Bots.Jordan.SlamJamSocialism
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item, CancellationToken token)
         {
             
-            Debug.WriteLine(item.OuterHtml);
+          
            
             string name = GetName(item);
             string url = GetUrl(item);
@@ -97,18 +114,18 @@ namespace StoreScraper.Bots.Jordan.SlamJamSocialism
 
         private double GetPrice(HtmlNode item)
         {
-            return ParsePrice(item.SelectSingleNode("//div[@class='content_price'][1]/span[@class='price product-price'][1]").InnerHtml);
+            return ParsePrice(item.SelectSingleNode("./div//div[@class='content_price'][1]/span[@class='price product-price'][1]").InnerHtml);
 
         }
         
         private string GetName(HtmlNode item)
         {
-            return item.SelectSingleNode("//a[@class='product_img_link'][1]").GetAttributeValue("title", null);
+            return item.SelectSingleNode("./div/div/a[@class='product_img_link'][1]").GetAttributeValue("title", null);
         }
 
         private string GetUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("//a[@class='product_img_link'][1]").GetAttributeValue("href", null);
+            return item.SelectSingleNode("./div/div/a[@class='product_img_link'][1]").GetAttributeValue("href", null);
         }
 
         private HtmlNode GetWebpage(string url, CancellationToken token)

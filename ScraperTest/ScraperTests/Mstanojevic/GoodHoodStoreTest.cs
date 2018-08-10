@@ -26,8 +26,8 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         [TestMethod()]
         public void GetProductDetailsTest()
         {
-            Product curProduct = new Product(new GoodHoodStoreScrapper(), "Unknown",
-                "https://goodhoodstore.com/store/vans-vault-og-authentic-lx-dress-blues-wrought-iron-38544",
+            Product curProduct = new Product(new GoodHoodStoreScrapper(), "Zoom Fly BeTrue - White/Black-Palest Purple",
+                "https://goodhoodstore.com/store/nike-zoom-fly-betrue-white-black-palest-purple-38067",
                 420,
                 "https://assets.cdn.goodhoodstore.com/products/38544/medium/VANS_GOODHOOD_AW17_147-2.jpg",
                 "id");

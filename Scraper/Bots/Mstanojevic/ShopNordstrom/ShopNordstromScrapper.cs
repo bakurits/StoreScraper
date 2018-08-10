@@ -7,7 +7,7 @@ using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
-namespace StoreScraper.Bots.GiorgiBaghdavadze.ShopNordstrom
+namespace StoreScraper.Bots.Mstanojevic.ShopNordstrom
 {
 
     public class ShopNordstromScrapper : ScraperBase

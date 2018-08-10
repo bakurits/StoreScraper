@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StoreScraper.Bots.GiorgiBaghdavadze.Nordstrom;
+using StoreScraper.Bots.GiorgiBaghdavadze._290sqm;
 using StoreScraper.Models;
 
 namespace ScraperTest.ScraperTests.GiorgiBaghdavadze
 {
     [TestClass]
-    public class NordstromScraperTest
+    public class _290sqmTest
     {
-        private NordstromScraper scraper = new NordstromScraper();
-        public NordstromScraper Scraper { get => scraper; set => scraper = value; }
+        private IstSqm scraper = new IstSqm();
+        public IstSqm Scraper { get => scraper; set => scraper = value; }
 
         [TestMethod]
         public void TestFind()
@@ -23,7 +23,7 @@ namespace ScraperTest.ScraperTests.GiorgiBaghdavadze
         {
             var product = new Product()
             {
-                Url = "https://shop.nordstrom.com/s/good-hyouman-lexi-new-day-tee/4983229?origin=keywordsearch-personalize...",
+                Url = "https://ist.290sqm.com/index.php?route=product/product&product_id=12445&search=t-shirt",
                 ScrapedBy = Scraper
             };
 
@@ -31,10 +31,9 @@ namespace ScraperTest.ScraperTests.GiorgiBaghdavadze
 
             foreach (var size in details.SizesList)
             {
-                Console.WriteLine(size.Key);
-
+                Console.WriteLine(size);
             }
-    
+
         }
     }
 }

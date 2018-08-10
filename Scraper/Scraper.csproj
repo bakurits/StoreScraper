@@ -118,6 +118,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\DisabledScraperAttribute.cs" />
+    <Compile Include="Bots\GiorgiBaghdavadze\290sqm\IstSqm.cs" />
+    <Compile Include="Bots\Bakurits\Rimowa\RimowaScraper.cs" />
     <Compile Include="Bots\DavitBezhanishvili\AwLabScrapper.cs" />
     <Compile Include="Bots\Jordan\Byparra\ByparraScraper.cs" />
     <Compile Include="Bots\Mstanojevic\Cruvoir\CruvoirScrapper.cs" />
@@ -167,6 +169,7 @@
     <Compile Include="Bots\Higuhigu\Woodwood\WoodwoodSearchSettings.cs" />
     <Compile Include="Bots\Higuhigu\Ycmc\YcmcScraper.cs" />
     <Compile Include="Bots\Jordan\VooBerlin\VooScraper.cs" />
+    <Compile Include="Bots\GiorgiBaghdavadze\tres-bien\tresBienScrapper.cs" />
     <Compile Include="Http\CookieCollector.cs" />
     <Compile Include="Helpers\Embed.cs" />
     <Compile Include="Http\FirefoxHttpClientStorage.cs" />

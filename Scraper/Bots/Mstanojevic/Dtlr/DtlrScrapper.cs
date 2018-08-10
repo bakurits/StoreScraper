@@ -60,30 +60,34 @@ namespace StoreScraper.Bots.Mstanojevic.Dtlr
 
             var strDoc = document.InnerHtml;
 
-            var start = strDoc.IndexOf("var spConfig = new Product.Config({");
-            var trimmed = strDoc.Substring(start, strDoc.Length - start);
-            var end = trimmed.IndexOf(");");
-
-            trimmed = trimmed.Substring(0, end);
-
-            trimmed = trimmed.Replace("var spConfig = new Product.Config(", "");
-            JObject obj = JObject.Parse(trimmed);
-            
-            foreach(var attr in obj["attributes"])
+            if (strDoc.Contains("var spConfig = new Product.Config({"))
             {
+                var start = strDoc.IndexOf("var spConfig = new Product.Config({");
+                var trimmed = strDoc.Substring(start, strDoc.Length - start);
+                var end = trimmed.IndexOf(");");
 
-                foreach (var x in attr)
+                trimmed = trimmed.Substring(0, end);
+
+                trimmed = trimmed.Replace("var spConfig = new Product.Config(", "");
+                JObject obj = JObject.Parse(trimmed);
+
+                foreach (var attr in obj["attributes"])
                 {
-                    if (x["code"].ToString() == "size")
+
+                    foreach (var x in attr)
                     {
-                        foreach (var option in x["options"])
+                        if (x["code"].ToString() == "size")
                         {
-                            details.AddSize(option["label"].ToString(), "Unknown");
+                            foreach (var option in x["options"])
+                            {
+                                details.AddSize(option["label"].ToString(), "Unknown");
+                            }
                         }
+
+
                     }
-
-
                 }
+
             }
             // need to parse javascript to extract prices
             /*var sizeCollection = document.SelectNodes("//div[@class='sizeBox']/ul/li");

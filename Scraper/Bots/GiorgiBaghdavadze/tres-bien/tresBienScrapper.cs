@@ -5,34 +5,32 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
-using Newtonsoft.Json.Linq;
 using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
-namespace StoreScraper.Bots.GiorgiBaghdavadze.Nordstrom
+namespace StoreScraper.Bots.GiorgiBaghdavadze
 {
-    public class NordstromScraper : ScraperBase
+    class TresBienScrapper : ScraperBase
     {
-        public override string WebsiteName { get; set; } = "Nordstrom";
-        public override string WebsiteBaseUrl { get; set; } = "https://shop.nordstrom.com";
+        public override string WebsiteName { get; set; } = "TresBien";
+        public override string WebsiteBaseUrl { get; set; } = "https://tres-bien.com";
         public override bool Active { get; set; }
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
             var searchUrl =
-                $"https://shop.nordstrom.com/sr?origin=keywordsearch&keyword={settings.KeyWords}&top=72&offset=0&page=1&sort=Newest";
+                $"https://tres-bien.com/search/?q={settings.KeyWords}";
             var request = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = request.GetDoc(searchUrl, token);
-            var ds = document.DocumentNode;
             Logger.Instance.WriteErrorLog("Unexpected html!");
-            var nodes = document.DocumentNode.SelectSingleNode("//div[contains(@class, 'resultSet_5ymz9')]/div");
+            var nodes = document.DocumentNode.SelectSingleNode("//*[@id='kuLandingProductsListUl']");
             if (nodes == null)
             {
                 return;
             }
-            var children = nodes.SelectNodes("./div");
+            var children = nodes.SelectNodes("./li");
             if (children == null)
             {
                 return;
@@ -44,12 +42,10 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.Nordstrom
 #if DEBUG
                 LoadSingleProduct(listOfProducts, child, settings);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts,child,settings);
+                LoadSingleProductTryCatchWraper(listOfProducts, child, settings);
 #endif
             }
         }
-
-
         /// <summary>
         /// This method is simple wrapper on LoadSingleProduct
         /// To catch all Exceptions during release
@@ -71,7 +67,7 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.Nordstrom
 
         private double getPrice(HtmlNode child)
         {
-            string priceIntoString = child.SelectSingleNode(".//span[contains(@class,'price_Z1JgxME')]").InnerText;
+            string priceIntoString = child.SelectSingleNode(".//div[contains(@class,'kuSalePrice')]/[2]").InnerText;
             Debug.Print(priceIntoString);
             string result = Regex.Match(priceIntoString, @"[\d\.]+").Value;
             double.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
@@ -81,19 +77,19 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.Nordstrom
 
         private string getImageUrl(HtmlNode child)
         {
-            return child.SelectSingleNode(".//img[contains(@class, 'image_12eiRp')]").GetAttributeValue("src", null);
+            return child.SelectSingleNode(".//div[contains(@class,klevuImgWrap)]/a/img").GetAttributeValue("src", null);
         }
 
         private string getProductUrl(HtmlNode child)
         {
-            string url = child.SelectSingleNode(".//a[contains(@class,link_22Nhi)]").GetAttributeValue("href", null);
-            url = this.WebsiteBaseUrl + url;
+            string url = child.SelectSingleNode(".//div[contains(@class,kuName)]").GetAttributeValue("href", null);
             return url;
         }
 
         private string getProductName(HtmlNode child)
         {
-            return child.SelectSingleNode(".//span[contains(@class,navigationLink_1cd0fW) and contains(@class, 'light_Zn7rgm')]").InnerText;
+            string name = child.SelectSingleNode(".//div[contains(@class,kuName)]").InnerText;
+            return name;
         }
 
         private void LoadSingleProduct(List<Product> listOfProducts, HtmlNode child, SearchSettingsBase settings)
@@ -108,39 +104,9 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.Nordstrom
                 listOfProducts.Add(product);
             }
         }
-
-        private HtmlNode GetWebpage(string url, CancellationToken token)
-        {
-            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
-            return client.GetDoc(url, token).DocumentNode;
-        }
-
-
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
-            var document = GetWebpage(product.Url, token);
-            string innerHtml = document.InnerHtml;
-            int startIndx = document.InnerHtml.IndexOf("\"size\"" + ":[", StringComparison.Ordinal);
-            if (startIndx == -1) return null;
-            int endIndx = -1;
-            endIndx = innerHtml.IndexOf("]", startIndx, StringComparison.Ordinal);
-            if (endIndx == -1)
-                return null;
-
-            string jsonObjectStr = innerHtml.Substring(startIndx, endIndx - startIndx + 1);
-            jsonObjectStr = jsonObjectStr.Substring(jsonObjectStr.IndexOf("[", StringComparison.Ordinal));
-            JArray parsed = JArray.Parse(jsonObjectStr);
-
-
-            ProductDetails details = new ProductDetails();
-
-            foreach (var x in parsed.Children())
-            {
-                var value = (string)x.SelectToken("displayValue");
-                details.AddSize(value, "Unknown");
-            }
-
-            return details;
+            throw new NotImplementedException();
         }
     }
 }

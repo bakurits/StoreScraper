@@ -54,15 +54,18 @@ namespace StoreScraper.Bots.Mstanojevic.Sneakersnstuff
             ProductDetails details = new ProductDetails();
 
             var sizeCollection = document.SelectNodes("//span[@class='size-type']");
-
-            foreach (var size in sizeCollection)
+            if (sizeCollection != null)
             {
-                string sz = size.InnerText.Trim();
-                if (sz.Length > 0)
-                {
-                    details.AddSize(sz, "Unknown");
-                }
 
+                foreach (var size in sizeCollection)
+                {
+                    string sz = size.GetAttributeValue("title", size.InnerText).Trim();
+                    if (sz.Length > 0)
+                    {
+                        details.AddSize(sz, "Unknown");
+                    }
+
+                }
             }
 
             return details;

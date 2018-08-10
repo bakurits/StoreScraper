@@ -53,15 +53,24 @@ namespace StoreScraper.Bots.Mstanojevic.GoodHoodStore
             ProductDetails details = new ProductDetails();
 
             var sizeCollection = document.SelectNodes("//select[@name='id']/option");
-
-            foreach (var size in sizeCollection)
+            if (sizeCollection != null)
             {
-                string sz = size.InnerHtml;
-                if (sz.Length > 0)
+                foreach (var size in sizeCollection)
                 {
-                    details.AddSize(sz, "Unknown");
-                }
+                    if (!size.InnerText.Contains("Out of Stock"))
+                    {
+                        string sz = size.InnerHtml;
+                        if (sz.Contains("Select"))
+                        {
+                            continue;
+                        }
 
+                        if (sz.Length > 0)
+                        {
+                            details.AddSize(sz, "Unknown");
+                        }
+                    }
+                }
             }
 
             return details;
