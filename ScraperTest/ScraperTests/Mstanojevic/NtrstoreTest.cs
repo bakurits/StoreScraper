@@ -26,11 +26,30 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         [TestMethod()]
         public void GetProductDetailsTest()
         {
+        /*Product curProduct = new Product(new NtrstoreScraper(), "Unknown",
+            "https://www.ntrstore.com/nike-flyknit-lunar-3",
+            420,
+            "",
+            "id");
+
+
+        NtrstoreScraper scraper = new NtrstoreScraper();
+
+        ProductDetails details = scraper.GetProductDetails(curProduct, CancellationToken.None);
+
+        Helper.PrintGetDetailsResult(details.SizesList);
+        Debug.WriteLine(curProduct.Name);
+
+        */
+
+
+        
+
             Product curProduct = new Product(new NtrstoreScraper(), "Unknown",
-                "https://www.ntrstore.com/nike-flyknit-lunar-3",
-                420,
-                "",
-                "id");
+            "https://www.ntrstore.com/air-180-og-white-ultramarine",
+            420,
+            "",
+            "id");
 
 
             NtrstoreScraper scraper = new NtrstoreScraper();

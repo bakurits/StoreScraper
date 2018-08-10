@@ -64,7 +64,10 @@ namespace StoreScraper.Bots.Mstanojevic.Triads
                 {
                     foreach (var value in item["values"])
                     {
-                        details.AddSize(value["value"].ToString(), value["stock_level"].ToString() );
+                        if (int.Parse(value["stock_level"].ToString()) > 0)
+                        {
+                            details.AddSize(value["value"].ToString(), value["stock_level"].ToString());
+                        }
                     }
 
                 }

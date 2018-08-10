@@ -57,7 +57,7 @@ namespace StoreScraper.Bots.Mstanojevic.Sneakersnstuff
 
             foreach (var size in sizeCollection)
             {
-                string sz = size.InnerText.Trim();
+                string sz = size.GetAttributeValue("title",size.InnerText).Trim();
                 if (sz.Length > 0)
                 {
                     details.AddSize(sz, "Unknown");

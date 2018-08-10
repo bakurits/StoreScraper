@@ -57,29 +57,35 @@ namespace StoreScraper.Bots.Mstanojevic.Ntrstore
 
             var strDoc = document.InnerHtml;
 
-            var start = strDoc.IndexOf("var spConfig = new Product.Config({");
-            var trimmed = strDoc.Substring(start, strDoc.Length - start);
-            var end = trimmed.IndexOf(");");
-
-            trimmed = trimmed.Substring(0, end);
-
-            trimmed = trimmed.Replace("var spConfig = new Product.Config(", "");
-            JObject obj = JObject.Parse(trimmed);
-
-            foreach (var attr in obj["attributes"])
+            if (strDoc.Contains("var spConfig = new Product.Config({"))
             {
 
-                foreach (var x in attr)
+                var start = strDoc.IndexOf("var spConfig = new Product.Config({");
+
+
+                var trimmed = strDoc.Substring(start, strDoc.Length - start);
+                var end = trimmed.IndexOf(");");
+
+                trimmed = trimmed.Substring(0, end);
+
+                trimmed = trimmed.Replace("var spConfig = new Product.Config(", "");
+                JObject obj = JObject.Parse(trimmed);
+
+                foreach (var attr in obj["attributes"])
                 {
-                    if (x["code"].ToString() == "us_size_mens")
+
+                    foreach (var x in attr)
                     {
-                        foreach (var option in x["options"])
+                        if (x["code"].ToString() == "us_size_mens")
                         {
-                            details.AddSize(option["label"].ToString(), "Unknown");
+                            foreach (var option in x["options"])
+                            {
+                                details.AddSize(option["label"].ToString(), "Unknown");
+                            }
                         }
+
+
                     }
-
-
                 }
             }
 

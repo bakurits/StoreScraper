@@ -69,10 +69,10 @@ namespace StoreScraper.Bots.Mstanojevic.Footish
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
-            var document = GetWebpage(product.Url, token);
+            //var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//select[@onchange='Products_UpdateAttributeValue(this);']/option");
+            /*var sizeCollection = document.SelectNodes("//select[@onchange='Products_UpdateAttributeValue(this);']/option");
 
             foreach (var size in sizeCollection)
             {
@@ -82,7 +82,25 @@ namespace StoreScraper.Bots.Mstanojevic.Footish
                     details.AddSize(sz, "Unknown");
                 }
 
+            }*/
+
+
+            string restApiUrl = "https://www.footish.se/Services/Rest/v2/json/en-GB/EUR/products/"+product.Id;
+            //Console.WriteLine(restApiUrl);
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var response = Utils.GetParsedJson(client, restApiUrl, token);
+            //Console.WriteLine(response["TotalProducts"]);
+
+            foreach (var item in response["ProductItems"])
+            {
+                foreach(var attr in item["Attributes"])
+                {
+                    details.AddSize(attr["Value"].ToString(), attr["StockLevel"].ToString());
+
+                }
             }
+
+
 
             return details;
         }
