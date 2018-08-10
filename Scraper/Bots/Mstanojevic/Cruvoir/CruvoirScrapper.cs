@@ -91,22 +91,11 @@ namespace StoreScraper.Bots.Mstanojevic.Cruvoir
         {
             string title = item.SelectSingleNode("./div/p[2]").InnerHtml.ToLower();
             var validKeywords = settings.KeyWords.ToLower().Split(' ');
-            var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
             foreach (var keyword in validKeywords)
             {
                 if (!title.Contains(keyword))
                     return false;
             }
-
-
-            foreach (var keyword in invalidKeywords)
-            {
-                if (keyword == "")
-                    continue;
-                if (title.Contains(keyword))
-                    return false;
-            }
-
 
             return true;
 
@@ -114,7 +103,7 @@ namespace StoreScraper.Bots.Mstanojevic.Cruvoir
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
-            //if (!CheckForValidProduct(item, settings)) return;
+            if (!CheckForValidProduct(item, settings)) return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             double price = GetPrice(item);
