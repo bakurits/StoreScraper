@@ -143,7 +143,7 @@
     <Compile Include="Bots\Bakurits\Mrporter\MrporterScraper.cs" />
     <Compile Include="Bots\GiorgiChkhikvadze\Nakedcph\NakedcphScrapper.cs" />
     <Compile Include="Bots\Higuhigu\Nighshop\NighshopScraper.cs" />
-    <Compile Include="Bots\Mstanojevic\Nordstrom\NordStromScraper.cs" />
+    <Compile Include="Bots\GiorgiBaghdavadze\Nordstrom\NordStromScraper.cs" />
     <Compile Include="Bots\Mstanojevic\Ntrstore\NtrstoreScrapper.cs" />
     <Compile Include="Bots\GiorgiChkhikvadze\Off---White\OffWhiteScraper.cs" />
     <Compile Include="AppSettings.cs" />
@@ -152,7 +152,7 @@
     <Compile Include="Bots\Bakurits\Shelflife\ShelflifeScraper.cs" />
     <Compile Include="Bots\Mstanojevic\Shinzo\ShinzoScrapper.cs" />
     <Compile Include="Bots\Higuhigu\Shoezgallery\ShoezgalleryScraper.cs" />
-    <Compile Include="Bots\GiorgiBaghdavadze\ShopNordstrom\ShopNordstromScrapper.cs" />
+    <Compile Include="Bots\Mstanojevic\ShopNordstrom\ShopNordstromScrapper.cs" />
     <Compile Include="Bots\Mstanojevic\Sneakers76\Sneakers76Scrapper.cs" />
     <Compile Include="Bots\Mstanojevic\Sneakersnstuff\SneakersnstuffScrapper.cs" />
     <Compile Include="Bots\Mstanojevic\Snkrs\SnkrsScrapper.cs" />
