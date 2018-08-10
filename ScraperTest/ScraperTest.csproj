@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="MinorTests\UtilsTests.cs" />
     <Compile Include="MinorTests\SlackWebHookTests.cs" />
+    <Compile Include="ScraperTests\DavitBezhanishvili\AwLabScrapperTests.cs" />
     <Compile Include="ScraperTests\Mstanojevic\FootShopTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\SnkrsTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\TriadsTest.cs" />
