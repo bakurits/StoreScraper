@@ -23,7 +23,7 @@ using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 
 namespace StoreScraper.Helpers
 {
-    static public class Utils
+    public static class Utils
     {
         public static IEnumerable<HtmlNode> SelectChildren(this HtmlNode parent, string tagName)
         {
@@ -89,7 +89,25 @@ namespace StoreScraper.Helpers
             return buyOptions;
         }
 
-
+        public static async Task<HtmlDocument> GetDocTask(this HttpClient client, string url, CancellationToken token)
+        {
+            try
+            {
+                using (HttpResponseMessage response = await client.GetAsync(url, token))
+                {
+                    string v = await response.Content.ReadAsStringAsync();
+                    var result = v;
+                    var doc = new HtmlDocument();
+                    doc.LoadHtml(result);
+                    return doc;
+                }
+            }
+            catch (WebException)
+            {
+                Logger.Instance.WriteErrorLog("Can't connect to website");
+                throw;
+            }
+        }
         public static HtmlDocument GetDoc(this HttpClient client, string url, CancellationToken token)
         {
             try

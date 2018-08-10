@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="MinorTests\UtilsTests.cs" />
     <Compile Include="MinorTests\SlackWebHookTests.cs" />
+    <Compile Include="ScraperTests\Bakurits\RimowaScraperTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\FootShopTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\SnkrsTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\TriadsTest.cs" />
@@ -93,7 +94,7 @@
     <Compile Include="ScraperTests\Mstanojevic\Sneakers76Test.cs" />
     <Compile Include="ScraperTests\GiorgiBaghdavadze\TitoloScraperTests.cs" />
     <Compile Include="MinorTests\LoggerTest.cs" />
-    <Compile Include="ScraperTests\Bakurits\ShelflifeScraperTests.cs" />
+    <Compile Include="ScraperTests\Bakurits\ShelflifeScraperTest.cs" />
     <Compile Include="Helpers\Helper.cs" />
     <Compile Include="ScraperTests\Stycky_bit\FootScraperTest.cs" />
     <Compile Include="MinorTests\DiscordWebhookTests.cs" />

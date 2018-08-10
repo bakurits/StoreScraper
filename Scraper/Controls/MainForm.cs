@@ -79,7 +79,7 @@ namespace StoreScraper.Controls
                 convertedFilter = SearchSettingsBase.ConvertToChild(searchOptions, scraper.SearchSettingsType);
             }
             
-            scraper.FindItems(out var products, convertedFilter, _findTokenSource.Token);
+            scraper.ScrapeItems(out var products, convertedFilter, _findTokenSource.Token);
             if (AppSettings.Default.PostStartMessage)
             {
                products.ForEach(PostProduct);
@@ -228,7 +228,7 @@ namespace StoreScraper.Controls
                 var convertedFilter = SearchSettingsBase.ConvertToChild(searchOptions, store.SearchSettingsType);
                 try
                 {
-                    store.FindItems(out var curProductsList, convertedFilter, CancellationToken.None);
+                    store.ScrapeItems(out var curProductsList, convertedFilter, CancellationToken.None);
                     monTask.OldItems.Add(curProductsList);
                 }
                 catch

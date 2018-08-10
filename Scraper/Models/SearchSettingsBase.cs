@@ -5,7 +5,7 @@ using System.ComponentModel;
 namespace StoreScraper.Models
 {
     [Serializable]
-    public class SearchSettingsBase
+    public class SearchSettingsBase : ICloneable
     {
         protected const string FilterCatName = "Filters";
         protected const string CommonCatName = "Common";
@@ -38,6 +38,17 @@ namespace StoreScraper.Models
         public override string ToString()
         {
             return $"{KeyWords}[{MinPrice}-{MaxPrice}]";
+        }
+
+        public object Clone()
+        {
+            return new SearchSettingsBase()
+            {
+                KeyWords = this.KeyWords,
+                NegKeyWrods = this.NegKeyWrods,
+                MinPrice = this.MinPrice,
+                MaxPrice = this.MaxPrice,
+            };
         }
     }
 }
