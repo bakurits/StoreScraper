@@ -91,6 +91,7 @@
     <Compile Include="Tests\NtrstoreTest.cs" />
     <Compile Include="Tests\Sneakers76Test.cs" />
     <Compile Include="Tests\SneakersnstuffTest.cs" />
+    <Compile Include="Tests\SnkrsTest.cs" />
     <Compile Include="Tests\TitoloScraperTests.cs" />
     <Compile Include="MinorTests\LoggerTest.cs" />
     <Compile Include="Tests\ShelflifeScraperTests.cs" />
