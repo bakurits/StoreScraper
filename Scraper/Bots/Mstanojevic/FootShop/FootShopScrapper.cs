@@ -20,7 +20,51 @@ namespace StoreScraper.Bots.Mstanojevic.FootShop
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
+
+
+            listOfProducts = new List<Product>();
+
+            string gender = "male";
+
+            string restApiUrl = "https://www.footshop.eu/en/?controller=products&listing_type=search&listing_type_id=0&search_query=" + settings.KeyWords + "&page=1";
+
+            if (gender != null)
+            {
+                restApiUrl += "&sex=%5B%22"+gender+"%22%5D&";
+
+            }
+            
+            if (settings.MaxPrice > 0)
+            {
+                restApiUrl += "&price%5Bmin%5D=" + settings.MinPrice.ToString() + "&price%5Bmax%5D="+settings.MaxPrice.ToString();
+            }
+
+            Console.WriteLine(restApiUrl);
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var response = Utils.GetParsedJson(client, restApiUrl, token);
+
+            foreach (var item in response["products"]["items"])
+            {
+                double price = 0;
+                try
+                {
+                    string str = item["price"]["value"].ToString();
+                    price = double.Parse(str);
+                }
+                catch
+                {
+
+                }
+                var product = new Product(this, item["name"].ToString(), WebsiteBaseUrl+"/"+ item["url"].ToString(), price, item["image"].ToString(), item["id"].ToString(), "EUR");
+                if (Utils.SatisfiesCriteria(product, settings))
+                {
+                    listOfProducts.Add(product);
+                }
+
+            }
+
+
+            /*HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
             Console.WriteLine(itemCollection.Count);
             foreach (var item in itemCollection)
             {
@@ -30,7 +74,7 @@ namespace StoreScraper.Bots.Mstanojevic.FootShop
 #else
                 LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
 #endif
-            }
+            }*/
 
         }
 
