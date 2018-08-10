@@ -244,6 +244,10 @@ namespace StoreScraper.Helpers
 
             c = c == "$" ? "USD" : c == "€" ? "EUR" : c;
 
+#if DEBUG
+            if(c.Any(char.IsNumber)) Logger.Instance.WriteErrorLog($"Couldn't parse string to price. str = {priceString}");
+#endif
+
             return new Price(parsed ,c);
         }
     }

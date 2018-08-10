@@ -13,12 +13,12 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
     public class AwLabScrapperTests
     {
         [TestMethod]
-        public void findItemsTest()
+        public void FindItemsTest()
         {
-            AwLabScrapper scraper = new AwLabScrapper();
-            SearchSettingsBase settings = new SearchSettingsBase()
+            var scraper = new AwLabScrapper();
+            var settings = new SearchSettingsBase()
             {
-                KeyWords = "men\'s shoes"
+                KeyWords = "shoes"
             };
 
             scraper.FindItems(out var list, settings, CancellationToken.None);
@@ -26,10 +26,10 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
         }
 
         [TestMethod]
-        public void getProductDetailsTest()
+        public void GetProductDetailsTest()
         {
-            AwLabScrapper scraper = new AwLabScrapper();
-            Product testProduct = new Product(scraper, "Unknown",
+            var scraper = new AwLabScrapper();
+            var testProduct = new Product(scraper, "Unknown",
                 "https://en.aw-lab.com/shop/adidas-nizza-5895145?___SID=U",
                 34.90,
                 "https://en.aw-lab.com/shop/media/catalog/product/cache/3/small_image/190x/5e06319eda06f020e43594a9c230972d/5/8/5895145_0/adidas-nizza-20.jpg",
@@ -37,10 +37,9 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
 
 
 
-            ProductDetails details = scraper.GetProductDetails(testProduct, CancellationToken.None);
+            var details = scraper.GetProductDetails(testProduct, CancellationToken.None);
 
             Helper.PrintGetDetailsResult(details.SizesList);
-            Debug.WriteLine(testProduct.ImageUrl);
         }
     }
 }

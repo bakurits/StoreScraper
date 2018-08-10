@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
@@ -13,7 +14,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili
 {
     public class AwLabScrapper : ScraperBase
     {
-        public override string WebsiteName { get; set; } = "aw-lab";
+        public override string WebsiteName { get; set; } = "Aw-lab";
         public override string WebsiteBaseUrl { get; set; } = "https://en.aw-lab.com";
         public override bool Active { get; set; }
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
@@ -27,7 +28,9 @@ namespace StoreScraper.Bots.DavitBezhanishvili
             var nodes = document.DocumentNode.SelectSingleNode("//div[contains(@class, 'products-grid row')]");
             if (nodes == null)
             {
-                return;
+                Logger.Instance.WriteErrorLog("Unexcepted Html");
+                Logger.Instance.SaveHtmlSnapshop(document);
+                throw new WebException("Unexcepted Html");
             }
             var children = nodes.SelectNodes("./div");
             if (children == null)
@@ -66,46 +69,36 @@ namespace StoreScraper.Bots.DavitBezhanishvili
             }
         }
 
-        private double getPrice(HtmlNode child)
-        {
-            string fullPriceString = child.SelectSingleNode(".//p[contains(@class,'small-price')]").InnerText;
-            Price fullPrice = Utils.ParsePrice(fullPriceString);
-            return fullPrice.Value;
-        }
-
-        ////////////////////////////////
         private string getImageUrl(HtmlNode child)
         {
             return child.SelectSingleNode(".//div[contains(@class, 'product-image')]/a/img").GetAttributeValue("src", null);
         }
-        /////////////////////////////////
+
         private string getProductUrl(HtmlNode child)
         {
             return child.SelectSingleNode(".//div[contains(@class, 'product-image')]/a").GetAttributeValue("href", null);
         }
-        //////////////////////////////////////
+
+
         private string getProductName(HtmlNode child)
         {
             return child.SelectSingleNode(".//div[contains(@class,product-data-container)]/h2/a").InnerText;
         }
 
 
-        private string getCurrency(HtmlNode child)
-        {
-            string fullPriceString = child.SelectSingleNode(".//p[contains(@class,'small-price')]").InnerText;
-            Price fullPrice = Utils.ParsePrice(fullPriceString);
-            return fullPrice.Currency;
-        }
-
         private void LoadSingleProduct(List<Product> listOfProducts, HtmlNode child, SearchSettingsBase settings)
         {
 
-            string imageURL = getImageUrl(child);
-            string productURL = getProductUrl(child);
-            string productName = getProductName(child);
-            double price = getPrice(child);
-            string currency = getCurrency(child);
-            var product = new Product(this, productName, productURL, price, imageURL, productURL, currency);
+            var imageUrl = getImageUrl(child);
+            var productUrl = getProductUrl(child);
+            var productName = getProductName(child);
+            var priceNode = child.SelectSingleNode(".//*[contains(@class, 'small-price')]");
+
+            var priceStr = priceNode.SelectSingleNode("./del") != null
+                ? priceNode.SelectSingleNode("./text()").InnerText
+                : priceNode.InnerText;
+            Price p = Utils.ParsePrice(priceStr);
+            var product = new Product(this, productName, productUrl, p.Value, imageUrl, productUrl, p.Currency);
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
