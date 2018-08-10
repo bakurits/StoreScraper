@@ -27,7 +27,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         public void GetProductDetailsTest()
         {
             Product curProduct = new Product(new ExcelsiormilanoScrapper(), "Unknown",
-                "https://www.excelsiormilano.com/shoes/34287-red-canvas-sneakers.html?search_query=red+canvas&results=3",
+                "https://www.excelsiormilano.com/cat-url/36709-aztrek.html",
                 420,
                 "https://www.excelsiormilano.com/96579-large_default/red-canvas-sneakers.jpg",
                 "id");
