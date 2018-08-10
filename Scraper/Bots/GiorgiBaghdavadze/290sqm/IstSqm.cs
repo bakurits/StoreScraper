@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Microsoft.CSharp.RuntimeBinder;
 using StoreScraper.Core;
@@ -15,7 +12,7 @@ using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
-namespace StoreScraper.Bots._290sqm
+namespace StoreScraper.Bots.GiorgiBaghdavadze._290sqm
 {
     public class IstSqm : ScraperBase
     {
@@ -113,11 +110,11 @@ namespace StoreScraper.Bots._290sqm
         {
             var document = GetWebpage(product.Url, token);
             var asd = document.InnerHtml;
-            const string xPath = "//select[@id='input-option11842']";
+            const string xPath = "//select[@id='input-option11842']/option";
             var nodes = document.SelectNodes(xPath);
             if (nodes == null)
             {
-                throw new RuntimeBinderInternalCompilerException();
+                throw new Exception();
             }
 
             var sizes = nodes.Select(node => node.InnerText.Trim()).Where(element => !element.Contains("Seçiniz"));

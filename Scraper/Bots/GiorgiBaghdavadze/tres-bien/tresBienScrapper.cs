@@ -2,18 +2,15 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using HtmlAgilityPack;
 using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
-namespace StoreScraper.Bots.tres_bien
+namespace StoreScraper.Bots.GiorgiBaghdavadze
 {
     class TresBienScrapper : ScraperBase
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StoreScraper.Bots.Mstanojevic.Nordstrom;
+using StoreScraper.Bots.GiorgiBaghdavadze.Nordstrom;
 using StoreScraper.Models;
 
 namespace ScraperTest.ScraperTests.GiorgiBaghdavadze
