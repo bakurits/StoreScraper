@@ -6,6 +6,8 @@ using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace StoreScraper.Bots.Mstanojevic.Ntrstore
 {
@@ -49,8 +51,37 @@ namespace StoreScraper.Bots.Mstanojevic.Ntrstore
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
+
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
+
+            var strDoc = document.InnerHtml;
+
+            var start = strDoc.IndexOf("var spConfig = new Product.Config({");
+            var trimmed = strDoc.Substring(start, strDoc.Length - start);
+            var end = trimmed.IndexOf(");");
+
+            trimmed = trimmed.Substring(0, end);
+
+            trimmed = trimmed.Replace("var spConfig = new Product.Config(", "");
+            JObject obj = JObject.Parse(trimmed);
+
+            foreach (var attr in obj["attributes"])
+            {
+
+                foreach (var x in attr)
+                {
+                    if (x["code"].ToString() == "us_size_mens")
+                    {
+                        foreach (var option in x["options"])
+                        {
+                            details.AddSize(option["label"].ToString(), "Unknown");
+                        }
+                    }
+
+
+                }
+            }
 
             /*var sizeCollection = document.SelectNodes("//select[contains(@id,'attribute')/option]");
 

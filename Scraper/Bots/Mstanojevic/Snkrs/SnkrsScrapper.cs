@@ -52,7 +52,7 @@ namespace StoreScraper.Bots.Mstanojevic.Snkrs
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            /*var sizeCollection = document.SelectNodes("//header[.='Size guide']/../div/table/tbody/tr/td[1][@width='25%']");
+            var sizeCollection = document.SelectNodes("//span[@class='size_US']");
 
             foreach (var size in sizeCollection)
             {
@@ -63,7 +63,7 @@ namespace StoreScraper.Bots.Mstanojevic.Snkrs
                 }
 
             }
-            */
+            
             return details;
         }
 
