@@ -1,12 +1,11 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
-using StoreScraper.Bots.Snkrs;
+using StoreScraper.Bots.Mstanojevic.Snkrs;
 using StoreScraper.Models;
 
-namespace ScraperTest.Tests
+namespace ScraperTest.ScraperTests.Mstanojevic
 {
     [TestClass]
     public class SnkrsTest
@@ -28,9 +27,9 @@ namespace ScraperTest.Tests
         public void GetProductDetailsTest()
         {
             Product curProduct = new Product(new SnkrsScrapper(), "Unknown",
-                "https://www.snkrs.com/en/nike/w-air-max-1-100-white-7953.html?search_query=nike&results=89",
+                "https://www.snkrs.com/en/nike/m2k-tekno-blackoff-white-8222.html",
                 420,
-                "https://media2.snkrs.com/42366-thickbox/w-air-max-1-100-white.jpg",
+                "https://media.snkrs.com/43202-thickbox/m2k-tekno-blackoff-white.jpg",
                 "id");
 
 

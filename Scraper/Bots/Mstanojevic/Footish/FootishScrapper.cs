@@ -22,30 +22,38 @@ namespace StoreScraper.Bots.Mstanojevic.Footish
         {
             listOfProducts = new List<Product>();
 
+  
+            string restApiUrl = "https://www.footish.se/Services/Rest/v2/json/en-GB/EUR/search/full/" + settings.KeyWords + "/200/1";
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var response = Utils.GetParsedJson(client, restApiUrl, token);
+            Console.WriteLine(response["TotalProducts"]);
 
-
-
-            /*HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
-            foreach (var item in itemCollection)
+            foreach (var item in response["ProductItems"])
             {
-                token.ThrowIfCancellationRequested();
-#if DEBUG
-                LoadSingleProduct(listOfProducts, settings, item);
-#else
-                LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
-#endif
-            }*/
+                double price = 0;
+                try
+                {
+                    string str = item["DiscountedPrice"].ToString();
+                    if (str == "-1")
+                    {
+                        str = item["Price"].ToString();
+                    }
+                    str = str.Substring(str.Length - 2);
+                    price = double.Parse(str);
+                }catch
+                {
 
+                }
+                var product = new Product(this, item["Name"].ToString(), item["ProductUrl"].ToString(), price, item["Images"][0]["Url"].ToString(), item["Id"].ToString(), "EUR");
+                if (Utils.SatisfiesCriteria(product, settings))
+                {
+                    listOfProducts.Add(product);
+                }
+
+            }
         }
 
-        private void fetchApi(SearchSettingsBase settings, CancellationToken token)
-        {
 
-            string restApiUrl = "https://www.footish.se/Services/Rest/v2/json/en-GB/EUR/search/full/nike/42/2";
-            var document = GetWebpage(restApiUrl, token);
-
-
-        }
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
@@ -61,10 +69,10 @@ namespace StoreScraper.Bots.Mstanojevic.Footish
 
         public override ProductDetails GetProductDetails(Product product, CancellationToken token)
         {
-            var document = GetWebpage(product.Url, token);
+            //var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//select[@onchange='Products_UpdateAttributeValue(this);']/option");
+            /*var sizeCollection = document.SelectNodes("//select[@onchange='Products_UpdateAttributeValue(this);']/option");
 
             foreach (var size in sizeCollection)
             {
@@ -74,7 +82,25 @@ namespace StoreScraper.Bots.Mstanojevic.Footish
                     details.AddSize(sz, "Unknown");
                 }
 
+            }*/
+
+
+            string restApiUrl = "https://www.footish.se/Services/Rest/v2/json/en-GB/EUR/products/"+product.Id;
+            //Console.WriteLine(restApiUrl);
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var response = Utils.GetParsedJson(client, restApiUrl, token);
+            //Console.WriteLine(response["TotalProducts"]);
+
+            foreach (var item in response["ProductItems"])
+            {
+                foreach(var attr in item["Attributes"])
+                {
+                    details.AddSize(attr["Value"].ToString(), attr["StockLevel"].ToString());
+
+                }
             }
+
+
 
             return details;
         }

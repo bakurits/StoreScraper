@@ -65,14 +65,20 @@ namespace StoreScraper.Bots.Mstanojevic.JimmyJazz
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//div[@class='psizeoptioncontainer']/div");
+            var sizeCollection = document.SelectNodes("//div[@class='psizeoptioncontainer']/div/a");
 
             foreach (var size in sizeCollection)
             {
-                string sz = size.SelectSingleNode("./a").InnerHtml;
-                if (sz.Length > 0)
+
+                if (!size.GetAttributeValue("class", "").Contains("piunavailable"))
                 {
-                    details.AddSize(sz, "Unknown");
+                    string sz = size.InnerHtml;
+                    
+
+                    if (sz.Length > 0)
+                    {
+                        details.AddSize(sz, "Unknown");
+                    }
                 }
 
             }

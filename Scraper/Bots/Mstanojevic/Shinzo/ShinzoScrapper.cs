@@ -7,6 +7,8 @@ using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace StoreScraper.Bots.Mstanojevic.Shinzo
 {
@@ -53,19 +55,50 @@ namespace StoreScraper.Bots.Mstanojevic.Shinzo
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//div[@class='attribute_list']/ul/li/label");
 
-            foreach (var size in sizeCollection)
+            var strDoc = document.InnerHtml;
+
+            if (strDoc.Contains("var combinations = "))
             {
-                string sz = size.InnerHtml;
-                if (sz.Length > 0)
-                {
-                    details.AddSize(sz, "Unknown");
-                }
 
+                var start = strDoc.IndexOf("var combinations = ");
+
+
+                var trimmed = strDoc.Substring(start, strDoc.Length - start);
+                var end = trimmed.IndexOf(";");
+
+                trimmed = trimmed.Substring(0, end);
+
+                trimmed = trimmed.Replace("var combinations = ", "");
+
+                JObject obj = JObject.Parse(trimmed);
+                foreach (var attr in obj)
+                {
+                    
+                        if ( int.Parse(attr.Value["quantity"].ToString()) > 0 )
+                        {
+                            details.AddSize(attr.Value["attributes_values"].First.First.ToString(), attr.Value["quantity"].ToString());
+
+                        }
+                    
+
+                        
+                }
             }
 
-            return details;
+                    /*var sizeCollection = document.SelectNodes("//div[@class='attribute_list']/ul/li/label");
+
+                    foreach (var size in sizeCollection)
+                    {
+                        string sz = size.InnerHtml;
+                        if (sz.Length > 0)
+                        {
+                            details.AddSize(sz, "Unknown");
+                        }
+
+                    }*/
+
+                    return details;
         }
 
         private HtmlNode GetWebpage(string url, CancellationToken token)

@@ -118,6 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\DisabledScraperAttribute.cs" />
+    <Compile Include="Bots\Bakurits\Rimowa\RimowaScraper.cs" />
     <Compile Include="Bots\Jordan\Byparra\ByparraScraper.cs" />
     <Compile Include="Bots\Mstanojevic\Cruvoir\CruvoirScrapper.cs" />
     <Compile Include="Bots\Higuhigu\43Einhalb\EinhalbScraper.cs" />
@@ -158,7 +159,7 @@
     <Compile Include="Bots\Mstanojevic\Snkrs\SnkrsScrapper.cs" />
     <Compile Include="Bots\Higuhigu\Solebox\SoleboxScraper.cs" />
     <Compile Include="Bots\GiorgiBaghdavadze\TitoloShop\TitoloScraper.cs" />
-    <Compile Include="Bots\Higuhigu\Triads\TriadsScrapper.cs" />
+    <Compile Include="Bots\Mstanojevic\Triads\TriadsScrapper.cs" />
     <Compile Include="Bots\Mstanojevic\UebervartShop\UebervartShopScrapper.cs" />
     <Compile Include="Bots\Higuhigu\Uptherestore\UptherestoreScraper.cs" />
     <Compile Include="Bots\Higuhigu\Urbanjunglestore\Urbanjunglestorescraper.cs" />

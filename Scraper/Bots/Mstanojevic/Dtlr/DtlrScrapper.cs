@@ -6,6 +6,8 @@ using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace StoreScraper.Bots.Mstanojevic.Dtlr
 {
@@ -56,6 +58,37 @@ namespace StoreScraper.Bots.Mstanojevic.Dtlr
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
+            var strDoc = document.InnerHtml;
+
+            if (strDoc.Contains("var spConfig = new Product.Config({"))
+            {
+                var start = strDoc.IndexOf("var spConfig = new Product.Config({");
+                var trimmed = strDoc.Substring(start, strDoc.Length - start);
+                var end = trimmed.IndexOf(");");
+
+                trimmed = trimmed.Substring(0, end);
+
+                trimmed = trimmed.Replace("var spConfig = new Product.Config(", "");
+                JObject obj = JObject.Parse(trimmed);
+
+                foreach (var attr in obj["attributes"])
+                {
+
+                    foreach (var x in attr)
+                    {
+                        if (x["code"].ToString() == "size")
+                        {
+                            foreach (var option in x["options"])
+                            {
+                                details.AddSize(option["label"].ToString(), "Unknown");
+                            }
+                        }
+
+
+                    }
+                }
+
+            }
             // need to parse javascript to extract prices
             /*var sizeCollection = document.SelectNodes("//div[@class='sizeBox']/ul/li");
 

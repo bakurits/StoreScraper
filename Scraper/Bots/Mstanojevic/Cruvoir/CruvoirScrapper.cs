@@ -56,7 +56,7 @@ namespace StoreScraper.Bots.Mstanojevic.Cruvoir
 
             foreach (var size in sizeCollection)
             {
-                string sz = size.InnerHtml;
+                string sz = size.InnerHtml.Trim();
                 if (sz.Length > 0)
                 {
                     details.AddSize(sz, "Unknown");
