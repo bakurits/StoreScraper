@@ -52,19 +52,38 @@ namespace StoreScraper.Bots.Mstanojevic.Triads
             var document = GetWebpage(product.Url, token);
             ProductDetails details = new ProductDetails();
 
-            var sizeCollection = document.SelectNodes("//select[@class='attributes-select']/option[.='Choose a UK Size']/../option");
+            string id = product.Url.Substring(product.Url.Length - 5);
+            string restApiUrl = "https://www.triads.co.uk/ajax/get_product_options/"+id;
 
-            foreach (var size in sizeCollection)
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var response = Utils.GetParsedJson(client, restApiUrl, token);
+
+            foreach (var item in response["attributes"])
             {
-                string sz = size.InnerHtml;
-                if (sz.Length > 0)
+                if (item["name"].ToString() == "UK Size")
                 {
-                    details.AddSize(sz, "Unknown");
-                }
+                    foreach (var value in item["values"])
+                    {
+                        details.AddSize(value["value"].ToString(), value["stock_level"].ToString() );
+                    }
 
+                }
             }
-            
-            return details;
+
+
+                /*var sizeCollection = document.SelectNodes("//select[@class='attributes-select']/option[.='Choose a UK Size']/../option");
+
+                foreach (var size in sizeCollection)
+                {
+                    string sz = size.InnerHtml;
+                    if (sz.Length > 0)
+                    {
+                        details.AddSize(sz, "Unknown");
+                    }
+
+                }*/
+
+                return details;
         }
 
         private HtmlNode GetWebpage(string url, CancellationToken token)

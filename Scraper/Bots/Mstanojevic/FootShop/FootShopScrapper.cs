@@ -19,8 +19,6 @@ namespace StoreScraper.Bots.Mstanojevic.FootShop
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
-            listOfProducts = new List<Product>();
-
 
             listOfProducts = new List<Product>();
 
