@@ -122,6 +122,7 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze.Nakedcph
         
             var nodes = doc.DocumentNode.SelectNodes(xpath);
             var sizes = nodes.Select(node => node.InnerText.Trim());
+            var name = doc.DocumentNode.SelectSingleNode("//*[contains(@class,'product-title')]");
 
             var details = new ProductDetails();
 
