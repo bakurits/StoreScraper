@@ -56,8 +56,14 @@ namespace ScraperTest.ScraperTests.Mstanojevic
 
             ProductDetails details = scraper.GetProductDetails(curProduct.Url, CancellationToken.None);
 
+            Debug.WriteLine(details.Name);
+            Debug.WriteLine(details.Price);
+            Debug.WriteLine(details.Currency);
+            Debug.WriteLine(details.ImageUrl);
+            Debug.WriteLine(details.StoreName);
+            Debug.WriteLine(details.Url);
+
             Helper.PrintGetDetailsResult(details.SizesList);
-            Debug.WriteLine(curProduct.Name);
 
         }
     }

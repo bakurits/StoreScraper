@@ -53,9 +53,36 @@ namespace StoreScraper.Bots.Mstanojevic.Ntrstore
         {
 
             var document = GetWebpage(productUrl, token);
-            ProductDetails details = new ProductDetails();
 
             var strDoc = document.InnerHtml;
+            Price price;
+
+            if (document.SelectSingleNode("//p[@class='special-price']/span[@class='price']") != null)
+            {
+                price = Utils.ParsePrice(document.SelectSingleNode("//p[@class='special-price']/span[@class='price']").InnerText);
+            }
+            else
+            {
+                price = Utils.ParsePrice(document.SelectSingleNode("//span[@class='regular-price']/span[@class='price']").InnerText);
+            }
+
+
+
+            string name = document.SelectSingleNode("//h1").InnerText.Trim();
+            string image = document.SelectSingleNode("//div[@class='product-image-gallery']/img[1]").GetAttributeValue("src", "");
+
+
+
+            ProductDetails details = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency.Replace("&EURO;", "EUR"),
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
 
             if (strDoc.Contains("var spConfig = new Product.Config({"))
             {
@@ -89,18 +116,7 @@ namespace StoreScraper.Bots.Mstanojevic.Ntrstore
                 }
             }
 
-            /*var sizeCollection = document.SelectNodes("//select[contains(@id,'attribute')/option]");
-
-            foreach (var size in sizeCollection)
-            {
-                string sz = size.InnerHtml;
-                if (sz.Length > 0)
-                {
-                    details.AddSize(sz, "Unknown");
-                }
-
-            }
-            */
+            
 
             return details;
         }
