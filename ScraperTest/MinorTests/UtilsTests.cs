@@ -4,10 +4,10 @@ using StoreScraper.Helpers;
 
 namespace ScraperTest.MinorTests
 {
-    [TestClass()]
+    [TestClass]
     public class UtilsTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void ParsePriceTest()
         {
             var prices = new string[] {"500.23 EUR", "USD 1, 300.45" , "300.25 &euro"};
