@@ -23,7 +23,7 @@ namespace StoreScraper.Bots.Mstanojevic.Dtlr
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
 
-            string gender = "Boys";
+            string gender = null;
 
             listOfProducts = new List<Product>();
             HtmlNodeCollection itemCollection = GetProductCollection(settings, gender, token);

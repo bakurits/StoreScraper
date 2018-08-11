@@ -25,7 +25,7 @@ namespace StoreScraper.Bots.Mstanojevic.JimmyJazz
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
 
-            string gender = "MENS";
+            string gender = null;
 
             listOfProducts = new List<Product>();
          
@@ -122,7 +122,7 @@ namespace StoreScraper.Bots.Mstanojevic.JimmyJazz
                 url += "--Price-" + settings.MinPrice.ToString() + "%7C%7C" + settings.MaxPrice.ToString();
             }
 
-            if (gender != "")
+            if (gender != null)
             {
                 url += "--Gender-" + gender;
             }
