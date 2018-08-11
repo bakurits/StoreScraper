@@ -117,9 +117,10 @@ namespace StoreScraper.Bots.DavitBezhanishvili
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var webPage = GetWebpage(productUrl, token);
-            ProductDetails details = new ProductDetails();
             var jsonStr = Regex.Match(webPage.InnerHtml, @"var spConfig = new Product.Config\((.*)\)").Groups[1].Value;
             JObject parsed = JObject.Parse(jsonStr);
+
+            ProductDetails details = ConstructProduct(webPage, productUrl);
 
             var sizes = parsed.SelectToken("attributes").SelectToken("959").SelectToken("options");
             foreach (JToken sz in sizes.Children())
@@ -128,6 +129,28 @@ namespace StoreScraper.Bots.DavitBezhanishvili
                 var size = parseSize(sizeName);
                 details.AddSize(size, "Unknown");
             }
+            return details;
+        }
+
+        private ProductDetails ConstructProduct(HtmlNode webPage, string productUrl)
+        {
+            var name = webPage.SelectSingleNode("//div[contains(@class, 'product-name abtest--off')]/h1").InnerText;
+            var image = webPage.SelectSingleNode(
+                    "//div[contains(@class,'product-img-box')]/p/a/img")
+                .GetAttributeValue("src", null);
+            var priceNode = webPage.SelectSingleNode("//div[contains(@class,'price-box')]/p[@class='product-price__container']");
+            var price = Utils.ParsePrice(priceNode.InnerText.Trim().Replace(',', '.'));
+
+            ProductDetails details = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
             return details;
         }
 
