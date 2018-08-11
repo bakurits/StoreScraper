@@ -50,7 +50,26 @@ namespace StoreScraper.Bots.Mstanojevic.Triads
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var document = GetWebpage(productUrl, token);
-            ProductDetails details = new ProductDetails();
+            var price = Utils.ParsePrice(document.SelectSingleNode("//span[@id='js-product-price']/span[@class='product-content__price--inc']/span").InnerText.Replace(",", "."));
+
+
+
+
+            string name = document.SelectSingleNode("//span[@id='js-product-title']").InnerText.Trim();
+            string image = WebsiteBaseUrl + document.SelectSingleNode("//img[@id='js-product-main-image']").GetAttributeValue("data-src", "");
+
+
+
+            ProductDetails details = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency.Replace("&EURO;", "EUR"),
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
 
             string id = productUrl.Substring(productUrl.Length - 5);
             string restApiUrl = "https://www.triads.co.uk/ajax/get_product_options/"+id;
@@ -74,17 +93,7 @@ namespace StoreScraper.Bots.Mstanojevic.Triads
             }
 
 
-                /*var sizeCollection = document.SelectNodes("//select[@class='attributes-select']/option[.='Choose a UK Size']/../option");
-
-                foreach (var size in sizeCollection)
-                {
-                    string sz = size.InnerHtml;
-                    if (sz.Length > 0)
-                    {
-                        details.AddSize(sz, "Unknown");
-                    }
-
-                }*/
+                
 
                 return details;
         }
