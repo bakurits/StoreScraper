@@ -50,7 +50,38 @@ namespace StoreScraper.Bots.Mstanojevic.UebervartShop
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var document = GetWebpage(productUrl, token);
-            ProductDetails details = new ProductDetails();
+
+
+            Price price;
+
+            if (document.SelectSingleNode("//ins/span[@class='woocommerce-Price-amount amount']") != null)
+            {
+                price = Utils.ParsePrice(document.SelectSingleNode("//ins/span[@class='woocommerce-Price-amount amount']").InnerText.Replace(",", ".").Replace("&nbsp;", ""));
+
+            }
+            else
+            {
+                price = Utils.ParsePrice(document.SelectSingleNode("//span[@class='woocommerce-Price-amount amount']").InnerText.Replace(",", ".").Replace("&nbsp;", ""));
+
+            }
+
+
+
+            string name = document.SelectSingleNode("//h3[@class='product_title']").InnerText.Trim();
+            string image = document.SelectSingleNode("//div[@class='swiper-slide']/img").GetAttributeValue("src", "");
+
+
+
+            ProductDetails details = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency.Replace("&EURO;", "EUR"),
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
 
             var sizeCollection = document.SelectNodes("//td[@class='value']/label");
 
