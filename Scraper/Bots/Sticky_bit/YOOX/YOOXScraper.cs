@@ -22,17 +22,17 @@ namespace StoreScraper.Bots.Sticky_bit.YOOX
         public override bool Active { get; set; }
 
         private string[] SearchPrefixes = {
-            @"girl/clothing/baby/shoponline?dept=clothinggirl_baby&sort=2&textsearch=",
-            @"girl/shoes/baby/shoponline?dept=shoesgirl_baby&sort=2&textsearch=",
-            @"girl/accessories/baby/shoponline?dept=accessoriesgirl_baby&sort=2&textsearch=",
+            @"/girl/clothing/baby/shoponline?dept=clothinggirl_baby&sort=2&textsearch=",
+            @"/girl/shoes/baby/shoponline?dept=shoesgirl_baby&sort=2&textsearch=",
+            @"/girl/accessories/baby/shoponline?dept=accessoriesgirl_baby&sort=2&textsearch=",
 
-            @"girl/clothing/kids/shoponline?dept=collgirl_kid&sort=2&textsearch=",
-            @"girl/shoes/baby/shoponline?dept=shoesgirl_kid&sort=2&textsearch=",
-            @"girl/accessories/baby/shoponline?dept=accessoriesgirl_kid&sort=2&textsearch=",
+            @"/girl/clothing/kids/shoponline?dept=collgirl_kid&sort=2&textsearch=",
+            @"/girl/shoes/baby/shoponline?dept=shoesgirl_kid&sort=2&textsearch=",
+            @"/girl/accessories/baby/shoponline?dept=accessoriesgirl_kid&sort=2&textsearch=",
 
-            @"girl/clothing/kids/shoponline?dept=clothinggirl_junior&sort=2&textsearch=",
-            @"girl/shoes/baby/shoponline?dept=shoesgirl_junior&sort=2&textsearch=",
-            @"girl/accessories/baby/shoponline?dept=accgirl_junior&sort=2&textsearch=",
+            @"/girl/clothing/kids/shoponline?dept=clothinggirl_junior&sort=2&textsearch=",
+            @"/girl/shoes/baby/shoponline?dept=shoesgirl_junior&sort=2&textsearch=",
+            @"/girl/accessories/baby/shoponline?dept=accgirl_junior&sort=2&textsearch=",
 
         };
 
@@ -42,7 +42,7 @@ namespace StoreScraper.Bots.Sticky_bit.YOOX
         public YOOXScraper()
         {
             this.WebsiteName = "YOOX";
-            this.WebsiteBaseUrl = "https://www.yoox.com/us/";
+            this.WebsiteBaseUrl = "https://www.yoox.com/us";
             this.Active = true;
         }
 
@@ -60,9 +60,26 @@ namespace StoreScraper.Bots.Sticky_bit.YOOX
             listOfProducts = new List<Product>();
             string searchUrl = WebsiteBaseUrl + SearchPrefixes[0] + settings.KeyWords;
             Console.WriteLine(searchUrl);
-            HtmlNode mainDiv = InitialNavigation(searchUrl, token);
+            HtmlNode mainNode = InitialNavigation(searchUrl, token);
+            HtmlNode mainDiv = mainNode.SelectSingleNode(MainDivXpath);
 
-            Console.WriteLine(mainDiv.SelectSingleNode(MainDivXpath).InnerHtml);
+            HtmlNodeCollection childDivs = mainDiv.SelectNodes("./div");
+            Console.WriteLine(childDivs.Count);
+
+            foreach (HtmlNode child in childDivs)
+            {
+                string classValue = child.GetAttributeValue("class", null);
+                if (classValue == null || !classValue.Contains("col"))
+                {
+                    continue;
+                }
+
+#if DEBUG
+                LoadSingleProduct(listOfProducts, child);
+#else
+                LoadSingleProductTryCatchWraper(listOfProducts, child);
+#endif
+            }
         }
 
         /// <summary>
@@ -88,6 +105,15 @@ namespace StoreScraper.Bots.Sticky_bit.YOOX
         /// <param name="child"></param>
         private void LoadSingleProduct(List<Product> listOfProducts, HtmlNode child)
         {
+            string id = child.SelectSingleNode("./div[1]")?.GetAttributeValue("data-current-cod10", null);
+            string url = child.SelectSingleNode("./div[1]/div[2]/a[1]")?.GetAttributeValue("href", null);
+            string name = child.SelectSingleNode("./div[1]/div[2]/a[1]/div[1]").InnerText + " (" + id + ")";
+            string priceStr = child.SelectSingleNode("./div[1]/div[2]/a/div[3]").InnerText;
+            //Price price = Utils.ParsePrice(priceStr);
+            string img = child.SelectSingleNode("./div[1]/div[1]/a[1]/img[1]")?.GetAttributeValue("rel", null);
+            Console.WriteLine(img);
+
+            listOfProducts.Add(new Product(this, name, WebsiteBaseUrl + url.Substring(3), 0, img, id, null));
 
         }
 
