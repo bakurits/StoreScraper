@@ -41,7 +41,20 @@ namespace StoreScraper.Bots.Bakurits.Baitme
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var page = GetWebpage(productUrl, token);
-            ProductDetails details = new ProductDetails();
+            var nameContainer = page.SelectSingleNode("//div[contains(@class, 'product-name')]/span");
+            var name = Utils.EscapeNewLines(nameContainer.InnerHtml);
+            var image = page.SelectSingleNode("//div[contains(@class, 'product-image')]/img").GetAttributeValue("src", "");
+            var priceNode = page.SelectSingleNode("//div[contains(@class, 'product-shop')]");
+            ProductDetails details = new ProductDetails()
+            {
+                Price = GetPrice(priceNode),
+                Name = name,
+                Currency = "USD",
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
 
             //product.ImageUrl = page.SelectSingleNode("//img[@id = 'image-main']").GetAttributeValue("src", null);
 

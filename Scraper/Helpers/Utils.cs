@@ -236,13 +236,23 @@ namespace StoreScraper.Helpers
             var parsed = double.Parse(number, CultureInfo.InvariantCulture);
             var c = priceString.Replace(number, "").ToUpper();
 
-            c = c == "$" ? "USD" : c == "€" ? "EUR" : c;
+            switch (c)
+            {
+                case "$": c = "USD"; break;
+                case "£": c = "GBP"; break;
+                case "€": c = "EUR"; break;
+            }
 
 #if DEBUG
             if(c.Any(char.IsNumber)) Logger.Instance.WriteErrorLog($"Couldn't parse string to price. str = {priceString}");
 #endif
 
             return new Price(parsed ,c);
+        }
+
+        public static string EscapeNewLines(string str)
+        {
+            return Regex.Replace(str, @"\t|\n|\r", "");
         }
     }
 }

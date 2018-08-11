@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
@@ -54,18 +55,35 @@ namespace StoreScraper.Bots.Bakurits.Antonioli
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var page = GetWebpage(productUrl, token);
-            ProductDetails details = new ProductDetails();
+            
+            var name = page.SelectSingleNode("//dd[@id = 'details']/span").InnerHtml;
+            var priceNode = page.SelectSingleNode("//div[contains(@class, 'price')]/span[1]");
+            double.TryParse(priceNode.GetAttributeValue("content", "0"), out var price);
+            var currencyNode = page.SelectSingleNode("//div[contains(@class, 'price')]/span[2]");
+            string currency = currencyNode.GetAttributeValue("content", "");
+            var image = page.SelectSingleNode("//div[contains(@class, 'item')]/img").GetAttributeValue("src", null);
+            
+            int ind = name.IndexOf("<br>", StringComparison.Ordinal);
+            ind = ind == -1 ? name.Length : ind;
+            name = name.Substring(0, ind);
+            name = Regex.Replace(name, @"\t|\n|\r", "");
+
+            ProductDetails details = new ProductDetails()
+            {
+                Price = price,
+                Name = name,
+                Currency = currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
             HtmlNodeCollection collection = page.SelectNodes("//div[@id = 'product-variants']/div/label");
             foreach (var item in collection)
             {
                 details.AddSize(item.InnerHtml, "Unknown");
             }
-            var name = page.SelectSingleNode("//dd[@id = 'details']/span").InnerHtml;
 
-            int ind = name.IndexOf("<br>", StringComparison.Ordinal);
-            ind = ind == -1 ? name.Length : ind;
-            name = name.Substring(0, ind);
-            name = Regex.Replace(name, @"\t|\n|\r", "");
             return details;
         }
 
