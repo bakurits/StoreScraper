@@ -50,7 +50,23 @@ namespace StoreScraper.Bots.Mstanojevic.GoodHoodStore
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var document = GetWebpage(productUrl, token);
-            ProductDetails details = new ProductDetails();
+            var price = Utils.ParsePrice(document.SelectSingleNode("//p[@class='Price']/span/span[1]").InnerHtml);
+
+
+            string name = document.SelectSingleNode("//h1[@class='Title']").InnerText.Trim();
+            string image = document.SelectSingleNode("//div[@class='imgs']/div/a/img").GetAttributeValue("src", "");
+
+            ProductDetails details = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency.Replace("&EURO;","EUR"),
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+
 
             var sizeCollection = document.SelectNodes("//select[@name='id']/option");
             if (sizeCollection != null)
