@@ -86,6 +86,7 @@
     <Compile Include="ScraperTests\Mstanojevic\FootShopTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\SnkrsTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\TriadsTest.cs" />
+    <Compile Include="ScraperTests\Stycky_bit\YOOXTest.cs" />
     <Compile Include="ScraperTests\Stycky_bit\BSTNTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\DtlrTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\ExcelsiormilanoTest.cs" />
