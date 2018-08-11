@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using HtmlAgilityPack;
 using StoreScraper.Attributes;
 using StoreScraper.Core;
@@ -59,12 +60,10 @@ namespace StoreScraper.Bots.Sticky_bit.YOOX
         {
             listOfProducts = new List<Product>();
             string searchUrl = WebsiteBaseUrl + SearchPrefixes[0] + settings.KeyWords;
-            Console.WriteLine(searchUrl);
             HtmlNode mainNode = InitialNavigation(searchUrl, token);
             HtmlNode mainDiv = mainNode.SelectSingleNode(MainDivXpath);
 
             HtmlNodeCollection childDivs = mainDiv.SelectNodes("./div");
-            Console.WriteLine(childDivs.Count);
 
             foreach (HtmlNode child in childDivs)
             {
@@ -106,15 +105,38 @@ namespace StoreScraper.Bots.Sticky_bit.YOOX
         private void LoadSingleProduct(List<Product> listOfProducts, HtmlNode child)
         {
             string id = child.SelectSingleNode("./div[1]")?.GetAttributeValue("data-current-cod10", null);
+            string img = child.SelectSingleNode("./div[1]/div[1]/a[1]/img[1]")?.GetAttributeValue("rel", null);
             string url = child.SelectSingleNode("./div[1]/div[2]/a[1]")?.GetAttributeValue("href", null);
             string name = child.SelectSingleNode("./div[1]/div[2]/a[1]/div[1]").InnerText + " (" + id + ")";
             string priceStr = child.SelectSingleNode("./div[1]/div[2]/a/div[3]").InnerText;
-            //Price price = Utils.ParsePrice(priceStr);
-            string img = child.SelectSingleNode("./div[1]/div[1]/a[1]/img[1]")?.GetAttributeValue("rel", null);
-            Console.WriteLine(img);
 
-            listOfProducts.Add(new Product(this, name, WebsiteBaseUrl + url.Substring(3), 0, img, id, null));
+            List<string> sizes;
+            Price price;
+            try
+            {
+                sizes = getSizeArray(child.SelectSingleNode("./div[1]/div[2]/a[1]/div[4]/div[1]"));
+                price = Utils.ParsePrice(priceStr);;
+            }
+            catch (Exception e)
+            {
+                return;
+            }
 
+            listOfProducts.Add(new Product(this, name, WebsiteBaseUrl + url.Substring(3), price.Value, img, id, price.Currency));
+
+        }
+
+        private List<string> getSizeArray(HtmlNode sizeContainer)
+        {
+            List<string> sizes = new List<string>();
+            HtmlNodeCollection children = sizeContainer.SelectNodes("./span");
+
+            foreach (var child in children)
+            {
+                sizes.Add(child.InnerText);
+            }
+
+            return sizes;
         }
 
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
