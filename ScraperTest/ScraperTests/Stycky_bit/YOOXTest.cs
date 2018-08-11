@@ -1,17 +1,17 @@
 ﻿using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
-using StoreScraper.Bots.Sticky_bit.BSTN;
+using StoreScraper.Bots.Sticky_bit.YOOX;
 
 namespace ScraperTest.ScraperTests.Stycky_bit
 {
     [TestClass]
-    public class BSTNTest
+    public class YOOXTest
     {
         [TestMethod]
-        public void BSTN()
+        public void YOOX()
         {
-            BSTNScraper scraper = new BSTNScraper();
+            YOOXScraper scraper = new YOOXScraper();
             scraper.FindItems(out var lst, Helper.SearchSettings, CancellationToken.None);
             Helper.PrintFindItemsResults(lst);
         }

@@ -22,13 +22,21 @@ namespace StoreScraper.Bots.Sticky_bit.YOOX
         public override bool Active { get; set; }
 
         private string[] SearchPrefixes = {
-                @"girl/clothing/baby/shoponline?dept=clothinggirl_baby&sort=2&textsearch="
-                
-        };
-        private const string Keywords = @"{0}";
-        private string SearchSuffix = @"/page/1/sort/date_new";
+            @"girl/clothing/baby/shoponline?dept=clothinggirl_baby&sort=2&textsearch=",
+            @"girl/shoes/baby/shoponline?dept=shoesgirl_baby&sort=2&textsearch=",
+            @"girl/accessories/baby/shoponline?dept=accessoriesgirl_baby&sort=2&textsearch=",
 
-        private const string UlXpath = @"//*[@class=""block-grid four-up mobile-two-up productlist""]";
+            @"girl/clothing/kids/shoponline?dept=collgirl_kid&sort=2&textsearch=",
+            @"girl/shoes/baby/shoponline?dept=shoesgirl_kid&sort=2&textsearch=",
+            @"girl/accessories/baby/shoponline?dept=accessoriesgirl_kid&sort=2&textsearch=",
+
+            @"girl/clothing/kids/shoponline?dept=clothinggirl_junior&sort=2&textsearch=",
+            @"girl/shoes/baby/shoponline?dept=shoesgirl_junior&sort=2&textsearch=",
+            @"girl/accessories/baby/shoponline?dept=accgirl_junior&sort=2&textsearch=",
+
+        };
+
+        private const string MainDivXpath = @"//*[@id=""itemsGrid""]/div[1]";
 
 
         public YOOXScraper()
@@ -50,6 +58,11 @@ namespace StoreScraper.Bots.Sticky_bit.YOOX
             CancellationToken token)
         {
             listOfProducts = new List<Product>();
+            string searchUrl = WebsiteBaseUrl + SearchPrefixes[0] + settings.KeyWords;
+            Console.WriteLine(searchUrl);
+            HtmlNode mainDiv = InitialNavigation(searchUrl, token);
+
+            Console.WriteLine(mainDiv.SelectSingleNode(MainDivXpath).InnerHtml);
         }
 
         /// <summary>
@@ -75,7 +88,7 @@ namespace StoreScraper.Bots.Sticky_bit.YOOX
         /// <param name="child"></param>
         private void LoadSingleProduct(List<Product> listOfProducts, HtmlNode child)
         {
-            
+
         }
 
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
