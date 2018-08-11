@@ -10,7 +10,7 @@ namespace ScraperTest.MinorTests
         [TestMethod()]
         public void ParsePriceTest()
         {
-            var prices = new string[] {"500.23 EUR", "USD 1, 300.45"};
+            var prices = new string[] {"500.23 EUR", "USD 1, 300.45" , "300.25 &euro"};
 
             foreach (var price in prices)
             {

@@ -216,6 +216,18 @@ namespace StoreScraper.Helpers
         }
 
 
+
+        public static Dictionary<string, string> CurrencyConversionSet = new Dictionary<string, string>()
+        {
+            {"USD", "$"},
+            {"&#36", "$"},
+            {"EUR", "€"},
+            {"&EURO", "€"},
+            {"&POUND", "£"},
+            {"&YEN", "¥"},
+        };
+
+
         /// <summary>
         /// Method return currency string by recognising
         /// the first charracter in the price string
@@ -236,7 +248,7 @@ namespace StoreScraper.Helpers
             var parsed = double.Parse(number, CultureInfo.InvariantCulture);
             var c = priceString.Replace(number, "").ToUpper();
 
-            c = c == "USD" ? "$" : c == "EUR" || c == "&EURO" ? "€" : c;
+            if (CurrencyConversionSet.ContainsKey(c)) c = CurrencyConversionSet[c];
 
 #if DEBUG
             if(c.Any(char.IsNumber)) Logger.Instance.WriteErrorLog($"Couldn't parse string to price. str = {priceString}");
