@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
 using StoreScraper.Core;
@@ -77,44 +76,6 @@ namespace StoreScraper.Bots.Higuhigu._43Einhalb
             }
         }
 
-
-        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
-        {
-            var document = GetWebpage(productUrl, token);
-            if (document == null)
-            {
-                Logger.Instance.WriteErrorLog($"Can't Connect to einhalb website");
-                throw new WebException("Can't connect to website");
-            }
-            
-            var root = document.DocumentNode;
-            var sizeNodes = root.SelectNodes("//select[@class='customSelectBox']/option[@class='']");
-            var sizes = sizeNodes.Select(node => node.InnerText.Trim()).ToList();
-
-            var name = root.SelectSingleNode("//span[@class='productName']").InnerText.Trim();
-            var priceNode = root.SelectSingleNode("//span[@itemprop='price']");
-            var price = Utils.ParsePrice(priceNode.InnerText);
-            var image = root.SelectSingleNode("//a[@class='galleriaTrigger']/img").GetAttributeValue("src", null);
-
-            ProductDetails result = new ProductDetails()
-            {
-                Price = price.Value,
-                Name = name,
-                Currency = price.Currency,
-                ImageUrl = image,
-                Url = productUrl,
-                Id = productUrl,
-                ScrapedBy = this
-            };
-
-            foreach (var size in sizes)
-            {
-                result.AddSize(size, "Unknown");
-            }
-
-            return result;
-        }
-
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             string name = GetName(item).TrimEnd();
@@ -148,6 +109,43 @@ namespace StoreScraper.Bots.Higuhigu._43Einhalb
         private string GetImageUrl(HtmlNode item)
         {
             return item.SelectSingleNode(".//img[@class='current']").GetAttributeValue("src", null);
+        }
+
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
+        {
+            var document = GetWebpage(productUrl, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to einhalb website");
+                throw new WebException("Can't connect to website");
+            }
+
+            var root = document.DocumentNode;
+            var sizeNodes = root.SelectNodes("//select[@class='customSelectBox']/option[@class='']");
+            var sizes = sizeNodes.Select(node => node.InnerText.Trim()).ToList();
+
+            var name = root.SelectSingleNode("//span[@class='productName']").InnerText.Trim();
+            var priceNode = root.SelectSingleNode("//span[@itemprop='price']");
+            var price = Utils.ParsePrice(priceNode.InnerText);
+            var image = root.SelectSingleNode("//a[@class='galleriaTrigger']/img").GetAttributeValue("src", null);
+
+            ProductDetails result = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+
+            foreach (var size in sizes)
+            {
+                result.AddSize(size, "Unknown");
+            }
+
+            return result;
         }
     }
 }
