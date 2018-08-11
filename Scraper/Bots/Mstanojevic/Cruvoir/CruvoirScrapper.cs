@@ -50,7 +50,21 @@ namespace StoreScraper.Bots.Mstanojevic.Cruvoir
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var document = GetWebpage(productUrl, token);
-            ProductDetails details = new ProductDetails();
+            var price = Utils.ParsePrice(document.SelectSingleNode("//h1[@class='price']").InnerText);
+
+            string name = document.SelectSingleNode("//h1[not(@class='price')]").InnerText;
+            string image = document.SelectSingleNode("//div[@class='product-gallery']/img[1]").GetAttributeValue("src", "");
+
+            ProductDetails details = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
 
             var sizeCollection = document.SelectNodes("//select[@name='id']/option");
             if (sizeCollection != null)
@@ -58,6 +72,10 @@ namespace StoreScraper.Bots.Mstanojevic.Cruvoir
                 foreach (var size in sizeCollection)
                 {
                     string sz = size.InnerHtml.Trim();
+                    if (sz.Contains("Sold out"))
+                    {
+                        continue;
+                    }
                     if (sz.Length > 0)
                     {
                         details.AddSize(sz, "Unknown");

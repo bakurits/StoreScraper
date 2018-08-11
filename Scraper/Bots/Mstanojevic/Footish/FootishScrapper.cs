@@ -6,6 +6,8 @@ using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace StoreScraper.Bots.Mstanojevic.Footish
 {
@@ -69,42 +71,58 @@ namespace StoreScraper.Bots.Mstanojevic.Footish
 
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            //var document = GetWebpage(product.Url, token);
-            ProductDetails details = new ProductDetails();
+            var document = GetWebpage(productUrl, token);
+            var price = Utils.ParsePrice(document.SelectSingleNode("//meta[@property='og:price:amount']").GetAttributeValue("content","") + " " + document.SelectSingleNode("//meta[@property='og:price:currency']").GetAttributeValue("content", ""));
+            
+            
+            string name = document.SelectSingleNode("//span[@itemprop='name']").InnerText;
+            string image = WebsiteBaseUrl + document.SelectSingleNode("//div[@class='product-images']/div/div/img").GetAttributeValue("src", "");
 
-            /*var sizeCollection = document.SelectNodes("//select[@onchange='Products_UpdateAttributeValue(this);']/option");
-
-            foreach (var size in sizeCollection)
+            ProductDetails details = new ProductDetails()
             {
-                string sz = size.InnerHtml;
-                if (sz.Length > 0)
-                {
-                    details.AddSize(sz, "Unknown");
-                }
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+            var strDoc = document.InnerHtml;
 
-            }*/
-
-
-            throw new NotImplementedException(); //needs refractor
-            string restApiUrl = "https://www.footish.se/Services/Rest/v2/json/en-GB/EUR/products/";
-            //Console.WriteLine(restApiUrl);
-            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
-            var response = Utils.GetParsedJson(client, restApiUrl, token);
-            //Console.WriteLine(response["TotalProducts"]);
-
-            foreach (var item in response["ProductItems"])
+            if (strDoc.Contains("var JetshopData="))
             {
-                foreach(var attr in item["Attributes"])
+                var start = strDoc.IndexOf("var JetshopData=");
+                var trimmed = strDoc.Substring(start, strDoc.Length - start);
+                var end = trimmed.IndexOf(";");
+
+                trimmed = trimmed.Substring(0, end);
+
+                trimmed = trimmed.Replace("var JetshopData=", "");
+                JObject obj = JObject.Parse(trimmed);
+
+                string productId = obj["ProductId"].ToString();
+                string restApiUrl = "https://www.footish.se/Services/Rest/v2/json/en-GB/EUR/products/"+productId;
+                //Console.WriteLine(restApiUrl);
+                var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+                var response = Utils.GetParsedJson(client, restApiUrl, token);
+                //Console.WriteLine(response["TotalProducts"]);
+
+                foreach (var item in response["ProductItems"])
                 {
-                    if (int.Parse(attr["StockLevel"].ToString()) > 0)
+                    foreach (var attr in item["Attributes"])
                     {
-                        details.AddSize(attr["Value"].ToString(), attr["StockLevel"].ToString());
+                        if (int.Parse(attr["StockLevel"].ToString()) > 0)
+                        {
+                            details.AddSize(attr["Value"].ToString(), attr["StockLevel"].ToString());
+                        }
+
                     }
-
                 }
+
+
+
             }
-
-
 
             return details;
         }

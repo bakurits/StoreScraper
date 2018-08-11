@@ -3,6 +3,7 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper.Bots.Mstanojevic.Footish;
 using StoreScraper.Models;
+using ScraperTest.Helpers;
 
 namespace ScraperTest.ScraperTests.Mstanojevic
 {
@@ -35,9 +36,15 @@ namespace ScraperTest.ScraperTests.Mstanojevic
             FootishScrapper scraper = new FootishScrapper();
 
             ProductDetails details = scraper.GetProductDetails(curProduct.Url, CancellationToken.None);
-            Helpers.Helper.PrintGetDetailsResult(details.SizesList);
-            Debug.WriteLine(curProduct.Name);
-            
+            Debug.WriteLine(details.Name);
+            Debug.WriteLine(details.Price);
+            Debug.WriteLine(details.Currency);
+            Debug.WriteLine(details.ImageUrl);
+            Debug.WriteLine(details.StoreName);
+            Debug.WriteLine(details.Url);
+
+            Helper.PrintGetDetailsResult(details.SizesList);
+
         }
     }
 }

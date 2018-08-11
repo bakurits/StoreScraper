@@ -119,11 +119,25 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze.Nakedcph
             var client = ClientFactory.GetProxiedFirefoxClient();
             
             var doc = client.GetDoc(productUrl, token);
+            var root = doc.DocumentNode;
         
-            var nodes = doc.DocumentNode.SelectNodes(xpath);
+            var nodes = root.SelectNodes(xpath);
             var sizes = nodes.Select(node => node.InnerText.Trim());
+            var name = root.SelectSingleNode("//*[contains(@class,'product-title')]").InnerText.Trim();
+            var priceNode = root.SelectSingleNode("//span[contains(@class, 'price')]/span[2]");
+            var price = Utils.ParsePrice(priceNode.InnerText);
+            var imageUrl = this.WebsiteBaseUrl + root.SelectSingleNode("//img[@srcset]").GetAttributeValue("src", "Not Found");
 
-            var details = new ProductDetails();
+            var details = new ProductDetails()
+            {
+                Url = productUrl,
+                ImageUrl = imageUrl,
+                Id = productUrl,
+                Name = name,
+                Price = price.Value,
+                Currency = price.Currency,
+                ScrapedBy = this
+            };
 
             foreach (var size in sizes)
             {

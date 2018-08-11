@@ -56,7 +56,25 @@ namespace StoreScraper.Bots.Mstanojevic.Dtlr
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var document = GetWebpage(productUrl, token);
-            ProductDetails details = new ProductDetails();
+            Price price;
+            if (document.SelectSingleNode("//p[@class='special-price']/span[@class='price']") != null) { 
+                price = Utils.ParsePrice(document.SelectSingleNode("//p[@class='special-price']/span[@class='price']").InnerText);
+            }else{
+                price = Utils.ParsePrice(document.SelectSingleNode("//div[@class='price-info']/div[@class='price-box']/span[@class='regular-price']/span").InnerText);
+            }
+            string name = document.SelectSingleNode("//h1[@itemprop='name']").InnerText;
+            string image = document.SelectSingleNode("//div[@class='product-image-gallery']/img[1]").GetAttributeValue("src", "");
+
+            ProductDetails details = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
 
             var strDoc = document.InnerHtml;
 

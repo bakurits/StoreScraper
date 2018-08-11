@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
+using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
+using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
@@ -21,11 +24,17 @@ namespace StoreScraper.Bots.Jordan.BounceWear
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
+            GetProductDetails(
+                "https://bouncewear.com/product/golden-state-warriors-nike-spotlight-mens-nba-hoodie-carbon-heather",
+                token);
+            return;
+            
+          
             HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
           
             foreach (var item in itemCollection)
             {
-                //token.ThrowIfCancellationRequested();
+                token.ThrowIfCancellationRequested();
                 LoadSingleProduct(listOfProducts, settings, item);
             }
 
@@ -94,7 +103,12 @@ namespace StoreScraper.Bots.Jordan.BounceWear
             return _token;
 
         }
-
+        
+        private HtmlNode GetWebpage(string url, CancellationToken token)
+        {
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            return client.GetDoc(url, token).DocumentNode;
+        }
 
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
@@ -105,7 +119,52 @@ namespace StoreScraper.Bots.Jordan.BounceWear
 
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            throw new System.NotImplementedException();
+            var document = GetWebpage(productUrl, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to basketrevolution website");
+                throw new WebException("Can't connect to website");
+            }
+
+            var product = document.SelectSingleNode("//div[contains(@class, 'media flex-wrap')]");
+            var name = product.SelectSingleNode("//h2[1]").InnerHtml;
+            var price = Utils.ParsePrice(product.SelectSingleNode("//h1[@class='mb-3'][1]/strong").InnerHtml);
+            var imgurl = product.SelectSingleNode("//div[@class='thumb'][1]/img[1]").GetAttributeValue("src", null);
+            var sizes = product.SelectSingleNode("//select[@id='variation_id'][1]");
+            var sizesList = sizes.SelectNodes("//option[1]");
+            
+            ProductDetails result = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = imgurl,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+            
+            foreach (var size in sizesList)
+            {
+                var sizeString = size.InnerHtml;
+                
+                result.AddSize(sizeString, "Unknown");
+            }
+            
+            foreach (var res in result.SizesList)
+            {
+                Debug.WriteLine(res.Key);
+            }
+            
+            Debug.WriteLine(name);
+            Debug.WriteLine(price.Currency);
+            Debug.WriteLine(price.Value);
+            Debug.WriteLine(imgurl);
+            
+            
+            return result;
+
+
         }
     }
 }

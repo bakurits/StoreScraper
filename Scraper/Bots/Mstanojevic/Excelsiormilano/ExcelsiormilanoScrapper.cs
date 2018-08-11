@@ -50,8 +50,22 @@ namespace StoreScraper.Bots.Mstanojevic.Excelsiormilano
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var document = GetWebpage(productUrl, token);
-            ProductDetails details = new ProductDetails();
+            
+            var price = Utils.ParsePrice(document.SelectSingleNode("//span[@itemprop='price']").InnerText.Replace(",","."));
+            
+            string name = document.SelectSingleNode("//h3[@itemprop='name']").InnerText;
+            string image = document.SelectSingleNode("//li[@class='homeslider-container'][1]/img").GetAttributeValue("src", "");
 
+            ProductDetails details = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
             var sizeCollection = document.SelectNodes("//select[@name='group_1']/option");
             if (sizeCollection != null)
             {
