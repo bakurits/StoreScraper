@@ -13,8 +13,17 @@ namespace StoreScraper.Models
         [DisplayName("Store")]
         public string StoreName { get; set; } = "";
 
+        private ScraperBase _scraperBy;
+
         [Browsable(false)]
-        public ScraperBase ScrapedBy { get; set; }
+        public ScraperBase ScrapedBy {
+            get => _scraperBy;
+            set
+            {
+                _scraperBy = value;
+                this.StoreName = value.WebsiteName;
+            }
+        }
 
         public string Name { get; set; } = "";
 

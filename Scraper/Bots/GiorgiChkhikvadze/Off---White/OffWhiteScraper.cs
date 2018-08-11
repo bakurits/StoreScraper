@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
@@ -168,12 +169,9 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze
 
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            var jsonUrl = productUrl;
-            ProductDetails result = new ProductDetails();
-
             HttpClient client = null;
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < AppSettings.Default.ProxyRotationRetryCount; i++)
             {
                 try
                 {
@@ -191,30 +189,36 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze
                 }
                 catch
                 {
-                    //ingored
+                    if (i != AppSettings.Default.ProxyRotationRetryCount - 1) continue;
+                    Logger.Instance.WriteErrorLog("Cookie collecting failed");
+                    throw new Exception("Cookie collecting failed");
                 }
             }
 
-            
-            HttpRequestMessage message = new HttpRequestMessage();
-            message.Headers.Clear();
-            message.Headers.TryAddWithoutValidation(ClientFactory.JsonXmlAcceptHeader.Key, ClientFactory.JsonXmlAcceptHeader.Value);
-            message.Headers.TryAddWithoutValidation(ClientFactory.FirefoxUserAgentHeader.Key, ClientFactory.FirefoxUserAgentHeader.Value);
+            var doc = client.GetDoc(productUrl, token);
+            var root = doc.DocumentNode;
+            var sizeNodes = root.SelectNodes("//*[contains(@class,'styled-radio')]/label");
+            var sizes = sizeNodes.Select(node => node.InnerText).ToList();
 
-            message.Method = HttpMethod.Get;
-            message.RequestUri = new Uri(jsonUrl);
+            var name = root.SelectSingleNode("//*[contains(@class, 'prod-title')]").InnerText.Trim();
+            var priceNode = root.SelectSingleNode("//div[contains(@class, 'price')]/span/strong");
+            var price = Utils.ParsePrice(priceNode.InnerText);
+            var image = root.SelectSingleNode("//*[@id='image-0']").GetAttributeValue("src", null);
 
-            Debug.Assert(client != null, nameof(client) + " != null");
-            var response = client.SendAsync(message, token).Result;
-            response.EnsureSuccessStatusCode();
-            var jsonStr = response.Content.ReadAsStringAsync().Result;
-            JObject parsed = JObject.Parse(jsonStr);
-            var sizes = parsed.SelectToken("available_sizes");
-               
-            foreach (JToken size in sizes.Children())
+            ProductDetails result = new ProductDetails()
             {
-                var sizeName = (string) size.SelectToken("name");
-                result.AddSize(sizeName, "Unknown");
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+
+            foreach (var size in sizes)
+            {
+                result.AddSize(size, "Unknown");
             }
 
             return result;

@@ -19,8 +19,6 @@ namespace StoreScraper
 
         [XmlIgnore] [Browsable(false)] public List<ScraperBase> AvailableScrapers;
 
-
-        public int MaxThreadCount { get; set; } = 10;
         public static int InitialBrowserCount { get; set; } = 0;
 
         [Browsable(false)]

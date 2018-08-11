@@ -18,7 +18,7 @@ namespace StoreScraper.Models
 
         public override string ToString()
         {
-            return string.Join("\\n",SizesList.Select(sizInfo => $"{sizInfo.Key}[{sizInfo.Value}]"));
+            return $"{Name} - {Price}{Currency} - {ScrapedBy}" +  string.Join("; ",SizesList.Select(sizInfo => $"{sizInfo.Key}[{sizInfo.Value}]"));
         }
     }
 }
