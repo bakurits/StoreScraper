@@ -9,6 +9,7 @@ using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
+using System.Net;
 
 namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
 {
@@ -23,31 +24,36 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
             listOfProducts = new List<Product>();
             var searchUrl =
                 $"https://sneakerstudio.com/search.php?text={settings.KeyWords}";
-            var request = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
-            var document = request.GetDoc(searchUrl, token);
-            //Logger.Instance.WriteErrorLog("Unexpected html!");
 
-            var nodes = document.DocumentNode.SelectSingleNode("//div[@class = 'row']");
-            if (nodes == null)
-            {
-                Logger.Instance.WriteErrorLog("Unexcepted Html");
-                Logger.Instance.SaveHtmlSnapshop(document);
-                throw new WebException("Unexcepted Html");
-            }
-            var children = nodes.SelectNodes("./div[@class = 'product_wrapper col-md-4 col-xs-6']");
-            if (children == null)
-            {
-                return;
-            }
+            var currencyCookie = new Cookie("CURRID", "USD");
 
-            foreach (var child in children)
+            using ( var client = ClientFactory.GetProxiedFirefoxClient(autoCookies:false).AddCookies(currencyCookie))
             {
-                token.ThrowIfCancellationRequested();
+                var document = client.GetDoc(searchUrl, token);
+                //Logger.Instance.WriteErrorLog("Unexpected html!");
+
+                var nodes = document.DocumentNode.SelectSingleNode("//div[@class = 'row']");
+                if (nodes == null)
+                {
+                    Logger.Instance.WriteErrorLog("Unexcepted Html");
+                    Logger.Instance.SaveHtmlSnapshop(document);
+                    throw new WebException("Unexcepted Html");
+                }
+                var children = nodes.SelectNodes("./div[@class = 'product_wrapper col-md-4 col-xs-6']");
+                if (children == null)
+                {
+                    return;
+                }
+
+                foreach (var child in children)
+                {
+                    token.ThrowIfCancellationRequested();
 #if DEBUG
-                LoadSingleProduct(listOfProducts, child, settings);
+                    LoadSingleProduct(listOfProducts, child, settings);
 #else
                 LoadSingleProductTryCatchWraper(listOfProducts, child, settings);
-#endif
+#endif 
+                }
             }
         }
 

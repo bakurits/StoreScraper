@@ -18,7 +18,7 @@ using OpenQA.Selenium;
 using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Models;
-using Cookie = OpenQA.Selenium.Cookie;
+using Cookie = System.Net.Cookie;
 using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 
 namespace StoreScraper.Helpers
@@ -171,7 +171,7 @@ namespace StoreScraper.Helpers
             throw new WebException($"Can't connect to webiste url: {url}");
         }
 
-        public static HttpClient AddCookies(this HttpClient client, IEnumerable<Cookie> cookies)
+        public static HttpClient AddCookies(this HttpClient client, params Cookie[] cookies)
         {
             var list = cookies.ToList();
             var cookieStr = string.Join(";", list.ConvertAll(cookie => $"{cookie.Name}={cookie.Value}"));
