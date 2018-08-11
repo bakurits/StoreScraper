@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
@@ -35,7 +37,7 @@ namespace StoreScraper.Bots.Bakurits.Baitme
 
 
         }
-
+        
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var page = GetWebpage(productUrl, token);
@@ -45,12 +47,17 @@ namespace StoreScraper.Bots.Bakurits.Baitme
 
             var jsonStr = Regex.Match(page.InnerHtml, @"var spConfig = new Product.Config\((.*)\)").Groups[1].Value;
             JObject parsed = JObject.Parse(jsonStr);
-
-            var sizes = parsed.SelectToken("attributes").SelectToken("188").SelectToken("options");
+            
+            var sizes = GetSizesToken(parsed);
+            sizes = sizes.SelectToken("options");
+            
+               
             foreach (JToken sz in sizes.Children())
             {
                 var sizeName = (string) sz.SelectToken("label");
-                details.AddSize(sizeName, "Unknown");
+                var productCount = (JArray)sz.SelectToken("products");
+                if (productCount.Count > 0)
+                    details.AddSize(sizeName, "Unknown");
             }
             return details;
         }
@@ -131,6 +138,22 @@ namespace StoreScraper.Bots.Bakurits.Baitme
         private string GetCurrency(HtmlNode item)
         { 
             return "USD";
+        }
+
+        private JToken GetSizesToken(JObject token)
+        {
+            var sizes = token.SelectToken("attributes");
+            foreach (var item in sizes)
+            {
+                var attPath = item.Path;
+                attPath = attPath.Substring(attPath.LastIndexOf(".", StringComparison.Ordinal) + 1);
+                if (int.TryParse(attPath, out var res))
+                {
+                    return item.First;
+                }
+            }
+
+            return null;
         }
     }
 }

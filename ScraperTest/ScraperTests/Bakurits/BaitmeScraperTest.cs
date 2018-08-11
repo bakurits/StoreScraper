@@ -26,7 +26,7 @@ namespace ScraperTest.ScraperTests.Bakurits
         public void GetProductDetailsTest()
         {
             Product curProduct = new Product(new BaitmeScraper(), "Unknown",
-                "http://www.baitme.com/bait-coach-jacket-green-babt140205-005grn",
+                "http://www.baitme.com/vans-men-authentic-studded-stars-red-blue-vavn018bh0f-35",
                 85.00,
                 "https://d3hed5rtv63hp1.cloudfront.net/products/280972/large/JC8230W115-BLACK-6014.jpg?1519741368",
                 "id");
