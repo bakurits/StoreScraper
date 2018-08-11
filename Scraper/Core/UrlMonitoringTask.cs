@@ -21,7 +21,13 @@ namespace StoreScraper.Core
 
             if (details.SizesList.Count > _oldDetails.SizesList.Count)
             {
+                Logger.Instance.WriteVerboseLog("New Size was found in stock");
+                _oldDetails = details;
                DoFinalActions(details, token);
+            }
+            else
+            {
+                Logger.Instance.WriteVerboseLog("Url monitoring epoch completed. No new sizes in stock");
             }
         }
 
