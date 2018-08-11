@@ -92,7 +92,23 @@ namespace StoreScraper.Bots.Mstanojevic.FootShop
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var document = GetWebpage(productUrl, token);
-            ProductDetails details = new ProductDetails();
+            var price = Utils.ParsePrice(document.SelectSingleNode("//p[@class='our_price_display']/span[@class='price']").InnerHtml);
+
+
+            string name = document.SelectSingleNode("//h1").InnerText;
+            string image = document.SelectSingleNode("//div[@class='owl-carousel']/div/img").GetAttributeValue("data-src", "");
+
+            ProductDetails details = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+
 
             var sizeCollection = document.SelectNodes("//select[@id='size-select']/option");
 
