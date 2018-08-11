@@ -6,6 +6,7 @@ using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
+using System.Text.RegularExpressions;
 
 namespace StoreScraper.Bots.Mstanojevic.GoodHoodStore
 {
@@ -55,6 +56,9 @@ namespace StoreScraper.Bots.Mstanojevic.GoodHoodStore
 
             string name = document.SelectSingleNode("//h1[@class='Title']").InnerText.Trim();
             string image = document.SelectSingleNode("//div[@class='imgs']/div/a/img").GetAttributeValue("src", "");
+
+            name = Regex.Replace(name, @"\s+", " ");
+
 
             ProductDetails details = new ProductDetails()
             {
