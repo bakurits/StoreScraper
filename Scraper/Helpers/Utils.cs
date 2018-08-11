@@ -236,7 +236,7 @@ namespace StoreScraper.Helpers
             var parsed = double.Parse(number, CultureInfo.InvariantCulture);
             var c = priceString.Replace(number, "").ToUpper();
 
-            c = c == "$" ? "USD" : c == "€" ? "EUR" : c;
+            c = c == "USD" ? "$" : c == "EUR" || c == "&EURO" ? "€" : c;
 
 #if DEBUG
             if(c.Any(char.IsNumber)) Logger.Instance.WriteErrorLog($"Couldn't parse string to price. str = {priceString}");
