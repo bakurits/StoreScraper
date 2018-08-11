@@ -144,7 +144,11 @@ namespace StoreScraper.Bots.Higuhigu.Basketrevolution
             foreach (JToken sz in sizes.Children())
             {
                 var sizeName = (string)sz.SelectToken("label");
-                result.AddSize(sizeName, "Unknown");
+                JArray products = (JArray)sz.SelectToken("products");
+                if (products.Count > 0)
+                {
+                    result.AddSize(sizeName, "Unknown");
+                }
             }
             return result;
         }
