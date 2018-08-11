@@ -10,7 +10,7 @@ using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
-namespace StoreScraper.Bots.DavitBezhanishvili
+namespace StoreScraper.Bots.DavitBezhanishvili.AwLab
 {
     public class AwLabScraper : ScraperBase
     {
@@ -25,7 +25,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili
                 $"https://en.aw-lab.com/shop/catalogsearch/result/index/q/{settings.KeyWords}";
             var request = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = request.GetDoc(searchUrl, token);
-            Logger.Instance.WriteErrorLog("Unexpected html!");
+          //  Logger.Instance.WriteErrorLog("Unexpected html!");
             var nodes = document.DocumentNode.SelectSingleNode("//div[contains(@class, 'products-grid row')]");
             if (nodes == null)
             {
@@ -139,7 +139,8 @@ namespace StoreScraper.Bots.DavitBezhanishvili
                     "//div[contains(@class,'product-img-box')]/p/a/img")
                 .GetAttributeValue("src", null);
             var priceNode = webPage.SelectSingleNode("//div[contains(@class,'price-box')]/p[@class='product-price__container']");
-            var price = Utils.ParsePrice(priceNode.InnerText.Trim().Replace(',', '.'));
+            var txt = priceNode.InnerText.Trim().Replace(',', '.');
+            var price = Utils.ParsePrice(txt);
 
             ProductDetails details = new ProductDetails()
             {

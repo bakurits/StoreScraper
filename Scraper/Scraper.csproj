@@ -118,9 +118,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\DisabledScraperAttribute.cs" />
+    <Compile Include="Bots\DavitBezhanishvili\SneakerStudioScraper\SneakerStudioScraper.cs" />
     <Compile Include="Bots\GiorgiBaghdavadze\290sqm\IstSqm.cs" />
     <Compile Include="Bots\Bakurits\Rimowa\RimowaScraper.cs" />
-    <Compile Include="Bots\DavitBezhanishvili\AwlLab\AwLabScraper.cs" />
+    <Compile Include="Bots\DavitBezhanishvili\AwLab\AwLabScraper.cs" />
     <Compile Include="Bots\Jordan\Byparra\ByparraScraper.cs" />
     <Compile Include="Bots\Mstanojevic\Cruvoir\CruvoirScrapper.cs" />
     <Compile Include="Bots\Higuhigu\43Einhalb\EinhalbScraper.cs" />
