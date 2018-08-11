@@ -7,6 +7,8 @@ using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
+using System.Net;
+using System.Linq;
 
 namespace StoreScraper.Bots.Higuhigu._43Einhalb
 {
@@ -14,9 +16,10 @@ namespace StoreScraper.Bots.Higuhigu._43Einhalb
     {
         public override string WebsiteName { get; set; } = "43Einhalb";
         public override string WebsiteBaseUrl { get; set; } = "https://www.43einhalb.com";
+
         public override bool Active { get; set; }
+
         private const string SearchFormat = @"https://www.43einhalb.com/en/search/{0}/page/1/sort/date_new/perpage/72";
-        private const string noResults = "Sorry, no results found for your searchterm";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
@@ -35,6 +38,33 @@ namespace StoreScraper.Bots.Higuhigu._43Einhalb
 
         }
 
+        private HtmlDocument GetWebpage(string url, CancellationToken token)
+        {
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var document = client.GetDoc(url, token);
+            return document;
+        }
+
+        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
+        {
+            string url = string.Format(SearchFormat, settings.KeyWords);
+            var document = GetWebpage(url, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to einhalb website");
+                throw new WebException("Can't connect to website");
+            }
+            var node = document.DocumentNode;
+            var items = node.SelectNodes("//li[@class='item']");
+            if(items == null)
+            {
+                Logger.Instance.WriteErrorLog("Uncexpected Html!!");
+                Logger.Instance.SaveHtmlSnapshop(document);
+                throw new WebException("Undexpected Html");
+            }
+            return items;
+        }
+
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
@@ -51,49 +81,49 @@ namespace StoreScraper.Bots.Higuhigu._43Einhalb
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var document = GetWebpage(productUrl, token);
-            ProductDetails details = new ProductDetails();
-
-            var sizeCollection = document.SelectNodes("//select[@class='customSelectBox']/option[@class='']");
-
-            foreach (var size in sizeCollection)
+            if (document == null)
             {
-                string sz = size.InnerText.Trim();
-                if (sz.Length > 0)
-                {
-                    details.AddSize(sz, "Unknown");
-                }
+                Logger.Instance.WriteErrorLog($"Can't Connect to einhalb website");
+                throw new WebException("Can't connect to website");
+            }
+            
+            var root = document.DocumentNode;
+            var sizeNodes = root.SelectNodes("//select[@class='customSelectBox']/option[@class='']");
+            var sizes = sizeNodes.Select(node => node.InnerText.Trim()).ToList();
 
+            var name = root.SelectSingleNode("//span[@class='productName']").InnerText.Trim();
+            var priceNode = root.SelectSingleNode("//span[@itemprop='price']");
+            var price = Utils.ParsePrice(priceNode.InnerText);
+            var image = root.SelectSingleNode("//a[@class='galleriaTrigger']/img").GetAttributeValue("src", null);
+
+            ProductDetails result = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+
+            foreach (var size in sizes)
+            {
+                result.AddSize(size, "Unknown");
             }
 
-            return details;
-        }
-
-        private HtmlNode GetWebpage(string url, CancellationToken token)
-        {
-            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
-            var document = client.GetDoc(url, token).DocumentNode;
-            return document;
-        }
-
-        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
-        {
-            string url = string.Format(SearchFormat, settings.KeyWords);
-            var document = GetWebpage(url, token);
-            if (document.InnerHtml.Contains(noResults)) return null;
-            return document.SelectNodes("//li[@class='item']");
+            return result;
         }
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             string name = GetName(item).TrimEnd();
             string url = WebsiteBaseUrl + GetUrl(item);
-            double price = GetPrice(item);
+            var price = GetPrice(item);
             string imageUrl = WebsiteBaseUrl + GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "EUR");
-            if (Utils.SatisfiesCriteria(product, settings))
-            {
-                listOfProducts.Add(product);
-            }
+            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
+            if (!Utils.SatisfiesCriteria(product, settings)) return;
+            listOfProducts.Add(product);
         }
         
         private string GetName(HtmlNode item)
@@ -106,14 +136,13 @@ namespace StoreScraper.Bots.Higuhigu._43Einhalb
             return item.SelectSingleNode(".//a[1]").GetAttributeValue("href", null);
         }
 
-        private double GetPrice(HtmlNode item)
+        private Price GetPrice(HtmlNode item)
         {
             var priceSpan = item.SelectSingleNode(".//span[@class='pPrice']");
             var priceSpanSecond = priceSpan.SelectSingleNode(".//span[@class='newPrice']");
             if (priceSpanSecond != null) priceSpan = priceSpanSecond;
-            string priceDiv = priceSpan.InnerText.Trim();
-
-            return Convert.ToDouble(Regex.Match(priceDiv, "(\\d+(\\.\\d+)?)").Groups[1].Value);
+            string priceStr = priceSpan.InnerText.Trim();
+            return Utils.ParsePrice(priceStr);
         }
 
         private string GetImageUrl(HtmlNode item)

@@ -21,7 +21,6 @@ namespace ScraperTest.ScraperTests.Higuhigu
             scraper.FindItems(out var lst, settings, CancellationToken.None);
         }
 
-
         [TestMethod()]
         public void GetProductDetailsTest()
         {
