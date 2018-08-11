@@ -44,7 +44,7 @@ namespace StoreScraper.Models
         [Browsable(false)]
         public string ImageUrl { get; set; }
 
-        public Product(ScraperBase scrapedBy, string name, string url, double price, string imageUrl, string id, string currency = "USD")
+        public Product(ScraperBase scrapedBy, string name, string url, double price, string imageUrl, string id, string currency = "$")
         {
             this.Name = HtmlEntity.DeEntitize(name.Trim());
             this.Url = url;
