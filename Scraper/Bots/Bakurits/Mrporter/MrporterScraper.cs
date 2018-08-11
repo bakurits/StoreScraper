@@ -56,8 +56,26 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
 
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            var result = new ProductDetails();
+            
             var doc = GetPage(productUrl, token);
+            var nameContainer = doc.SelectSingleNode("//section[contains(@class, 'product-details')]/h1");
+            var designer = Utils.EscapeNewLines(nameContainer.SelectSingleNode("./a/span/span").InnerHtml);
+            var productName = Utils.EscapeNewLines(nameContainer.SelectSingleNode("./span/span").InnerHtml);
+            var name = designer + "-" + productName;
+            var image = WebsiteBaseUrl + doc.SelectSingleNode("//div[contains(@class, 'product-image')]/img").GetAttributeValue("src", "");
+            var priceNode = doc.SelectSingleNode("//span[contains(@class, 'product-details-price')]/span/span[@itemprop = 'price']").InnerHtml;
+            Price price = Utils.ParsePrice(priceNode);
+            ProductDetails details = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+
             var node = doc.SelectSingleNode("//select[contains(@class, 'select-option-style')]");
 
             var sizeCaster = "";
@@ -71,16 +89,18 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
                 // ignored
             }
 
+
+
             var optionList = node.SelectNodes("./option");
 
             foreach (var item in optionList)
             {
                 var dataStock = item.GetAttributeValue("data-stock", null);
                 if (dataStock != "Low_Stock" && dataStock != "In_Stock") continue;
-                GenerateRealSize(result, item.InnerHtml, sizeCaster);
+                GenerateRealSize(details, item.InnerHtml, sizeCaster);
             }
 
-            return result;
+            return details;
         }
 
         private void GenerateRealSize(ProductDetails resultDetails, string html, string caster)

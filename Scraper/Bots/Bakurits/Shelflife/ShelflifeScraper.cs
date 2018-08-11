@@ -31,7 +31,21 @@ namespace StoreScraper.Bots.Bakurits.Shelflife
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var document = GetWebpage(productUrl, token);
-            var details = new ProductDetails();
+
+            var name = document.SelectSingleNode("//div[contains(@class, 'product_info')]/h1").InnerHtml;
+            var image = WebsiteBaseUrl + document.SelectSingleNode("//div[@id='large_img']/img").GetAttributeValue("src", "");
+            var priceNode = document.SelectSingleNode("//div[contains(@class, 'price')]").InnerHtml;
+            Price price = Utils.ParsePrice(priceNode);
+            ProductDetails details = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
 
             var node = document.SelectSingleNode("//*[@id='addToCart']/div/div/div/select[@id = 'size']");
 
