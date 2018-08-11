@@ -63,7 +63,24 @@ namespace StoreScraper.Bots.Mstanojevic.JimmyJazz
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var document = GetWebpage(productUrl, token);
-            ProductDetails details = new ProductDetails();
+            var price = Utils.ParsePrice(document.SelectSingleNode("//span[@class='product_price']").InnerHtml);
+
+
+            string name = document.SelectSingleNode("//span[@class='name']").InnerText.Trim();
+            string image = document.SelectSingleNode("//img[@id='main-image']").GetAttributeValue("src", "");
+
+
+
+            ProductDetails details = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency.Replace("&EURO;", "EUR"),
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
 
             var sizeCollection = document.SelectNodes("//div[@class='psizeoptioncontainer']/div/a");
             if (sizeCollection != null)
