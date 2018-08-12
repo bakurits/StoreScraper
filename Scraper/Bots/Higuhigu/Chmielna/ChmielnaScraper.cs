@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
 using StoreScraper.Core;
@@ -112,7 +111,6 @@ namespace StoreScraper.Bots.Higuhigu.Chmielna
 
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-
             var document = GetWebpage(productUrl, token);
             if (document == null)
             {
