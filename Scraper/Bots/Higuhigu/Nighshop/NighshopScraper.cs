@@ -8,6 +8,8 @@ using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
+using System.Net;
+
 
 namespace StoreScraper.Bots.Higuhigu.Nighshop
 {
@@ -36,6 +38,37 @@ namespace StoreScraper.Bots.Higuhigu.Nighshop
 
         }
 
+        private HtmlDocument GetWebpage(string url, CancellationToken token)
+        {
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var document = client.GetDoc(url, token);
+            return document;
+        }
+
+        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
+        {
+            string url = string.Format(SearchFormat, settings.KeyWords);
+            var document = GetWebpage(url, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to nighshop website");
+                throw new WebException("Can't connect to website");
+            }
+            if (document == null)
+            {
+
+            }
+            var node = document.DocumentNode;
+            var items = node.SelectNodes("//li[contains(@class, 'item col')]/div");
+            if (items == null)
+            {
+                Logger.Instance.WriteErrorLog("Uncexpected Html!!");
+                Logger.Instance.SaveHtmlSnapshop(document);
+                throw new WebException("Undexpected Html");
+            }
+            return items;
+        }
+
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
@@ -48,49 +81,14 @@ namespace StoreScraper.Bots.Higuhigu.Nighshop
             }
         }
 
-        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
-        {
-            var document = GetWebpage(productUrl, token);
-            ProductDetails details = new ProductDetails();
-
-            var sizeCollection = document.SelectNodes("//div[contains(@class, 'attribute-item')]");
-            foreach (var size in sizeCollection)
-            {
-                string sz = size.InnerText.Trim();
-                if (sz.Length > 0)
-                {
-                    if(size.GetAttributeValue("class", null).Contains("disabled"))
-                        details.AddSize(sz, "None in stock");
-                    else
-                        details.AddSize(sz, "Unknown");
-                }
-
-            }
-            return details;
-        }
-
-        private HtmlNode GetWebpage(string url, CancellationToken token)
-        {
-            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
-            var document = client.GetDoc(url, token).DocumentNode;
-            return document;
-        }
-
-        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
-        {
-            string url = SearchFormat;
-            var document = GetWebpage(url, token);
-            return document.SelectNodes("//li[contains(@class, 'item col')]/div");
-        }
-
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             if (GetStatus(item)) return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
-            double price = GetPrice(item);
+            var price = GetPrice(item);
             string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "EUR");
+            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 var keyWordSplit = settings.KeyWords.Split(' ');
@@ -98,7 +96,7 @@ namespace StoreScraper.Bots.Higuhigu.Nighshop
                     listOfProducts.Add(product);
             }
         }
-       
+
         private bool GetStatus(HtmlNode item)
         {
             return item.InnerHtml.Contains("soon") || item.InnerHtml.Contains("sold-out");
@@ -114,20 +112,59 @@ namespace StoreScraper.Bots.Higuhigu.Nighshop
             return item.SelectSingleNode("./a").GetAttributeValue("href", null);
         }
 
-        private double GetPrice(HtmlNode item)
+        private Price GetPrice(HtmlNode item)
         {
-            var priceNode = item.SelectSingleNode(".//span[@class='regular-price']/span");
-            if (priceNode == null)
-            {
-                priceNode = item.SelectSingleNode(".//p[@class='special-price']/span");
-            }
-            if (priceNode == null) { return -1; }
-            return Convert.ToDouble(Regex.Match(priceNode.InnerText, @"(\d+(\\.\d+)?)").Groups[0].Value);
+            var priceSpan = item.SelectSingleNode(".//span[@class='regular-price']/span");
+            var priceSpanSecond = priceSpan.SelectSingleNode(".//p[@class='special-price']/span");
+            if (priceSpanSecond != null) priceSpan = priceSpanSecond;
+            string priceStr = priceSpan.InnerText;
+            return Utils.ParsePrice(priceStr);
         }
 
         private string GetImageUrl(HtmlNode item)
         {
             return item.SelectSingleNode(".//img").GetAttributeValue("src", null);
+        }
+
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
+        {
+
+            var document = GetWebpage(productUrl, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to nighshop website");
+                throw new WebException("Can't connect to website");
+            }
+
+            var root = document.DocumentNode;
+            var name = root.SelectSingleNode("//div[@class='product-name']/h1").InnerText.Trim();
+            var priceNode = root.SelectSingleNode("//span[@class='price'][last()]");
+            var price = Utils.ParsePrice(priceNode.InnerText);
+            var image = root.SelectSingleNode("//img[@class='owl-lazy']").GetAttributeValue("data-src", null);
+
+            ProductDetails result = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+
+            var sizeCollection = root.SelectNodes("//div[contains(@class, 'attribute-item')]");
+            foreach (var size in sizeCollection)
+            {
+                string sz = size.InnerText.Trim();
+                if (sz.Length > 0)
+                {
+                    if (!(size.GetAttributeValue("class", null).Contains("disabled")))
+                        result.AddSize(sz, "Unknown");
+                }
+
+            }
+            return result;
         }
     }
 }
