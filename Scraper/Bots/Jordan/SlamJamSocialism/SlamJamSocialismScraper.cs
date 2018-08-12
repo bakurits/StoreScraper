@@ -3,9 +3,11 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
+using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
@@ -23,6 +25,11 @@ namespace StoreScraper.Bots.Jordan.SlamJamSocialism
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
+
+            GetProductDetails("https://www.slamjamsocialism.com/lace-ups/47956-morso-shoes.html", token);
+            
+            return;
+            
             var keywordUrl = String.Format(SearchUrl, settings.KeyWords);
             var pageOne = GetWebpage(keywordUrl, token);
             var firstResults = pageOne.SelectNodes("//div[contains(@class, 'product-container')]");
@@ -145,7 +152,43 @@ namespace StoreScraper.Bots.Jordan.SlamJamSocialism
 
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            throw new System.NotImplementedException();
+            var resp = GetWebpage(productUrl, token);
+            if (resp == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to basketrevolution website");
+                throw new WebException("Can't connect to website");
+            }
+            
+            var product = resp.SelectSingleNode("//div[contains(@class, 'primary_block')]");
+            var name = product.SelectSingleNode("//h1[@class='h4'][1]").InnerHtml;
+            var price = Utils.ParsePrice(product.SelectSingleNode("//span[@id='our_price_display'][1]").InnerHtml);
+            var imgurl = product.SelectSingleNode("//div[contains(@class,'img-item')][1]/img[contains(@class,'lazyload')][1]").GetAttributeValue("src", null);
+            var sizes = product.SelectSingleNode("//div[@class='attribute_list']/select[1]");
+            var sizesList = sizes.SelectNodes("./option");
+            
+            ProductDetails result = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = imgurl,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+            
+            foreach (var size in sizesList)
+            {
+                var sizeString = size.InnerHtml;
+
+                if (sizeString != "Select Size")
+                {
+                    result.AddSize(sizeString, "Unknown");
+                }
+            }
+            
+            return result;
+
         }
     }
 }
