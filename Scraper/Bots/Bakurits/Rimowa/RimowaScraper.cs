@@ -57,7 +57,32 @@ namespace StoreScraper.Bots.Bakurits.Rimowa
 
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            throw new NotImplementedException();
+            var client = ClientFactory.GetProxiedFirefoxClient();
+            var doc = client.GetDoc(productUrl, token);
+            var page = doc.DocumentNode;
+            var infoContainer = page.SelectSingleNode("//div[@id = 'pchange-target']/div");
+
+            var collectionName = Utils.EscapeNewLines(infoContainer.SelectSingleNode("./span[@itemprop = 'name']").InnerHtml);
+            var productName = Utils.EscapeNewLines(infoContainer.SelectSingleNode("./h1[@itemprop = 'name']").InnerHtml);
+            var name = $"{collectionName} - {productName}";
+            var priceNode = infoContainer.SelectSingleNode("./div[contains(@class, 'product-price')]/span");
+            Price price = Utils.ParsePrice(priceNode.InnerHtml);
+
+            var image = WebsiteBaseUrl + page.SelectSingleNode("//img[contains(@class, 'primary-image')]").GetAttributeValue("src", "").Substring(1);
+           
+            ProductDetails details = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+
+            details.AddSize(productName, "Unknown");
+            return details;
         }
 
         private static async Task<List<HtmlNode>> GetPageTask(List<String> urls, CancellationToken token)
