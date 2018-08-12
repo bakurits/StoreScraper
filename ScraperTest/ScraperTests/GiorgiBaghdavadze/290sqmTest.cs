@@ -9,8 +9,7 @@ namespace ScraperTest.ScraperTests.GiorgiBaghdavadze
     [TestClass]
     public class _290sqmTest
     {
-        private IstSqm scraper = new IstSqm();
-        public IstSqm Scraper { get => scraper; set => scraper = value; }
+        public IstSqm Scraper { get; set; } = new IstSqm();
 
         [TestMethod]
         public void TestFind()

@@ -21,7 +21,7 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
             {
                 KeyWords = "shoes"
             };
-
+            
             scraper.FindItems(out var list, settings, CancellationToken.None);
             Helper.PrintFindItemsResults(list);
         }

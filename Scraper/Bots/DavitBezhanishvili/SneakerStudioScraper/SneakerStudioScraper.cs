@@ -11,9 +11,11 @@ using StoreScraper.Helpers;
 using StoreScraper.Models;
 using System.Net;
 using System.Net.Http;
+using StoreScraper.Attributes;
 
 namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
 {
+    [DisabledScraper]
     public class SneakerStudioScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "SneakerStudio";
@@ -49,14 +51,15 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
             }
 
             foreach (var child in children)
-            {
-                token.ThrowIfCancellationRequested();
+                if(child.SelectSingleNode("./a[@class = 'product-icon']/div[@class ='comingsoon']") == null)
+                {
+                    token.ThrowIfCancellationRequested();
 #if DEBUG
-                LoadSingleProduct(listOfProducts, child, settings);
+                    LoadSingleProduct(listOfProducts, child, settings);
 #else
-            LoadSingleProductTryCatchWraper(listOfProducts, child, settings);
+                    LoadSingleProductTryCatchWraper(listOfProducts, child, settings);
 #endif 
-            }
+                }
         }
 
 
@@ -122,18 +125,87 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
 
         private HtmlNode GetWebpage(string url, CancellationToken token)
         {
-            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
-            return client.GetDoc(url, token).DocumentNode;
+            var searchUrl =
+                new Uri("https://sneakerstudio.com/settings.php?curr=USD");
+
+            var referer = new Uri(url);
+
+            var client = ClientFactory.GetProxiedFirefoxClient();
+            HttpRequestMessage message = new HttpRequestMessage();
+            message.Method = HttpMethod.Get;
+            message.RequestUri = searchUrl;
+            message.Headers.Referrer = referer;
+
+            return client.GetDoc(message, token).DocumentNode;
         }
 
 
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-           return null;
+            var webPage = GetWebpage(productUrl,token);
+            ProductDetails details = ConstructProduct(webPage, productUrl);
+
+            RegexOptions options = RegexOptions.Multiline;
+
+            var jsonStr = getJson(webPage.InnerHtml);
+            JObject parsed = JObject.Parse(jsonStr);
+
+
+            var sizes = parsed.SelectTokens("sizes");
+            foreach(JToken szToken in sizes.Children())
+            {
+                var sz = szToken.First;
+                var size =(string) sz.SelectToken("name");
+                var amount = (string) sz.SelectToken("amount");
+                if(amount != "0")
+                    details.AddSize(size,amount);
+            }
+            return details;
         }
 
-        
+        private string getJson(string webPageInnerHtml)
+        {
+            string json = "{";
+            var str = "var product_data = {";
+            var ind = webPageInnerHtml.IndexOf(str);
+            ind += str.Length;
+            int parCount = 1;
+            while (parCount > 0)
+            {
+                json += webPageInnerHtml[ind];
+                if (webPageInnerHtml[ind] == '}')
+                    parCount--;
+                if (webPageInnerHtml[ind] == '{')
+                    parCount++;
+                ind++;
+            }
 
-      
+            return json;
+        }
+
+        private ProductDetails ConstructProduct(HtmlNode webPage, string productUrl)
+        {
+            var name = webPage.SelectSingleNode("//div[@class='projector_navigation']/h1").InnerText.Trim();
+            
+            var image =WebsiteBaseUrl + webPage.SelectSingleNode(
+                            "//div[contains(@class,'photos col-md-7 col-xs-12')]/a[@id ='projector_image_1']/img").GetAttributeValue("src", null);
+            var priceNode = webPage.SelectSingleNode("//strong[@class='projector_price_value']");
+            var txt = priceNode.InnerText.Trim();
+            var price = Utils.ParsePrice(txt);
+
+            ProductDetails details = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image.ToString(),
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+            return details;
+        }
+
+
     }
 }
