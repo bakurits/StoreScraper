@@ -132,12 +132,29 @@ namespace StoreScraper.Bots.Mstanojevic.Sneakersnstuff
 
         }
 
-      
+        
+
+
+        private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
+        {
+
+            if (item.SelectSingleNode("./div[@class = 'list-product-countdown banner']") != null)
+                return false;
+
+            if (item.SelectSingleNode("./a/span[@class='sale-tag en soldout']") != null)
+                return false;
+
+            return true;
+
+        }
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
+            if (!CheckForValidProduct(item, settings))
+                return;
+
             string name = GetName(item).TrimEnd();
-            string url = GetUrl(item);
+            string url = WebsiteBaseUrl + GetUrl(item);
             double price = GetPrice(item);
 
            
