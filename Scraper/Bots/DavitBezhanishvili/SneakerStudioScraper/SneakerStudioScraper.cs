@@ -10,6 +10,7 @@ using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 using System.Net;
+using System.Net.Http;
 
 namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
 {
@@ -23,37 +24,38 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
         {
             listOfProducts = new List<Product>();
             var searchUrl =
-                $"https://sneakerstudio.com/search.php?text={settings.KeyWords}";
+                new Uri("https://sneakerstudio.com/settings.php?sort_order=date-d&curr=USD");
 
-            var currencyCookie = new Cookie("CURRID", "USD");
+            var referer = new Uri($"https://sneakerstudio.com/search.php?text={settings.KeyWords}");
 
-            using ( var client = ClientFactory.GetProxiedFirefoxClient(autoCookies:false).AddCookies(currencyCookie))
+            var client = ClientFactory.GetProxiedFirefoxClient();
+            HttpRequestMessage message = new HttpRequestMessage();
+            message.Method = HttpMethod.Get;
+            message.RequestUri = searchUrl;
+            message.Headers.Referrer = referer;
+           
+            var document = client.GetDoc(message, token);
+            var nodes = document.DocumentNode.SelectSingleNode("//div[@class = 'row']");
+            if (nodes == null)
             {
-                var document = client.GetDoc(searchUrl, token);
-                //Logger.Instance.WriteErrorLog("Unexpected html!");
+                Logger.Instance.WriteErrorLog("Unexcepted Html");
+                Logger.Instance.SaveHtmlSnapshop(document);
+                throw new WebException("Unexcepted Html");
+            }
+            var children = nodes.SelectNodes("./div[@class = 'product_wrapper col-md-4 col-xs-6']");
+            if (children == null)
+            {
+                return;
+            }
 
-                var nodes = document.DocumentNode.SelectSingleNode("//div[@class = 'row']");
-                if (nodes == null)
-                {
-                    Logger.Instance.WriteErrorLog("Unexcepted Html");
-                    Logger.Instance.SaveHtmlSnapshop(document);
-                    throw new WebException("Unexcepted Html");
-                }
-                var children = nodes.SelectNodes("./div[@class = 'product_wrapper col-md-4 col-xs-6']");
-                if (children == null)
-                {
-                    return;
-                }
-
-                foreach (var child in children)
-                {
-                    token.ThrowIfCancellationRequested();
+            foreach (var child in children)
+            {
+                token.ThrowIfCancellationRequested();
 #if DEBUG
-                    LoadSingleProduct(listOfProducts, child, settings);
+                LoadSingleProduct(listOfProducts, child, settings);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, child, settings);
+            LoadSingleProductTryCatchWraper(listOfProducts, child, settings);
 #endif 
-                }
             }
         }
 

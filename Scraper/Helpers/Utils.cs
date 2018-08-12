@@ -120,7 +120,26 @@ namespace StoreScraper.Helpers
                 throw;
             }
         }
-        
+
+        public static HtmlDocument GetDoc(this HttpClient client, HttpRequestMessage message, CancellationToken token)
+        {
+            try
+            {
+                using (var response = client.SendAsync(message, token).Result)
+                {
+                    var result = response.Content.ReadAsStringAsync().Result;
+                    var doc = new HtmlDocument();
+                    doc.LoadHtml(result);
+                    return doc;
+                }
+            }
+            catch (WebException)
+            {
+                Logger.Instance.WriteErrorLog("Can't connect to website");
+                throw;
+            }
+        }
+
         public static HtmlDocument PostDoc(this HttpClient client, string url, CancellationToken token, FormUrlEncodedContent postParams)
         {
             
