@@ -10,18 +10,18 @@ using Newtonsoft.Json;
 using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Models;
+#pragma warning disable 4014
 
 namespace StoreScraper.Helpers
 {
     [JsonObject]
-    public class DiscordWebhook
+    public class DiscordPoster : IWebHookPoster
     {
 
         [JsonProperty("content")] public string Content { get; set; }
         [JsonProperty("username")] public string Username { get; set; }
         [JsonProperty("avatar_url")] public string AvatarUrl { get; set; }
 
-        // ReSharper disable once InconsistentNaming
         [JsonProperty("tts")] public bool IsTTS { get; set; }
         [JsonProperty("embeds")] public List<Embed> Embeds { get; set; } = new List<Embed>();
 
@@ -31,14 +31,12 @@ namespace StoreScraper.Helpers
             string myJson = @"{{
                 ""content"": ""*reads manual*""
             }}";
-            PostMessage(apiUrl, myJson);
+            PostMessage(apiUrl, myJson, CancellationToken.None);
         }
 
-        // ReSharper disable once InconsistentNaming
-        public static async Task<HttpResponseMessage> Send(string webhookUrl, Product product, string username = null,
-            string avatarUrl = null, bool isTTS = false)
+        public async Task<HttpResponseMessage> PostMessage(string webhookUrl, Product product, CancellationToken token)
         {
-            string formatter = @"{{
+            const string formatter = @"{{
               ""embeds"": [
                 {{
                   ""title"": ""{0}"",
@@ -58,7 +56,7 @@ namespace StoreScraper.Helpers
 
             try
             {
-                szs = product.GetDetails(CancellationToken.None).ToString();
+                szs = product.GetDetails(token).ToString();
             }
             catch (Exception e)
             {
@@ -73,15 +71,15 @@ namespace StoreScraper.Helpers
             string myJson = string.Format(formatter, product.Name, textMessage, product.Url, 
                 product.ImageUrl, DateTime.UtcNow.ToString("O"));
             
-            return await PostMessage(webhookUrl, myJson);
+            return await PostMessage(webhookUrl, myJson, token);
             
         }
 
 
-        private static async Task<HttpResponseMessage> PostMessage(string webhookUrl, string myJson)
+        private static async Task<HttpResponseMessage> PostMessage(string webhookUrl, string myJson, CancellationToken token)
         {
             var stringContent = new StringContent(myJson, Encoding.UTF8, "application/json");
-            return await ClientFactory.GeneralClient.PostAsync(webhookUrl, stringContent);
+            return await ClientFactory.GeneralClient.PostAsync(webhookUrl, stringContent, token);
         }
     }
 }

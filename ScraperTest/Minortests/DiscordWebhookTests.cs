@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper.Bots.Bakurits.Shelflife;
 using StoreScraper.Helpers;
@@ -17,9 +18,9 @@ namespace ScraperTest.MinorTests
                 1399.00,
                 "https://www.shelflife.co.za/pics/product/large/vn0a38geubl-side.jpg",
                 "id", "£");
-            var task = DiscordWebhook.Send(
+            var task = new DiscordPoster().PostMessage(
                 "https://discordapp.com/api/webhooks/468240680414609429/kKJB9L4I8AfQWWDcqf0vpAj9OYDqxLAJ9gHl1b2B5xg8c5X2Ic4FpcSHAE8_0vKqZBoP",
-                product);
+                product, CancellationToken.None);
 
             try
             {

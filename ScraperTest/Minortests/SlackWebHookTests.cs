@@ -18,8 +18,7 @@ namespace ScraperTest.MinorTests
                 120.83,
                 "https://cache.mrporter.com/images/products/1012326/1012326_mrp_in_l.jpg",
                 "id","£");
-            var task = SlackWebHook.PostMessage(product,
-                "https://hooks.slack.com/services/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");
+            var task = new SlackPoster().PostMessage("https://hooks.slack.com/services/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", product, CancellationToken.None);
 
 
             try

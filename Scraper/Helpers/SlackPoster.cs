@@ -6,25 +6,23 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
 using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Models;
+#pragma warning disable 4014
 
 namespace StoreScraper.Helpers
 {
-    public class SlackWebHook
+    public class SlackPoster : IWebHookPoster
     {
 
-        public static void PostStartMessage(string apiUrl)
-        {
-#pragma warning disable 4014
-            PostMessageAsync(@"{
-                ""text"": ""Test search started""  
-            }", apiUrl);
-#pragma warning restore 4014
-        }
+        public void PostStartMessage(string apiUrl) =>
+            PostMessageAsync(new JObject(new JProperty("text", "Test search started")).ToString(), apiUrl, CancellationToken.None);
 
-        public static async Task<HttpResponseMessage> PostMessage(Product product, string apiUrl)
+
+
+        public async Task<HttpResponseMessage> PostMessage(string apiUrl, Product product, CancellationToken token)
         {
             const string formater = @"{{
                 ""attachments"": [
@@ -46,7 +44,7 @@ namespace StoreScraper.Helpers
 
             try
             {
-                szs = product.GetDetails(CancellationToken.None).ToString();
+                szs = product.GetDetails(token).ToString();
             }
             catch (Exception e)
             {
@@ -60,12 +58,12 @@ namespace StoreScraper.Helpers
 
             string myJson = string.Format(formater, product.Url, textMessage, product.ImageUrl, product.Name, DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds);
 
-            return await PostMessageAsync(myJson, apiUrl);
+            return await PostMessageAsync(myJson, apiUrl, token);
         }
 
-        public static async Task<HttpResponseMessage> PostMessageAsync(string messageJson, string apiUrl)
+        public async Task<HttpResponseMessage> PostMessageAsync(string messageJson, string apiUrl, CancellationToken token)
         {
-            return await ClientFactory.GeneralClient.PostAsync(apiUrl, new StringContent(messageJson, Encoding.UTF8, "application/json"));
+            return await ClientFactory.GeneralClient.PostAsync(apiUrl, new StringContent(messageJson, Encoding.UTF8, "application/json"), token);
         }
 
 

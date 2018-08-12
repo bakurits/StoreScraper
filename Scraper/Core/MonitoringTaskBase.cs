@@ -9,7 +9,7 @@ namespace StoreScraper.Core
 {
     public abstract class MonitoringTaskBase
     {
-        public enum FinalAction { PostToSlack, PostToDiscord };
+        public enum FinalAction { PostToWebHook};
 
         public List<FinalAction> FinalActions { get; set; }
         public CancellationTokenSource TokenSource { get; set; } = new CancellationTokenSource();
@@ -42,27 +42,15 @@ namespace StoreScraper.Core
             {
                 switch (action)
                 {
-                    case SearchMonitoringTask.FinalAction.PostToSlack:
-                        foreach (var slackUrl in AppSettings.Default.SlackApiUrl)
+                    case SearchMonitoringTask.FinalAction.PostToWebHook:
+                        foreach (var hook in AppSettings.Default.Webhooks)
                         {
-                            SlackWebHook.PostMessage(product, slackUrl).ContinueWith(task =>
+                            hook.Poster.PostMessage(hook.WebHookUrl, product, TokenSource.Token).ContinueWith(task =>
                             {
                                 if (task.IsCompleted) Logger.Instance.WriteErrorLog($"({product}) Sent To Slack");
-                                if (task.IsFaulted) Logger.Instance.WriteErrorLog($"({product}) Slack Send Error");
+                                if (task.IsFaulted) Logger.Instance.WriteErrorLog($"({product}) Slack PostMessage Error");
                             }, token);
                         }
-
-                        break;
-                    case SearchMonitoringTask.FinalAction.PostToDiscord:
-                        foreach (var discordUrl in AppSettings.Default.DiscordApiUrl)
-                        {
-                            DiscordWebhook.Send(discordUrl, product).ContinueWith(task =>
-                            {
-                                if (task.IsCompleted) Logger.Instance.WriteErrorLog($"({product}) Sent To Discord");
-                                if (task.IsFaulted) Logger.Instance.WriteErrorLog($"({product}) Discord Send Error");
-                            }, token);
-                        }
-
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

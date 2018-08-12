@@ -42,13 +42,15 @@ namespace StoreScraper.Models
 
         public object Clone()
         {
-            return new SearchSettingsBase()
-            {
-                KeyWords = this.KeyWords,
-                NegKeyWrods = this.NegKeyWrods,
-                MinPrice = this.MinPrice,
-                MaxPrice = this.MaxPrice,
-            };
+            var cloned = (SearchSettingsBase)Activator.CreateInstance(this.GetType());
+
+
+            cloned.KeyWords = this.KeyWords;
+            cloned.NegKeyWrods = this.NegKeyWrods;
+            cloned.MinPrice = this.MinPrice;
+            cloned.MaxPrice = this.MaxPrice;
+
+            return cloned;
         }
     }
 }

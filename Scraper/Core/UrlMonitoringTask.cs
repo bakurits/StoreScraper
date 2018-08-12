@@ -59,5 +59,10 @@ namespace StoreScraper.Core
 
             throw new Exception("We don't support this website yet");
         }
+
+        public override string ToString()
+        {
+            return $"UrlMonitoring: {Url}";
+        }
     }
 }

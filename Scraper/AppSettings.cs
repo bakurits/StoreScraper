@@ -31,11 +31,7 @@ namespace StoreScraper
         [DisplayName("Monitring Delay(ms)")]
         public int MonitoringDelay { get; set; } = 100;
 
-        [Category("Slack"), DisplayName("Slack api urls")]
-        public List<UrlString> SlackApiUrl { get; set; } = new List<UrlString>();
-
-        [Category("Discord"), DisplayName("Discord api urls")]
-        public List<UrlString> DiscordApiUrl { get; set; } = new List<UrlString>();
+        public List<WebHook> Webhooks { get; set; } = new List<WebHook>();
 
         public bool PostStartMessage { get; set; } = false;
 

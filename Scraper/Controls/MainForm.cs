@@ -59,15 +59,10 @@ namespace StoreScraper.Controls
 
         private void PostProduct(Product product)
         {
-            foreach (var slackUrl in AppSettings.Default.SlackApiUrl)
+            foreach (var hook in AppSettings.Default.Webhooks)
             {
-                SlackWebHook.PostMessage(product, slackUrl);
+                hook.Poster.PostMessage(hook.WebHookUrl, product, _findTokenSource.Token);
             }
-            foreach (var discordUrl in AppSettings.Default.DiscordApiUrl)
-            {
-                DiscordWebhook.Send(discordUrl, product);
-            }
-
         }
 
         private void FindAction(ScraperBase scraper)
