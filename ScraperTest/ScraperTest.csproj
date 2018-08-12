@@ -80,11 +80,13 @@
   <ItemGroup>
     <Compile Include="MinorTests\UtilsTests.cs" />
     <Compile Include="MinorTests\SlackWebHookTests.cs" />
-    <Compile Include="ScraperTests\DavitBezhanishvili\AwLabScrapperTests.cs" />
+    <Compile Include="ScraperTests\DavitBezhanishvili\AwLabScraperTests.cs" />
     <Compile Include="ScraperTests\Bakurits\RimowaScraperTest.cs" />
+    <Compile Include="ScraperTests\DavitBezhanishvili\SneakerSturioScraperTests.cs" />
     <Compile Include="ScraperTests\Mstanojevic\FootShopTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\SnkrsTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\TriadsTest.cs" />
+    <Compile Include="ScraperTests\Stycky_bit\YOOXTest.cs" />
     <Compile Include="ScraperTests\Stycky_bit\BSTNTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\DtlrTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\ExcelsiormilanoTest.cs" />

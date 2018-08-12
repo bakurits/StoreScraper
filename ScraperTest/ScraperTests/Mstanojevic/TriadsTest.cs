@@ -15,7 +15,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         {
             TriadsScrapper scraper = new TriadsScrapper();
             SearchSettingsBase settings = new SearchSettingsBase();
-            settings.KeyWords = "vault";
+            settings.KeyWords = "nike";
 
 
             scraper.FindItems(out var lst, settings, CancellationToken.None);
@@ -37,8 +37,14 @@ namespace ScraperTest.ScraperTests.Mstanojevic
 
             ProductDetails details = scraper.GetProductDetails(curProduct.Url, CancellationToken.None);
 
+            Debug.WriteLine(details.Name);
+            Debug.WriteLine(details.Price);
+            Debug.WriteLine(details.Currency);
+            Debug.WriteLine(details.ImageUrl);
+            Debug.WriteLine(details.StoreName);
+            Debug.WriteLine(details.Url);
+
             Helper.PrintGetDetailsResult(details.SizesList);
-            Debug.WriteLine(curProduct.Name);
 
         }
     }

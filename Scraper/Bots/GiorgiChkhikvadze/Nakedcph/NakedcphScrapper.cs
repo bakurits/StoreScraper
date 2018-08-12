@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
 using StoreScraper.Core;
@@ -123,7 +124,9 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze.Nakedcph
         
             var nodes = root.SelectNodes(xpath);
             var sizes = nodes.Select(node => node.InnerText.Trim());
-            var name = root.SelectSingleNode("//*[contains(@class,'product-title')]").InnerText.Trim();
+            Regex regex = new Regex(@"([\t]+)");
+            var name = root.SelectSingleNode("//*[contains(@class,'product-title')]").InnerText.Trim().Replace("\n","");
+            name = regex.Replace(name, " ");
             var priceNode = root.SelectSingleNode("//span[contains(@class, 'price')]/span[2]");
             var price = Utils.ParsePrice(priceNode.InnerText);
             var imageUrl = this.WebsiteBaseUrl + root.SelectSingleNode("//img[@srcset]").GetAttributeValue("src", "Not Found");

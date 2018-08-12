@@ -50,8 +50,15 @@ namespace StoreScraper.Bots.Mstanojevic.Cruvoir
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var document = GetWebpage(productUrl, token);
-            var price = Utils.ParsePrice(document.SelectSingleNode("//h1[@class='price']").InnerText);
-
+            Price price;
+            if (document.SelectSingleNode("//h1[@class='price']/span[@class='sale']/span") != null)
+            {
+                price = Utils.ParsePrice(document.SelectSingleNode("//h1[@class='price']/span[@class='sale']/span").InnerText);
+            }
+            else
+            {
+                price = Utils.ParsePrice(document.SelectSingleNode("//h1[@class='price']").InnerText);
+            }
             string name = document.SelectSingleNode("//h1[not(@class='price')]").InnerText;
             string image = document.SelectSingleNode("//div[@class='product-gallery']/img[1]").GetAttributeValue("src", "");
 

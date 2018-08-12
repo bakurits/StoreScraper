@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ScraperTest.Helpers;
 using StoreScraper.Bots.GiorgiChkhikvadze.Nakedcph;
 using StoreScraper.Models;
 
@@ -35,7 +37,7 @@ namespace ScraperTest.ScraperTests.GiorgiChkhikvadze
 
             var details = product.GetDetails(CancellationToken.None);
 
-            Console.WriteLine(string.Join(", ", details.SizesList));
+            Debug.WriteLine(details);
         }
     }
 }

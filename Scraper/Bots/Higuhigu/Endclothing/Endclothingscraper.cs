@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
 using System.Threading;
 using HtmlAgilityPack;
 using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
+using System.Net;
 
 namespace StoreScraper.Bots.Higuhigu.Endclothing
 {
@@ -17,9 +19,6 @@ namespace StoreScraper.Bots.Higuhigu.Endclothing
         public override bool Active { get; set; }
 
         private const string SearchFormat = @"https://www.endclothing.com/us/catalogsearch/result/?q={0}";
-        private const string priceRegex = "<span class=\"price\">\\$(\\d+)</span>";
-        private const string sizesRegex = "\"label\":\"(.*?)\",\"products\":\\[\"(\\d+)\"\\]";
-        private const string idRegex = "data-product-id=\"(\\d+)\"";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
@@ -37,6 +36,37 @@ namespace StoreScraper.Bots.Higuhigu.Endclothing
             }
         }
 
+        private HtmlDocument GetWebpage(string url, CancellationToken token)
+        {
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var document = client.GetDoc(url, token);
+            return document;
+        }
+
+        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
+        {
+            string url = string.Format(SearchFormat, settings.KeyWords);
+            var document = GetWebpage(url, token);
+            if(document==null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to endclothing website");
+                throw new WebException("Can't connect to website");
+            }
+            if (document == null)
+            {
+                
+            }
+            var node = document.DocumentNode;
+            var items = node.SelectNodes("//div[contains(@class, 'item product product-item')]");
+            if (items == null)
+            {
+                Logger.Instance.WriteErrorLog("Uncexpected Html!!");
+                Logger.Instance.SaveHtmlSnapshop(document);
+                throw new WebException("Undexpected Html");
+            }
+            return items;
+        }
+
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
@@ -49,46 +79,13 @@ namespace StoreScraper.Bots.Higuhigu.Endclothing
             }
         }
 
-        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
-        {
-            var document = GetWebpage(productUrl, token);
-            ProductDetails details = new ProductDetails();
-
-            Match match = Regex.Match(document.InnerHtml, sizesRegex);
-
-            while (match.Success)
-            {
-                var sz = match.Groups[1].Value;
-                if (!details.SizesList.Exists(size => size.Key == sz) && sz.Length > 0 && !(sz.Contains("{")))
-                {
-                    details.AddSize(sz,"Unknown");
-                }
-                match = match.NextMatch();
-            }
-            return details;
-        }
-
-        private HtmlNode GetWebpage(string url, CancellationToken token)
-        {
-            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
-            var document = client.GetDoc(url, token).DocumentNode;
-            return document;
-        }
-
-        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
-        {
-            string url = string.Format(SearchFormat, settings.KeyWords);
-            var document = GetWebpage(url, token);
-            return document.SelectNodes("//div[contains(@class, 'item product product-item')]");
-        }
-
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
-            double price = GetPrice(item);
+            var price = GetPrice(item);
             string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "EUR");
+            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
@@ -105,21 +102,58 @@ namespace StoreScraper.Bots.Higuhigu.Endclothing
             return item.SelectSingleNode("./div[@class='product-item-info']/a").GetAttributeValue("href", null);
         }
 
-        private double GetPrice(HtmlNode item)
+        private Price GetPrice(HtmlNode item)
         {
-            Match match = Regex.Match(item.InnerHtml, priceRegex);
-            double price = -1;
-            while (match.Success)
-            {
-                price = Convert.ToDouble(match.Groups[1].Value);
-                match = match.NextMatch();
-            }
-            return price;
+            string priceStr = item.SelectSingleNode(".//span[@class='price'][last()]").InnerText;
+            return Utils.ParsePrice(priceStr);
         }
 
         private string GetImageUrl(HtmlNode item)
         {
             return item.SelectSingleNode("./div[@class='product-item-info']/a/div/img[1]").GetAttributeValue("src", null);
+        }
+
+
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
+        {
+            var document = GetWebpage(productUrl, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to endclothing website");
+                throw new WebException("Can't connect to website");
+            }
+
+            var root = document.DocumentNode;
+            var name = root.SelectSingleNode("//h1[@class='page-title']/span").InnerText.Trim();
+            var priceNode = root.SelectSingleNode("//span[@class='price'][last()]");
+            var price = Utils.ParsePrice(priceNode.InnerText);
+            var image = root.SelectSingleNode("//img[@class='swiper-slide']").GetAttributeValue("src", null);
+
+            ProductDetails result = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+
+            var jsonStr = Regex.Match(root.InnerHtml, "\"spConfig\": (.*?),\n").Groups[1].Value;
+            var tokenStr = Regex.Match(jsonStr, "\"(\\d+)\":").Groups[1].Value;
+            JObject parsed = JObject.Parse(jsonStr);
+            var sizes = parsed.SelectToken("attributes").SelectToken(tokenStr).SelectToken("options");
+            foreach (JToken sz in sizes.Children())
+            {
+                var sizeName = (string)sz.SelectToken("label");
+                JArray products = (JArray)sz.SelectToken("products");
+                if (products.Count > 0)
+                {
+                    result.AddSize(sizeName, "Unknown");
+                }
+            }
+            return result;
         }
     }
 }

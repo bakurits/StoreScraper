@@ -22,6 +22,7 @@ namespace StoreScraper.Bots.Mstanojevic.Triads
         {
             listOfProducts = new List<Product>();
             HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
+
             foreach (var item in itemCollection)
             {
                 token.ThrowIfCancellationRequested();
@@ -50,7 +51,26 @@ namespace StoreScraper.Bots.Mstanojevic.Triads
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var document = GetWebpage(productUrl, token);
-            ProductDetails details = new ProductDetails();
+            var price = Utils.ParsePrice(document.SelectSingleNode("//span[@id='js-product-price']/span[@class='product-content__price--inc']/span").InnerText.Replace(",", "."));
+
+
+
+
+            string name = document.SelectSingleNode("//span[@id='js-product-title']").InnerText.Trim();
+            string image = WebsiteBaseUrl + document.SelectSingleNode("//img[@id='js-product-main-image']").GetAttributeValue("data-src", "");
+
+
+
+            ProductDetails details = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency.Replace("&EURO;", "EUR"),
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
 
             string id = productUrl.Substring(productUrl.Length - 5);
             string restApiUrl = "https://www.triads.co.uk/ajax/get_product_options/"+id;
@@ -74,17 +94,7 @@ namespace StoreScraper.Bots.Mstanojevic.Triads
             }
 
 
-                /*var sizeCollection = document.SelectNodes("//select[@class='attributes-select']/option[.='Choose a UK Size']/../option");
-
-                foreach (var size in sizeCollection)
-                {
-                    string sz = size.InnerHtml;
-                    if (sz.Length > 0)
-                    {
-                        details.AddSize(sz, "Unknown");
-                    }
-
-                }*/
+                
 
                 return details;
         }
@@ -99,7 +109,14 @@ namespace StoreScraper.Bots.Mstanojevic.Triads
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/new-products/triads-mens-c1/footwear-c24";
+            //string url = WebsiteBaseUrl + "/new-products/triads-mens-c1/footwear-c24";
+
+            string url = WebsiteBaseUrl + "/ajax/getProductListings?base_url=search%2F"+settings.KeyWords.Replace(" ", "-")+"&page_type=productlistings&page_variant=show&all_upcoming_flag[]=78&keywords="+settings.KeyWords+"&show=&sort=&page=1&transport=html";
+
+            if (settings.MaxPrice > 0)
+            {
+                url += "&min_price=" + settings.MinPrice.ToString() + "&max_price=" + settings.MaxPrice.ToString();
+            }
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;

@@ -42,7 +42,7 @@ namespace StoreScraper.Core
             {
                 try
                 {
-                    store.FindItems(out lst, SearchSettings, token);
+                    store.ScrapeItems(out lst, SearchSettings, token);
                     Logger.Instance.WriteErrorLog($"{store.WebsiteName} search success! found {lst.Count} products!!");
                     break;
                 }
@@ -60,7 +60,7 @@ namespace StoreScraper.Core
                 if (oldSearch.Contains(product)) continue;
                 Logger.Instance.WriteVerboseLog($"New Item Appeared: {product}");
                 oldSearch.Add(product);
-                DoFinalActions(product, token);
+                DoFinalActions(product.GetDetails(token), token);
             }
         }
 

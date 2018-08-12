@@ -53,7 +53,26 @@ namespace StoreScraper.Bots.Mstanojevic.Sneakers76
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var document = GetWebpage(productUrl, token);
-            ProductDetails details = new ProductDetails();
+            var price = Utils.ParsePrice(document.SelectSingleNode("//span[contains(@id,'our_price_display')]").InnerText.Replace(",", "."));
+
+
+
+
+            string name = document.SelectSingleNode("//h1[@itemprop='name']").InnerText.Trim();
+            string image = document.SelectSingleNode("//a[@class='jqzoom']/img[@itemprop='image']").GetAttributeValue("src", "");
+
+
+
+            ProductDetails details = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency.Replace("&EURO;", "EUR"),
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
 
 
             var strDoc = document.InnerHtml;
