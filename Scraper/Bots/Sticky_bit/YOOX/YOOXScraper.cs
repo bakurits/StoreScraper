@@ -99,7 +99,7 @@ namespace StoreScraper.Bots.Sticky_bit.YOOX
 #if DEBUG
                     LoadSingleProduct(localList, child);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, child);
+                LoadSingleProductTryCatchWraper(localList, child);
 #endif
                 }
             });
