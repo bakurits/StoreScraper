@@ -141,24 +141,9 @@ namespace StoreScraper.Bots.Mstanojevic.Sneakers76
 
         private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
         {
-            string title = item.SelectSingleNode("./div/div/h5/a").InnerHtml.ToLower();
-            var validKeywords = settings.KeyWords.ToLower().Split(' ');
-            var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
-            foreach (var keyword in validKeywords)
-            {
-                if (!title.Contains(keyword))
-                    return false;
-            }
 
-
-            foreach (var keyword in invalidKeywords)
-            {
-                if (keyword == "")
-                    continue;
-                if (title.Contains(keyword))
-                    return false;
-            }
-
+            if (item.SelectSingleNode("./div/div/a/span[.='Sold out']") != null)
+                return false;
 
             return true;
 
@@ -166,6 +151,9 @@ namespace StoreScraper.Bots.Mstanojevic.Sneakers76
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
+            if (!CheckForValidProduct(item, settings))
+                return;
+
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             double price = GetPrice(item);
@@ -199,8 +187,7 @@ namespace StoreScraper.Bots.Mstanojevic.Sneakers76
 
         private double GetPrice(HtmlNode item)
         {
-            string priceDiv = item.SelectSingleNode("./div/div/div[@class='content_price']/span").InnerHtml.Replace("€", "").Replace(",", ".");
-
+            string priceDiv = item.SelectSingleNode("./div/div/div[@class='content_price']/span[1]").InnerHtml.Replace("€", "").Replace(",", ".");
             return double.Parse(priceDiv);
         }
 

@@ -163,23 +163,8 @@ namespace StoreScraper.Bots.Mstanojevic.Shinzo
 
         private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
         {
-            string title = item.SelectSingleNode("./div[@class='product-info']/h3/a").InnerText.ToLower();
-            var validKeywords = settings.KeyWords.ToLower().Split(' ');
-            var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
-            foreach (var keyword in validKeywords)
-            {
-                if (!title.Contains(keyword))
-                    return false;
-            }
-
-
-            foreach (var keyword in invalidKeywords)
-            {
-                if (keyword == "")
-                    continue;
-                if (title.Contains(keyword))
-                    return false;
-            }
+            if (item.SelectSingleNode("./div/a/span[@class='av']") == null)
+                return false;
 
 
             return true;
@@ -188,7 +173,7 @@ namespace StoreScraper.Bots.Mstanojevic.Shinzo
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
-            //if (!CheckForValidProduct(item, settings)) return;
+            if (!CheckForValidProduct(item, settings)) return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             double price = GetPrice(item);

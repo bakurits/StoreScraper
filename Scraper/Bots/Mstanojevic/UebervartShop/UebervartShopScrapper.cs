@@ -108,7 +108,7 @@ namespace StoreScraper.Bots.Mstanojevic.UebervartShop
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/?s="+settings.KeyWords.Replace(" ", "+")+"&post_type=product";
+            string url = WebsiteBaseUrl + "/?s=" + settings.KeyWords.Replace(" ", "+") + "&post_type=product";
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;
@@ -118,13 +118,30 @@ namespace StoreScraper.Bots.Mstanojevic.UebervartShop
         }
 
 
+
+
+
+        private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
+        {
+
+            if (item.SelectSingleNode("./a/div[@class = 'soldout']") != null)
+                return false;
+
+
+            return true;
+
+        }
+
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
+            if (!CheckForValidProduct(item, settings))
+                return;
+
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             double price = GetPrice(item);
 
-        
+
             string imageUrl = GetImageUrl(item);
             var product = new Product(this, name, url, price, imageUrl, url, "EUR");
             if (Utils.SatisfiesCriteria(product, settings))
@@ -153,14 +170,23 @@ namespace StoreScraper.Bots.Mstanojevic.UebervartShop
 
         private double GetPrice(HtmlNode item)
         {
-            var node = item.SelectSingleNode("./a/span/span");
-            if (node != null)
+            try
             {
-                string priceDiv = item.SelectSingleNode("./a/span/span").InnerText.Replace("€", "").Replace("&euro;", "").Replace("&nbsp;","").Replace("$", "").Replace(",", ".");
+                if (item.SelectSingleNode("./a/span/ins/span") != null)
+                {
+                    string priceDiv = item.SelectSingleNode("./a/span/ins/span").InnerText.Replace("€", "").Replace("&euro;", "").Replace("&nbsp;", "").Replace("$", "").Replace(",", ".");
 
-                return double.Parse(priceDiv);
+                    return double.Parse(priceDiv);
+                }
+                else
+                {
+                    
+                    string priceDiv = item.SelectSingleNode("./a/span/span").InnerText.Replace("€", "").Replace("&euro;", "").Replace("&nbsp;", "").Replace("$", "").Replace(",", ".");
+
+                    return double.Parse(priceDiv);
+                }
             }
-            else
+            catch
             {
                 return 0;
             }
