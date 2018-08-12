@@ -146,17 +146,6 @@ namespace StoreScraper.Bots.Jordan.BounceWear
                 result.AddSize(sizeString, "Unknown");
             }
             
-            foreach (var res in result.SizesList)
-            {
-                Debug.WriteLine(res.Key);
-            }
-            
-            Debug.WriteLine(name);
-            Debug.WriteLine(price.Currency);
-            Debug.WriteLine(price.Value);
-            Debug.WriteLine(imgurl);
-            
-            
             return result;
 
 
