@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
 using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
+using System.Net;
+using System.Linq;
 
 namespace StoreScraper.Bots.Higuhigu.Shoezgallery
 {
@@ -16,9 +17,8 @@ namespace StoreScraper.Bots.Higuhigu.Shoezgallery
         public override string WebsiteBaseUrl { get; set; } = "https://www.shoezgallery.com";
         public override bool Active { get; set; }
 
-        private const string SearchFormat = @"https://www.shoezgallery.com/en/recherche?orderby=position&orderway=desc&r=true&search_query=sneaker&submit_search={0}";
-        private const string priceRegex = "(\\d+(,\\d+)?) €";
-
+        private const string SearchFormat = @"https://www.shoezgallery.com/en/recherche?orderby=date&orderway=desc&r=true&search_query=sneaker&submit_search={0}";
+      
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
@@ -36,6 +36,33 @@ namespace StoreScraper.Bots.Higuhigu.Shoezgallery
 
         }
 
+        private HtmlDocument GetWebpage(string url, CancellationToken token)
+        {
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var document = client.GetDoc(url, token);
+            return document;
+        }
+
+        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
+        {
+            string url = string.Format(SearchFormat, settings.KeyWords);
+            var document = GetWebpage(url, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to shoezgallery website");
+                throw new WebException("Can't connect to website");
+            }
+            var node = document.DocumentNode;
+            var items = node.SelectNodes("//div[contains(@id, 'category_product_')]");
+            if (items == null)
+            {
+                Logger.Instance.WriteErrorLog("Uncexpected Html!!");
+                Logger.Instance.SaveHtmlSnapshop(document);
+                throw new WebException("Undexpected Html");
+            }
+            return items;
+        }
+
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
@@ -48,47 +75,13 @@ namespace StoreScraper.Bots.Higuhigu.Shoezgallery
             }
         }
 
-        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
-        {
-
-            var document = GetWebpage(productUrl, token);
-            ProductDetails details = new ProductDetails();
-
-            var sizeCollection = document.SelectNodes("//a[contains(@class, 'attribute_link')]");
-
-            foreach (var size in sizeCollection)
-            {
-                string sz = size.InnerText;
-                if (sz.Length > 0)
-                {
-                    details.AddSize(sz, "Unknown");
-                }
-
-            }
-            return details;
-        }
-
-        private HtmlNode GetWebpage(string url, CancellationToken token)
-        {
-            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
-            var document = client.GetDoc(url, token).DocumentNode;
-            return document;
-        }
-
-        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
-        {
-            string url = string.Format(SearchFormat, settings.KeyWords);
-            var document = GetWebpage(url, token);
-            return document.SelectNodes("//div[contains(@id, 'category_product_')]");
-        }
-
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
-            double price = GetPrice(item);
+            var price = GetPrice(item);
             string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "EUR");
+            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
@@ -105,21 +98,52 @@ namespace StoreScraper.Bots.Higuhigu.Shoezgallery
             return item.SelectSingleNode("./div[@class='product-image']/a").GetAttributeValue("href", null);
         }
 
-        private double GetPrice(HtmlNode item)
+        private Price GetPrice(HtmlNode item)
         {
-            Match match = Regex.Match(item.InnerHtml, priceRegex);
-            double price = -1;
-            while (match.Success)
-            {
-                price = Convert.ToDouble(match.Groups[1].Value.Replace(",", "."));
-                match = match.NextMatch();
-            }
-            return price;
+            string priceStr = item.SelectSingleNode(".//span[@itemprop='price'][last()]").InnerText;
+            return Utils.ParsePrice(priceStr);
         }
 
         private string GetImageUrl(HtmlNode item)
         {
             return item.SelectSingleNode(".//img").GetAttributeValue("src", null);
+        }
+
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
+        {
+            var document = GetWebpage(productUrl, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to shoezgallery website");
+                throw new WebException("Can't connect to website");
+            }
+
+            var root = document.DocumentNode;
+            var sizeNodes = root.SelectNodes("//a[contains(@class, 'attribute_link')]");
+            var sizes = sizeNodes.Select(node => node.InnerText).ToList();
+
+            var name = root.SelectSingleNode("//h1[contains(@class, 'product-name')]").InnerText.Trim();
+            var priceNode = root.SelectSingleNode(".//span[@itemprop='price'][last()]");
+            var price = Utils.ParsePrice(priceNode.InnerText);
+            var image = root.SelectSingleNode("//ul[@class='product-slider']/li/a").GetAttributeValue("src", null);
+
+            ProductDetails result = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+
+            foreach (var size in sizes)
+            {
+                result.AddSize(size, "Unknown");
+            }
+
+            return result;
         }
     }
 }

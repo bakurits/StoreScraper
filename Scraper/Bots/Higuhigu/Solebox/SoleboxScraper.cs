@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
 using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
+using System.Net;
+using System.Linq;
 
 namespace StoreScraper.Bots.Higuhigu.Solebox
 {
@@ -36,6 +37,33 @@ namespace StoreScraper.Bots.Higuhigu.Solebox
 
         }
 
+        private HtmlDocument GetWebpage(string url, CancellationToken token)
+        {
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var document = client.GetDoc(url, token);
+            return document;
+        }
+
+        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
+        {
+            string url = string.Format(SearchFormat, settings.KeyWords);
+            var document = GetWebpage(url, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to solebox website");
+                throw new WebException("Can't connect to website");
+            }
+            var node = document.DocumentNode;
+            var items = node.SelectNodes("//li[@class='productData']");
+            if (items == null)
+            {
+                Logger.Instance.WriteErrorLog("Uncexpected Html!!");
+                Logger.Instance.SaveHtmlSnapshop(document);
+                throw new WebException("Undexpected Html");
+            }
+            return items;
+        }
+
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
@@ -48,50 +76,14 @@ namespace StoreScraper.Bots.Higuhigu.Solebox
             }
         }
 
-
-        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
-        {
-            var document = GetWebpage(productUrl, token);
-            ProductDetails details = new ProductDetails();
-            
-            var sizeCollection = document.SelectNodes("//div[@class='size ']");
-      
-            foreach (var size in sizeCollection)
-            {
-                string sz = size.SelectSingleNode("./a").GetAttributeValue("data-size-eu", null);
-                if (sz.Length > 0)
-                {
-                    details.AddSize(sz, "Unknown");
-                }
-
-            }
-
-            return details;
-        }
-
-        private HtmlNode GetWebpage(string url, CancellationToken token)
-        {
-            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
-            var document = client.GetDoc(url, token).DocumentNode;
-            return document;
-        }
-
-        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
-        {
-            string url = string.Format(SearchFormat, settings.KeyWords);
-            var document = GetWebpage(url, token);
-            if (document.InnerHtml.Contains(noResults)) return null;
-            return document.SelectNodes("//li[@class='productData']");
-        }
-
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             if (GetStatus(item)) return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
-            double price = GetPrice(item);
+            var price = GetPrice(item);
             string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "EUR");
+            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
@@ -113,15 +105,52 @@ namespace StoreScraper.Bots.Higuhigu.Solebox
             return item.SelectSingleNode("./a").GetAttributeValue("href", null);
         }
 
-        private double GetPrice(HtmlNode item)
+        private Price GetPrice(HtmlNode item)
         {
-            string priceDiv = item.SelectSingleNode("./a/div[@class='priceBlock']/div").InnerHtml;
-            return Convert.ToDouble(Regex.Match(priceDiv, @"(\d+,\d+)").Groups[0].Value.Replace(",", "."));
+            string priceStr = item.SelectSingleNode(".//div[contains(@class, 'priceContainer')]").InnerHtml.Split('<')[0].Replace(",", ".");
+            return Utils.ParsePrice(priceStr);
         }
 
         private string GetImageUrl(HtmlNode item)
         {
             return item.SelectSingleNode("./a/div[@class='gridPicture']/img").GetAttributeValue("src", null);
+        }
+
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
+        {
+            var document = GetWebpage(productUrl, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to solebox website");
+                throw new WebException("Can't connect to website");
+            }
+
+            var root = document.DocumentNode;
+            var sizeNodes = root.SelectNodes("//div[@class='size ']/a");
+            var sizes = sizeNodes.Select(node => node?.GetAttributeValue("data-size-eu", null)).ToList();
+
+            var name = root.SelectSingleNode("//h1[@id='productTitle']/span").InnerText.Trim();
+            var priceNode = root.SelectSingleNode(".//div[@id='productPrice']");
+            var price = Utils.ParsePrice(priceNode.InnerText.Replace(",", "."));
+            var image = root.SelectSingleNode("//a[@id='zoom1']").GetAttributeValue("src", null);
+
+            ProductDetails result = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+
+            foreach (var size in sizes)
+            {
+                result.AddSize(size, "Unknown");
+            }
+
+            return result;
         }
     }
 }

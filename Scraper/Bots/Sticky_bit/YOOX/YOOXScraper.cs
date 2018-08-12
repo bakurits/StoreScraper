@@ -23,18 +23,37 @@ namespace StoreScraper.Bots.Sticky_bit.YOOX
         public override bool Active { get; set; }
 
         private string[] SearchPrefixes = {
+            //Girls
             @"/girl/clothing/baby/shoponline?dept=clothinggirl_baby&sort=2&textsearch=",
             @"/girl/shoes/baby/shoponline?dept=shoesgirl_baby&sort=2&textsearch=",
             @"/girl/accessories/baby/shoponline?dept=accessoriesgirl_baby&sort=2&textsearch=",
 
             @"/girl/clothing/kids/shoponline?dept=collgirl_kid&sort=2&textsearch=",
-            @"/girl/shoes/baby/shoponline?dept=shoesgirl_kid&sort=2&textsearch=",
-            @"/girl/accessories/baby/shoponline?dept=accessoriesgirl_kid&sort=2&textsearch=",
+            @"/girl/shoes/kids/shoponline?dept=shoesgirl_kid&sort=2&textsearch=",
+            @"/girl/accessories/kids/shoponline?dept=accessoriesgirl_kid&sort=2&textsearch=",
 
-            @"/girl/clothing/kids/shoponline?dept=clothinggirl_junior&sort=2&textsearch=",
-            @"/girl/shoes/baby/shoponline?dept=shoesgirl_junior&sort=2&textsearch=",
-            @"/girl/accessories/baby/shoponline?dept=accgirl_junior&sort=2&textsearch=",
+            @"/girl/clothing/junior/shoponline?dept=clothinggirl_junior&sort=2&textsearch=",
+            @"/girl/shoes/junior/shoponline?dept=shoesgirl_junior&sort=2&textsearch=",
+            @"/girl/accessories/junior/shoponline?dept=accgirl_junior&sort=2&textsearch=",
 
+            //Boys
+            @"/boy/clothing/baby/shoponline?dept=collboy_baby&sort=2&textsearch=",
+            @"/boy/clothing/baby/shoponline?dept=shoesboy_baby&sort=2&textsearch=",
+            @"/boy/accessories/baby/shoponline?dept=accessoriesboy_baby&sort=2&textsearch=",
+
+            @"/boy/clothing/kids/shoponline?dept=clothingboy_kid&sort=2&textsearch=",
+            @"/boy/shoes/kids/shoponline?dept=shoesboy_kid&sort=2&textsearch=",
+            @"/boy/accessories/kids/shoponline?dept=accessoriesboy_kid&sort=2&textsearch=",
+
+            @"/boy/clothing/junior/shoponline?dept=clothingboy_junior&sort=2&textsearch=",
+            @"/boy/shoes/junior/shoponline?dept=shoesboy_junior&sort=2&textsearch=",
+            @"/boy/accessories/junior/shoponline?dept=accboy_junior&sort=2&textsearch=",
+
+            //Women
+            @"/women/shoponline?dept=women&textsearch=",
+
+            //Men
+            @"/men/shoponline?dept=men&textsearch="
         };
 
         private const string MainDivXpath = @"//*[@id=""itemsGrid""]/div[1]";
@@ -59,26 +78,31 @@ namespace StoreScraper.Bots.Sticky_bit.YOOX
             CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            string searchUrl = WebsiteBaseUrl + SearchPrefixes[0] + settings.KeyWords;
-            HtmlNode mainNode = InitialNavigation(searchUrl, token);
-            HtmlNode mainDiv = mainNode.SelectSingleNode(MainDivXpath);
 
-            HtmlNodeCollection childDivs = mainDiv.SelectNodes("./div");
-
-            foreach (HtmlNode child in childDivs)
+            foreach (var prefix in SearchPrefixes)
             {
-                string classValue = child.GetAttributeValue("class", null);
-                if (classValue == null || !classValue.Contains("col"))
+                string searchUrl = WebsiteBaseUrl + prefix + settings.KeyWords;
+                HtmlNode mainNode = InitialNavigation(searchUrl, token);
+                HtmlNode mainDiv = mainNode.SelectSingleNode(MainDivXpath);
+
+                HtmlNodeCollection childDivs = mainDiv.SelectNodes("./div");
+
+                foreach (HtmlNode child in childDivs)
                 {
-                    continue;
-                }
+                    string classValue = child.GetAttributeValue("class", null);
+                    if (classValue == null || !classValue.Contains("col"))
+                    {
+                        continue;
+                    }
 
 #if DEBUG
-                LoadSingleProduct(listOfProducts, child);
+                    LoadSingleProduct(listOfProducts, child);
 #else
                 LoadSingleProductTryCatchWraper(listOfProducts, child);
 #endif
+                }
             }
+
         }
 
         /// <summary>
@@ -108,14 +132,19 @@ namespace StoreScraper.Bots.Sticky_bit.YOOX
             string img = child.SelectSingleNode("./div[1]/div[1]/a[1]/img[1]")?.GetAttributeValue("rel", null);
             string url = child.SelectSingleNode("./div[1]/div[2]/a[1]")?.GetAttributeValue("href", null);
             string name = child.SelectSingleNode("./div[1]/div[2]/a[1]/div[1]").InnerText + " (" + id + ")";
-            string priceStr = child.SelectSingleNode("./div[1]/div[2]/a/div[3]").InnerText;
+            HtmlNodeCollection priceSpans = child.SelectNodes("./div[1]/div[2]/a/div[3]/span");
+            if (priceSpans == null)
+            {
+                return;
+            }
+            string priceStr = priceSpans[priceSpans.Count - 1].InnerHtml;
 
             List<string> sizes;
             Price price;
             try
             {
                 sizes = getSizeArray(child.SelectSingleNode("./div[1]/div[2]/a[1]/div[4]/div[1]"));
-                price = Utils.ParsePrice(priceStr);;
+                price = Utils.ParsePrice(priceStr); ;
             }
             catch (Exception e)
             {
