@@ -122,7 +122,7 @@ namespace StoreScraper.Bots.Higuhigu.Basketrevolution
 
             var root = document.DocumentNode;           
             var name = root.SelectSingleNode("//h1[@class='product-name']").InnerText.Trim();
-            var priceNode = root.SelectSingleNode("//span[@class='price'][last()]");
+            var priceNode = root.SelectSingleNode("//span[@class='price']");
             var price = Utils.ParsePrice(priceNode.InnerText.Replace(",", "."));
             var image = root.SelectSingleNode("//img[@id='image']").GetAttributeValue("src", null);
 
