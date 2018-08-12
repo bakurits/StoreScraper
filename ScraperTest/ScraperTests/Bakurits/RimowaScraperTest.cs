@@ -28,14 +28,14 @@ namespace ScraperTest.ScraperTests.Bakurits
         [TestMethod()]
         public void GetProductDetailsTest()
         {
-            Product curProduct = new Product(new ShelflifeScraper(), "INCOTEX Slim - Fit Pleated Brushed Stretch - Cotton Trousers",
-                "https://www.shelflife.co.za/products/Nike-Air-More-Money-Olive",
+            Product curProduct = new Product(new RimowaScraper(), "INCOTEX Slim - Fit Pleated Brushed Stretch - Cotton Trousers",
+                "https://www.rimowa.com/de/en/variation?pid=83273&dwvar_83273_color=red_gloss",
                 2399,
                 "pics/product/large/aj2998-200-side.jpg",
                 "id");
 
 
-            ShelflifeScraper scraper = new ShelflifeScraper();
+            RimowaScraper scraper = new RimowaScraper();
 
             ProductDetails details = scraper.GetProductDetails(curProduct.Url, CancellationToken.None);
 

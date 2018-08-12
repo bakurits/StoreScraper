@@ -241,7 +241,7 @@ namespace StoreScraper.Helpers
 
             priceString = priceString.Trim().Replace(" ", "");
             if (!string.IsNullOrEmpty(tousandsDelimiter)) priceString = priceString.Replace(tousandsDelimiter, "");
-
+            priceString = HttpUtility.HtmlDecode(priceString);
             priceString = priceString.Replace(decimalDelimiter, ".");
 
             string number = Regex.Match(priceString, $@"[\d\.]+").Value;
@@ -254,7 +254,7 @@ namespace StoreScraper.Helpers
             if(c.Any(char.IsNumber)) Logger.Instance.WriteErrorLog($"Couldn't parse string to price. str = {priceString}");
 #endif
 
-            return new Price(parsed ,c);
+            return new Price(parsed, c);
         }
 
         public static string EscapeNewLines(string str)
