@@ -54,7 +54,7 @@ namespace StoreScraper.Bots.Higuhigu.Overkill
                 throw new WebException("Can't connect to website");
             }
             var node = document.DocumentNode;
-            var items = node.SelectSingleNode("//div[@class='category-products']").SelectNodes(".//li[contains(@class, 'item')]");
+            var items = node.SelectNodes("//div[@class='category-products']//li[contains(@class, 'item')]");
             if (items == null)
             {
                 Logger.Instance.WriteErrorLog("Uncexpected Html!!");
