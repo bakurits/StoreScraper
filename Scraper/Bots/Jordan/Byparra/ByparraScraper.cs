@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Web.UI.Design;
 using HtmlAgilityPack;
+using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
@@ -21,6 +25,7 @@ namespace StoreScraper.Bots.Jordan.Byparra
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
+
             HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
           
             foreach (var item in itemCollection)
@@ -95,7 +100,55 @@ namespace StoreScraper.Bots.Jordan.Byparra
 
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            throw new System.NotImplementedException();
+            var resp = GetWebpage(productUrl, token);
+            if (resp == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to basketrevolution website");
+                throw new WebException("Can't connect to website");
+            }
+
+            var product = resp.SelectSingleNode("//div[contains(@class, 'row col-wrap')]");
+            var name = product.SelectSingleNode("//h2[1]").InnerHtml;
+            var price = Utils.ParsePrice(product.SelectSingleNode("//p[contains(@class, 'price')][1]/b").InnerHtml);
+            var imgurl = "https://byparra.com" + product
+                             .SelectSingleNode("//div[@class='item active'][1]/img[@class='img-responsive'][1]")
+                             .GetAttributeValue("src", null);
+            var sizes = product.SelectSingleNode("//select[contains(@class,'form-control')][1]");
+            var sizesList = sizes.SelectNodes("//option");
+            
+            ProductDetails result = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = imgurl,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+            
+            foreach (var size in sizesList)
+            {
+                var sizeString = size.InnerHtml;
+
+                if (sizeString != "size")
+                {
+                    result.AddSize(sizeString, "Unknown");
+                }
+            }
+            
+            foreach (var res in result.SizesList)
+            {
+                Debug.WriteLine(res.Key);
+            }
+            
+            Debug.WriteLine(name);
+            Debug.WriteLine(price.Currency);
+            Debug.WriteLine(price.Value);
+            Debug.WriteLine(imgurl);
+            
+            
+            return result;
         }
     }
 }

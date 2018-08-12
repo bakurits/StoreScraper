@@ -24,11 +24,6 @@ namespace StoreScraper.Bots.Jordan.BounceWear
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            GetProductDetails(
-                "https://bouncewear.com/product/golden-state-warriors-nike-spotlight-mens-nba-hoodie-carbon-heather",
-                token);
-            return;
-            
           
             HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
           
@@ -131,7 +126,7 @@ namespace StoreScraper.Bots.Jordan.BounceWear
             var price = Utils.ParsePrice(product.SelectSingleNode("//h1[@class='mb-3'][1]/strong").InnerHtml);
             var imgurl = product.SelectSingleNode("//div[@class='thumb'][1]/img[1]").GetAttributeValue("src", null);
             var sizes = product.SelectSingleNode("//select[@id='variation_id'][1]");
-            var sizesList = sizes.SelectNodes("//option[1]");
+            var sizesList = sizes.SelectNodes("//option");
             
             ProductDetails result = new ProductDetails()
             {
