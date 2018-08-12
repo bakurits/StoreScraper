@@ -24,30 +24,30 @@ namespace StoreScraper.Bots.Sticky_bit.YOOX
 
         private string[] SearchPrefixes = {
             //Girls
-            @"/girl/clothing/baby/shoponline?dept=clothinggirl_baby&sort=2&textsearch=",
-            @"/girl/shoes/baby/shoponline?dept=shoesgirl_baby&sort=2&textsearch=",
-            @"/girl/accessories/baby/shoponline?dept=accessoriesgirl_baby&sort=2&textsearch=",
+            @"/girl/clothing/baby/shoponline?sort=2&textsearch=",
+            @"/girl/shoes/baby/shoponline?sort=2&textsearch=",
+            @"/girl/accessories/baby/shoponline?sort=2&textsearch=",
 
-            @"/girl/clothing/kids/shoponline?dept=collgirl_kid&sort=2&textsearch=",
-            @"/girl/shoes/kids/shoponline?dept=shoesgirl_kid&sort=2&textsearch=",
-            @"/girl/accessories/kids/shoponline?dept=accessoriesgirl_kid&sort=2&textsearch=",
+            @"/girl/clothing/kids/shoponline?sort=2&textsearch=",
+            @"/girl/shoes/kids/shoponline?sort=2&textsearch=",
+            @"/girl/accessories/kids/shoponline?sort=2&textsearch=",
 
-            @"/girl/clothing/junior/shoponline?dept=clothinggirl_junior&sort=2&textsearch=",
-            @"/girl/shoes/junior/shoponline?dept=shoesgirl_junior&sort=2&textsearch=",
-            @"/girl/accessories/junior/shoponline?dept=accgirl_junior&sort=2&textsearch=",
+            @"/girl/clothing/junior/shoponline?sort=2&textsearch=",
+            @"/girl/shoes/junior/shoponline?sort=2&textsearch=",
+            @"/girl/accessories/junior/shoponline?sort=2&textsearch=",
 
             //Boys
-            @"/boy/clothing/baby/shoponline?dept=collboy_baby&sort=2&textsearch=",
-            @"/boy/clothing/baby/shoponline?dept=shoesboy_baby&sort=2&textsearch=",
-            @"/boy/accessories/baby/shoponline?dept=accessoriesboy_baby&sort=2&textsearch=",
+            @"/boy/clothing/baby/shoponline?sort=2&textsearch=",
+            @"/boy/clothing/baby/shoponline?sort=2&textsearch=",
+            @"/boy/accessories/baby/shoponline?sort=2&textsearch=",
 
-            @"/boy/clothing/kids/shoponline?dept=clothingboy_kid&sort=2&textsearch=",
-            @"/boy/shoes/kids/shoponline?dept=shoesboy_kid&sort=2&textsearch=",
-            @"/boy/accessories/kids/shoponline?dept=accessoriesboy_kid&sort=2&textsearch=",
+            @"/boy/clothing/kids/shoponline?sort=2&textsearch=",
+            @"/boy/shoes/kids/shoponline?sort=2&textsearch=",
+            @"/boy/accessories/kids/shoponline?sort=2&textsearch=",
 
-            @"/boy/clothing/junior/shoponline?dept=clothingboy_junior&sort=2&textsearch=",
-            @"/boy/shoes/junior/shoponline?dept=shoesboy_junior&sort=2&textsearch=",
-            @"/boy/accessories/junior/shoponline?dept=accboy_junior&sort=2&textsearch=",
+            @"/boy/clothing/junior/shoponline?sort=2&textsearch=",
+            @"/boy/shoes/junior/shoponline?sort=2&textsearch=",
+            @"/boy/accessories/junior/shoponline?sort=2&textsearch=",
 
             //Women
             @"/women/shoponline?dept=women&textsearch=",
@@ -74,12 +74,13 @@ namespace StoreScraper.Bots.Sticky_bit.YOOX
             return document.DocumentNode;
         }
 
+
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,
             CancellationToken token)
         {
-            listOfProducts = new List<Product>();
+            List <Product> localList = new List<Product>();
 
-            foreach (var prefix in SearchPrefixes)
+            SearchPrefixes.AsParallel().ForAll(prefix =>
             {
                 string searchUrl = WebsiteBaseUrl + prefix + settings.KeyWords;
                 HtmlNode mainNode = InitialNavigation(searchUrl, token);
@@ -96,13 +97,14 @@ namespace StoreScraper.Bots.Sticky_bit.YOOX
                     }
 
 #if DEBUG
-                    LoadSingleProduct(listOfProducts, child);
+                    LoadSingleProduct(localList, child);
 #else
                 LoadSingleProductTryCatchWraper(listOfProducts, child);
 #endif
                 }
-            }
+            });
 
+            listOfProducts = localList;
         }
 
         /// <summary>
