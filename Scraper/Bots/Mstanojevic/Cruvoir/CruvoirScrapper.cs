@@ -122,6 +122,11 @@ namespace StoreScraper.Bots.Mstanojevic.Cruvoir
                     return false;
             }
 
+            if (item.SelectSingleNode("./div/p[@class='sizes']/span[@class='sold-out']") != null)
+            {
+                return false;
+            }
+
             return true;
 
         }
