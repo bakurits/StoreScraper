@@ -15,7 +15,7 @@ namespace ScraperTest.ScraperTests.Higuhigu
             OkiniScraper scraper = new OkiniScraper();
             SearchSettingsBase settings = new SearchSettingsBase()
             {
-                KeyWords = "jordan"
+                KeyWords = "sneaker"
             };
 
             scraper.FindItems(out var lst, settings, CancellationToken.None);
