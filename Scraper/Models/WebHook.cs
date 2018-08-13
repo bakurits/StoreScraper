@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using StoreScraper.Core;
 using StoreScraper.Helpers;
+using StoreScraper.Interfaces;
 
 namespace StoreScraper.Models
 {

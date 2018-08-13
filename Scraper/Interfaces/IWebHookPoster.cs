@@ -1,10 +1,9 @@
-﻿using System;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using StoreScraper.Models;
 
-namespace StoreScraper.Helpers
+namespace StoreScraper.Interfaces
 {
     public interface IWebHookPoster
     {
