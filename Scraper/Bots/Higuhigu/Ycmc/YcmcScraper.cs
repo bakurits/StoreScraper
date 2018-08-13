@@ -8,6 +8,7 @@ using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
+using System.Net;
 
 namespace StoreScraper.Bots.Higuhigu.Ycmc
 {
@@ -38,6 +39,33 @@ namespace StoreScraper.Bots.Higuhigu.Ycmc
 
         }
 
+        private HtmlDocument GetWebpage(string url, CancellationToken token)
+        {
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var document = client.GetDoc(url, token);
+            return document;
+        }
+
+        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
+        {
+            string url = SearchFormat;
+            var document = GetWebpage(url, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to ycmc website");
+                throw new WebException("Can't connect to website");
+            }
+            var node = document.DocumentNode;
+            var items = node.SelectNodes("//li[@class='item']");
+            if (items == null)
+            {
+                Logger.Instance.WriteErrorLog("Uncexpected Html!!");
+                Logger.Instance.SaveHtmlSnapshop(document);
+                throw new WebException("Undexpected Html");
+            }
+            return items;
+        }
+
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
@@ -50,42 +78,13 @@ namespace StoreScraper.Bots.Higuhigu.Ycmc
             }
         }
 
-        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
-        {
-            var document = GetWebpage(productUrl, token);
-            ProductDetails details = new ProductDetails();
-
-            HtmlNodeCollection sizesNodeCollection = document.SelectNodes("//span[contains(@class, 'size_group_code_item')]");
-
-            foreach (var sizeNode in sizesNodeCollection)
-            {
-                details.AddSize(sizeNode.SelectSingleNode("./a").InnerText, "Unknown");
-
-            }
-            return details;
-        }
-
-        private HtmlNode GetWebpage(string url, CancellationToken token)
-        {
-            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
-            var document = client.GetDoc(url, token).DocumentNode;
-            return document;
-        }
-
-        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
-        {
-            string url = SearchFormat;
-            var document = GetWebpage(url, token);
-            return document.SelectNodes("//li[@class='item']");
-        }
-
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
-            string name = GetName(item).TrimEnd();
+            string name = GetName(item).Trim();
             string url = GetUrl(item);
-            double price = GetPrice(item);
+            var price = GetPrice(item);
             string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "USD");
+            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 var keyWordSplit = settings.KeyWords.Split(' ');
@@ -104,21 +103,52 @@ namespace StoreScraper.Bots.Higuhigu.Ycmc
             return item.SelectSingleNode("./h2/a").GetAttributeValue("href", null);
         }
 
-        private double GetPrice(HtmlNode item)
+        private Price GetPrice(HtmlNode item)
         {
-            Match match = Regex.Match(item.InnerHtml, priceRegex);
-            double price = -1;
-            while (match.Success)
-            {
-                price = Convert.ToDouble(match.Groups[1].Value);
-                match = match.NextMatch();
-            }
-            return price;
+            string priceStr = item.SelectSingleNode(".//span[@class='price'][last()]").InnerText;
+            return Utils.ParsePrice(priceStr);
         }
 
         private string GetImageUrl(HtmlNode item)
         {
             return item.SelectSingleNode("./div[@class='product-image-wrapper']/a/img").GetAttributeValue("src", null);
+        }
+
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
+        {
+            var document = GetWebpage(productUrl, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to ycmc website");
+                throw new WebException("Can't connect to website");
+            }
+
+            var root = document.DocumentNode;
+            var sizeNodes = root.SelectNodes("//span[contains(@class, 'size_group_code_item')]/a");
+            var sizes = sizeNodes.Select(node => node?.InnerText).ToList();
+
+            var name = root.SelectSingleNode("//div[@class='product-name']/h1").InnerText.Trim();
+            var priceNode = root.SelectSingleNode(".//div[@class='price-box']//span[@class='price'][last()]");
+            var price = Utils.ParsePrice(priceNode.InnerText.Replace(",", "."));
+            var image = root.SelectSingleNode("//ul[@class='product-image-thumbs']/li/img").GetAttributeValue("src", null);
+
+            ProductDetails result = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+
+            foreach (var size in sizes)
+            {
+                result.AddSize(size, "Unknown");
+            }
+
+            return result;
         }
     }
 }
