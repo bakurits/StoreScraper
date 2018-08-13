@@ -12,13 +12,13 @@ namespace StoreScraper.Core
     public class SearchMonitoringTask : MonitoringTaskBase
     {
         
-        public List<ScraperBase> Stores { get; set; }
+        public List<ScraperBase> Stores { get; set; } = new List<ScraperBase>();
         public SearchSettingsBase SearchSettings { get; set; }
 
         /// <summary>
         /// Type of this is list of lists because separate list is for each store.
         /// </summary>
-        public List<List<Product>> OldItems { get; set; }
+        public List<List<Product>> OldItems { get; set; } = new List<List<Product>>();
 
         public override void MonitorOnce(CancellationToken token)
         {

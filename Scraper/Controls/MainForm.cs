@@ -195,23 +195,12 @@ namespace StoreScraper.Controls
         private void Btn_AddToMonitor_Click(object sender, EventArgs e)
         {
             var searchOptions = (SearchSettingsBase)PGrid_Bot.SelectedObject;
-
-            ActionChooser form = new ActionChooser();
-            form.ShowDialog();
-            var actions = new List<MonitoringTaskBase.FinalAction>();
-
-            if (form.DialogResult == DialogResult.OK)
-            {
-                actions.AddRange(form.GetFinalActions());
-            }
-            else return;
-
             var stores = Clbx_Websites.CheckedItems;
 
             var monTask = new SearchMonitoringTask()
             {
                 SearchSettings = searchOptions,
-                FinalActions = actions
+                FinalActions = new List<MonitoringTaskBase.FinalAction>() { MonitoringTaskBase.FinalAction.PostToWebHook }
             };
 
 
