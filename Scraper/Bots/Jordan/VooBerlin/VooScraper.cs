@@ -26,10 +26,7 @@ namespace StoreScraper.Bots.Jordan.VooBerlin
         {   
             listOfProducts = new List<Product>();
 
-            GetProductDetails("https://www.vooberlin.com/men/footwear/sneakers/5408/m-nike-air-max-flair", token);
-
-            return;
-            
+         
             var pageOne = GetWebpage(String.Format(SearchUrl, settings.KeyWords, "1"), token);
             
             var firstResults = pageOne.SelectNodes("//div[contains(@class, 'product--box')]");
@@ -65,14 +62,16 @@ namespace StoreScraper.Bots.Jordan.VooBerlin
            
             string name = GetName(item);
             string url = GetUrl(item);
-            double price = GetPrice(item);
+            double? price = GetPrice(item);
             string imgurl = GetImg(item);
-            var product = new Product(this, name, url, price, imgurl, url, "EUR");
-            if (Utils.SatisfiesCriteria(product, settings))
+            if (price != null)
             {
-                listOfProducts.Add(product);
+                var product = new Product(this, name, url, (double)price, imgurl, url, "EUR");
+                if (Utils.SatisfiesCriteria(product, settings))
+                {
+                    listOfProducts.Add(product);
+                }
             }
-         
         }
 
         private string GetImg(HtmlNode item)
@@ -88,9 +87,16 @@ namespace StoreScraper.Bots.Jordan.VooBerlin
             return price;
         }
 
-        private double GetPrice(HtmlNode item)
+        private double? GetPrice(HtmlNode item)
         {
-            return ParsePrice(item.SelectSingleNode("//span[@class='price--discount is--nowrap'][1]").InnerHtml);
+            try
+            {
+                return ParsePrice(item.SelectSingleNode("./span[@class='price--discount is--nowrap'][1]").InnerHtml);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
 
         }
         
