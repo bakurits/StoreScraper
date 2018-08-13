@@ -189,35 +189,23 @@ namespace StoreScraper.Helpers
             [JsonProperty("width")] int Width { get; set; }
         }
 
-        public async Task<HttpResponseMessage> PostMessage(string webhookUrl, Product product, CancellationToken token)
+        public async Task<HttpResponseMessage> PostMessage(string webhookUrl, ProductDetails productDetails, CancellationToken token)
         {
 
-            string szs;
-
-            try
-            {
-                szs = product.GetDetails(CancellationToken.None).ToString();
-            }
-            catch (Exception e)
-            {
-                Logger.Instance.WriteErrorLog($"while getting product details {e.Message}");
-                szs = "Error occured while getting details";
-            }
-
-            string textMessage = $"*Price*:\n{product.Price + product.Currency}\n" +
-                                 $"*Store link*:\n{product.Url}\n" +
-                                 $"*Available sizes are*:\n{szs}\n";
+            string textMessage = $"*Price*:\n{productDetails.Price + productDetails.Currency}\n" +
+                                 $"*Store link*:\n{productDetails.Url}\n" +
+                                 $"*Available sizes are*:\n{productDetails.ToString()}\n";
 
             Embed embed = new Embed()
             {
-                Title = Utils.EscapeNewLines(product.Name),
+                Title = Utils.EscapeNewLines(productDetails.Name),
                 Type = "rich",
                 Description = textMessage,
-                Url = product.Url,
+                Url = productDetails.Url,
                 Color = 7753637,
                 Thumbnail = new EmbedThumbnail()
                 {
-                    Url = product.ImageUrl
+                    Url = productDetails.ImageUrl
                 },
                 TimeStamp = new DateTimeOffset(DateTime.UtcNow)
             };

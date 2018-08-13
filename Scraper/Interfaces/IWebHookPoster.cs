@@ -7,6 +7,6 @@ namespace StoreScraper.Interfaces
 {
     public interface IWebHookPoster
     {
-        Task<HttpResponseMessage> PostMessage(string webhookUrl, Product product, CancellationToken token);
+        Task<HttpResponseMessage> PostMessage(string webhookUrl, ProductDetails product, CancellationToken token);
     }
 }

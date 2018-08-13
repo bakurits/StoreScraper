@@ -57,11 +57,11 @@ namespace StoreScraper.Controls
             Task.WhenAll(tasks).ContinueWith(FindProductsTaskCompleted);
         }
 
-        private void PostProduct(Product product)
+        private void PostProduct(ProductDetails productDetails)
         {
             foreach (var hook in AppSettings.Default.Webhooks)
             {
-                hook.Poster.PostMessage(hook.WebHookUrl, product, _findTokenSource.Token);
+                hook.Poster.PostMessage(hook.WebHookUrl, productDetails, _findTokenSource.Token);
             }
         }
 
@@ -77,7 +77,7 @@ namespace StoreScraper.Controls
             scraper.ScrapeItems(out var products, convertedFilter, _findTokenSource.Token);
             if (AppSettings.Default.PostStartMessage)
             {
-               products.ForEach(PostProduct);
+               products.ForEach(product => PostProduct(product.GetDetails(_findTokenSource.Token)));
             }
 
 

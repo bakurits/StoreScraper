@@ -1,18 +1,11 @@
-﻿using System.ComponentModel;
-using StoreScraper.Models;
+﻿using StoreScraper.Models;
 
 namespace StoreScraper.Bots.Higuhigu.Woodwood
 {
     public class WoodwoodSearchSettings : SearchSettingsBase
     {
+        public enum GenderEnum { Both, Man, Woman }
 
-        public enum GenderEnum
-        {
-            Male = 0,
-            Female = 1
-        }
-
-        [DisplayName("Gender")]
         public GenderEnum Gender { get; set; }
     }
 }

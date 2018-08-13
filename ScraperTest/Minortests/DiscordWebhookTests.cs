@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper.Bots.Bakurits.Shelflife;
@@ -10,17 +11,28 @@ namespace ScraperTest.MinorTests
     [TestClass]
     public class DiscordWebhookTests
     {
-        //[TestMethod]
+        [TestMethod]
         public void SendTest()
         {
-            Product product = new Product(new ShelflifeScraper(), "Vans x Van Gogh UA SK8-Hi - Almond Blossom/True White",
-                "https://www.shelflife.co.za/products/Vans-x-Van-Gogh-UA-SK8-Hi-Almond-Blossom-True-White",
-                1399.00,
-                "https://www.shelflife.co.za/pics/product/large/vn0a38geubl-side.jpg",
-                "id", "£");
+            ProductDetails productDetails = new ProductDetails
+            {
+                ScrapedBy = new ShelflifeScraper(),
+                Name = "Vans x Van Gogh UA SK8-Hi - Almond Blossom/True White",
+                Url = "https://www.shelflife.co.za/products/Vans-x-Van-Gogh-UA-SK8-Hi-Almond-Blossom-True-White",
+                Price = 1399.00,
+                ImageUrl = "https://www.shelflife.co.za/pics/product/large/vn0a38geubl-side.jpg",
+                Id = "https://www.shelflife.co.za/products/Vans-x-Van-Gogh-UA-SK8-Hi-Almond-Blossom-True-White",
+                Currency = "£",
+                SizesList = new List<StringPair>
+                {
+                    new StringPair() {Key = "L", Value = "1"},
+                    new StringPair() {Key = "XL", Value = "1"},
+                    new StringPair() {Key = "XXL", Value = "1"}
+                }
+            };
             var task = new DiscordPoster().PostMessage(
                 "https://discordapp.com/api/webhooks/468240680414609429/kKJB9L4I8AfQWWDcqf0vpAj9OYDqxLAJ9gHl1b2B5xg8c5X2Ic4FpcSHAE8_0vKqZBoP",
-                product, CancellationToken.None);
+                productDetails, CancellationToken.None);
 
             try
             {

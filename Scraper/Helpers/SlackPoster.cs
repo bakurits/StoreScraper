@@ -23,7 +23,7 @@ namespace StoreScraper.Helpers
 
 
 
-        public async Task<HttpResponseMessage> PostMessage(string apiUrl, Product product, CancellationToken token)
+        public async Task<HttpResponseMessage> PostMessage(string apiUrl, ProductDetails product, CancellationToken token)
         {
             const string formater = @"{{
                 ""attachments"": [

@@ -17,7 +17,7 @@ namespace ScraperTest.ScraperTests.Higuhigu
             WoodwoodSearchSettings settings = new WoodwoodSearchSettings()
             {
                 KeyWords = "jordan",
-                Gender = 0
+                Gender = WoodwoodSearchSettings.GenderEnum.Man
             };
 
             scraper.FindItems(out var lst, settings, CancellationToken.None);

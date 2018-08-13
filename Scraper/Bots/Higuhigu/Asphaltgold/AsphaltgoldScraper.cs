@@ -7,6 +7,7 @@ using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
+using System.Net;
 
 namespace StoreScraper.Bots.Higuhigu.Asphaltgold
 {
@@ -22,9 +23,56 @@ namespace StoreScraper.Bots.Higuhigu.Asphaltgold
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
+            AsphaltgoldSearchSettings.ItemTypeEnum itemEnum;
+            try
+            {
+                itemEnum = ((AsphaltgoldSearchSettings)settings).ItemType;
+            }
+            catch
+            {
+                itemEnum = AsphaltgoldSearchSettings.ItemTypeEnum.Both;
+            }
+            listOfProducts = new List<Product>();
+            switch (itemEnum)
+            {
+                case AsphaltgoldSearchSettings.ItemTypeEnum.Sneakers:
+                    FindItemsForType(listOfProducts, settings, token, 0);
+                    break;
+                case AsphaltgoldSearchSettings.ItemTypeEnum.Apparel:
+                    FindItemsForType(listOfProducts, settings, token, 1);
+                    break;
+                default:
+                    FindItemsForType(listOfProducts, settings, token, 0);
+                    FindItemsForType(listOfProducts, settings, token, 1);
+                    break;
+            }
+        }
 
-            foreach (var item in itemCollection)
+        private HtmlDocument GetWebpage(string url, CancellationToken token)
+        {
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var document = client.GetDoc(url, token);
+            return document;
+        }
+
+        private void FindItemsForType(List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token, int type)
+        {
+            string url = Links[(int)type];
+            var document = GetWebpage(url, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to asphaltgold website");
+                throw new WebException("Can't connect to website");
+            }
+            var node = document.DocumentNode;
+            var items = node.SelectNodes("//section[@class='item']");
+            if (items == null)
+            {
+                Logger.Instance.WriteErrorLog("Unexpected Html!!");
+                Logger.Instance.SaveHtmlSnapshop(document);
+                throw new WebException("Unexpected Html");
+            }
+            foreach (var item in items)
             {
                 token.ThrowIfCancellationRequested();
 #if DEBUG
@@ -33,7 +81,6 @@ namespace StoreScraper.Bots.Higuhigu.Asphaltgold
                 LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
 #endif
             }
-
         }
 
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
@@ -48,43 +95,13 @@ namespace StoreScraper.Bots.Higuhigu.Asphaltgold
             }
         }
 
-        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
-        {
-            var document = GetWebpage(productUrl, token);
-            ProductDetails details = new ProductDetails();
-
-            HtmlNodeCollection sizesNodeCollection = document.SelectNodes("//li[contains(@id, 'option_')]");
-
-            foreach(var sizeNode in sizesNodeCollection)
-            {
-                    details.AddSize(sizeNode.SelectSingleNode("./div").InnerText, "Unknown");
-                
-            }
-            return details;
-        }
-
-        private HtmlNode GetWebpage(string url, CancellationToken token)
-        {
-            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
-            var document = client.GetDoc(url, token).DocumentNode;
-            return document;
-        }
-
-        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
-        {
-            AsphaltgoldSearchSettings.ItemTypeEnum typeEnum = ((AsphaltgoldSearchSettings)settings).ItemType;
-            string url = Links[(int)typeEnum];
-            var document = GetWebpage(url, token);
-            return document.SelectNodes("//section[@class='item']");
-        }
-
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
-            double price = GetPrice(item);
+            var price = GetPrice(item);
             string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "EUR");
+            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 var keyWordSplit = settings.KeyWords.Split(' ');
@@ -103,14 +120,52 @@ namespace StoreScraper.Bots.Higuhigu.Asphaltgold
             return item.SelectSingleNode("./a").GetAttributeValue("href", null);
         }
 
-        private double GetPrice(HtmlNode item)
+        private Price GetPrice(HtmlNode item)
         {
-            return Convert.ToDouble(item.SelectSingleNode("./a").GetAttributeValue("data-price", null));
+            string priceStr = item.SelectSingleNode(".//span[@itemprop='price'][last()]").InnerText;
+            return Utils.ParsePrice(priceStr);
         }
 
         private string GetImageUrl(HtmlNode item)
         {
             return item.SelectSingleNode("./a/img").GetAttributeValue("src", null);
+        }
+
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
+        {
+            var document = GetWebpage(productUrl, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to asphaltgold website");
+                throw new WebException("Can't connect to website");
+            }
+
+            var root = document.DocumentNode;
+            var sizeNodes = root.SelectNodes("//li[contains(@id, 'option_')]/div");
+            var sizes = sizeNodes.Select(node => node.InnerText.Trim()).ToList();
+
+            var name = root.SelectSingleNode("//span[@class='attr-name']").InnerText.Trim();
+            var priceNode = root.SelectSingleNode(".//span[@itemprop='price'][last()]");
+            var price = Utils.ParsePrice(priceNode.InnerText);
+            var image = root.SelectSingleNode("//meta[@property='og:image']").GetAttributeValue("content", null);
+
+            ProductDetails result = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+
+            foreach (var size in sizes)
+            {
+                result.AddSize(size, "Unknown");
+            }
+
+            return result;
         }
     }
 }
