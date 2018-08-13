@@ -111,7 +111,7 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.TitoloShop
             var sizes = nodes.Select(node => node.InnerText.Trim()).Where(element => !element.Contains("Choose"));
             string name = document.SelectSingleNode("//h1[contains(@class,'product-name')]/strong").InnerText;
             
-            string priceIntoString = document.SelectSingleNode("//span[@class='price']").InnerText;
+            string priceIntoString = document.SelectSingleNode("//span[@class='price'][last()]").InnerText;
             string result = Regex.Match(priceIntoString, @"[\d\.]+").Value;
             double.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
 
