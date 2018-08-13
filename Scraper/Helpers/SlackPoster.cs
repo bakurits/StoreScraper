@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
 using StoreScraper.Core;
 using StoreScraper.Factory;
+using StoreScraper.Interfaces;
 using StoreScraper.Models;
 #pragma warning disable 4014
 
@@ -22,7 +23,7 @@ namespace StoreScraper.Helpers
 
 
 
-        public async Task<HttpResponseMessage> PostMessage(string apiUrl, Product product, CancellationToken token)
+        public async Task<HttpResponseMessage> PostMessage(string apiUrl, ProductDetails product, CancellationToken token)
         {
             const string formater = @"{{
                 ""attachments"": [
