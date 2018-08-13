@@ -8,6 +8,7 @@ using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
+using System.Net;
 
 namespace StoreScraper.Bots.Higuhigu.Uptherestore
 {
@@ -36,6 +37,35 @@ namespace StoreScraper.Bots.Higuhigu.Uptherestore
 
         }
 
+        private HtmlDocument GetWebpage(string url, CancellationToken token)
+        {
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var document = client.GetDoc(url, token);
+            return document;
+        }
+
+
+        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
+        {
+            string url = SearchFormat;
+            var document = GetWebpage(url, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to uptherestore website");
+                throw new WebException("Can't connect to website");
+            }
+            var node = document.DocumentNode;
+            var items = node.SelectNodes("//li[contains(@class, 'item')]/div");
+            if (items == null)
+            {
+                Logger.Instance.WriteErrorLog("Uncexpected Html!!");
+                Logger.Instance.SaveHtmlSnapshop(document);
+                throw new WebException("Undexpected Html");
+            }
+            return items;
+        }
+
+
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
@@ -48,48 +78,13 @@ namespace StoreScraper.Bots.Higuhigu.Uptherestore
             }
         }
 
-        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
-        {
-            //li
-            var document = GetWebpage(productUrl, token);
-            ProductDetails details = new ProductDetails();
-
-            var sizeCollection = document.SelectNodes("//li[contains(@id, 'option')]/a/span");
-
-            foreach (var size in sizeCollection)
-            {
-                string sz = size.InnerText.Trim();
-                if (sz.Length > 0)
-                {
-                    details.AddSize(sz, "Unknown");
-                }
-
-            }
-
-            return details;
-        }
-
-        private HtmlNode GetWebpage(string url, CancellationToken token)
-        {
-            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
-            var document = client.GetDoc(url, token).DocumentNode;
-            return document;
-        }
-
-        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
-        {
-            string url = SearchFormat;
-            var document = GetWebpage(url, token);
-            return document.SelectNodes("//li[contains(@class, 'item')]/div");
-        }
-
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
-            double price = GetPrice(item);
+            var price = GetPrice(item);
             string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "USD");
+            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 var keyWordSplit = settings.KeyWords.Split(' ');
@@ -108,21 +103,53 @@ namespace StoreScraper.Bots.Higuhigu.Uptherestore
             return item.SelectSingleNode(".//a").GetAttributeValue("href", null);
         }
 
-        private double GetPrice(HtmlNode item)
+        private Price GetPrice(HtmlNode item)
         {
-            var priceNode = item.SelectSingleNode(".//span[@class='regular-price']/span");
-            if (priceNode == null)
-            {
-                priceNode = item.SelectSingleNode(".//p[@class='special-price']/span");
-            }
-            if (priceNode == null) { return -1; }
-            return Convert.ToDouble(Regex.Match(priceNode.InnerText, @"(\d+(\.\d+)?)").Groups[0].Value);
+            string priceStr = item.SelectSingleNode(".//span[@class='price'][last()]").InnerText;
+            return Utils.ParsePrice(priceStr);
 
         }
 
         private string GetImageUrl(HtmlNode item)
         {
             return item.SelectSingleNode(".//img").GetAttributeValue("src", null);
+        }
+
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
+        {
+            var document = GetWebpage(productUrl, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to solebox website");
+                throw new WebException("Can't connect to website");
+            }
+
+            var root = document.DocumentNode;
+            var sizeNodes = root.SelectNodes("//li[contains(@id, 'option')]/a/span");
+            var sizes = sizeNodes.Select(node => node?.InnerText).ToList();
+
+            var name = root.SelectSingleNode("//h1[@itemprop='name']").InnerText.Replace("<br>", "\n").Trim();
+            var priceNode = root.SelectSingleNode(".//span[@class='price'][last()]");
+            var price = Utils.ParsePrice(priceNode.InnerText);
+            var image = root.SelectSingleNode("//div[@class='owl-carousel']//img").GetAttributeValue("src", null);
+
+            ProductDetails result = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+
+            foreach (var size in sizes)
+            {
+                result.AddSize(size.Trim(), "Unknown");
+            }
+
+            return result;
         }
     }
 }
