@@ -155,12 +155,12 @@ namespace StoreScraper.Bots.Mstanojevic.Sneakersnstuff
 
             string name = GetName(item).TrimEnd();
             string url = WebsiteBaseUrl + GetUrl(item);
-            double price = GetPrice(item);
+            var price = GetPrice(item);
 
            
 
             string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "USD");
+            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
@@ -185,11 +185,12 @@ namespace StoreScraper.Bots.Mstanojevic.Sneakersnstuff
             return item.SelectSingleNode("./a").GetAttributeValue("href", null);
         }
 
-        private double GetPrice(HtmlNode item)
+        private Price GetPrice(HtmlNode item)
         {
-            string priceDiv = item.SelectSingleNode("./div/span[@class='price-container']/span").InnerHtml.Replace("$", "").Replace(",", ".");
+            /*string priceDiv = item.SelectSingleNode("./div/span[@class='price-container']/span").InnerHtml.Replace("$", "").Replace(",", ".");
 
-            return double.Parse(priceDiv);
+            return double.Parse(priceDiv);*/
+            return Utils.ParsePrice(item.SelectSingleNode("./div/span[@class='price-container']/span").InnerHtml.Replace(",", "."));
         }
 
         private string GetImageUrl(HtmlNode item)

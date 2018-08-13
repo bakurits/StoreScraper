@@ -15,7 +15,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         {
             FootShopScrapper scraper = new FootShopScrapper();
             SearchSettingsBase settings = new SearchSettingsBase();
-            settings.KeyWords = "vault";
+            settings.KeyWords = "nike";
 
 
             scraper.FindItems(out var lst, settings, CancellationToken.None);

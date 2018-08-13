@@ -30,6 +30,7 @@ namespace StoreScraper.Bots.Mstanojevic.JimmyJazz
             listOfProducts = new List<Product>();
          
             HtmlNodeCollection itemCollection = GetProductCollection(settings, gender, token);
+            Console.WriteLine(itemCollection.Count);
             //GetProductCollection(settings, token);
 
             //foreach (var itemCollection in cb)
@@ -201,10 +202,10 @@ namespace StoreScraper.Bots.Mstanojevic.JimmyJazz
             //if (!CheckForValidProduct(item, settings)) return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
-            double price = GetPrice(item);
+            var price = GetPrice(item);
 
             string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "USD");
+            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
@@ -229,9 +230,9 @@ namespace StoreScraper.Bots.Mstanojevic.JimmyJazz
             return item.SelectSingleNode("./div/a").GetAttributeValue("href", null);
         }
 
-        private double GetPrice(HtmlNode item)
+        private Price GetPrice(HtmlNode item)
         {
-            try
+            /*try
             {
                 string priceDiv = item.SelectSingleNode("./div[contains(@class,'product_grid_price ')]/span").InnerHtml.Replace("$", "");
 
@@ -240,7 +241,9 @@ namespace StoreScraper.Bots.Mstanojevic.JimmyJazz
             catch
             {
                 return 0;
-            }
+            }*/
+
+            return Utils.ParsePrice(item.SelectSingleNode("./div[contains(@class,'product_grid_price ')]/span").InnerHtml.Replace(",", "."));
         }
 
         private string GetImageUrl(HtmlNode item)

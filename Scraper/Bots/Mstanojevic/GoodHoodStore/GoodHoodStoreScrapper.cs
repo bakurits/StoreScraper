@@ -23,6 +23,7 @@ namespace StoreScraper.Bots.Mstanojevic.GoodHoodStore
         {
             listOfProducts = new List<Product>();
             HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
+            Console.Write(itemCollection.Count);
             foreach (var item in itemCollection)
             {
                 token.ThrowIfCancellationRequested();
@@ -115,46 +116,23 @@ namespace StoreScraper.Bots.Mstanojevic.GoodHoodStore
 
         }
 
-        private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
-        {
-            string title = item.SelectSingleNode("./p/span[@class='Title']").InnerHtml.ToLower();
-            var validKeywords = settings.KeyWords.ToLower().Split(' ');
-            var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
-            foreach (var keyword in validKeywords)
-            {
-                if (!title.Contains(keyword))
-                    return false;
-            }
-
-
-            foreach (var keyword in invalidKeywords)
-            {
-                if (keyword == "")
-                    continue;
-                if (title.Contains(keyword))
-                    return false;
-            }
-
-
-            return true;
-
-        }
+       
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
-            if (!CheckForValidProduct(item, settings)) return;
+            //if (!CheckForValidProduct(item, settings)) return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
-            double price = GetPrice(item);
+            var price = GetPrice(item);
 
-            if (!(price >= settings.MinPrice && price <= settings.MaxPrice))
+            /*if (!(price >= settings.MinPrice && price <= settings.MaxPrice))
             {
                 return;
-            }
+            }*/
 
 
             string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "EUR");
+            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
@@ -176,14 +154,15 @@ namespace StoreScraper.Bots.Mstanojevic.GoodHoodStore
 
         private string GetUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./a").GetAttributeValue("href", null);
+            return WebsiteBaseUrl + item.SelectSingleNode("./a").GetAttributeValue("href", null);
         }
 
-        private double GetPrice(HtmlNode item)
+        private Price GetPrice(HtmlNode item)
         {
-            string priceDiv = item.SelectSingleNode("./p/span[@class='Price']/span").InnerHtml.Replace("€", "").Replace("&euro;", ""); ;
+            /* string priceDiv = item.SelectSingleNode("./p/span[@class='Price']/span").InnerHtml.Replace("€", "").Replace("&euro;", ""); ;
 
-            return double.Parse(priceDiv);
+             return double.Parse(priceDiv);*/
+            return Utils.ParsePrice(item.SelectSingleNode("./p/span[@class='Price']/span").InnerHtml.Replace(",", "."));
         }
 
         private string GetImageUrl(HtmlNode item)

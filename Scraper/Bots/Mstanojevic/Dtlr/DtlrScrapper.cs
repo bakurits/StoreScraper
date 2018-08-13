@@ -177,16 +177,16 @@ namespace StoreScraper.Bots.Mstanojevic.Dtlr
             if (!CheckForValidProduct(item, settings)) return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
-            double price = GetPrice(item);
+            var price = GetPrice(item);
 
-            if (!(price >= settings.MinPrice && price <= settings.MaxPrice) && (settings.MaxPrice != 0 && settings.MinPrice != 0))
+            /*if (!(price >= settings.MinPrice && price <= settings.MaxPrice) && (settings.MaxPrice != 0 && settings.MinPrice != 0))
             {
                 return;
-            }
+            }*/
 
 
             string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "USD");
+            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
@@ -211,9 +211,9 @@ namespace StoreScraper.Bots.Mstanojevic.Dtlr
             return item.SelectSingleNode("./a").GetAttributeValue("href", null);
         }
 
-        private double GetPrice(HtmlNode item)
+        private Price GetPrice(HtmlNode item)
         {
-            var node = item.SelectSingleNode("./div/div[@class='price-box']/span/span");
+            /*var node = item.SelectSingleNode("./div/div[@class='price-box']/span/span");
             if (node != null)
             {
                 string priceDiv = item.SelectSingleNode("./div/div[@class='price-box']/span/span").InnerHtml.Replace("€", "").Replace("&euro;", "").Replace("$", "");
@@ -223,7 +223,9 @@ namespace StoreScraper.Bots.Mstanojevic.Dtlr
             else
             {
                 return 0;
-            }
+            }*/
+
+            return Utils.ParsePrice(item.SelectSingleNode("./div/div[@class='price-box']/span/span").InnerHtml.Replace(",", "."));
         }
 
         private string GetImageUrl(HtmlNode item)

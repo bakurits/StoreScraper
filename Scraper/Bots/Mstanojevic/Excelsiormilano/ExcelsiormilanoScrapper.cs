@@ -116,9 +116,9 @@ namespace StoreScraper.Bots.Mstanojevic.Excelsiormilano
             if (!CheckForValidProduct(item, settings)) return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
-            double price = GetPrice(item);
+            var price = GetPrice(item);
             string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "EUR");
+            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
@@ -143,11 +143,12 @@ namespace StoreScraper.Bots.Mstanojevic.Excelsiormilano
             return WebsiteBaseUrl + item.SelectSingleNode("./div/div/a").GetAttributeValue("href", null);
         }
 
-        private double GetPrice(HtmlNode item)
+        private Price GetPrice(HtmlNode item)
         {
-            string priceDiv = item.SelectSingleNode("./div[2]/div/span").InnerHtml.Replace("$", "").Replace("€", "").Replace(",", ".");
+            /* string priceDiv = item.SelectSingleNode("./div[2]/div/span").InnerHtml.Replace("$", "").Replace("€", "").Replace(",", ".");
 
-            return double.Parse(priceDiv);
+             return double.Parse(priceDiv);*/
+            return Utils.ParsePrice(item.SelectSingleNode("./div[2]/div/span").InnerHtml.Replace(",", "."));
         }
 
         private string GetImageUrl(HtmlNode item)

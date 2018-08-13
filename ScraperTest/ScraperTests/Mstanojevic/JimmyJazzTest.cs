@@ -15,10 +15,12 @@ namespace ScraperTest.ScraperTests.Mstanojevic
             JimmyJazzScraper scraper = new JimmyJazzScraper();
             SearchSettingsBase settings = new SearchSettingsBase()
             {
-                KeyWords = "puma"
+                KeyWords = "nike"
             };
 
             scraper.FindItems(out var lst, settings, CancellationToken.None);
+            Helpers.Helper.PrintFindItemsResults(lst);
+
         }
 
         [TestMethod()]

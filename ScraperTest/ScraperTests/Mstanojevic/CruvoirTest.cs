@@ -15,7 +15,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         {
             CruvoirScrapper scraper = new CruvoirScrapper();
             SearchSettingsBase settings = new SearchSettingsBase();
-            settings.KeyWords = "vault";
+            settings.KeyWords = "adidas";
 
 
             scraper.FindItems(out var lst, settings, CancellationToken.None);

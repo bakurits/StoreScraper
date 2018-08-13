@@ -176,9 +176,9 @@ namespace StoreScraper.Bots.Mstanojevic.Footish
             //if (!CheckForValidProduct(item, settings)) return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
-            double price = GetPrice(item);
+            var price = GetPrice(item);
             string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "USD");
+            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
@@ -203,9 +203,9 @@ namespace StoreScraper.Bots.Mstanojevic.Footish
             return WebsiteBaseUrl + item.SelectSingleNode("./div[3]/div/h3/a").GetAttributeValue("href", null);
         }
 
-        private double GetPrice(HtmlNode item)
+        private Price GetPrice(HtmlNode item)
         {
-            try
+            /*try
             {
                 string priceDiv = item.SelectSingleNode("./div[3]/div[3]/div/span").InnerHtml.Replace("&nbsp;", "").Replace("kr", "").Replace("$", "").Replace("€", "").Replace(",", ".");
 
@@ -213,7 +213,9 @@ namespace StoreScraper.Bots.Mstanojevic.Footish
             } catch
             {
                 return 0;
-            }
+            }*/
+
+            return Utils.ParsePrice(item.SelectSingleNode("./div[3]/div[3]/div/span").InnerHtml.Replace(",", "."));
         }
 
         private string GetImageUrl(HtmlNode item)

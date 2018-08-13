@@ -17,7 +17,6 @@ namespace ScraperTest.ScraperTests.Mstanojevic
             ExcelsiormilanoScrapper scraper = new ExcelsiormilanoScrapper();
             SearchSettingsBase settings = new SearchSettingsBase();
             settings.KeyWords = "red canvas";
-            settings.NegKeyWrods = "blue";
             scraper.FindItems(out var lst, settings, CancellationToken.None);
             Helpers.Helper.PrintFindItemsResults(lst);
 

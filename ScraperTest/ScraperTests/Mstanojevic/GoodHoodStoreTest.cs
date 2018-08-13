@@ -15,7 +15,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         {
             GoodHoodStoreScrapper scraper = new GoodHoodStoreScrapper();
             SearchSettingsBase settings = new SearchSettingsBase();
-            settings.KeyWords = "vault";
+            settings.KeyWords = "nike";
 
             
             scraper.FindItems(out var lst, settings, CancellationToken.None);
