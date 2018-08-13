@@ -131,7 +131,7 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.Nordstrom
             jsonObjectStr = jsonObjectStr.Substring(jsonObjectStr.IndexOf("[", StringComparison.Ordinal));
             JArray parsed = JArray.Parse(jsonObjectStr);
 
-            string name = document.SelectSingleNode("//div[contains(@class, 'Z2kXSGK')]/h1").ToString().Trim();
+            string name = document.SelectSingleNode("//div[contains(@class, 'Z2kXSGK')]/h1").InnerText;
             string priceIntoString = document.SelectSingleNode("//span[contains(@class, 'currentPriceString_PYXT2')]").InnerText;
             string result = Regex.Match(priceIntoString, @"[\d\.]+").Value;
             double.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
