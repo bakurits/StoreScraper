@@ -109,8 +109,23 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.TitoloShop
             }
 
             var sizes = nodes.Select(node => node.InnerText.Trim()).Where(element => !element.Contains("Choose"));
-            ProductDetails details = new ProductDetails();
+            string name = document.SelectSingleNode("//h1[contains(@class,'product-name')]/strong").InnerText;
+            
+            string priceIntoString = document.SelectSingleNode("//span[@class='price']").InnerText;
+            string result = Regex.Match(priceIntoString, @"[\d\.]+").Value;
+            double.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
 
+            string imageURL = document.SelectSingleNode("//img[@id='image']").GetAttributeValue("src",null);
+            ProductDetails details = new ProductDetails()
+            {
+                Name = name,
+                Price = price,
+                ImageUrl = imageURL,
+                Url = productUrl,
+                Id = productUrl,
+                Currency = "CHF",
+                ScrapedBy = this
+            };
             foreach (var size in sizes)
             {
                 details.AddSize(size, "Unknown");
