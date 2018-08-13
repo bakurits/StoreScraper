@@ -25,25 +25,26 @@ namespace StoreScraper.Core
             List<Product> lst = null;
 
 
-            for (int s = 0; s< Stores.Count; s++)
+            for (int s = 0; s < Stores.Count; s++)
             {
                 var oldSearch = OldItems[s];
                 var store = Stores[s];
-                Task.Run(() => MonitorSingleStore(store, oldSearch, token));
+                Stores.AsParallel().ForAll(curSotre => { MonitorSingleStore(curSotre, oldSearch, token); });
+
             }
-           
+
         }
 
         private void MonitorSingleStore(ScraperBase store, List<Product> oldSearch, CancellationToken token)
         {
             List<Product> lst = null;
 
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < AppSettings.Default.ProxyRotationRetryCount/2; i++)
             {
                 try
                 {
                     store.ScrapeItems(out lst, SearchSettings, token);
-                    Logger.Instance.WriteErrorLog($"{store.WebsiteName} search success! found {lst.Count} products!!");
+                    Logger.Instance.WriteVerboseLog($"{store.WebsiteName} search success! found {lst.Count} products!!");
                     break;
                 }
                 catch (Exception e)
