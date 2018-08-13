@@ -120,7 +120,7 @@ namespace StoreScraper.Bots.Higuhigu.Uptherestore
             var document = GetWebpage(productUrl, token);
             if (document == null)
             {
-                Logger.Instance.WriteErrorLog($"Can't Connect to solebox website");
+                Logger.Instance.WriteErrorLog($"Can't Connect to uptherestore website");
                 throw new WebException("Can't connect to website");
             }
 
