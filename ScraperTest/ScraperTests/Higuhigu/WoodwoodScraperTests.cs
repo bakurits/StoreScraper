@@ -13,14 +13,14 @@ namespace ScraperTest.ScraperTests.Higuhigu
         [TestMethod]
         public void FindItemsTest()
         {
-            /*WoodwoodScraper scraper = new WoodwoodScraper();
+            WoodwoodScraper scraper = new WoodwoodScraper();
             WoodwoodSearchSettings settings = new WoodwoodSearchSettings()
             {
                 KeyWords = "jordan",
                 Gender = WoodwoodSearchSettings.GenderEnum.Man
             };
 
-            scraper.FindItems(out var lst, settings, CancellationToken.None);*/
+            scraper.FindItems(out var lst, settings, CancellationToken.None);
         }
 
         [TestMethod()]
