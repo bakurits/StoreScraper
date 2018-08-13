@@ -7,6 +7,7 @@ using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
+using System.Net;
 
 namespace StoreScraper.Bots.Higuhigu.Woodwood
 {
@@ -21,9 +22,56 @@ namespace StoreScraper.Bots.Higuhigu.Woodwood
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
+            WoodwoodSearchSettings.GenderEnum genderEnum;
+            try
+            {
+                genderEnum = ((WoodwoodSearchSettings)settings).Gender;
+            }
+            catch
+            {
+                genderEnum = WoodwoodSearchSettings.GenderEnum.Both;
+            }
+            listOfProducts = new List<Product>();
+            switch (genderEnum)
+            {
+                case WoodwoodSearchSettings.GenderEnum.Man:
+                    FindItemsForGender(listOfProducts, settings, token, 0);
+                    break;
+                case WoodwoodSearchSettings.GenderEnum.Woman:
+                    FindItemsForGender(listOfProducts, settings, token, 1);
+                    break;
+                default:
+                    FindItemsForGender(listOfProducts, settings, token, 0);
+                    FindItemsForGender(listOfProducts, settings, token, 1);
+                    break;
+            }
+        }
 
-            foreach (var item in itemCollection)
+        private HtmlDocument GetWebpage(string url, CancellationToken token)
+        {
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var document = client.GetDoc(url, token);
+            return document;
+        }
+
+        private void FindItemsForGender(List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token, int Gender)
+        {
+            string url = Links[Gender];
+            var document = GetWebpage(url, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to woodwood website");
+                throw new WebException("Can't connect to website");
+            }
+            var node = document.DocumentNode;
+            var items = node.SelectNodes("//ul[@id='landingpage-lister-list']/li");
+            if (items == null)
+            {
+                Logger.Instance.WriteErrorLog("Unexpected Html!!");
+                Logger.Instance.SaveHtmlSnapshop(document);
+                throw new WebException("Unexpected Html");
+            }
+            foreach (var item in items)
             {
                 token.ThrowIfCancellationRequested();
 #if DEBUG
@@ -32,7 +80,6 @@ namespace StoreScraper.Bots.Higuhigu.Woodwood
                 LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
 #endif
             }
-
         }
 
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
@@ -47,43 +94,13 @@ namespace StoreScraper.Bots.Higuhigu.Woodwood
             }
         }
 
-        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
-        {
-            var document = GetWebpage(productUrl, token);
-            ProductDetails details = new ProductDetails();
-
-            HtmlNodeCollection sizesNodeCollection = document.SelectSingleNode("//select[contains(@id, 'form-size')]").SelectNodes(".//option[not(@value='')]");
-
-            foreach (var sizeNode in sizesNodeCollection)
-            {
-                details.AddSize(sizeNode.InnerText, "Unknown");
-
-            }
-            return details;
-        }
-
-        private HtmlNode GetWebpage(string url, CancellationToken token)
-        {
-            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
-            var document = client.GetDoc(url, token).DocumentNode;
-            return document;
-        }
-
-        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
-        {
-            WoodwoodSearchSettings.GenderEnum Gender = ((WoodwoodSearchSettings)settings).Gender;
-            string url = Links[(int)Gender];
-            var document = GetWebpage(url, token);
-            return document.SelectSingleNode("//ul[@id='landingpage-lister-list']").SelectNodes("./li");
-        }
-
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
-            double price = GetPrice(item);
+            var price = GetPrice(item);
             string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "EUR");
+            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 var keyWordSplit = settings.KeyWords.Split(' ');
@@ -102,14 +119,52 @@ namespace StoreScraper.Bots.Higuhigu.Woodwood
             return item.SelectSingleNode("./a").GetAttributeValue("href", null);
         }
 
-        private double GetPrice(HtmlNode item)
+        private Price GetPrice(HtmlNode item)
         {
-            return Convert.ToDouble(item.SelectSingleNode(".//span[@class='list-commodity-price']").InnerText.Split(' ')[1]);
+            string priceStr = item.SelectSingleNode(".//span[@class='list-commodity-price']").InnerText;
+            return Utils.ParsePrice(priceStr);
         }
 
         private string GetImageUrl(HtmlNode item)
         {
             return item.SelectSingleNode(".//img").GetAttributeValue("src", null);
+        }
+
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
+        {
+            var document = GetWebpage(productUrl, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to woodwood website");
+                throw new WebException("Can't connect to website");
+            }
+
+            var root = document.DocumentNode;
+            var sizeNodes = root.SelectNodes("//select[contains(@id, 'form-size')]//option[not(@value='')]");
+            var sizes = sizeNodes.Select(node => node.InnerText.Trim()).ToList();
+
+            var name = root.SelectSingleNode("//h1[@class='headline']").InnerText.Trim();
+            var priceNode = root.SelectSingleNode("//span[@class='price']");
+            var price = Utils.ParsePrice(priceNode.InnerText);
+            var image = root.SelectSingleNode("//a[@id='commodity-show-image']/img").GetAttributeValue("src", null);
+
+            ProductDetails result = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+
+            foreach (var size in sizes)
+            {
+                result.AddSize(size, "Unknown");
+            }
+
+            return result;
         }
     }
 }
