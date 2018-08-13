@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Windows.Forms;
 using System.Xml.Serialization;
+using ScraperCore;
 using StoreScraper.Models;
 
 
@@ -29,7 +29,7 @@ namespace StoreScraper
         public int ProxyRotationRetryCount { get; set; } = 5;
 
         [DisplayName("Monitring Delay(ms)")]
-        public int MonitoringDelay { get; set; } = 100;
+        public int MonitoringDelay { get; set; } = 1000;
 
         public List<WebHook> Webhooks { get; set; } = new List<WebHook>();
 
@@ -39,7 +39,7 @@ namespace StoreScraper
         {
             DataDir = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                Application.ProductName);
+                Env.ProductName);
 
             DataFilePath = Path.Combine(DataDir, DataFileName);
         }

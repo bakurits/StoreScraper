@@ -9,6 +9,7 @@
     <Import_RootNamespace>ScraperCore</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AppSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Attributes\DisabledScraperAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bots\Bakurits\Antonioli\AntonioliScraper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bots\Bakurits\Antonioli\AntonioliSearchSettings.cs" />

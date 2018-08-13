@@ -5,7 +5,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 using StoreScraper.Helpers;
 using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 
@@ -18,7 +17,6 @@ namespace StoreScraper.Core
 
         public DateTime LastLogSave { get; set; }
         public event ColoredLogHandler OnLogged;
-        public RichTextBox LogTarget { get; set; }
 
         private const int MaxLogBytes = 1024 * 1024 * 10;
         private const string SnapshotFolderName = "HtmlSnapshots";
@@ -44,38 +42,15 @@ namespace StoreScraper.Core
 
             string log = $"[{nowTime}]: [Error] {errorMessage}" + Environment.NewLine + Environment.NewLine;
 
-            LogTarget?.AppendText(log, Color.Red);
             OnLogged?.Invoke(log, Color.Red);
         }
 
 
-        private void CheckSaveLog()
-        {
-            if(LogTarget == null) return;
-
-            if (Encoding.ASCII.GetByteCount(LogTarget.Text) <= MaxLogBytes) return;
-            SaveLog();
-        }
-
         public void SaveLog()
         {
-            if(LogTarget == null) return;
-
+           
             string logFileName = $"{LastLogSave:g} - {DateTime.Now:g}.rtf".EscapeFileName();
             string path = Path.Combine(LogsFolderName, logFileName);
-
-            try
-            {
-                using (var stream = File.Create(path))
-                {
-                    LogTarget.Clear();
-                    LogTarget.SaveFile(stream, RichTextBoxStreamType.RichText);
-                }
-            }
-            catch
-            {
-               //ignored
-            }
         }
 
         public void WriteVerboseLog(string message)
@@ -83,8 +58,6 @@ namespace StoreScraper.Core
             string nowTime = DateTime.Now.ToString(CultureInfo.InvariantCulture);
 
             string log = $"[{nowTime}]: [Verbose] {message}" + Environment.NewLine + Environment.NewLine;
-
-            LogTarget?.AppendText(log, Color.Blue);
             OnLogged?.Invoke(log, Color.Blue);
         }
 

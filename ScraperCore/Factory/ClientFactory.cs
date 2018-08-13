@@ -141,8 +141,6 @@ namespace StoreScraper.Factory
                 handler.Proxy = proxy;
             }
 
-
-            handler.ServerCertificateCustomValidationCallback = (message, certificate2, arg3, arg4) => true;
             HttpClient client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(15)};
             return client;
         }

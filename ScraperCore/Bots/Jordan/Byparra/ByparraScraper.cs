@@ -5,7 +5,6 @@ using System.Globalization;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Web.UI.Design;
 using HtmlAgilityPack;
 using StoreScraper.Core;
 using StoreScraper.Factory;
