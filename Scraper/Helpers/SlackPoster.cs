@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
 using StoreScraper.Core;
 using StoreScraper.Factory;
+using StoreScraper.Interfaces;
 using StoreScraper.Models;
 #pragma warning disable 4014
 
