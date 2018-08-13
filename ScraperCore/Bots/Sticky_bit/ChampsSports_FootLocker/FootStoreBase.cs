@@ -15,6 +15,14 @@ using StoreScraper.Models;
 
 namespace StoreScraper.Bots.Sticky_bit.ChampsSports_FootLocker
 {
+    public class Gender
+    {
+        public string name { get; set; }
+        public string id { get; set; }
+        public string cmRef { get; set; }
+        public string crumbs { get; set; }
+    }
+
     [DisabledScraper]
     public class FootSimpleBase : ScraperBase
     {
@@ -25,7 +33,11 @@ namespace StoreScraper.Bots.Sticky_bit.ChampsSports_FootLocker
         private string UrlPrefix;
         private const string PageSizeSuffix = @"?Ns=P_NewArrivalDateEpoch%7C1&cm_SORT=New%20Arrivals";
         private const string Keywords = @"/keyword-{0}";
+        private const string GenderPrefix = @"/{0}/_-_/N-{1}";
+        private const string GenderPostfix = @"&crumbs={0}&cm_REF={1}";
         private const string UlXpath = @"//*[@id=""endeca_search_results""]/ul";
+
+        Dictionary<int, Gender> genders;
 
 
         public FootSimpleBase(string websiteName, string websiteBaseUrl)
@@ -33,6 +45,27 @@ namespace StoreScraper.Bots.Sticky_bit.ChampsSports_FootLocker
             this.WebsiteName = websiteName;
             this.WebsiteBaseUrl = websiteBaseUrl;
             this.UrlPrefix = websiteBaseUrl + "/_-_";
+
+            if (websiteName == "ChampsSports")
+            {
+                genders = new Dictionary<int, Gender>()
+                {
+                    { 1, new Gender {name="Mens", id="24",crumbs="76", cmRef="Men%27s"}},
+                    { 2, new Gender {name="Womens", id="25",crumbs="77", cmRef="Women%27s"}},
+                    { 3, new Gender {name="Boys", id="22",crumbs="2689", cmRef="Boys%27"}},
+                    { 4, new Gender {name="Girls", id="25",crumbs="2690", cmRef="Girls%27"}},
+                };
+            }
+            else if (websiteName == "EastBay")
+            {
+                genders = new Dictionary<int, Gender>()
+                {
+                    { 1, new Gender {name="Mens", id="1p",crumbs="61", cmRef="Men%27s"}},
+                    { 2, new Gender {name="Womens", id="1q",crumbs="62", cmRef="Women%27s"}},
+                    { 3, new Gender {name="Boys", id="1pi",crumbs="2214", cmRef="Boys%27"}},
+                    { 4, new Gender {name="Girls", id="1pj",crumbs="2215", cmRef="Girls%27"}},
+                };
+            }
         }
 
         private HtmlNode InitialNavigation(string url, CancellationToken token)
@@ -49,6 +82,12 @@ namespace StoreScraper.Bots.Sticky_bit.ChampsSports_FootLocker
             listOfProducts = new List<Product>();
 
             string searchUrl = UrlPrefix + string.Format(Keywords, settings.KeyWords) + PageSizeSuffix;
+
+            int gender = 1; // 0 - all, 1 - mens, 2 - womens, 3 - boys, 4 - girls 
+            if (gender != 0)
+            {
+                searchUrl = WebsiteBaseUrl + string.Format(GenderPrefix, genders[gender].name, genders[gender].id) + string.Format(Keywords, settings.KeyWords) + PageSizeSuffix + string.Format(GenderPostfix, genders[gender].crumbs, genders[gender].cmRef);
+            }
 
             HtmlNode container = null;
 
@@ -154,5 +193,5 @@ namespace StoreScraper.Bots.Sticky_bit.ChampsSports_FootLocker
         }
     }
 
-    
+
 }
