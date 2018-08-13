@@ -123,7 +123,7 @@ namespace StoreScraper.Bots.Higuhigu.Overkill
             var document = GetWebpage(productUrl, token);
             if (document == null)
             {
-                Logger.Instance.WriteErrorLog($"Can't Connect to basketrevolution website");
+                Logger.Instance.WriteErrorLog($"Can't Connect to overkill website");
                 throw new WebException("Can't connect to website");
             }
 

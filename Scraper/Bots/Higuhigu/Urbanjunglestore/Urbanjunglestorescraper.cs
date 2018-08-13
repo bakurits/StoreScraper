@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
 using System.Threading;
 using HtmlAgilityPack;
 using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
+using System.Net;
 
 namespace StoreScraper.Bots.Higuhigu.Urbanjunglestore
 {
@@ -17,8 +19,6 @@ namespace StoreScraper.Bots.Higuhigu.Urbanjunglestore
         public override bool Active { get; set; }
 
         private const string SearchFormat = @"https://www.urbanjunglestore.com/it/catalogsearch/result/?cat=137&q={0}";
-        private const string imageRegex = "src=\"https://www.urbanjunglestore.com/media/catalog/(.*?)\"";
-        private const string imageRegexBase = "https://www.urbanjunglestore.com/media/catalog/";
         private const string sizesRegex = "title=\"USA(\\d+(,\\d+)?)-EU(\\d+(,\\d+)?)\"";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
@@ -50,29 +50,10 @@ namespace StoreScraper.Bots.Higuhigu.Urbanjunglestore
             }
         }
 
-        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
-        {
-            var document = GetWebpage(productUrl, token);
-            ProductDetails details = new ProductDetails();
-
-            Match match = Regex.Match(document.InnerHtml.Replace(" ", ""), sizesRegex);
-
-            while (match.Success)
-            {
-                var sz = match.Groups[2].Value.ToString();
-                if (!details.SizesList.Exists(szInfo => szInfo.Key == sz) && sz.Length > 0)
-                {
-                    details.AddSize(sz, "Unknown");
-                }
-                match = match.NextMatch();
-            }
-            return details;
-        }
-
-        private HtmlNode GetWebpage(string url, CancellationToken token)
+        private HtmlDocument GetWebpage(string url, CancellationToken token)
         {
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
-            var document = client.GetDoc(url, token).DocumentNode;
+            var document = client.GetDoc(url, token);
             return document;
         }
 
@@ -80,7 +61,20 @@ namespace StoreScraper.Bots.Higuhigu.Urbanjunglestore
         {
             string url = string.Format(SearchFormat, settings.KeyWords);
             var document = GetWebpage(url, token);
-            return document.SelectNodes("//li[@class='item urban-widget']");
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to urbanjunglestore website");
+                throw new WebException("Can't connect to website");
+            }
+            var node = document.DocumentNode;
+            var items = node.SelectNodes("//li[@class='item urban-widget']");
+            if (items == null)
+            {
+                Logger.Instance.WriteErrorLog("Uncexpected Html!!");
+                Logger.Instance.SaveHtmlSnapshop(document);
+                throw new WebException("Undexpected Html");
+            }
+            return items;
         }
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
@@ -88,18 +82,15 @@ namespace StoreScraper.Bots.Higuhigu.Urbanjunglestore
             if (GetStatus(item)) return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
-            double price = GetPrice(item);
-            if (price < 0) return;
+            var price = GetPrice(item);
             string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price, imageUrl, url, "EUR");
+            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
             }
         }
 
-        
-        
         private bool GetStatus(HtmlNode item)
         {
             return !(item.SelectNodes(".//div[@class='sold-out']") == null);
@@ -115,20 +106,57 @@ namespace StoreScraper.Bots.Higuhigu.Urbanjunglestore
             return item.SelectSingleNode("./h2[@class='product-name']/a").GetAttributeValue("href", null);
         }
 
-        private double GetPrice(HtmlNode item)
+        private Price GetPrice(HtmlNode item)
         {
-            var priceNode = item.SelectSingleNode(".//span[@class='regular-price']/span");
-            if(priceNode==null)
-            {
-                priceNode = item.SelectSingleNode(".//p[@class='special-price']/span");
-            }
-            if (priceNode == null) { return -1; }
-            return Convert.ToDouble(Regex.Match(priceNode.InnerText, @"(\d+(,\d+)?)").Groups[0].Value.Replace(",", "."));
+            string priceStr = item.SelectSingleNode(".//span[@class='price'][last()]").InnerText;
+            return Utils.ParsePrice(priceStr);
         }
 
         private string GetImageUrl(HtmlNode item)
         {
-            return imageRegexBase + Regex.Match(item.InnerHtml, imageRegex).Groups[1].Value;
+            return item.SelectSingleNode(".//img").GetAttributeValue("src", null);
+        }
+
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
+        {
+            var document = GetWebpage(productUrl, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to urbanjunglestore website");
+                throw new WebException("Can't connect to website");
+            }
+
+            var root = document.DocumentNode;
+            var name = root.SelectSingleNode("//h1[@itemprop='name']").InnerText.Trim();
+            var priceNode = root.SelectSingleNode("//div[@class='price-box']//span[@class='price'][last()]");
+            var price = Utils.ParsePrice(priceNode.InnerText);
+            var image = root.SelectSingleNode("//img[@id='image-main']").GetAttributeValue("src", null);
+
+            ProductDetails result = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+
+            var jsonStr = Regex.Match(root.InnerHtml, @"var spConfig = new Product.Config\((.*)\)").Groups[1].Value;
+            var tokenStr = Regex.Match(jsonStr, "\"(\\d+)\":").Groups[1].Value;
+            JObject parsed = JObject.Parse(jsonStr);
+            var sizes = parsed.SelectToken("attributes").SelectToken(tokenStr).SelectToken("options");
+            foreach (JToken sz in sizes.Children())
+            {
+                var sizeName = (string)sz.SelectToken("label");
+                JArray products = (JArray)sz.SelectToken("products");
+                if (products.Count > 0)
+                {
+                    result.AddSize(sizeName, "Unknown");
+                }
+            }
+            return result;
         }
     }
 }
