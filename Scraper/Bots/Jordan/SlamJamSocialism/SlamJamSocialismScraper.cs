@@ -26,9 +26,7 @@ namespace StoreScraper.Bots.Jordan.SlamJamSocialism
         {
             listOfProducts = new List<Product>();
 
-            GetProductDetails("https://www.slamjamsocialism.com/lace-ups/47956-morso-shoes.html", token);
-            
-            return;
+           
             
             var keywordUrl = String.Format(SearchUrl, settings.KeyWords);
             var pageOne = GetWebpage(keywordUrl, token);
