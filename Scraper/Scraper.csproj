@@ -176,7 +176,6 @@
     <Compile Include="Core\UrlMonitoringTask.cs" />
     <Compile Include="Interfaces\IWebHookPoster.cs" />
     <Compile Include="Http\CookieCollector.cs" />
-    <Compile Include="Helpers\Embed.cs" />
     <Compile Include="Http\FirefoxHttpClientStorage.cs" />
     <Compile Include="Core\MonitoringTaskBase.cs" />
     <Compile Include="Models\Price.cs" />
