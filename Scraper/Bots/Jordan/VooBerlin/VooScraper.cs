@@ -76,7 +76,7 @@ namespace StoreScraper.Bots.Jordan.VooBerlin
 
         private string GetImg(HtmlNode item)
         {
-            return item.SelectSingleNode("//img[1]").GetAttributeValue("srcset", null);
+            return item.SelectSingleNode("./div/div[2]/a/span/span/img").GetAttributeValue("srcset", null);
         }
 
         private double ParsePrice(string pricee)
@@ -91,7 +91,7 @@ namespace StoreScraper.Bots.Jordan.VooBerlin
         {
             try
             {
-                return ParsePrice(item.SelectSingleNode("./span[@class='price--discount is--nowrap'][1]").InnerHtml);
+                return ParsePrice(item.SelectSingleNode("./div[1]/div[2]/div[1]/div/div/div/span").InnerHtml);
             }
             catch (Exception e)
             {
@@ -102,12 +102,12 @@ namespace StoreScraper.Bots.Jordan.VooBerlin
         
         private string GetName(HtmlNode item)
         {
-            return item.SelectSingleNode("//a[@class='product--title'][1]").GetAttributeValue("title", null);
+            return item.SelectSingleNode("./div[1]/div[2]/div[1]/span/a").GetAttributeValue("title", null);
         }
 
         private string GetUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("//a[@class='product--image'][1]").GetAttributeValue("href", null);
+            return item.SelectSingleNode("./div/div[2]/a").GetAttributeValue("href", null);
         }
 
         private HtmlNode GetWebpage(string url, CancellationToken token)
