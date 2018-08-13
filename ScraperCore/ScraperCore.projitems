@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>057afe2c-9129-440d-b196-d6c13b264a66</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>ScraperCore</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AppSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Attributes\DisabledScraperAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Bakurits\Antonioli\AntonioliScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Bakurits\Antonioli\AntonioliSearchSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Bakurits\Baitme\BaitmeScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Bakurits\Mrporter\MrporterScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Bakurits\Rimowa\RimowaScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Bakurits\Shelflife\ShelflifeScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\DavitBezhanishvili\AwLab\AwLabScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\DavitBezhanishvili\SneakerStudioScraper\SneakerStudioScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\GiorgiBaghdavadze\290sqm\IstSqm.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\GiorgiBaghdavadze\Nordstrom\NordStromScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\GiorgiBaghdavadze\Titoloshop\TitoloScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\GiorgiBaghdavadze\tres-bien\tresBienScrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\GiorgiChkhikvadze\Nakedcph\NakedcphScrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\GiorgiChkhikvadze\Off---White\OffWhiteScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Higuhigu\43Einhalb\EinhalbScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Higuhigu\Asphaltgold\AsphaltgoldScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Higuhigu\Asphaltgold\AsphaltgoldSearchSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Higuhigu\Basketrevolution\BasketrevolutionScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Higuhigu\Chmielna\ChmielnaScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Higuhigu\Consortium\ConsortiumScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Higuhigu\Endclothing\Endclothingscraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Higuhigu\Nighshop\NighshopScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Higuhigu\Okini\OkiniScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Higuhigu\Overkill\OverkillScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Higuhigu\Shoezgallery\ShoezgalleryScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Higuhigu\Solebox\SoleboxScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Higuhigu\Uptherestore\UptherestoreScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Higuhigu\Urbanjunglestore\Urbanjunglestorescraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Higuhigu\Woodwood\WoodwoodScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Higuhigu\Woodwood\WoodwoodSearchSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Higuhigu\Ycmc\YcmcScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Jordan\BounceWear\BounceWearScrape.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Jordan\Byparra\ByparraScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Jordan\SlamJamSocialism\SlamJamSocialismScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Jordan\VooBerlin\VooScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Mstanojevic\Cruvoir\CruvoirScrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Mstanojevic\Dtlr\DtlrScrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Mstanojevic\Excelsiormilano\ExcelsiormilanoScrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Mstanojevic\Footish\FootishScrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Mstanojevic\FootShop\FootShopScrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Mstanojevic\GoodHoodStore\GoodHoodStoreScrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Mstanojevic\JimmyJazz\JimmyJazzScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Mstanojevic\Ntrstore\NtrstoreScrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Mstanojevic\Shinzo\ShinzoScrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Mstanojevic\ShopNordstrom\ShopNordstromScrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Mstanojevic\Sneakers76\Sneakers76Scrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Mstanojevic\Sneakersnstuff\SneakersnstuffScrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Mstanojevic\Snkrs\SnkrsScrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Mstanojevic\Triads\TriadsScrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Mstanojevic\UebervartShop\UebervartShopScrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Sticky_bit\BSTN\BSTNScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Sticky_bit\ChampsSports_FootLocker_EastBay_FootAction\FootStoreBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Sticky_bit\YOOX\YOOXScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\BrowserManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\Logger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\MonitoringTaskBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\ScraperBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\SearchMonitoringTask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\UrlMonitoringTask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Factory\ClientFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\DiscordPoster.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\SlackPoster.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\Utils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Http\CookieCollector.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Http\FirefoxHttpClientStorage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ISearchSettingsValidator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IWebHookPoster.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Info.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Price.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Product.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ProductDetails.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\SearchSettingsBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\StringPair.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\UrlString.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\WebHook.cs" />
+  </ItemGroup>
+</Project>

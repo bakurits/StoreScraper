@@ -9,8 +9,6 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
-using System.Windows.Forms;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -211,21 +209,6 @@ namespace StoreScraper.Helpers
             return client;
         }
 
-        public static void AppendText(this RichTextBox box, string text, Color color)
-        {
-            box.Invoke((MethodInvoker) delegate
-            {
-                box.SelectionStart = box.TextLength;
-                box.SelectionLength = 0;
-
-                box.SelectionColor = color;
-                box.AppendText(text);
-                box.SelectionColor = box.ForeColor;
-            });
-
-        
-        }
-
         private static Random r = new Random();
 
         public static T GetRandomValue<T>(this IList<T> list)
@@ -260,7 +243,7 @@ namespace StoreScraper.Helpers
 
             priceString = priceString.Trim().Replace(" ", "");
             if (!string.IsNullOrEmpty(tousandsDelimiter)) priceString = priceString.Replace(tousandsDelimiter, "");
-            priceString = HttpUtility.HtmlDecode(priceString);
+            priceString = HtmlEntity.DeEntitize(priceString);
             priceString = priceString.Replace(decimalDelimiter, ".");
 
             string number = Regex.Match(priceString, $@"[\d\.]+").Value;
