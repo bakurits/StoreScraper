@@ -16,7 +16,7 @@ namespace ScraperTest.ScraperTests.Higuhigu
             AsphaltgoldSearchSettings settings = new AsphaltgoldSearchSettings()
             {
                 KeyWords = "jordan",
-                ItemType = 0
+                ItemType = AsphaltgoldSearchSettings.ItemTypeEnum.Sneakers
             };
 
             scraper.FindItems(out var lst, settings, CancellationToken.None);
