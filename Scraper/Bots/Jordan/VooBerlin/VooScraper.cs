@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
+using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
@@ -20,8 +23,13 @@ namespace StoreScraper.Bots.Jordan.VooBerlin
         private const string SearchUrl = @"https://www.vooberlin.com/search?sSearch={0}&p={1}";
         
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
-        {
+        {   
             listOfProducts = new List<Product>();
+
+            GetProductDetails("https://www.vooberlin.com/men/footwear/sneakers/5408/m-nike-air-max-flair", token);
+
+            return;
+            
             var pageOne = GetWebpage(String.Format(SearchUrl, settings.KeyWords, "1"), token);
             
             var firstResults = pageOne.SelectNodes("//div[contains(@class, 'product--box')]");
@@ -113,7 +121,49 @@ namespace StoreScraper.Bots.Jordan.VooBerlin
 
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            throw new System.NotImplementedException();
+            var document = GetWebpage(productUrl, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to basketrevolution website");
+                throw new WebException("Can't connect to website");
+            }
+
+            var product = document.SelectSingleNode("//div[contains(@class, 'product--detail-upper')]");
+            var imgurl = product
+                .SelectSingleNode(
+                    "//div[contains(@class,'image--box')][1]/span[1]/span[@class='image--media'][1]/img[1]")
+                .GetAttributeValue("srcset", null);
+            var name = product.SelectSingleNode("//h1[@class='product--title'][1]/span[1]").InnerHtml;
+            var price = Utils.ParsePrice(product.SelectSingleNode("//div[@class='w_price-infos'][1]").InnerHtml);
+            var sizes = product.SelectSingleNode("//select[contains(@class,'w_select-item')][1]");
+            var sizesList = sizes.SelectNodes("./option");
+            
+            ProductDetails result = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = imgurl,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+           
+         
+            foreach (var size in sizesList)
+            {
+                var sizeString = size.InnerHtml;
+
+                if (sizeString != "size")
+                {
+                    result.AddSize(sizeString, "Unknown");
+                }
+            }
+
+          
+        
+            return result;
+
         }
     }
 }
