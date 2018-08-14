@@ -6,7 +6,7 @@ using StoreScraper.Models;
 
 namespace ScraperCore.Bots.Sticky_bit.EastBay_FootAction
 {
-    class FootApiSearchSettings : SearchSettingsBase
+    public class FootApiSearchSettings : SearchSettingsBase
     {
         public enum GenderEnum {
             [Description("200000")] Both,
@@ -16,6 +16,7 @@ namespace ScraperCore.Bots.Sticky_bit.EastBay_FootAction
             [Description("200003")] Girl
         }
 
+        
         public GenderEnum Gender { get; set; }
     }
 }
