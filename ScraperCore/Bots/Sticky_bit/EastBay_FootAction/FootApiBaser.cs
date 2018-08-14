@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Xml;
@@ -30,6 +32,18 @@ namespace ScraperCore.Bots.Sticky_bit.EastBay_FootAction
             this.WebsiteBaseUrl = websiteBaseUrl;
         }
 
+
+        public static string GetDescription(Enum value)
+        {
+            FieldInfo field = value.GetType().GetField(value.ToString());
+
+            DescriptionAttribute attribute
+                = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute))
+                    as DescriptionAttribute;
+
+            return attribute == null ? value.ToString() : attribute.Description;
+        }
+
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,
             CancellationToken token)
         {
@@ -44,20 +58,8 @@ namespace ScraperCore.Bots.Sticky_bit.EastBay_FootAction
                 gender = FootApiSearchSettings.GenderEnum.Both;
             }
             string searchUrl = WebsiteBaseUrl + $"/api/products/search?currentPage=0&pageSize=50&sort=newArrivals&query={settings.KeyWords}%3Arelevance";
-            switch (gender)
-            {
-                case FootApiSearchSettings.GenderEnum.Man:
-                    //searchUrl += $"3Agender%{}";
-                    break;
-                case FootApiSearchSettings.GenderEnum.Woman:
-                    break;
-                case FootApiSearchSettings.GenderEnum.Boy:
-                    break;
-                case FootApiSearchSettings.GenderEnum.Girl:
-                    break;
-                default:
-                    break;
-            }
+            if (gender != FootApiSearchSettings.GenderEnum.Both)
+                searchUrl += $"3Agender%{GetDescription(gender)}";
             using (var client = ClientFactory.CreateProxiedHttpClient().AddHeaders(ClientFactory.JsonXmlAcceptHeader))
             {
                 var responseText = client.GetAsync(searchUrl, token).Result.Content.ReadAsStringAsync().Result;
