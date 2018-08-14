@@ -147,7 +147,7 @@ namespace StoreScraper.Bots.Sticky_bit.YOOX
                 sizes = getSizeArray(child.SelectSingleNode("./div[1]/div[2]/a[1]/div[4]/div[1]"));
                 price = Utils.ParsePrice(priceStr); ;
             }
-            catch (Exception e)
+            catch
             {
                 return;
             }

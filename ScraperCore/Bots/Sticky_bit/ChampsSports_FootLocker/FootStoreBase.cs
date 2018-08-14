@@ -70,9 +70,8 @@ namespace StoreScraper.Bots.Sticky_bit.ChampsSports_FootLocker
 
         private HtmlNode InitialNavigation(string url, CancellationToken token)
         {
-            HttpClient ClientGenerator() =>
-                ClientFactory.GetProxiedFirefoxClient();
-            var document = Utils.GetDoc(ClientGenerator, url, 4, 5, token);
+            var client = ClientFactory.GetProxiedFirefoxClient();
+            var document = client.GetDoc(url, token);
             return document.DocumentNode;
         }
 

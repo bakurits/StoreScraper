@@ -17,7 +17,9 @@ namespace StoreScraper
         public static string DataDir;
         [XmlIgnore] public static string DataFilePath;
 
-        [XmlIgnore] [Browsable(false)] public List<ScraperBase> AvailableScrapers;
+        [XmlIgnore] 
+        [Browsable(false)] 
+        public List<ScraperBase> AvailableScrapers;
 
         public static int InitialBrowserCount { get; set; } = 0;
 

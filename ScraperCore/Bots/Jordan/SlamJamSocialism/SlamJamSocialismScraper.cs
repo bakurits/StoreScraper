@@ -37,7 +37,7 @@ namespace StoreScraper.Bots.Jordan.SlamJamSocialism
                  lasstPage = pageOne.SelectSingleNode("//div[contains(@id, 'pagination_bottom')]/ul/li[6]/a/span")
                     .InnerHtml;
             }
-            catch (Exception e)
+            catch
             {
                 lasstPage = pageOne.SelectSingleNode("//div[contains(@id, 'pagination_bottom')]/ul/li[5]/a/span").InnerHtml;
             }

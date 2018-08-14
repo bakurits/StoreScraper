@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
-using StoreScraper.Helpers;
 using StoreScraper.Models;
 
 namespace StoreScraper.Core
@@ -22,15 +20,11 @@ namespace StoreScraper.Core
 
         public override void MonitorOnce(CancellationToken token)
         {
-            List<Product> lst = null;
-
-
             for (int s = 0; s < Stores.Count; s++)
             {
                 var oldSearch = OldItems[s];
                 var store = Stores[s];
                 Stores.AsParallel().ForAll(curSotre => { MonitorSingleStore(curSotre, oldSearch, token); });
-
             }
 
         }

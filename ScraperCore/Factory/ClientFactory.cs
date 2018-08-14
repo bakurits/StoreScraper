@@ -57,8 +57,8 @@ namespace StoreScraper.Factory
             ("Cache-Control", "no-cache"),
             ("Pramgma","no-cache"),
             ("Connection", "keep-alive"),
-            //("DNT","1"),
-            //("Upgrade-Insecure-Requests", "1"),
+            ("DNT","1"),
+            ("Upgrade-Insecure-Requests", "1"),
         };
 
         public static StringPair[] FireFoxHeaders2 = {
@@ -131,6 +131,7 @@ namespace StoreScraper.Factory
             HttpClientHandler handler = new HttpClientHandler()
             {
                 UseCookies = autoCookies,
+                MaxAutomaticRedirections = 3,
                 AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
                 AllowAutoRedirect = true,
             };

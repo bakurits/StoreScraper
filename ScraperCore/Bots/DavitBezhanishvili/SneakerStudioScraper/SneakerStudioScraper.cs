@@ -9,7 +9,6 @@ using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
-using System.Net;
 using System.Net.Http;
 using StoreScraper.Attributes;
 
@@ -144,8 +143,6 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
         {
             var webPage = GetWebpage(productUrl,token);
             ProductDetails details = ConstructProduct(webPage, productUrl);
-
-            RegexOptions options = RegexOptions.Multiline;
 
             var jsonStr = getJson(webPage.InnerHtml);
             JObject parsed = JObject.Parse(jsonStr);

@@ -77,8 +77,6 @@ namespace StoreScraper.Bots.Sticky_bit.BSTN
             HtmlNode container = null;
             HtmlNode node = InitialNavigation(searchUrl, token);
             container = node.SelectSingleNode(UlXpath);
-            HTMLChecker(container.InnerHtml);
-            return;
 
             HtmlNodeCollection children = container.SelectNodes("./li/div");
 

@@ -93,7 +93,7 @@ namespace StoreScraper.Bots.Jordan.VooBerlin
             {
                 return ParsePrice(item.SelectSingleNode("./div[1]/div[2]/div[1]/div/div/div/span").InnerHtml);
             }
-            catch (Exception e)
+            catch
             {
                 return null;
             }

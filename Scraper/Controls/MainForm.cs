@@ -192,10 +192,41 @@ namespace StoreScraper.Controls
             AppSettings.Default.Save();
         }
 
+
+
         private void Btn_AddToMonitor_Click(object sender, EventArgs e)
         {
+            
+            List<ScraperBase> stores = new List<ScraperBase>();
+
+            foreach (var obj in Clbx_Websites.CheckedItems)
+            {
+                var store = (ScraperBase) obj;
+                stores.Add(store);
+            }
+
+            MessageBox.Show(@"searching filter is now adding to monitor list
+                              That may take several mins
+                              You can continue usin scraper while filter is adding..");
+
+
+            AddToMonitorTask(stores).ContinueWith(task =>
+            {
+                if (task.IsFaulted || task.IsCanceled)
+                {
+                    MessageBox.Show(@"Error occured!!
+                                      scraper couldn't add filter in monitoring list
+                                      Please try again.");
+                }else if (task.IsCompleted)
+                {
+                    MessageBox.Show("Search filter was succesfully added to monitoring list");
+                }
+            });
+        }
+
+        public async Task AddToMonitorTask(List<ScraperBase> stores)
+        {
             var searchOptions = (SearchSettingsBase)PGrid_Bot.SelectedObject;
-            var stores = Clbx_Websites.CheckedItems;
 
             var monTask = new SearchMonitoringTask()
             {
@@ -203,38 +234,36 @@ namespace StoreScraper.Controls
                 FinalActions = new List<MonitoringTaskBase.FinalAction>() { MonitoringTaskBase.FinalAction.PostToWebHook }
             };
 
-
-
-            foreach (var obj in stores)
+            await Task.Run(() =>
             {
-                var store = (ScraperBase) obj;
-                monTask.Stores.Add(store);
-
-                var convertedFilter = searchOptions;
-                if(searchOptions.GetType() != store.SearchSettingsType && !searchOptions.GetType().IsSubclassOf(store.SearchSettingsType))
+                foreach (var store in stores)
                 {
-                    convertedFilter = SearchSettingsBase.ConvertToChild(searchOptions, store.SearchSettingsType);
-                }
-            
-                try
-                {
-                    store.ScrapeItems(out var curProductsList, convertedFilter, CancellationToken.None);
-                    monTask.OldItems.Add(curProductsList);
-                }
-                catch
-                {
-                    MessageBox.Show($"Error Occured while trying to obtain current products with specified search criteria on {store.WebsiteName}");
-                    return;
-                }
-            }
+                
+                    monTask.Stores.Add(store);
 
-            MessageBox.Show(@"searching filter is now adding to monitor list. 
-                              That may take several mins...
-                              When Complete you will see filter added in monitor");
+                    var convertedFilter = searchOptions;
+                    if (searchOptions.GetType() != store.SearchSettingsType &&
+                        !searchOptions.GetType().IsSubclassOf(store.SearchSettingsType))
+                    {
+                        convertedFilter = SearchSettingsBase.ConvertToChild(searchOptions, store.SearchSettingsType);
+                    }
 
+                    for (int i = 0; i < AppSettings.Default.ProxyRotationRetryCount; i++)
+                    {
+                        try
+                        {
+                            store.ScrapeItems(out var curProductsList, convertedFilter, _findTokenSource.Token);
+                            monTask.OldItems.Add(curProductsList);
+                        }
+                        catch
+                        {
+                            if(i == AppSettings.Default.ProxyRotationRetryCount - 1)
+                                MessageBox.Show($"Error Occured while trying to obtain current products with specified search criteria on {store.WebsiteName}");
+                            throw new Exception();
+                        } 
+                    }
+                }
 
-            Task.Run(() =>
-            {
 
                 monTask.Stores.ForEach(store => store.Active = true);
                 CLbx_Monitor.Invoke(new Action(() => CLbx_Monitor.Items.Add(monTask, true)));
