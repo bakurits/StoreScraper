@@ -93,6 +93,25 @@ namespace StoreScraper.Bots.Sticky_bit.ChampsSports_FootLocker
                     { 3, new Gender {name="Boys", id="1pi",crumbs="2214", cmRef="Boys%27"}},
                     { 4, new Gender {name="Girls", id="1pj",crumbs="2215", cmRef="Girls%27"}},
                 };
+
+
+                colors = new Dictionary<int, Color>()
+                {
+                    { 1, new Color {name="Pink", id="ar",crumbs="387", cmRef="Pink"}},
+                    { 2, new Color {name="Red", id="a9",crumbs="369", cmRef="Red"}},
+                    { 3, new Color {name="Orange", id="ah",crumbs="377", cmRef="Orange"}},
+                    { 4, new Color {name="Yellow", id="aj",crumbs="379", cmRef="Yellow"}},
+                    { 5, new Color {name="Green", id="a7",crumbs="367", cmRef="Green"}},
+                    { 6, new Color {name="Blue", id="a6",crumbs="366", cmRef="Blue"}},
+                    { 7, new Color {name="Pruple", id="aa",crumbs="370", cmRef="Purple"}},
+                    { 8, new Color {name="Black", id="a5",crumbs="365", cmRef="Black"}},
+                    { 9, new Color {name="Grey", id="ad",crumbs="373", cmRef="Grey"}},
+                    { 10, new Color {name="White", id="ab",crumbs="371", cmRef="White"}},
+                    { 11, new Color {name="Tan", id="an",crumbs="383", cmRef="Tan"}},
+                    { 12, new Color {name="Brown", id="ao",crumbs="384", cmRef="Brown"}},
+                    { 13, new Color {name="Multicolor", id="at",crumbs="389", cmRef="Multicolor"}},
+
+                };
             }
         }
 
