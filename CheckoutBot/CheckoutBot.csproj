@@ -100,13 +100,21 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Bots\ChampsSports\ChampsSportsBot.cs" />
     <Compile Include="Env.cs" />
+    <Compile Include="Interfaces\IAccountCheckouter.cs" />
+    <Compile Include="Interfaces\IGuestCheckouter.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\AccountCheckoutSettings.cs" />
+    <Compile Include="Models\CartInfo.cs" />
+    <Compile Include="Models\GuestCheckoutSettings.cs" />
+    <Compile Include="Models\ProductBuyOptions.cs" />
+    <Compile Include="Models\ShippinInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -133,6 +141,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\ScraperCore\ScraperCore.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
