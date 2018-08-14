@@ -76,7 +76,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\DiscordPoster.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\SlackPoster.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\Utils.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Http\CookieCollector.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Http\CookieCollecting\CookieCollector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Http\FirefoxHttpClientStorage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ISearchSettingsValidator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IWebHookPoster.cs" />
@@ -88,5 +88,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\StringPair.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UrlString.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\WebHook.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Http\CookieCollecting\" />
   </ItemGroup>
 </Project>
