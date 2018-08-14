@@ -7,6 +7,7 @@ using System.Threading;
 using System.Xml;
 using StoreScraper;
 using StoreScraper.Attributes;
+using StoreScraper.Bots.Bakurits.Antonioli;
 using StoreScraper.Core;
 using StoreScraper.Factory;
 using StoreScraper.Helpers;
@@ -21,6 +22,7 @@ namespace ScraperCore.Bots.Sticky_bit.EastBay_FootAction
         public override string WebsiteName { get; set; }
         public override string WebsiteBaseUrl { get; set; }
         public override bool Active { get; set; }
+        public override Type SearchSettingsType { get; set; } = typeof(FootApiSearchSettings);
 
         public FootAPIBase(string websiteName, string websiteBaseUrl)
         {
@@ -32,8 +34,30 @@ namespace ScraperCore.Bots.Sticky_bit.EastBay_FootAction
             CancellationToken token)
         {
             listOfProducts = new List<Product>();
-
-            string searchUrl = WebsiteBaseUrl + $"/api/products/search?currentPage=0&pageSize=50&query={settings.KeyWords}&sort=newArrivals";
+            FootApiSearchSettings.GenderEnum gender = ((FootApiSearchSettings) settings).Gender;
+            try
+            {
+                gender = ((FootApiSearchSettings)settings).Gender;
+            }
+            catch
+            {
+                gender = FootApiSearchSettings.GenderEnum.Both;
+            }
+            string searchUrl = WebsiteBaseUrl + $"/api/products/search?currentPage=0&pageSize=50&sort=newArrivals&query={settings.KeyWords}%3Arelevance";
+            switch (gender)
+            {
+                case FootApiSearchSettings.GenderEnum.Man:
+                    //searchUrl += $"3Agender%{}";
+                    break;
+                case FootApiSearchSettings.GenderEnum.Woman:
+                    break;
+                case FootApiSearchSettings.GenderEnum.Boy:
+                    break;
+                case FootApiSearchSettings.GenderEnum.Girl:
+                    break;
+                default:
+                    break;
+            }
             using (var client = ClientFactory.CreateProxiedHttpClient().AddHeaders(ClientFactory.JsonXmlAcceptHeader))
             {
                 var responseText = client.GetAsync(searchUrl, token).Result.Content.ReadAsStringAsync().Result;
