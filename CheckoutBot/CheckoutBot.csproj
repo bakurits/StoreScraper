@@ -111,10 +111,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\AccountCheckoutSettings.cs" />
-    <Compile Include="Models\CartInfo.cs" />
+    <Compile Include="Models\Payment\CartInfo.cs" />
     <Compile Include="Models\GuestCheckoutSettings.cs" />
+    <Compile Include="Models\Payment\CartType.cs" />
     <Compile Include="Models\ProductBuyOptions.cs" />
-    <Compile Include="Models\ShippinInfo.cs" />
+    <Compile Include="Models\Shipping\Countries.cs" />
+    <Compile Include="Models\Shipping\ShippinInfo.cs" />
+    <Compile Include="Models\Shipping\States.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -10,7 +10,7 @@ namespace ScraperCore.Bots.Sticky_bit.EastBay_FootAction
     public class FootApiSearchSettings : SearchSettingsBase
     {
         public enum GenderEnum {
-            Both,
+            Any,
             [Description("200000")] Man,
             [Description("200001")] Woman,
             [Description("200002")] Boy,

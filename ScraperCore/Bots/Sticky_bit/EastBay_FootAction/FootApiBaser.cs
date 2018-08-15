@@ -33,17 +33,6 @@ namespace ScraperCore.Bots.Sticky_bit.EastBay_FootAction
         }
 
 
-        public static string GetDescription(Enum value)
-        {
-            FieldInfo field = value.GetType().GetField(value.ToString());
-
-            DescriptionAttribute attribute
-                = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute))
-                    as DescriptionAttribute;
-
-            return attribute == null ? value.ToString() : attribute.Description;
-        }
-
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,
             CancellationToken token)
         {
@@ -55,11 +44,11 @@ namespace ScraperCore.Bots.Sticky_bit.EastBay_FootAction
             }
             catch
             {
-                gender = FootApiSearchSettings.GenderEnum.Both;
+                gender = FootApiSearchSettings.GenderEnum.Any;
             }
             string searchUrl = WebsiteBaseUrl + $"/api/products/search?currentPage=0&pageSize=50&sort=newArrivals&query={settings.KeyWords}%3Arelevance";
-            if (gender != FootApiSearchSettings.GenderEnum.Both)
-                searchUrl += $"3Agender%{GetDescription(gender)}";
+            if (gender != FootApiSearchSettings.GenderEnum.Any)
+                searchUrl += $"3Agender%{gender.GetDescription()}";
             using (var client = ClientFactory.CreateProxiedHttpClient().AddHeaders(ClientFactory.JsonXmlAcceptHeader))
             {
                 var responseText = client.GetAsync(searchUrl, token).Result.Content.ReadAsStringAsync().Result;
