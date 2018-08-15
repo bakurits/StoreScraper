@@ -1,6 +1,6 @@
 ﻿namespace CheckoutBot.Models.Payment
 {
-    public enum CartType
+    public enum CardType
     {
         MaterCard,
         Visa,

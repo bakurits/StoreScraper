@@ -268,7 +268,7 @@ namespace StoreScraper.Helpers
             return new Price(parsed, c);
         }
 
-        public static string EscapeNewLines(string str)
+        public static string EscapeNewLines(this string str)
         {
             return Regex.Replace(str, @"\t|\n|\r", "");
         }

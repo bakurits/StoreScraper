@@ -12,7 +12,7 @@ namespace CheckoutBot.Models
     public class GuestCheckoutSettings
     {
         public ShippinInfo Shipping;
-        public CartInfo CartInfo;
+        public CardInfo CartInfo;
         public Product ProductToBuy;
         public ProductBuyOptions BuyOptions;
     }

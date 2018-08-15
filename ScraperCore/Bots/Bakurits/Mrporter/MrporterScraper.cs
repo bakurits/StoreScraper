@@ -59,8 +59,8 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
             
             var doc = GetPage(productUrl, token);
             var nameContainer = doc.SelectSingleNode("//section[contains(@class, 'product-details')]/h1");
-            var designer = Utils.EscapeNewLines(nameContainer.SelectSingleNode("./a/span/span").InnerHtml);
-            var productName = Utils.EscapeNewLines(nameContainer.SelectSingleNode("./span/span").InnerHtml);
+            var designer = nameContainer.SelectSingleNode("./a/span/span").InnerHtml.EscapeNewLines();
+            var productName = nameContainer.SelectSingleNode("./span/span").InnerHtml.EscapeNewLines();
             var name = designer + "-" + productName;
             var image = WebsiteBaseUrl + doc.SelectSingleNode("//div[contains(@class, 'product-image')]/img").GetAttributeValue("src", "");
             var priceNode = doc.SelectSingleNode("//span[contains(@class, 'product-details-price')]/span/span[@itemprop = 'price']").InnerHtml;
