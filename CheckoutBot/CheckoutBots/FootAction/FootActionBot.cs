@@ -23,7 +23,7 @@ namespace CheckoutBot.CheckoutBots.FootAction
             throw new NotImplementedException();
         }
 
-        public List<Product> ScraperReleasePage(CancellationToken token)
+        public List<Product> ScrapeReleasePage(CancellationToken token)
         {
             throw new NotImplementedException();
         }

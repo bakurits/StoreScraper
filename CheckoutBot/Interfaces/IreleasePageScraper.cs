@@ -6,6 +6,6 @@ namespace CheckoutBot.Interfaces
 {
     public interface IreleasePageScraper
     {
-        List<Product> ScraperReleasePage(CancellationToken token);
+        List<Product> ScrapeReleasePage(CancellationToken token);
     }
 }
