@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:CheckoutBot"
         mc:Ignorable="d"
         Background="#344563"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="480" Width="800">
 
     <Window.Resources>
         <Style x:Key="ComboBoxTest2" TargetType="{x:Type ComboBox}">
@@ -128,15 +128,84 @@
 
                             </TextBox>
 
-                            <Label Content="SIZE" Foreground="#576379" FontWeight="SemiBold" />
-                            <ComboBox Margin="6 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Style="{StaticResource ComboBoxTest2}">
-                                <ComboBoxItem>US 7</ComboBoxItem>
-                                <ComboBoxItem>US 7.5</ComboBoxItem>
-                                <ComboBoxItem>US 23</ComboBoxItem>
+                            <Label Content="SIZE" Foreground="#576379" FontWeight="SemiBold" Margin="0 5" />
+                            <Grid Margin="0" VerticalAlignment="Center">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="1.5*" />
+                                    <ColumnDefinition Width="1.5*" />
+
+                                </Grid.ColumnDefinitions>
+
+                                <ComboBox Grid.Column="0" Margin="6 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Style="{StaticResource ComboBoxTest2}">
+                                    <ComboBoxItem>US 7</ComboBoxItem>
+                                    <ComboBoxItem>US 7.5</ComboBoxItem>
+                                    <ComboBoxItem>US 23</ComboBoxItem>
+
+                                </ComboBox>
+
+
+
+                                <RadioButton VerticalAlignment="Center" Grid.Column="1"  Content="Specified size" Grid.ColumnSpan="2"  />
+
+                                <RadioButton VerticalAlignment="Center" Grid.Column="2" Content="Random size" Grid.ColumnSpan="2" />
+                            </Grid>
+
+                            <Label Content="NUMER OF RETRIES" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
+
+                            <ComboBox Grid.Column="0" Margin="6 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Style="{StaticResource ComboBoxTest2}">
+                                <ComboBoxItem>0</ComboBoxItem>
+                                <ComboBoxItem IsSelected="True">1</ComboBoxItem>
+                                <ComboBoxItem>2</ComboBoxItem>
+                                <ComboBoxItem>3</ComboBoxItem>
+                                <ComboBoxItem>4</ComboBoxItem>
+                                <ComboBoxItem>5</ComboBoxItem>
+                                <ComboBoxItem>6</ComboBoxItem>
 
                             </ComboBox>
 
-                            
+
+                            <Label Content="ACCOUNT" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
+                            <Grid Margin="0" VerticalAlignment="Center">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="1.5*" />
+                                    <ColumnDefinition Width="1.5*" />
+
+                                </Grid.ColumnDefinitions>
+
+                                <ComboBox Grid.Column="0" Margin="6 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Style="{StaticResource ComboBoxTest2}">
+                                    <ComboBoxItem>Mike Jonhson - **** 0001</ComboBoxItem>
+
+                                </ComboBox>
+
+
+
+                                <RadioButton VerticalAlignment="Center" Grid.Column="1"  Content="User" Grid.ColumnSpan="2"  />
+
+                                <RadioButton VerticalAlignment="Center" Grid.Column="2" Content="Guest" Grid.ColumnSpan="2" />
+                            </Grid>
+
+
+                            <Label Content="START TIME" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
+
+                            <ComboBox Grid.Column="0" Margin="6 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Style="{StaticResource ComboBoxTest2}">
+                                <ComboBoxItem>Mike Jonhson - **** 0001</ComboBoxItem>
+
+                            </ComboBox>
+
+
+                            <Button Margin="6,20" Width="100" HorizontalAlignment="Left" Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0">
+                                <Button.Resources>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="CornerRadius" Value="5"/>
+                                    </Style>
+                                </Button.Resources>
+
+                                ADD TASK
+                            </Button>
 
                         </StackPanel>
 
