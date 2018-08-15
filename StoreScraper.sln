@@ -14,6 +14,7 @@ EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		ScraperCore\ScraperCore.projitems*{057afe2c-9129-440d-b196-d6c13b264a66}*SharedItemsImports = 13
+		ScraperCore\ScraperCore.projitems*{102caa56-c642-4afe-a235-3b8e614e6c32}*SharedItemsImports = 4
 		ScraperCore\ScraperCore.projitems*{1be9c1b7-52eb-4530-804f-21a6ce57e147}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

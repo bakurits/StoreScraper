@@ -14,7 +14,6 @@ using StoreScraper.Attributes;
 
 namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
 {
-    [DisabledScraper]
     public class SneakerStudioScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "SneakerStudio";
