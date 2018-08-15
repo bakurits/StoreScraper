@@ -198,7 +198,7 @@ namespace StoreScraper.Helpers
 
             Embed embed = new Embed()
             {
-                Title = Utils.EscapeNewLines(productDetails.Name),
+                Title = productDetails.Name.EscapeNewLines(),
                 Type = "rich",
                 Description = textMessage,
                 Url = productDetails.Url,

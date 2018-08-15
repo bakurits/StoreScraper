@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -138,6 +140,13 @@ namespace StoreScraper.Helpers
             }
         }
 
+        public static string GetDescription(this Enum value)
+        {
+            FieldInfo field = value.GetType().GetField(value.ToString());
+
+            return !(Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) is DescriptionAttribute attribute) ? value.ToString() : attribute.Description;
+        }
+
         public static HtmlDocument PostDoc(this HttpClient client, string url, CancellationToken token, FormUrlEncodedContent postParams)
         {
             
@@ -259,7 +268,7 @@ namespace StoreScraper.Helpers
             return new Price(parsed, c);
         }
 
-        public static string EscapeNewLines(string str)
+        public static string EscapeNewLines(this string str)
         {
             return Regex.Replace(str, @"\t|\n|\r", "");
         }

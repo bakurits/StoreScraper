@@ -44,18 +44,6 @@ namespace StoreScraper.Bots.Higuhigu.Basketrevolution
             return document;
         }
 
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
-        {
-            try
-            {
-                LoadSingleProduct(listOfProducts, settings, item);
-            }
-            catch (Exception e)
-            {
-                Logger.Instance.WriteErrorLog(e.Message);
-            }
-        }
-
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
 
@@ -75,6 +63,18 @@ namespace StoreScraper.Bots.Higuhigu.Basketrevolution
                 throw new WebException("Undexpected Html");
             }
             return items;
+        }
+
+        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
+        {
+            try
+            {
+                LoadSingleProduct(listOfProducts, settings, item);
+            }
+            catch (Exception e)
+            {
+                Logger.Instance.WriteErrorLog(e.Message);
+            }
         }
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)

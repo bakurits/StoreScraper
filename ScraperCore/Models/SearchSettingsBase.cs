@@ -40,17 +40,9 @@ namespace StoreScraper.Models
             return $"{KeyWords}[{MinPrice}-{MaxPrice}]";
         }
 
-        public object Clone()
+        public virtual object Clone()
         {
-            var cloned = (SearchSettingsBase)Activator.CreateInstance(this.GetType());
-
-
-            cloned.KeyWords = this.KeyWords;
-            cloned.NegKeyWrods = this.NegKeyWrods;
-            cloned.MinPrice = this.MinPrice;
-            cloned.MaxPrice = this.MaxPrice;
-
-            return cloned;
+            return this.MemberwiseClone();
         }
     }
 }

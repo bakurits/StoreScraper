@@ -62,8 +62,8 @@ namespace StoreScraper.Bots.Bakurits.Rimowa
             var page = doc.DocumentNode;
             var infoContainer = page.SelectSingleNode("//div[@id = 'pchange-target']/div");
 
-            var collectionName = Utils.EscapeNewLines(infoContainer.SelectSingleNode("./span[@itemprop = 'name']").InnerHtml);
-            var productName = Utils.EscapeNewLines(infoContainer.SelectSingleNode("./h1[@itemprop = 'name']").InnerHtml);
+            var collectionName = infoContainer.SelectSingleNode("./span[@itemprop = 'name']").InnerHtml.EscapeNewLines();
+            var productName = infoContainer.SelectSingleNode("./h1[@itemprop = 'name']").InnerHtml.EscapeNewLines();
             var name = $"{collectionName} - {productName}";
             var priceNode = infoContainer.SelectSingleNode("./div[contains(@class, 'product-price')]/span");
             Price price = Utils.ParsePrice(priceNode.InnerHtml);

@@ -42,7 +42,7 @@ namespace StoreScraper.Bots.Bakurits.Baitme
         {
             var page = GetWebpage(productUrl, token);
             var nameContainer = page.SelectSingleNode("//div[contains(@class, 'product-name')]/span");
-            var name = Utils.EscapeNewLines(nameContainer.InnerHtml);
+            var name = nameContainer.InnerHtml.EscapeNewLines();
             var image = page.SelectSingleNode("//div[contains(@class, 'product-image')]/img").GetAttributeValue("src", "");
             var priceNode = page.SelectSingleNode("//div[contains(@class, 'product-shop')]");
             ProductDetails details = new ProductDetails()
