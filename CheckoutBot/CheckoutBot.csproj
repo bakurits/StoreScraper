@@ -116,6 +116,8 @@
     </Compile>
     <Compile Include="CheckoutBots\ChampsSports\ChampsSportsBot.cs" />
     <Compile Include="CheckoutBots\EastBay\EasBayBot.cs" />
+    <Compile Include="CheckoutBots\FootAction\FootActionBot.cs" />
+    <Compile Include="CheckoutBots\FootLocker\FootLockerBot.cs" />
     <Compile Include="Env.cs" />
     <Compile Include="Interfaces\IAccountCheckouter.cs" />
     <Compile Include="Interfaces\IGuestCheckouter.cs" />
@@ -158,6 +160,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\ScraperCore\ScraperCore.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
