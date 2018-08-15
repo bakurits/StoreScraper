@@ -115,6 +115,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CheckoutBots\ChampsSports\ChampsSportsBot.cs" />
+    <Compile Include="CheckoutBots\EastBay\EasBayBot.cs" />
     <Compile Include="Env.cs" />
     <Compile Include="Interfaces\IAccountCheckouter.cs" />
     <Compile Include="Interfaces\IGuestCheckouter.cs" />
