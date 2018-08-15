@@ -1,0 +1,227 @@
+﻿<Window x:Class="CheckoutBot.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CheckoutBot"
+        mc:Ignorable="d"
+        Background="#344563"
+        Title="MainWindow" Height="480" Width="800">
+
+    <Window.Resources>
+        <Style x:Key="ComboBoxTest2" TargetType="{x:Type ComboBox}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton Grid.Column="2" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" >
+                                <ToggleButton.Template>
+                                    <ControlTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="5*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Border x:Name="Border"  Grid.ColumnSpan="2" CornerRadius="5" Background="#ffffff" BorderBrush="#ebecf0" BorderThickness="1" />
+                                            <Border Grid.Column="0" CornerRadius="5,0,0,5"  Margin="1"  Background="#ffffff"  BorderBrush="#ebecf0" BorderThickness="0,0,1,0" />
+                                            <Path x:Name="Arrow" Grid.Column="1"  Fill="#344563" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0 0 L 4 4 L 8 0 Z"/>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="ToggleButton.IsMouseOver" Value="true">
+                                                <Setter TargetName="Border" Property="Background" Value="#5db8f1" />
+                                            </Trigger>
+                                            <Trigger Property="ToggleButton.IsChecked" Value="true">
+                                                <Setter TargetName="Border" Property="Background" Value="#5db8f1" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter Name="ContentSite" IsHitTestVisible="False"  Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="3"  />
+                            <TextBox x:Name="PART_EditableTextBox" Visibility="Hidden" IsReadOnly="{TemplateBinding IsReadOnly}"/>
+                            <Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True"  Focusable="False" PopupAnimation="Slide">
+                                <Grid  Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border x:Name="DropDownBorder" Background="#ffffff" />
+                                    <ScrollViewer SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" />
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+
+        </Grid.ColumnDefinitions>
+
+
+
+
+
+        <TabControl BorderThickness="0" Background="#344563"  Grid.Row="1" Grid.ColumnSpan="12">
+            <TabControl.Resources>
+
+                <Style TargetType="TabItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabItem">
+                                <Border Padding="3" Margin="20,5" Name="PanelBorder" Background="GhostWhite" CornerRadius="4">
+
+                                    <ContentPresenter x:Name="ContentSite"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        ContentSource="Header"
+                                        Margin="10,2"/>
+                                </Border>
+
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="PanelBorder" Property="Background" Value="#5db8f1" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="False">
+                                        <Setter TargetName="PanelBorder" Property="Background" Value="Transparent" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.Resources>
+            <TabItem Header="TASK" Foreground="#ffffff">
+                <Grid Background="#e9ecf1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+
+
+
+                    <GroupBox Margin="20 20 10 20" Background="#ffffff" BorderThickness="0">
+                        <StackPanel Margin="0 10">
+                            <Label Content="ENTER KEYWORD OR URL" Foreground="#576379" FontWeight="SemiBold" />
+                            <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                <TextBox.Resources>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="CornerRadius" Value="5"/>
+                                    </Style>
+                                </TextBox.Resources>
+
+                            </TextBox>
+
+                            <Label Content="SIZE" Foreground="#576379" FontWeight="SemiBold" Margin="0 5" />
+                            <Grid Margin="0" VerticalAlignment="Center">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="1.5*" />
+                                    <ColumnDefinition Width="1.5*" />
+
+                                </Grid.ColumnDefinitions>
+
+                                <ComboBox Grid.Column="0" Margin="6 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Style="{StaticResource ComboBoxTest2}">
+                                    <ComboBoxItem>US 7</ComboBoxItem>
+                                    <ComboBoxItem>US 7.5</ComboBoxItem>
+                                    <ComboBoxItem>US 23</ComboBoxItem>
+
+                                </ComboBox>
+
+
+
+                                <RadioButton VerticalAlignment="Center" Grid.Column="1"  Content="Specified size" Grid.ColumnSpan="2"  />
+
+                                <RadioButton VerticalAlignment="Center" Grid.Column="2" Content="Random size" Grid.ColumnSpan="2" />
+                            </Grid>
+
+                            <Label Content="NUMER OF RETRIES" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
+
+                            <ComboBox Grid.Column="0" Margin="6 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Style="{StaticResource ComboBoxTest2}">
+                                <ComboBoxItem>0</ComboBoxItem>
+                                <ComboBoxItem IsSelected="True">1</ComboBoxItem>
+                                <ComboBoxItem>2</ComboBoxItem>
+                                <ComboBoxItem>3</ComboBoxItem>
+                                <ComboBoxItem>4</ComboBoxItem>
+                                <ComboBoxItem>5</ComboBoxItem>
+                                <ComboBoxItem>6</ComboBoxItem>
+
+                            </ComboBox>
+
+
+                            <Label Content="ACCOUNT" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
+                            <Grid Margin="0" VerticalAlignment="Center">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="1.5*" />
+                                    <ColumnDefinition Width="1.5*" />
+
+                                </Grid.ColumnDefinitions>
+
+                                <ComboBox Grid.Column="0" Margin="6 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Style="{StaticResource ComboBoxTest2}">
+                                    <ComboBoxItem>Mike Jonhson - **** 0001</ComboBoxItem>
+
+                                </ComboBox>
+
+
+
+                                <RadioButton VerticalAlignment="Center" Grid.Column="1"  Content="User" Grid.ColumnSpan="2"  />
+
+                                <RadioButton VerticalAlignment="Center" Grid.Column="2" Content="Guest" Grid.ColumnSpan="2" />
+                            </Grid>
+
+
+                            <Label Content="START TIME" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
+
+                            <ComboBox Grid.Column="0" Margin="6 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Style="{StaticResource ComboBoxTest2}">
+                                <ComboBoxItem>Mike Jonhson - **** 0001</ComboBoxItem>
+
+                            </ComboBox>
+
+
+                            <Button Margin="6,20" Width="100" HorizontalAlignment="Left" Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0">
+                                <Button.Resources>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="CornerRadius" Value="5"/>
+                                    </Style>
+                                </Button.Resources>
+
+                                ADD TASK
+                            </Button>
+
+                        </StackPanel>
+
+
+
+                    </GroupBox>
+                    <GroupBox  Grid.Column="1" Margin="10 20 20 20" Grid.ColumnSpan="6" Background="#ffffff" BorderThickness="0">
+                        <Label Content="Content goes here..." />
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+            <TabItem Header="PROFILE"  Foreground="#ffffff"/>
+            <TabItem Header="CREATE ACCOUNT" Foreground="#ffffff"/>
+
+        </TabControl>
+
+
+    </Grid>
+</Window>

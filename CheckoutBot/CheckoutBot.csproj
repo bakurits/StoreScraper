@@ -115,11 +115,18 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CheckoutBots\ChampsSports\ChampsSportsBot.cs" />
+    <Compile Include="CheckoutBots\EastBay\EasBayBot.cs" />
+    <Compile Include="CheckoutBots\FootAction\FootActionBot.cs" />
+    <Compile Include="CheckoutBots\FootLocker\FootLockerBot.cs" />
     <Compile Include="Env.cs" />
     <Compile Include="Interfaces\IAccountCheckouter.cs" />
     <Compile Include="Interfaces\IGuestCheckouter.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IreleasePageScraper.cs" />
     <Compile Include="Models\AccountCheckoutSettings.cs" />
     <Compile Include="Models\Payment\CardInfo.cs" />
     <Compile Include="Models\GuestCheckoutSettings.cs" />
@@ -128,7 +135,6 @@
     <Compile Include="Models\Shipping\Countries.cs" />
     <Compile Include="Models\Shipping\ShippinInfo.cs" />
     <Compile Include="Models\Shipping\States.cs" />
-    <Compile Include="Models\UpcomingProduct.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -156,6 +162,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="..\ScraperCore\ScraperCore.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

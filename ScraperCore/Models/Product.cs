@@ -35,6 +35,7 @@ namespace StoreScraper.Models
         /// </summary>
         public string Currency { get; set; }
 
+
         [Browsable(false)]
         public string Url { get; set; } = "";
 
@@ -44,7 +45,18 @@ namespace StoreScraper.Models
         [Browsable(false)]
         public string ImageUrl { get; set; }
 
-        public Product(ScraperBase scrapedBy, string name, string url, double price, string imageUrl, string id, string currency = "$")
+
+        /// <summary>
+        /// Exact Release Time of product in seconds.
+        /// null means already released.
+        /// DateTime.MaxValue means exact release time not yet published, but will be published
+        /// DateTime.MinValue means release exact release time is not supported on this website.
+        /// </summary>
+        [Browsable(false)]
+        public DateTime? ReleaseTime { get; set; }
+
+
+        public Product(ScraperBase scrapedBy, string name, string url, double price, string imageUrl, string id, string currency = "$", DateTime? releaseTime = null)
         {
             this.Name = HtmlEntity.DeEntitize(name.Trim());
             this.Url = url;
@@ -54,6 +66,7 @@ namespace StoreScraper.Models
             this.StoreName = ScrapedBy.WebsiteName;
             this.ImageUrl = imageUrl;
             this.Currency = currency;
+            this.ReleaseTime = releaseTime;
         }
 
         public Product()

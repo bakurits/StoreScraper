@@ -44,6 +44,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Bots\Higuhigu\Ycmc\YcmcScraper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bots\Jordan\BounceWear\BounceWearScrape.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bots\Jordan\Byparra\ByparraScraper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Jordan\Ruvilla\RuvillaScraper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bots\Jordan\SlamJamSocialism\SlamJamSocialismScraper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bots\Jordan\VooBerlin\VooScraper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bots\Mstanojevic\Cruvoir\CruvoirScrapper.cs" />
