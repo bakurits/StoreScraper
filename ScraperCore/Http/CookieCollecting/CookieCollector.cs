@@ -58,7 +58,7 @@ namespace StoreScraper.Http
                 foreach (var proxy in AppSettings.Default.Proxies)
                 {
                     var webProxy = ClientFactory.ParseProxy(proxy);
-                    var client = ClientFactory.CreateProxiedHttpClient(webProxy, true);
+                    var client = ClientFactory.CreateProxiedHttpClient(webProxy, true).AddHeaders(ClientFactory.FireFoxHeaders);
                     _proxiedClients.Add(client);
                 }
             }
