@@ -12,10 +12,9 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Remote;
 using StoreScraper.Helpers;
-using StoreScraper.Http;
 using StoreScraper.Models;
 
-namespace StoreScraper.Factory
+namespace StoreScraper.Http.Factory
 {
     static class ClientFactory
     {

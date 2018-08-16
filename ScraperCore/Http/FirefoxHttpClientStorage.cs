@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using StoreScraper.Factory;
+using StoreScraper.Http.Factory;
 using static StoreScraper.Helpers.Utils;
 
 namespace StoreScraper.Http

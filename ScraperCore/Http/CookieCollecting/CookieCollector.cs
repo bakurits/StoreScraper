@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
-using StoreScraper.Factory;
+using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
 
 #pragma warning disable 4014

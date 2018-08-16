@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using OpenQA.Selenium;
-using StoreScraper.Factory;
+using StoreScraper.Http.Factory;
 
 namespace StoreScraper.Core
 {

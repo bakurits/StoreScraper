@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using StoreScraper.Attributes;
 using StoreScraper.Core;
-using StoreScraper.Factory;
+using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 

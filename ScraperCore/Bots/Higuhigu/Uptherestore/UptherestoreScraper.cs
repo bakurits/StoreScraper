@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
 using StoreScraper.Core;
-using StoreScraper.Factory;
+using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 using System.Net;

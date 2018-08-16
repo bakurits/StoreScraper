@@ -11,7 +11,7 @@ using StoreScraper;
 using StoreScraper.Attributes;
 using StoreScraper.Bots.Bakurits.Antonioli;
 using StoreScraper.Core;
-using StoreScraper.Factory;
+using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 

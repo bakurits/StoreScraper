@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OpenQA.Selenium;
 using StoreScraper.Core;
-using StoreScraper.Factory;
+using StoreScraper.Http.Factory;
 using StoreScraper.Models;
 using Cookie = System.Net.Cookie;
 using HtmlDocument = HtmlAgilityPack.HtmlDocument;

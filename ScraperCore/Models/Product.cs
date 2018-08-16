@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
-using StoreScraper.Factory;
+using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
 using HtmlAgilityPack;
 

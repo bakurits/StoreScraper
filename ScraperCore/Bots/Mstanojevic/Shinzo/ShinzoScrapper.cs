@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Threading;
 using HtmlAgilityPack;
 using StoreScraper.Core;
-using StoreScraper.Factory;
+using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 using Newtonsoft.Json;

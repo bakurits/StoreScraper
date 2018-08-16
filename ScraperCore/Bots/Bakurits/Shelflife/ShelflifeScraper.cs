@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using HtmlAgilityPack;
-using StoreScraper.Factory;
+using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
