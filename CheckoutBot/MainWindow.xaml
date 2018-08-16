@@ -904,7 +904,82 @@
                 </Grid>
 
             </TabItem>
-            <TabItem Header="CREATE ACCOUNT" Foreground="#ffffff"/>
+            <TabItem Header="SUCCESS" Foreground="#ffffff">
+
+                <Grid Background="#e9ecf1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+
+
+
+                    <GroupBox Margin="20 20 10 20" Background="#ffffff" BorderThickness="0">
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <Image Source="/images/success.png"  Width="150" VerticalAlignment="Center"/>
+                            <Label Content="SUCCESSFUL TASKS" Foreground="#576379" FontWeight="Bold" FontSize="18" Margin="0 10" HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                    </GroupBox>
+                    <GroupBox  Grid.Column="1" Margin="10 20 20 20" Grid.ColumnSpan="6" Background="Transparent" BorderThickness="0">
+                        <StackPanel Margin="10">
+                            <DockPanel>
+                                <Label Content="SUCCESSFUL TASKS" Foreground="#576379" FontWeight="SemiBold" Margin="-2 0"/>
+                                <Label Content="47 tasks" Foreground="#5db8f1" FontWeight="SemiBold" Margin="-2 0" HorizontalAlignment="Right"/>
+
+                            </DockPanel>
+                            <ListView VerticalAlignment="Stretch" ItemsSource="{Binding SourceCollection}" Name="successfulTaks" Background="#ffffff" Grid.Row="1" BorderBrush="#ebecf0" >
+                                <ListView.View>
+                                    <GridView ColumnHeaderContainerStyle = "{StaticResource GridViewColumnHeaderStyle1}" >
+                                        
+
+                                        <GridViewColumn Header="Keywords" Width="auto" DisplayMemberBinding="{Binding Keywords}" />
+                                        <GridViewColumn Header="Size" Width="auto" DisplayMemberBinding="{Binding Size}" />
+                                        <GridViewColumn Header="No. of retries" Width="auto" DisplayMemberBinding="{Binding Retries}" />
+                                        <GridViewColumn Header="Status"  Width="auto" >
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+
+                                                    <StackPanel Orientation="Horizontal" >
+                                                        <!--Image /-->
+                                                        <Image Height="16" Source="{Binding ListImage}"  Margin="5 0" VerticalAlignment="Center" />
+
+
+                                                        <!-- YOU NEED TO POINT THIS TO YOUR IMAGE -->
+                                                        <TextBlock Text="{Binding Status}" VerticalAlignment="Center"/>
+
+                                                    </StackPanel>
+
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+
+                                        </GridViewColumn>
+                                    </GridView>
+
+
+                                </ListView.View>
+
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="FontSize" Value="12" />
+                                        <Setter Property="Foreground" Value="#576379" />
+                                        <Setter Property="Background" Value="#ffffff" />
+                                        <Setter Property="Margin" Value="5" />
+
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+
+
+                            </ListView>
+
+                            
+
+                        </StackPanel>
+
+                    </GroupBox>
+                </Grid>
+
+            </TabItem>
 
         </TabControl>
 

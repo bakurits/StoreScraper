@@ -190,6 +190,9 @@
   <ItemGroup>
     <Resource Include="images\cc_visa_checked.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\success.png" />
+  </ItemGroup>
   <Import Project="..\ScraperCore\ScraperCore.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

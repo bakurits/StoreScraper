@@ -35,6 +35,13 @@ namespace CheckoutBot
             profiles.Add(new ProfileItem() { ProfileName = "steve3", Name = "Steve Vue", CreditCard = "**** 1234", Date = "08/16/2018" });
             profileList.ItemsSource = profiles;
 
+            List<TaskItem> successfulItems = new List<TaskItem>();
+            successfulItems.Add(new TaskItem() { Keywords = "nike air", Size = 12, Retries = "1", Status = "Done", ListImage = "/images/list_done.png" });
+            successfulItems.Add(new TaskItem() { Keywords = "adidas", Size = 7, Retries = "3", Status = "Done", ListImage = "/images/list_done.png" });
+            successfulItems.Add(new TaskItem() { Keywords = "puma", Size = 8, Retries = "0", Status = "Done", ListImage = "/images/list_done.png" });
+            successfulTaks.ItemsSource = successfulItems;
+
+
         }
 
 
