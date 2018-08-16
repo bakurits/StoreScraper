@@ -24,9 +24,9 @@ namespace CheckoutBot
             InitializeComponent();
 
             List<TaskItem> items = new List<TaskItem>();
-            items.Add(new TaskItem() { Keywords = "nike air", Size = 12, Retries = "1", Status="Checking out" });
-            items.Add(new TaskItem() { Keywords = "adidas", Size = 7, Retries = "3", Status = "Error" });
-            items.Add(new TaskItem() { Keywords = "puma", Size = 8, Retries = "0", Status = "Done" });
+            items.Add(new TaskItem() { Keywords = "nike air", Size = 12, Retries = "1", Status="Checking out", ListImage="/images/list_progress.png" });
+            items.Add(new TaskItem() { Keywords = "adidas", Size = 7, Retries = "3", Status = "Error", ListImage = "/images/list_error.png" });
+            items.Add(new TaskItem() { Keywords = "puma", Size = 8, Retries = "0", Status = "Done", ListImage = "/images/list_done.png" });
             tasksList.ItemsSource = items;
 
         }
@@ -55,6 +55,7 @@ namespace CheckoutBot
 
         public string Retries { get; set; }
         public string Status { get; set; }
+        public string ListImage { get; set; }
 
     }
 

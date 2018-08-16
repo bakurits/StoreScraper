@@ -169,6 +169,11 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\list_done.png" />
+    <Resource Include="images\list_error.png" />
+    <Resource Include="images\list_progress.png" />
+  </ItemGroup>
   <Import Project="..\ScraperCore\ScraperCore.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
