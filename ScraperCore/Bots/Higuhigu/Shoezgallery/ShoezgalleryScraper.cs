@@ -120,7 +120,7 @@ namespace StoreScraper.Bots.Higuhigu.Shoezgallery
 
             var root = document.DocumentNode;
             var sizeNodes = root.SelectNodes("//a[contains(@class, 'attribute_link')]");
-            var sizes = sizeNodes.Select(node => node.InnerText).ToList();
+            var sizes = sizeNodes?.Select(node => node.InnerText).ToList();
 
             var name = root.SelectSingleNode("//h1[contains(@class, 'product-name')]").InnerText.Trim();
             var priceNode = root.SelectSingleNode(".//span[@itemprop='price'][last()]");

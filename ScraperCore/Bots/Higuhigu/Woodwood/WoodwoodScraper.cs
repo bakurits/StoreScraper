@@ -141,7 +141,7 @@ namespace StoreScraper.Bots.Higuhigu.Woodwood
 
             var root = document.DocumentNode;
             var sizeNodes = root.SelectNodes("//select[contains(@id, 'form-size')]//option[not(@value='')]");
-            var sizes = sizeNodes.Select(node => node.InnerText.Trim()).ToList();
+            var sizes = sizeNodes?.Select(node => node.InnerText.Trim()).ToList();
 
             var name = root.SelectSingleNode("//h1[@class='headline']").InnerText.Trim();
             var priceNode = root.SelectSingleNode("//span[@class='price']");

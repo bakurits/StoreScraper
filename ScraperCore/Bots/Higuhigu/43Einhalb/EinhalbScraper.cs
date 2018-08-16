@@ -122,7 +122,7 @@ namespace StoreScraper.Bots.Higuhigu._43Einhalb
 
             var root = document.DocumentNode;
             var sizeNodes = root.SelectNodes("//select[@class='customSelectBox']/option[@class='']");
-            var sizes = sizeNodes.Select(node => node.InnerText.Trim()).ToList();
+            var sizes = sizeNodes?.Select(node => node.InnerText.Trim()).ToList();
 
             var name = root.SelectSingleNode("//span[@class='productName']").InnerText.Trim();
             var priceNode = root.SelectSingleNode("//span[@itemprop='price']");

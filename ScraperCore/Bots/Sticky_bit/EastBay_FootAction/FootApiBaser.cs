@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Xml;
+using HtmlAgilityPack;
+using Newtonsoft.Json.Linq;
 using StoreScraper;
 using StoreScraper.Attributes;
 using StoreScraper.Bots.Bakurits.Antonioli;
@@ -122,8 +125,69 @@ namespace ScraperCore.Bots.Sticky_bit.EastBay_FootAction
             listOfProducts.Add(product);
         }
 
+        private HtmlNode GetWebpage(string url, CancellationToken token)
+        {
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var document = client.GetDoc(url, token).DocumentNode;
+            return document;
+        }
+
+        private string getIdFromUrl(string productUrl)
+        {
+            string suffix = productUrl.Substring(productUrl.LastIndexOf("/"));
+            return suffix.Substring(1, suffix.IndexOf(".") -1 );
+        }
+
+        private string getPDPInfo(HtmlNodeCollection nodes)
+        {
+            foreach (var node in nodes)
+            {
+                if (node.InnerHtml.Contains("window.footlocker.pdpData"))
+                {
+                    return node.InnerHtml;
+                }
+            }
+
+            throw new Exception("Couldn't get info");
+        }
+
+        private string GetInfoJson(HtmlNode document)
+        {
+            string preInfo = getPDPInfo(document.SelectNodes("//script"));
+            int startind = preInfo.IndexOf("=") + 1;
+            int len = preInfo.LastIndexOf("}") - startind;
+            return preInfo.Substring(startind, len+1);
+        }
+
+        private string getImageUrlFromJson(JObject main)
+        {
+            JObject firstItem = JObject.Parse(main.GetValue("images").First.ToString());
+            JObject biggestSizeObj = JObject.Parse(firstItem.GetValue("variations").Last.ToString());
+            return biggestSizeObj.GetValue("url").ToString();
+        }
+
+        private string getPriceFromJson(JObject main)
+        {
+            JObject sellableUnit = JObject.Parse(main.GetValue("sellableUnits").First.ToString());
+            JObject price = JObject.Parse(sellableUnit.GetValue("price").ToString());
+            return price.GetValue("formattedOriginalPrice").ToString();
+        }
+
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
+            var document = GetWebpage(productUrl, token);
+
+            string jsonStr = GetInfoJson(document);
+            JObject mainObj = JObject.Parse(jsonStr);
+            string id = getIdFromUrl(productUrl);
+            string url = productUrl;
+            string img = getImageUrlFromJson(mainObj);
+            string name = mainObj.GetValue("name").ToString();
+            Price productPrice = Utils.ParsePrice(getPriceFromJson(mainObj));
+            
+            Product product = new Product(this, name, url, productPrice.Value, img, id, productPrice.Currency);
+            Console.WriteLine(product);
+
             return new ProductDetails();
         }
 

@@ -125,7 +125,7 @@ namespace StoreScraper.Bots.Higuhigu.Ycmc
 
             var root = document.DocumentNode;
             var sizeNodes = root.SelectNodes("//span[contains(@class, 'size_group_code_item')]/a");
-            var sizes = sizeNodes.Select(node => node?.InnerText).ToList();
+            var sizes = sizeNodes?.Select(node => node?.InnerText).ToList();
 
             var name = root.SelectSingleNode("//div[@class='product-name']/h1").InnerText.Trim();
             var priceNode = root.SelectSingleNode(".//div[@class='price-box']//span[@class='price'][last()]");

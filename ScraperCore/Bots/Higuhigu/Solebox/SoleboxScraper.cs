@@ -127,7 +127,7 @@ namespace StoreScraper.Bots.Higuhigu.Solebox
 
             var root = document.DocumentNode;
             var sizeNodes = root.SelectNodes("//div[@class='size ']/a");
-            var sizes = sizeNodes.Select(node => node?.GetAttributeValue("data-size-eu", null)).ToList();
+            var sizes = sizeNodes?.Select(node => node?.GetAttributeValue("data-size-eu", null)).ToList();
 
             var name = root.SelectSingleNode("//h1[@id='productTitle']/span").InnerText.Trim();
             var priceNode = root.SelectSingleNode(".//div[@id='productPrice']");
