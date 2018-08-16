@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using StoreScraper.Core;
 using StoreScraper.Http.Factory;
@@ -16,7 +18,7 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
 {
     public class MrporterScraper : ScraperBase
     {
-        private const string SearchUrlFormat = @"https://www.mrporter.com/mens/whats-new";
+        private const string SearchUrlFormat = @"https://www.mrporter.com/mens/search/{0}?keywords={0}&pn={1}";
 
 
         private bool _active;
@@ -43,15 +45,25 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
             }
         }
 
+        public int NumberOfPages { get; set; } = 3;
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,
             CancellationToken token)
         {
+            HttpClient client = _active
+                ? CookieCollector.Default.GetClient()
+                : ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             listOfProducts = new List<Product>();
+            List<string> urls = new List<string>();
+            for (int i = 1; i <= NumberOfPages; i++)
+            {
+                urls.Add(string.Format(SearchUrlFormat, settings.KeyWords, i));
+            }
 
-            var searchUrl = SearchUrlFormat;
-            var node = GetPage(searchUrl, token);
-
-            Worker(listOfProducts, settings, node, token);
+            var searchUrl = string.Format(SearchUrlFormat, "", "");
+            
+            List<Product> products = new List<Product>();
+            Task.WhenAll(urls.Select(url => GetItemsForSinglePage(client, url, products, settings, token))).Wait(token);
+            listOfProducts = products;
         }
 
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
@@ -126,6 +138,12 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
             resultDetails.AddSize(result, after);
         }
 
+        private async Task GetItemsForSinglePage(HttpClient client, string url, List<Product> listOfProducts, SearchSettingsBase settings,
+            CancellationToken token)
+        {
+            var doc = await client.GetDocTask(url, token);
+            Worker(listOfProducts, settings, doc.DocumentNode, token);
+        }
 
         private HtmlNode GetPage(string url, CancellationToken token)
         {
@@ -145,7 +163,7 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
                 node.SelectNodes(
                     "//div[@class='product-details']/div[@class='description']|//div[@class='product-details']/div[@class='description description-last']");
             var imageCollection = node.SelectNodes("//*[@id='product-list']/div/div/a/img");
-
+            if (infoCollection == null || imageCollection == null) return;
             for (var i = 0; i < infoCollection.Count; i++)
             {
                 token.ThrowIfCancellationRequested();
