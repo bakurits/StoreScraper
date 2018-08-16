@@ -4,7 +4,7 @@ using StoreScraper.Models;
 
 namespace CheckoutBot.Interfaces
 {
-    public interface IreleasePageScraper
+    public interface IReleasePageScraper
     {
         List<Product> ScrapeReleasePage(CancellationToken token);
     }

@@ -12,7 +12,7 @@ using StoreScraper.Models;
 
 namespace CheckoutBot.CheckoutBots.FootLocker
 {
-    class FootLockerBot : FootAPIBase.FootLockerScraper, IGuestCheckouter, IAccountCheckouter, IreleasePageScraper
+    class FootLockerBot : FootAPIBase.FootLockerScraper, IGuestCheckouter, IAccountCheckouter, IReleasePageScraper
     {
         public void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
         {

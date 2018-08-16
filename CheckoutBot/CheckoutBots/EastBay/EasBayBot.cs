@@ -11,7 +11,7 @@ using StoreScraper.Models;
 
 namespace CheckoutBot.CheckoutBots.EastBay
 {
-    class EasBayBot : FootSimpleBase.EastBayScraper, IGuestCheckouter, IAccountCheckouter, IreleasePageScraper
+    class EasBayBot : FootSimpleBase.EastBayScraper, IGuestCheckouter, IAccountCheckouter, IReleasePageScraper
     {
         public void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
         {

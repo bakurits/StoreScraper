@@ -11,7 +11,7 @@ using StoreScraper.Models;
 
 namespace CheckoutBot.CheckoutBots.FootAction
 {
-    class FootActionBot : FootAPIBase.FootActionScraper, IGuestCheckouter, IAccountCheckouter, IreleasePageScraper
+    class FootActionBot : FootAPIBase.FootActionScraper, IGuestCheckouter, IAccountCheckouter, IReleasePageScraper
     {
         public void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
         {
