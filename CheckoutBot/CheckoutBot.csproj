@@ -174,6 +174,22 @@
     <Resource Include="images\list_error.png" />
     <Resource Include="images\list_progress.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\cc_american.png" />
+    <Resource Include="images\cc_mastercard.png" />
+    <Resource Include="images\cc_visa.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\cc_other.png" />
+    <Resource Include="images\cc_other_checked.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\cc_american_checked.png" />
+    <Resource Include="images\cc_mastercard_checked.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\cc_visa_checked.png" />
+  </ItemGroup>
   <Import Project="..\ScraperCore\ScraperCore.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

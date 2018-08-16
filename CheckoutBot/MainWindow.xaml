@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:CheckoutBot"
         mc:Ignorable="d"
         Background="#344563"
-        Title="MainWindow" Height="510" Width="820">
+        Title="MainWindow" Height="600" Width="860">
 
     <Window.Resources>
         <Style x:Key="ComboBoxTest2" TargetType="{x:Type ComboBox}">
@@ -75,7 +75,7 @@
 
     </Window.Resources>
 
-    
+
 
 
     <Grid>
@@ -189,11 +189,11 @@
 
                             <Label Content="ACCOUNT" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
                             <StackPanel Orientation="Horizontal">
-                                
+
                                 <RadioButton Name="userRadioBtn" IsChecked="True" Margin="10 0" VerticalAlignment="Center"   Content="User" Grid.ColumnSpan="2"  Click="handleAccountType"/>
                                 <RadioButton Name="guestRadioBtn" VerticalAlignment="Center"  Content="Guest" Grid.ColumnSpan="2" Click="handleAccountType"/>
 
-                    
+
                             </StackPanel>
 
                             <ComboBox Name="accComboBox" Margin="6 10" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Visibility="Visible" Style="{StaticResource ComboBoxTest2}">
@@ -231,259 +231,6 @@
 
                             </DockPanel>
                             <ListView ItemsSource="{Binding SourceCollection}" Name="tasksList" Background="#ffffff" Grid.Row="1" BorderBrush="#ebecf0" >
-                            <ListView.View>
-                                <GridView ColumnHeaderContainerStyle = "{StaticResource GridViewColumnHeaderStyle1}" >
-                                    <GridViewColumn>
-                                        <GridViewColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <CheckBox Tag="{Binding ID}"/>
-                                            </DataTemplate>
-                                        </GridViewColumn.CellTemplate>
-                                    </GridViewColumn>
-
-                                    <GridViewColumn Header="Keywords" Width="auto" DisplayMemberBinding="{Binding Keywords}" />
-                                    <GridViewColumn Header="Size" Width="auto" DisplayMemberBinding="{Binding Size}" />
-                                    <GridViewColumn Header="No. of retries" Width="auto" DisplayMemberBinding="{Binding Retries}" />
-                                        <GridViewColumn Header="Status"  Width="auto" >
-                                            <GridViewColumn.CellTemplate>
-                                                <DataTemplate>
-
-                                                    <StackPanel Orientation="Horizontal" >
-                                                        <!--Image /-->
-                                                        <Image Height="16" Source="{Binding ListImage}"  Margin="5 0" VerticalAlignment="Center" />
-                                                        
-
-                                                        <!-- YOU NEED TO POINT THIS TO YOUR IMAGE -->
-                                                        <TextBlock Text="{Binding Status}" VerticalAlignment="Center"/>
-
-                                                    </StackPanel>
-
-                                                </DataTemplate>
-                                            </GridViewColumn.CellTemplate>
-
-                                        </GridViewColumn>
-                                </GridView>
-                                
-                                
-                            </ListView.View>
-
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="ListViewItem">
-                                    <Setter Property="FontSize" Value="12" />
-                                    <Setter Property="Foreground" Value="#576379" />
-                                    <Setter Property="Background" Value="#ffffff" />
-                                    <Setter Property="Margin" Value="5" />
-
-                                    </Style>
-                            </ListView.ItemContainerStyle>
-
-
-                        </ListView>
-
-                            <DockPanel>
-
-                                <Button Margin="6,20"  HorizontalAlignment="Left" Padding="5" Background="#ffffff" Foreground="#787878" BorderBrush="#787878">
-                                    <Button.Resources>
-                                        <Style TargetType="{x:Type Border}">
-                                            <Setter Property="CornerRadius" Value="5"/>
-                                          
-                                        </Style>
-                                    </Button.Resources>
-
-                                    DELETE SELECTED
-                                </Button>
-
-
-                                <DockPanel HorizontalAlignment="Right">
-
-
-                                    <Button  Margin="6,20" HorizontalAlignment="Right"   Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0">
-                                    <Button.Resources>
-                                        <Style TargetType="{x:Type Border}">
-                                            <Setter Property="CornerRadius" Value="5"/>
-                                        </Style>
-                                    </Button.Resources>
-
-                                    START
-                                </Button>
-
-
-                                <Button Margin="6,20"  HorizontalAlignment="Right" Padding="5" Background="#e9545a" Foreground="#ffffff" BorderBrush="#ebecf0">
-                                    <Button.Resources>
-                                        <Style TargetType="{x:Type Border}">
-                                            <Setter Property="CornerRadius" Value="5"/>
-                                        </Style>
-                                    </Button.Resources>
-
-                                    STOP
-                                </Button>
-                                </DockPanel>
-
-                            </DockPanel>
-
-                        </StackPanel>
-                        
-                    </GroupBox>
-                </Grid>
-            </TabItem>
-            <TabItem Header="PROFILE"  Foreground="#ffffff">
-
-
-
-                <Grid Background="#e9ecf1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*" />
-                        <ColumnDefinition Width="1*" />
-                    </Grid.ColumnDefinitions>
-
-
-
-                    <GroupBox Margin="20 20 10 20" Background="#ffffff" BorderThickness="0">
-                        <StackPanel Margin="0 10">
-                            <DockPanel>
-                                <Grid >
-                                    <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1*" />
-                                    <ColumnDefinition Width="1*" />
-                                </Grid.ColumnDefinitions>
-
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="1*" />
-                                        <RowDefinition Height="1*" />
-                                        <RowDefinition Height="1*" />
-
-                                    </Grid.RowDefinitions>
-
-                                    <StackPanel Grid.Column="0">
-                                    <Label Content="First Name" Foreground="#576379" FontWeight="SemiBold" />
-                                    <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
-                                        <TextBox.Resources>
-                                            <Style TargetType="{x:Type Border}">
-                                                <Setter Property="CornerRadius" Value="5"/>
-                                            </Style>
-                                        </TextBox.Resources>
-
-                                    </TextBox>
-                                </StackPanel>
-
-                                <StackPanel Grid.Column="1">
-                                    <Label Content="Last Name" Foreground="#576379" FontWeight="SemiBold" />
-                                    <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
-                                        <TextBox.Resources>
-                                            <Style TargetType="{x:Type Border}">
-                                                <Setter Property="CornerRadius" Value="5"/>
-                                            </Style>
-                                        </TextBox.Resources>
-
-                                    </TextBox>
-                                </StackPanel>
-
-
-                                    <StackPanel Grid.Row="1">
-                                        <Label Content="Phone number" Foreground="#576379" FontWeight="SemiBold" />
-                                        <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
-                                            <TextBox.Resources>
-                                                <Style TargetType="{x:Type Border}">
-                                                    <Setter Property="CornerRadius" Value="5"/>
-                                                </Style>
-                                            </TextBox.Resources>
-
-                                        </TextBox>
-                                    </StackPanel>
-
-                                    <StackPanel Grid.Row="2">
-                                        <Label Content="Address" Foreground="#576379" FontWeight="SemiBold" />
-                                        <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
-                                            <TextBox.Resources>
-                                                <Style TargetType="{x:Type Border}">
-                                                    <Setter Property="CornerRadius" Value="5"/>
-                                                </Style>
-                                            </TextBox.Resources>
-
-                                        </TextBox>
-                                    </StackPanel>
-
-                                    <StackPanel Grid.Row="2" Grid.Column="1">
-                                        <DockPanel>
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="1*" />
-                                                    <ColumnDefinition Width="1*" />
-                                                </Grid.ColumnDefinitions>
-                                                <StackPanel Grid.Column="0">
-                                                    <Label Content="ZIP" Foreground="#576379" FontWeight="SemiBold" />
-                                                    <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
-                                                        <TextBox.Resources>
-                                                            <Style TargetType="{x:Type Border}">
-                                                                <Setter Property="CornerRadius" Value="5"/>
-                                                            </Style>
-                                                        </TextBox.Resources>
-
-                                                    </TextBox>
-                                                </StackPanel>
-
-
-                                                <StackPanel Grid.Column="1">
-                                                    <Label Content="Apartment" Foreground="#576379" FontWeight="SemiBold" />
-                                                    <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
-                                                        <TextBox.Resources>
-                                                            <Style TargetType="{x:Type Border}">
-                                                                <Setter Property="CornerRadius" Value="5"/>
-                                                            </Style>
-                                                        </TextBox.Resources>
-
-                                                    </TextBox>
-                                                </StackPanel>
-                                            </Grid>
-                                        </DockPanel>
-                                    </StackPanel>
-
-                                </Grid>
-
-                            </DockPanel>
-
-
-                                <!--ComboBox Grid.Column="0" Margin="6 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Style="{StaticResource ComboBoxTest2}">
-                                    <ComboBoxItem>US 7</ComboBoxItem>
-                                    <ComboBoxItem>US 7.5</ComboBoxItem>
-                                    <ComboBoxItem>US 23</ComboBoxItem>
-
-                                </-->
-
-
-
-
-
-
-                            
-
-
-                            
-
-
-                            <Button Margin="6,20" Width="100" HorizontalAlignment="Left" Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0">
-                                <Button.Resources>
-                                    <Style TargetType="{x:Type Border}">
-                                        <Setter Property="CornerRadius" Value="5"/>
-                                    </Style>
-                                </Button.Resources>
-
-                                ADD PROFILE
-                            </Button>
-
-                        </StackPanel>
-
-
-
-                    </GroupBox>
-                    <GroupBox  Grid.Column="1" Margin="10 20 20 20" Grid.ColumnSpan="6" Background="#ffffff" BorderThickness="0">
-                        <StackPanel Margin="10">
-                            <DockPanel>
-                                <Label Content="PROFILES" Foreground="#576379" FontWeight="SemiBold" Margin="-2 0"/>
-                                <Label Content="12 profiles" Foreground="#5db8f1" FontWeight="SemiBold" Margin="-2 0" HorizontalAlignment="Right"/>
-
-                            </DockPanel>
-                            <ListView ItemsSource="{Binding SourceCollection}" Name="profileList1" Background="#ffffff" Grid.Row="1" BorderBrush="#ebecf0" >
                                 <ListView.View>
                                     <GridView ColumnHeaderContainerStyle = "{StaticResource GridViewColumnHeaderStyle1}" >
                                         <GridViewColumn>
@@ -533,6 +280,7 @@
 
                             </ListView>
 
+                            <DockPanel>
 
                                 <Button Margin="6,20"  HorizontalAlignment="Left" Padding="5" Background="#ffffff" Foreground="#787878" BorderBrush="#787878">
                                     <Button.Resources>
@@ -546,7 +294,608 @@
                                 </Button>
 
 
-                                
+                                <DockPanel HorizontalAlignment="Right">
+
+
+                                    <Button  Margin="6,20" HorizontalAlignment="Right"   Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0">
+                                        <Button.Resources>
+                                            <Style TargetType="{x:Type Border}">
+                                                <Setter Property="CornerRadius" Value="5"/>
+                                            </Style>
+                                        </Button.Resources>
+
+                                        START
+                                    </Button>
+
+
+                                    <Button Margin="6,20"  HorizontalAlignment="Right" Padding="5" Background="#e9545a" Foreground="#ffffff" BorderBrush="#ebecf0">
+                                        <Button.Resources>
+                                            <Style TargetType="{x:Type Border}">
+                                                <Setter Property="CornerRadius" Value="5"/>
+                                            </Style>
+                                        </Button.Resources>
+
+                                        STOP
+                                    </Button>
+                                </DockPanel>
+
+                            </DockPanel>
+
+                        </StackPanel>
+
+                    </GroupBox>
+                </Grid>
+            </TabItem>
+            <TabItem Header="PROFILE"  Foreground="#ffffff">
+
+
+
+                <Grid Background="#e9ecf1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+
+
+
+                    <GroupBox Margin="20 20 10 20" Background="#ffffff" BorderThickness="0">
+                        <ScrollViewer VerticalAlignment="Stretch"  VerticalScrollBarVisibility="Auto">
+
+                            <StackPanel Margin="0 10">
+                                <StackPanel >
+                                    <Label Content="Shipping Address" Foreground="#576379" FontWeight="Bold" FontSize="15" Margin="0 0 0 10"/>
+
+                                </StackPanel>
+                                <DockPanel>
+                                    
+                                    <Grid >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="36*" />
+                                            <ColumnDefinition Width="136*"/>
+                                            <ColumnDefinition Width="173*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="1*" />
+                                            <RowDefinition Height="1*" />
+                                            <RowDefinition Height="1*" />
+                                            <RowDefinition Height="1*" />
+                                            <RowDefinition Height="1*" />
+
+                                        </Grid.RowDefinitions>
+
+                                        
+
+                                        <StackPanel Grid.Column="0" Grid.ColumnSpan="2">
+                                            <Label Content="First Name" Foreground="#576379" FontWeight="SemiBold" />
+                                            <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                                <TextBox.Resources>
+                                                    <Style TargetType="{x:Type Border}">
+                                                        <Setter Property="CornerRadius" Value="5"/>
+                                                    </Style>
+                                                </TextBox.Resources>
+
+                                            </TextBox>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="2">
+                                            <Label Content="Last Name" Foreground="#576379" FontWeight="SemiBold" />
+                                            <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                                <TextBox.Resources>
+                                                    <Style TargetType="{x:Type Border}">
+                                                        <Setter Property="CornerRadius" Value="5"/>
+                                                    </Style>
+                                                </TextBox.Resources>
+
+                                            </TextBox>
+                                        </StackPanel>
+
+
+                                        <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
+                                            <Label Content="Phone number" Foreground="#576379" FontWeight="SemiBold" />
+                                            <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                                <TextBox.Resources>
+                                                    <Style TargetType="{x:Type Border}">
+                                                        <Setter Property="CornerRadius" Value="5"/>
+                                                    </Style>
+                                                </TextBox.Resources>
+
+                                            </TextBox>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="2" Grid.ColumnSpan="2">
+                                            <Label Content="Address" Foreground="#576379" FontWeight="SemiBold" />
+                                            <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                                <TextBox.Resources>
+                                                    <Style TargetType="{x:Type Border}">
+                                                        <Setter Property="CornerRadius" Value="5"/>
+                                                    </Style>
+                                                </TextBox.Resources>
+
+                                            </TextBox>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="2" Grid.Column="2">
+                                            <DockPanel>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="1*" />
+                                                        <ColumnDefinition Width="1*" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <StackPanel Grid.Column="0">
+                                                        <Label Content="ZIP" Foreground="#576379" FontWeight="SemiBold" />
+                                                        <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                                            <TextBox.Resources>
+                                                                <Style TargetType="{x:Type Border}">
+                                                                    <Setter Property="CornerRadius" Value="5"/>
+                                                                </Style>
+                                                            </TextBox.Resources>
+
+                                                        </TextBox>
+                                                    </StackPanel>
+
+
+                                                    <StackPanel Grid.Column="1">
+                                                        <Label Content="Apartment" Foreground="#576379" FontWeight="SemiBold" />
+                                                        <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                                            <TextBox.Resources>
+                                                                <Style TargetType="{x:Type Border}">
+                                                                    <Setter Property="CornerRadius" Value="5"/>
+                                                                </Style>
+                                                            </TextBox.Resources>
+
+                                                        </TextBox>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </DockPanel>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="3" Grid.ColumnSpan="2">
+                                            <Label Content="Country" Foreground="#576379" FontWeight="SemiBold" />
+                                            <ComboBox Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}">
+                                                <ComboBoxItem>New York</ComboBoxItem>
+
+                                            </ComboBox>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="3" Grid.Column="2">
+                                            <Label Content="State" Foreground="#576379" FontWeight="SemiBold" />
+                                            <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                                <TextBox.Resources>
+                                                    <Style TargetType="{x:Type Border}">
+                                                        <Setter Property="CornerRadius" Value="5"/>
+                                                    </Style>
+                                                </TextBox.Resources>
+
+                                            </TextBox>
+
+
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="4" Grid.ColumnSpan="2">
+                                            <Label Content="Billing Address" Foreground="#576379" FontWeight="Bold" FontSize="15" Margin="0 10"/>
+
+                                        </StackPanel>
+
+
+                                    </Grid>
+
+                                </DockPanel>
+
+                                <DockPanel>
+                                    <Grid >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1*" />
+                                            <ColumnDefinition Width="1*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="1*" />
+                                            <RowDefinition Height="1*" />
+                                            <RowDefinition Height="1*" />
+                                            <RowDefinition Height="1*" />
+                                            <RowDefinition Height="1*" />
+
+                                        </Grid.RowDefinitions>
+
+
+
+                                        <StackPanel Grid.Column="0">
+
+                                            <Label Content="First Name" Foreground="#576379" FontWeight="SemiBold" />
+                                            <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                                <TextBox.Resources>
+                                                    <Style TargetType="{x:Type Border}">
+                                                        <Setter Property="CornerRadius" Value="5"/>
+                                                    </Style>
+                                                </TextBox.Resources>
+
+                                            </TextBox>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1">
+                                            <Label Content="Last Name" Foreground="#576379" FontWeight="SemiBold" />
+                                            <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                                <TextBox.Resources>
+                                                    <Style TargetType="{x:Type Border}">
+                                                        <Setter Property="CornerRadius" Value="5"/>
+                                                    </Style>
+                                                </TextBox.Resources>
+
+                                            </TextBox>
+                                        </StackPanel>
+
+
+                                        <StackPanel Grid.Row="1">
+                                            <Label Content="Phone number" Foreground="#576379" FontWeight="SemiBold" />
+                                            <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                                <TextBox.Resources>
+                                                    <Style TargetType="{x:Type Border}">
+                                                        <Setter Property="CornerRadius" Value="5"/>
+                                                    </Style>
+                                                </TextBox.Resources>
+
+                                            </TextBox>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="2">
+                                            <Label Content="Address" Foreground="#576379" FontWeight="SemiBold" />
+                                            <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                                <TextBox.Resources>
+                                                    <Style TargetType="{x:Type Border}">
+                                                        <Setter Property="CornerRadius" Value="5"/>
+                                                    </Style>
+                                                </TextBox.Resources>
+
+                                            </TextBox>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="2" Grid.Column="1">
+                                            <DockPanel>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="1*" />
+                                                        <ColumnDefinition Width="1*" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <StackPanel Grid.Column="0">
+                                                        <Label Content="ZIP" Foreground="#576379" FontWeight="SemiBold" />
+                                                        <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                                            <TextBox.Resources>
+                                                                <Style TargetType="{x:Type Border}">
+                                                                    <Setter Property="CornerRadius" Value="5"/>
+                                                                </Style>
+                                                            </TextBox.Resources>
+
+                                                        </TextBox>
+                                                    </StackPanel>
+
+
+                                                    <StackPanel Grid.Column="1">
+                                                        <Label Content="Apartment" Foreground="#576379" FontWeight="SemiBold" />
+                                                        <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                                            <TextBox.Resources>
+                                                                <Style TargetType="{x:Type Border}">
+                                                                    <Setter Property="CornerRadius" Value="5"/>
+                                                                </Style>
+                                                            </TextBox.Resources>
+
+                                                        </TextBox>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </DockPanel>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="3">
+                                            <Label Content="Country" Foreground="#576379" FontWeight="SemiBold" />
+                                            <ComboBox Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}">
+                                                <ComboBoxItem>New York</ComboBoxItem>
+
+                                            </ComboBox>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="3" Grid.Column="1">
+                                            <Label Content="State" Foreground="#576379" FontWeight="SemiBold" />
+                                            <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                                <TextBox.Resources>
+                                                    <Style TargetType="{x:Type Border}">
+                                                        <Setter Property="CornerRadius" Value="5"/>
+                                                    </Style>
+                                                </TextBox.Resources>
+
+                                            </TextBox>
+                                        </StackPanel>
+
+
+                                    </Grid>
+                                    
+                                    
+                                    
+                                </DockPanel>
+
+                                <DockPanel>
+                                    <Grid >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1*" />
+                                            <ColumnDefinition Width="1*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="1*" />
+                                            <RowDefinition Height="1*" />
+                                            <RowDefinition Height="1*" />
+                                            <RowDefinition Height="1*" />
+                                            <RowDefinition Height="1*" />
+
+                                        </Grid.RowDefinitions>
+
+
+
+                                        <StackPanel Grid.Column="0" Grid.ColumnSpan="2">
+
+                                            <Label Content="Payment Information" Foreground="#576379" FontWeight="Bold" FontSize="15" Margin="0 10"/>
+                                            <Label Content="Select Credit Card" Foreground="#576379" FontWeight="SemiBold" />
+
+                                            <DockPanel HorizontalAlignment="Left">
+
+                                                <ToggleButton Foreground="Black" Width="50" Margin="5">
+                                                    <ToggleButton.Template>
+                                                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                                                <Image>
+                                                                    <Image.Style>
+                                                                        <Style>
+                                                                            <Setter Property="Image.Width"  Value="50"/>
+
+                                                                            <Setter Property="Image.Source" 
+                                Value="/images/cc_visa.png" />
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding IsChecked, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="True">
+                                                                                    <Setter Property="Image.Source" 
+                                        Value="/images/cc_visa_checked.png" />
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </Image.Style>
+                                                                </Image>
+                                                          
+                                                            
+                                                        </ControlTemplate>
+                                                    </ToggleButton.Template>
+                                                </ToggleButton>
+
+                                                <ToggleButton Foreground="Black" Width="50"  Margin="5">
+                                                    <ToggleButton.Template>
+                                                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                                            <Image>
+                                                                <Image.Style>
+                                                                    <Style>
+                                                                        <Setter Property="Image.Width"  Value="50"/>
+
+                                                                        <Setter Property="Image.Source" 
+                                Value="/images/cc_mastercard.png" />
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding IsChecked, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="True">
+                                                                                <Setter Property="Image.Source" 
+                                        Value="/images/cc_mastercard_checked.png" />
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Image.Style>
+                                                            </Image>
+
+
+                                                        </ControlTemplate>
+                                                    </ToggleButton.Template>
+                                                </ToggleButton>
+
+                                                <ToggleButton Foreground="Black" Width="50"  Margin="5">
+                                                    <ToggleButton.Template>
+                                                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                                            <Image>
+                                                                <Image.Style>
+                                                                    <Style>
+                                                                        <Setter Property="Image.Width"  Value="50"/>
+
+                                                                        <Setter Property="Image.Source" 
+                                Value="/images/cc_american.png" />
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding IsChecked, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="True">
+                                                                                <Setter Property="Image.Source" 
+                                        Value="/images/cc_american_checked.png" />
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Image.Style>
+                                                            </Image>
+
+
+                                                        </ControlTemplate>
+                                                    </ToggleButton.Template>
+                                                </ToggleButton>
+
+                                                <ToggleButton Foreground="Black" Width="50"  Margin="5">
+                                                    <ToggleButton.Template>
+                                                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                                            <Image>
+                                                                <Image.Style>
+                                                                    <Style>
+                                                                        <Setter Property="Image.Width"  Value="50"/>
+
+                                                                        <Setter Property="Image.Source" 
+                                Value="/images/cc_other.png" />
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding IsChecked, 
+                                    RelativeSource={RelativeSource AncestorType=
+                                    {x:Type ToggleButton}}}" Value="True">
+                                                                                <Setter Property="Image.Source" 
+                                        Value="/images/cc_other_checked.png" />
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Image.Style>
+                                                            </Image>
+
+
+                                                        </ControlTemplate>
+                                                    </ToggleButton.Template>
+                                                </ToggleButton>
+
+
+                                            </DockPanel>
+
+                                            <Label Content="Credit Card Number" Foreground="#576379" FontWeight="SemiBold" Margin="0 20 0 0"/>
+                                            <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                                <TextBox.Resources>
+                                                    <Style TargetType="{x:Type Border}">
+                                                        <Setter Property="CornerRadius" Value="5"/>
+                                                    </Style>
+                                                </TextBox.Resources>
+
+                                            </TextBox>
+
+                                            <DockPanel HorizontalAlignment="Left">
+
+                                                <StackPanel Width="70">
+                                                    <Label Content="Month" Foreground="#576379" FontWeight="SemiBold" Margin="0 20 0 0"/>
+                                                    <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                                        <TextBox.Resources>
+                                                            <Style TargetType="{x:Type Border}">
+                                                                <Setter Property="CornerRadius" Value="5"/>
+                                                            </Style>
+                                                        </TextBox.Resources>
+
+                                                    </TextBox>
+                                                </StackPanel>
+
+                                                <StackPanel  Width="70">
+                                                    <Label Content="Year" Foreground="#576379" FontWeight="SemiBold" Margin="0 20 0 0"/>
+                                                    <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                                        <TextBox.Resources>
+                                                            <Style TargetType="{x:Type Border}">
+                                                                <Setter Property="CornerRadius" Value="5"/>
+                                                            </Style>
+                                                        </TextBox.Resources>
+
+                                                    </TextBox>
+                                                </StackPanel>
+
+                                                <StackPanel  Width="70">
+                                                    <Label Content="CCV" Foreground="#576379" FontWeight="SemiBold" Margin="0 20 0 0"/>
+                                                    <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                                        <TextBox.Resources>
+                                                            <Style TargetType="{x:Type Border}">
+                                                                <Setter Property="CornerRadius" Value="5"/>
+                                                            </Style>
+                                                        </TextBox.Resources>
+
+                                                    </TextBox>
+                                                </StackPanel>
+                                            </DockPanel>
+
+
+
+                                        </StackPanel>
+
+                                    </Grid>
+                                </DockPanel>
+
+
+
+
+                                <!--ComboBox Grid.Column="0" Margin="6 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Style="{StaticResource ComboBoxTest2}">
+                                    <ComboBoxItem>US 7</ComboBoxItem>
+                                    <ComboBoxItem>US 7.5</ComboBoxItem>
+                                    <ComboBoxItem>US 23</ComboBoxItem>
+
+                                </-->
+
+
+
+
+
+
+
+
+
+
+
+
+                                <Button Margin="6,20" Width="100" HorizontalAlignment="Left" Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0">
+                                    <Button.Resources>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="CornerRadius" Value="5"/>
+                                        </Style>
+                                    </Button.Resources>
+
+                                    ADD PROFILE
+                                </Button>
+
+                            </StackPanel>
+
+
+                        </ScrollViewer>
+                    </GroupBox>
+                    <GroupBox  Grid.Column="1" Margin="10 20 20 20" Grid.ColumnSpan="6" Background="#ffffff" BorderThickness="0">
+                        <StackPanel Margin="10">
+                            <DockPanel>
+                                <Label Content="PROFILES" Foreground="#576379" FontWeight="SemiBold" Margin="-2 0"/>
+                                <Label Content="12 profiles" Foreground="#5db8f1" FontWeight="SemiBold" Margin="-2 0" HorizontalAlignment="Right"/>
+
+                            </DockPanel>
+                            <ListView ItemsSource="{Binding SourceCollection}" Name="profileList" Background="#ffffff" Grid.Row="1" BorderBrush="#ebecf0" >
+                                <ListView.View>
+                                    <GridView ColumnHeaderContainerStyle = "{StaticResource GridViewColumnHeaderStyle1}" >
+
+                                        <GridViewColumn>
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <CheckBox Tag="{Binding ID}"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Profile Name" Width="auto" DisplayMemberBinding="{Binding ProfileName}" />
+                                        <GridViewColumn Header="Name" Width="auto" DisplayMemberBinding="{Binding Name}" />
+                                        <GridViewColumn Header="Credit Card" Width="auto" DisplayMemberBinding="{Binding CreditCard}" />
+                                        <GridViewColumn Header="Date Created"  Width="auto" DisplayMemberBinding="{Binding Date}" />
+
+
+                                    </GridView>
+
+
+                                </ListView.View>
+
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="FontSize" Value="12" />
+                                        <Setter Property="Foreground" Value="#576379" />
+                                        <Setter Property="Background" Value="#ffffff" />
+                                        <Setter Property="Margin" Value="5" />
+
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+
+
+                            </ListView>
+
+
+                            <Button Margin="6,20"  HorizontalAlignment="Left" Padding="5" Background="#ffffff" Foreground="#787878" BorderBrush="#787878">
+                                <Button.Resources>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="CornerRadius" Value="5"/>
+
+                                    </Style>
+                                </Button.Resources>
+
+                                DELETE SELECTED
+                            </Button>
+
+
+
 
 
                         </StackPanel>
