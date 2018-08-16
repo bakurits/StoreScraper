@@ -49,10 +49,22 @@ namespace StoreScraper.Factory
             ("Cache-Control", "no-cache")
         };
 
-        public static StringPair[] FireFoxHeaders = {
+
+        public static StringPair[] EdgeHeaders = new StringPair[]
+        {
+            ("Accept", "*/*"),
+            ("Accept-Encoding","gzip, deflate"),
+            ("Accept-Language", "en-US; q=0.7, en; q=0.3"),
+            ("Cache-Control", "no-cache"),
+            ("Connection", "Keep-Alive"),
+            ("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134")
+        };
+
+        public static StringPair[] FireFoxHeaders =
+        {
             FirefoxUserAgentHeader,
             FirefoxAcceptHeader,
-            ("Accept-Encoding", "gzip,deflate"),
+            ("Accept-Encoding", "gzip, deflate"),
             ("Accept-Language", "en-US,en; q=0.5"),
             ("Cache-Control", "no-cache"),
             ("Pramgma","no-cache"),
@@ -61,7 +73,11 @@ namespace StoreScraper.Factory
             ("Upgrade-Insecure-Requests", "1"),
         };
 
-        public static StringPair[] FireFoxHeaders2 = {
+        public static StringPair[] DefaultHeaders = EdgeHeaders;
+
+
+        public static StringPair[] FireFoxHeaders2 = 
+        {
             FirefoxUserAgentHeader,
             FirefoxAcceptHeader,
             ("Accept-Encoding", "gzip,deflate"),
@@ -152,7 +168,7 @@ namespace StoreScraper.Factory
         {
             if (!autoCookies)
             {
-                return CreateProxiedHttpClient(proxy).AddHeaders(FireFoxHeaders);
+                return CreateProxiedHttpClient(proxy).AddHeaders(DefaultHeaders);
             }
 
             return proxy == null ? Storage.GetHttpClient() : Storage.GetHttpClient(proxy);

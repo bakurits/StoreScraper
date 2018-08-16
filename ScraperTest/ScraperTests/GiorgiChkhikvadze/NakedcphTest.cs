@@ -24,6 +24,7 @@ namespace ScraperTest.ScraperTests.GiorgiChkhikvadze
                 NegKeyWrods = "",
             };
             scrapper.FindItems(out var listOfProducts, searchSettingsBase, CancellationToken.None);
+            Helper.PrintFindItemsResults(listOfProducts);
         }
 
         [TestMethod]

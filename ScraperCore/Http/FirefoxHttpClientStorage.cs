@@ -13,7 +13,7 @@ namespace StoreScraper.Http
     public class FirefoxHttpClientStorage
     {
         private Dictionary<string ,HttpClient> _proxiedClients = new Dictionary<string, HttpClient>();
-        private HttpClient _proxilessClient = ClientFactory.CreateHttpCLient(null, true).AddHeaders(ClientFactory.FireFoxHeaders);
+        private HttpClient _proxilessClient = ClientFactory.CreateHttpCLient(null, true).AddHeaders(ClientFactory.DefaultHeaders);
 
 
         public HttpClient GetHttpClient(WebProxy proxy)
@@ -25,7 +25,7 @@ namespace StoreScraper.Http
                 return _proxiedClients[proxy.Address.AbsoluteUri];
             }
 
-            var client = ClientFactory.CreateProxiedHttpClient(proxy, true).AddHeaders(ClientFactory.FireFoxHeaders);
+            var client = ClientFactory.CreateProxiedHttpClient(proxy, true).AddHeaders(ClientFactory.DefaultHeaders);
             _proxiedClients.Add(uri, client);
 
             return client;
