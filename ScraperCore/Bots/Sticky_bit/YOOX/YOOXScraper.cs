@@ -22,32 +22,6 @@ namespace StoreScraper.Bots.Sticky_bit.YOOX
         public override bool Active { get; set; }
 
         private string[] SearchPrefixes = {
-            //Girls
-            @"/girl/clothing/baby/shoponline?sort=2&textsearch=",
-            @"/girl/shoes/baby/shoponline?sort=2&textsearch=",
-            @"/girl/accessories/baby/shoponline?sort=2&textsearch=",
-
-            @"/girl/clothing/kids/shoponline?sort=2&textsearch=",
-            @"/girl/shoes/kids/shoponline?sort=2&textsearch=",
-            @"/girl/accessories/kids/shoponline?sort=2&textsearch=",
-
-            @"/girl/clothing/junior/shoponline?sort=2&textsearch=",
-            @"/girl/shoes/junior/shoponline?sort=2&textsearch=",
-            @"/girl/accessories/junior/shoponline?sort=2&textsearch=",
-
-            //Boys
-            @"/boy/clothing/baby/shoponline?sort=2&textsearch=",
-            @"/boy/clothing/baby/shoponline?sort=2&textsearch=",
-            @"/boy/accessories/baby/shoponline?sort=2&textsearch=",
-
-            @"/boy/clothing/kids/shoponline?sort=2&textsearch=",
-            @"/boy/shoes/kids/shoponline?sort=2&textsearch=",
-            @"/boy/accessories/kids/shoponline?sort=2&textsearch=",
-
-            @"/boy/clothing/junior/shoponline?sort=2&textsearch=",
-            @"/boy/shoes/junior/shoponline?sort=2&textsearch=",
-            @"/boy/accessories/junior/shoponline?sort=2&textsearch=",
-
             //Women
             @"/women/shoponline?dept=women&textsearch=",
 

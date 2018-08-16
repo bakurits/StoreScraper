@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ScraperCore.Bots.Sticky_bit.EastBay_FootAction;
 using StoreScraper;
 using StoreScraper.Core;
 using StoreScraper.Models;
@@ -15,6 +16,15 @@ namespace ScraperTest.Helpers
     {
        public static SearchSettingsBase SearchSettings = new SearchSettingsBase
         {
+            KeyWords = "blue t-shirt",
+            NegKeyWrods = "Woman",
+            MinPrice = 200,
+            MaxPrice = 1000,
+        };
+
+        public static FootApiSearchSettings FootApiSearchSettingsSearchSettings = new FootApiSearchSettings
+        {
+            Gender = FootApiSearchSettings.GenderEnum.Any,
             KeyWords = "blue t-shirt",
             NegKeyWrods = "Woman",
             MinPrice = 200,

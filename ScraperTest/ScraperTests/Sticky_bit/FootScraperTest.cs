@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperCore.Bots.Sticky_bit.EastBay_FootAction;
 using ScraperTest.Helpers;
@@ -35,11 +36,19 @@ namespace ScraperTest.ScraperTests.Stycky_bit
         }
 
         [TestMethod]
-        public void FootAction()
+        public void FootActionGetProducts()
         {
             FootAPIBase.FootActionScraper scraper = new FootAPIBase.FootActionScraper();
-            scraper.FindItems(out var lst, Helper.SearchSettings, CancellationToken.None);
+            scraper.FindItems(out var lst, Helper.FootApiSearchSettingsSearchSettings, CancellationToken.None);
             Helper.PrintFindItemsResults(lst);
+        }
+
+        [TestMethod]
+        public void FootActionGetProductDetails()
+        {
+            string url = "https://www.footaction.com/product/nike-gx-pack-tank--mens/13177010.html?prValue=5145679";
+            FootAPIBase.FootActionScraper scraper = new FootAPIBase.FootActionScraper();
+            Console.WriteLine(scraper.GetProductDetails(url, CancellationToken.None));
         }
     }
 }
