@@ -120,7 +120,7 @@ namespace StoreScraper.Bots.Higuhigu.Chmielna
 
             var root = document.DocumentNode;
             var sizeNodes = root.SelectNodes("//div[@class='selector']/ul/li");
-            var sizes = sizeNodes.Select(node => node.GetAttributeValue("data-sizeeu", null)).ToList();
+            var sizes = sizeNodes?.Select(node => node.GetAttributeValue("data-sizeeu", null)).ToList();
 
             var name = root.SelectSingleNode("//div[@class='product__name']/h1").InnerText.Trim();
             var priceNode = root.SelectSingleNode("//span[@class='product__price_shop']");

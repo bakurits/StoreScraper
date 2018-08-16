@@ -126,7 +126,7 @@ namespace StoreScraper.Bots.Higuhigu.Uptherestore
 
             var root = document.DocumentNode;
             var sizeNodes = root.SelectNodes("//li[contains(@id, 'option')]/a/span");
-            var sizes = sizeNodes.Select(node => node?.InnerText).ToList();
+            var sizes = sizeNodes?.Select(node => node?.InnerText).ToList();
 
             var name = root.SelectSingleNode("//h1[@itemprop='name']").InnerText.Replace("<br>", "\n").Trim();
             var priceNode = root.SelectSingleNode(".//span[@class='price'][last()]");
