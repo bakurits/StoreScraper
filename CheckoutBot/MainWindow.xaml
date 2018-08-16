@@ -5,9 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CheckoutBot"
         mc:Ignorable="d"
-        Background="#344563"
+        
         Title="MainWindow" Height="600" Width="860">
-
+    <Window.Background>
+        <LinearGradientBrush EndPoint="1.5,1.5" StartPoint="0.504,0.03">
+            <GradientStop Color="#2976C1" Offset="0"/>
+            <GradientStop Color="#522360" Offset="0.2"/>
+        </LinearGradientBrush>
+    </Window.Background>
     <Window.Resources>
         <Style x:Key="ComboBoxTest2" TargetType="{x:Type ComboBox}">
             <Setter Property="Template">
@@ -82,6 +87,9 @@
                                 <RowDefinition Height="50"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
+
+                            
+
                             <Border Background="#5db8f1" HorizontalAlignment="Left" Width="100">
                             <Image Source="/images/logo.png"  />
                             </Border>
@@ -92,9 +100,15 @@
              Margin="110,0,60,-1"
              IsItemsHost="True"
              Background="Transparent" />
-                            <Border
+                            <Border 
              Grid.Row="1"
              >
+                                <!--Border.Background>
+                                    <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
+                                        <GradientStop Color="#FFFFC934" Offset="0"/>
+                                        <GradientStop Color="#FFFFFFFF" Offset="0.567"/>
+                                    </LinearGradientBrush-->
+
                                 <ContentPresenter ContentSource="SelectedContent" />
                             </Border>
                         </Grid>
@@ -102,6 +116,9 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
+        
+        
 
 
     </Window.Resources>
@@ -130,9 +147,10 @@
 
 
 
-        <TabControl BorderThickness="0" Background="#344563"  Grid.Row="1" Grid.ColumnSpan="12">
+        <TabControl BorderThickness="0"   Grid.Row="1" Grid.ColumnSpan="12">
+            
             <TabControl.Resources>
-
+                
                 <Style TargetType="TabItem">
                     <Setter Property="Template">
                         <Setter.Value>
@@ -240,10 +258,24 @@
 
 
                             <Button Margin="6,20" Width="100" HorizontalAlignment="Left" Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0">
+
+
+                               
                                 <Button.Resources>
                                     <Style TargetType="{x:Type Border}">
                                         <Setter Property="CornerRadius" Value="5"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="Button.IsMouseOver" Value="True">
+                                                <Setter Property="Button.Background" Value="Red" />
+                                            </Trigger>
+                                        </Style.Triggers>
                                     </Style>
+                                    
+
+
+
+
+
                                 </Button.Resources>
 
                                 ADD TASK
