@@ -73,6 +73,37 @@
 
         </Style>
 
+        <Style  TargetType="{x:Type TabControl}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabControl}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="50"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Border Background="#5db8f1" HorizontalAlignment="Left" Width="100">
+                            <Image Source="/images/logo.png"  />
+                            </Border>
+                            <TabPanel
+                                VerticalAlignment="Center"
+             Grid.Row="0"
+             Panel.ZIndex="1"
+             Margin="110,0,60,-1"
+             IsItemsHost="True"
+             Background="Transparent" />
+                            <Border
+             Grid.Row="1"
+             >
+                                <ContentPresenter ContentSource="SelectedContent" />
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
     </Window.Resources>
 
 
@@ -904,6 +935,102 @@
                 </Grid>
 
             </TabItem>
+            <TabItem Header="CAPTCHA" Foreground="#ffffff">
+
+                <Grid Background="#e9ecf1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+
+
+
+                    <GroupBox Margin="20 20 10 20" Background="#ffffff" BorderThickness="0">
+                        <StackPanel>
+                            <StackPanel Margin="50" HorizontalAlignment="Center">
+                            <Image Source="/images/recaptcha.png"  Width="150" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <StackPanel>
+                                <Label Content="CHOOSE SITE" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
+
+                                <ComboBox Name="captchaSite" Margin="6 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Visibility="Visible" Style="{StaticResource ComboBoxTest2}">
+                                    <ComboBoxItem>https://footlocker.com</ComboBoxItem>
+                                </ComboBox>
+
+                                <DockPanel HorizontalAlignment="Left">
+
+
+                                    <Button  Margin="6,10" HorizontalAlignment="Right"   Padding="20 5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0">
+                                        <Button.Resources>
+                                            <Style TargetType="{x:Type Border}">
+                                                <Setter Property="CornerRadius" Value="5"/>
+                                            </Style>
+                                        </Button.Resources>
+
+                                        START
+                                    </Button>
+
+
+                                    <Button Margin="6,10"  HorizontalAlignment="Right" Padding="20 5" Background="#e9545a" Foreground="#ffffff" BorderBrush="#ebecf0">
+                                        <Button.Resources>
+                                            <Style TargetType="{x:Type Border}">
+                                                <Setter Property="CornerRadius" Value="5"/>
+                                            </Style>
+                                        </Button.Resources>
+
+                                        STOP
+                                    </Button>
+                                </DockPanel>
+
+                            </StackPanel>
+                        </StackPanel>
+
+                    </GroupBox>
+                    <GroupBox  Grid.Column="1" Margin="10 20 20 20" Grid.ColumnSpan="6" Background="#ffffff" BorderThickness="0">
+                        <StackPanel Margin="10">
+                            <DockPanel>
+                                <Label Content="TOKENS" Foreground="#576379" FontWeight="SemiBold" Margin="-2 0"/>
+                                <Label Content="67 tokens" Foreground="#5db8f1" FontWeight="SemiBold" Margin="-2 0" HorizontalAlignment="Right"/>
+
+                            </DockPanel>
+                            <ListView VerticalAlignment="Stretch" ItemsSource="{Binding SourceCollection}" Name="tokens" Background="#ffffff" Grid.Row="1" BorderBrush="#ebecf0" >
+                                <ListView.View>
+                                    <GridView ColumnHeaderContainerStyle = "{StaticResource GridViewColumnHeaderStyle1}" >
+                                        
+
+                                        <GridViewColumn Header="Site" Width="auto" DisplayMemberBinding="{Binding Site}" />
+                                        <GridViewColumn Header="Token" Width="auto" DisplayMemberBinding="{Binding Token}" />
+                                        
+                                    </GridView>
+
+
+                                </ListView.View>
+
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="FontSize" Value="12" />
+                                        <Setter Property="Foreground" Value="#576379" />
+                                        <Setter Property="Background" Value="#ffffff" />
+                                        <Setter Property="Margin" Value="5" />
+
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+
+
+                            </ListView>
+
+                            
+
+                        </StackPanel>
+
+                    </GroupBox>
+                </Grid>
+
+            </TabItem>
+
+
+
             <TabItem Header="SUCCESS" Foreground="#ffffff">
 
                 <Grid Background="#e9ecf1">
@@ -931,7 +1058,7 @@
                             <ListView VerticalAlignment="Stretch" ItemsSource="{Binding SourceCollection}" Name="successfulTaks" Background="#ffffff" Grid.Row="1" BorderBrush="#ebecf0" >
                                 <ListView.View>
                                     <GridView ColumnHeaderContainerStyle = "{StaticResource GridViewColumnHeaderStyle1}" >
-                                        
+
 
                                         <GridViewColumn Header="Keywords" Width="auto" DisplayMemberBinding="{Binding Keywords}" />
                                         <GridViewColumn Header="Size" Width="auto" DisplayMemberBinding="{Binding Size}" />
@@ -972,7 +1099,7 @@
 
                             </ListView>
 
-                            
+
 
                         </StackPanel>
 

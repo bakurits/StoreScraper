@@ -40,6 +40,17 @@ namespace CheckoutBot
             successfulItems.Add(new TaskItem() { Keywords = "adidas", Size = 7, Retries = "3", Status = "Done", ListImage = "/images/list_done.png" });
             successfulItems.Add(new TaskItem() { Keywords = "puma", Size = 8, Retries = "0", Status = "Done", ListImage = "/images/list_done.png" });
             successfulTaks.ItemsSource = successfulItems;
+            List<TokenItem> tokenItems = new List<TokenItem>();
+            tokenItems.Add(new TokenItem() { Site = "https://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
+            tokenItems.Add(new TokenItem() { Site = "https://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
+            tokenItems.Add(new TokenItem() { Site = "https://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
+            tokenItems.Add(new TokenItem() { Site = "https://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
+            tokenItems.Add(new TokenItem() { Site = "https://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
+            tokenItems.Add(new TokenItem() { Site = "https://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
+            tokenItems.Add(new TokenItem() { Site = "https://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
+            tokenItems.Add(new TokenItem() { Site = "https://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
+            tokenItems.Add(new TokenItem() { Site = "https://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
+            tokens.ItemsSource = tokenItems;
 
 
         }
@@ -78,6 +89,16 @@ namespace CheckoutBot
         public string Name { get; set; }
         public string CreditCard { get; set; }
         public string Date { get; set; }
+
+
+
+    }
+
+
+    public class TokenItem
+    {
+        public string Site { get; set; }
+        public string Token { get; set; }
 
 
 

@@ -193,6 +193,12 @@
   <ItemGroup>
     <Resource Include="images\success.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\recaptcha.png" />
+  </ItemGroup>
   <Import Project="..\ScraperCore\ScraperCore.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
