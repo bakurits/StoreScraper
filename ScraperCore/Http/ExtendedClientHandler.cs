@@ -18,19 +18,30 @@ namespace ScraperCore.Http
             var nativeMessage =  base.SendAsync(request, cancellationToken);
 
 
-            if (nativeMessage.Result.Content.Headers.ContentEncoding.Contains("br"))
+            var newMessage = nativeMessage.ContinueWith((Func<Task, HttpResponseMessage>)(task => 
             {
-                using (var stream = new BrotliStream(nativeMessage.Result.Content.ReadAsStreamAsync().Result, CompressionMode.Decompress))
+                try
                 {
-                    var outputStream = new MemoryStream();
-                    stream.CopyTo(outputStream);
-                    outputStream.Seek(0, SeekOrigin.Begin);
-                    nativeMessage.Result.Content = new StreamContent(outputStream); 
+                    if (!nativeMessage.Result.Content.Headers.ContentEncoding.Contains("br")) return nativeMessage.Result;
+                    using (var stream = new BrotliStream(nativeMessage.Result.Content.ReadAsStreamAsync().Result,
+                        CompressionMode.Decompress))
+                    {
+                        var outputStream = new MemoryStream();
+                        stream.CopyTo(outputStream);
+                        outputStream.Seek(0, SeekOrigin.Begin);
+                        nativeMessage.Result.Content = new StreamContent(outputStream);
+                    }
+
+                    return nativeMessage.Result;
                 }
-            }
+                catch
+                {
+                    return  nativeMessage.Result;
+                }
 
-
-            return nativeMessage;
+            }));
+           
+            return newMessage;
         }
     }
 }

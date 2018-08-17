@@ -26,8 +26,7 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.Nordstrom
             var request = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = request.GetDoc(searchUrl, token);
             var ds = document.DocumentNode;
-            Logger.Instance.WriteErrorLog("Unexpected html!");
-            var nodes = document.DocumentNode.SelectSingleNode("//div[contains(@class, 'resultSet_5ymz9')]/div");
+            var nodes = ds.SelectSingleNode("//div[contains(@class, 'resultSet_5ymz9')]/div");
             if (nodes == null)
             {
                 return;
