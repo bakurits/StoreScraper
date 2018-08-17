@@ -404,6 +404,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1066, 657);
             this.Controls.Add(this.Tabs);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.Name = "MainForm";
             this.Text = "Scraper";

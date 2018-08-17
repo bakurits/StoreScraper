@@ -13,7 +13,7 @@ using StoreScraper.Models;
 
 namespace StoreScraper.Bots.Sticky_bit.BSTN
 {
-    [DisabledScraper]
+    [DisableInGUI]
     public class BSTNScraper : ScraperBase
     {
         public sealed override string WebsiteName { get; set; }

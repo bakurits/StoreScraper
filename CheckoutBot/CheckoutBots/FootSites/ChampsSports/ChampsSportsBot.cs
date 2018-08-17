@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Net.Http;
 using System.Threading;
-using System.Threading.Tasks;
 using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
-using ScraperCore.Bots.Sticky_bit.EastBay_FootAction;
-using StoreScraper;
-using StoreScraper.Models;
 
-namespace CheckoutBot.CheckoutBots.FootLocker
+namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
 {
-    class FootLockerBot : FootAPIBase.FootLockerScraper, IGuestCheckouter, IAccountCheckouter, IReleasePageScraper
+    class ChampsSportsBot : IGuestCheckouter, IAccountCheckouter
     {
         public void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
         {
@@ -24,7 +18,7 @@ namespace CheckoutBot.CheckoutBots.FootLocker
             throw new NotImplementedException();
         }
 
-        public List<Product> ScrapeReleasePage(CancellationToken token)
+        public HttpClient Login(string username, string password)
         {
             throw new NotImplementedException();
         }

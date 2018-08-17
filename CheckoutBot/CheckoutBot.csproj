@@ -119,10 +119,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CheckoutBots\ChampsSports\ChampsSportsBot.cs" />
-    <Compile Include="CheckoutBots\EastBay\EastBayBot.cs" />
-    <Compile Include="CheckoutBots\FootAction\FootActionBot.cs" />
-    <Compile Include="CheckoutBots\FootLocker\FootLockerBot.cs" />
+    <Compile Include="CheckoutBots\FootSites\ChampsSports\ChampsSportsBot.cs" />
+    <Compile Include="CheckoutBots\FootSites\EastBay\EastBayBot.cs" />
+    <Compile Include="CheckoutBots\FootSites\FootAction\FootActionBot.cs" />
+    <Compile Include="CheckoutBots\FootSites\FootLocker\FootLockerBot.cs" />
+    <Compile Include="CheckoutBots\FootSites\FootSitesBotBase.cs" />
     <Compile Include="Env.cs" />
     <Compile Include="Interfaces\IAccountCheckouter.cs" />
     <Compile Include="Interfaces\IGuestCheckouter.cs" />

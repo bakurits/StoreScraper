@@ -1,29 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Drawing;
 using System.Threading;
-using StoreScraper.Http.Factory;
-using StoreScraper.Helpers;
 using HtmlAgilityPack;
 
-namespace StoreScraper.Models
+namespace CheckoutBot.Models
 {
     public class Product
     {
         [DisplayName("Store")]
         public string StoreName { get; set; } = "";
-
-        private ScraperBase _scraperBy;
-
-        [Browsable(false)]
-        public ScraperBase ScrapedBy {
-            get => _scraperBy;
-            set
-            {
-                _scraperBy = value;
-                this.StoreName = value.WebsiteName;
-            }
-        }
 
         public string Name { get; set; } = "";
 
@@ -56,26 +41,12 @@ namespace StoreScraper.Models
         public DateTime? ReleaseTime { get; set; }
 
 
-        public Product(ScraperBase scrapedBy, string name, string url, double price, string imageUrl, string id, string currency = "$", DateTime? releaseTime = null)
+        public Product(string name, string url, double price, string imageUrl, string id, string currency = "$", DateTime? releaseTime = null)
         {
             this.Name = HtmlEntity.DeEntitize(name.Trim());
             this.Url = url;
             this.Price = price;
             this.Id = id;
-            this.ScrapedBy = scrapedBy;
-            this.StoreName = ScrapedBy.WebsiteName;
-            this.ImageUrl = imageUrl;
-            this.Currency = currency;
-            this.ReleaseTime = releaseTime;
-        }
-
-        public Product(string storeName, string name, string url, double price, string imageUrl, string id, string currency = "$", DateTime? releaseTime = null)
-        {
-            this.Name = HtmlEntity.DeEntitize(name.Trim());
-            this.Url = url;
-            this.Price = price;
-            this.Id = id;
-            this.StoreName = storeName;
             this.ImageUrl = imageUrl;
             this.Currency = currency;
             this.ReleaseTime = releaseTime;

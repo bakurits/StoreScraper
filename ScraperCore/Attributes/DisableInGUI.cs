@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StoreScraper.Attributes
 {
-    public class DisabledScraperAttribute : Attribute
+    public class DisableInGUI : Attribute
     {
     }
 }

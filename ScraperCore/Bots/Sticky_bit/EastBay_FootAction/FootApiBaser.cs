@@ -20,7 +20,7 @@ using StoreScraper.Models;
 
 namespace ScraperCore.Bots.Sticky_bit.EastBay_FootAction
 {
-   [DisabledScraper]
+   [DisableInGUI]
     public class FootAPIBase : ScraperBase
     {
 

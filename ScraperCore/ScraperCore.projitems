@@ -10,7 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)AppSettings.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Attributes\DisabledScraperAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Attributes\DisableInGUI.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bots\Bakurits\Antonioli\AntonioliScraper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bots\Bakurits\Antonioli\AntonioliSearchSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bots\Bakurits\Baitme\BaitmeScraper.cs" />

@@ -1,16 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using CheckoutBot.CheckoutBots.EastBay;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
+using CheckoutBot.CheckoutBots.FootSites.EastBay;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
-using StoreScraper.Helpers;
 using StoreScraper.Models;
 
-namespace CheckoutBotTests
+namespace ScraperTest.CheckoutBots.EastBay
 {
     [TestClass()]
     public class EastBayBotTests

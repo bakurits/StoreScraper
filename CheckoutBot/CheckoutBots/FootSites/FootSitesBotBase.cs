@@ -1,36 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using StoreScraper.Bots.Sticky_bit.ChampsSports_FootLocker;
+using StoreScraper.Attributes;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 using StoreScraper.Models;
 
-namespace CheckoutBot.CheckoutBots.EastBay
+namespace CheckoutBot.CheckoutBots.FootSites
 {
-    public class EastBayBot : FootSimpleBase.EastBayScraper, IGuestCheckouter, IAccountCheckouter, IReleasePageScraper
+    [DisableInGUI]
+    public abstract class FootSitesBotBase : IGuestCheckouter, IAccountCheckouter, IReleasePageScraper
     {
-        public void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
+        public string WebsiteName { get; set; }
+        public string WebsiteBaseUrl { get; set; }
+        public string ReleasePageApiEndpoint { get; set; }
+
+        protected FootSitesBotBase(string websiteName, string webSiteBaseUrl, string releasePageEndpoint)
         {
-            throw new NotImplementedException();
+            this.WebsiteName = websiteName;
+            this.WebsiteBaseUrl = webSiteBaseUrl;
+            this.ReleasePageApiEndpoint = releasePageEndpoint;
         }
 
-        public void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token)
-        {
-            throw new NotImplementedException();
-        }
 
-        private string ApiUrl { get; } = "https://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/1";
+        public abstract void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token);
+        public abstract void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token);
+        public abstract HttpClient Login(string username, string password);
 
         public List<Product> ScrapeReleasePage(CancellationToken token)
         {
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
-            var task = client.GetStringAsync(ApiUrl);
+            var task = client.GetStringAsync(ReleasePageApiEndpoint);
             task.Wait(token);
 
             if (task.IsFaulted) throw new JsonException("Can't get data");
@@ -57,14 +66,7 @@ namespace CheckoutBot.CheckoutBots.EastBay
                         var image = GetImage(productData);
                         
 
-                        var product = new Product(new EastBayScraper(),
-                            name,
-                            url,
-                            price,
-                            image,
-                            url,
-                            "USD",
-                            date);
+                        var product = new Product(this.WebsiteName, name, url, price, image, url, "USD", date);
 
                         products.Add(product);
                     }
