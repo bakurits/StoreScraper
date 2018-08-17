@@ -218,11 +218,11 @@ namespace StoreScraper.Helpers
             return client;
         }
 
-        private static Random r = new Random();
+        private static readonly Random R = new Random();
 
         public static T GetRandomValue<T>(this IList<T> list)
         {
-            int index = r.Next(0, list.Count);
+            int index = R.Next(0, list.Count);
             return list[index];
         }
 
@@ -268,9 +268,64 @@ namespace StoreScraper.Helpers
             return new Price(parsed, c);
         }
 
+        /// <summary>
+        /// This function removes all new line characters from string
+        /// </summary>
+        /// <param name="str"> Give string </param>
+        /// <returns> string without new line characters </returns>
         public static string EscapeNewLines(this string str)
         {
             return Regex.Replace(str, @"\t|\n|\r", "");
+        }
+
+        /// <summary>
+        /// This function finds substring of string
+        /// From <c>l</c> to <c>r</c> both inclusive
+        /// </summary>
+        public static string Substr(this string str, int l, int r)
+        {
+            return str.Substring(l, r - l + 1);
+        }
+
+        /// <summary>
+        /// This function finds string before some pattern
+        /// </summary>
+        /// <example>
+        /// "abcd/ab".StringBefore("/ab") = "abcd"
+        /// </example>
+        /// <returns>String before pattern</returns>
+        public static string StringBefore(this string str, string pattern)
+        {
+            int indx = str.LastIndexOf(pattern, StringComparison.Ordinal);
+            if (indx != -1)
+            {
+                return str.Substr(0, indx);
+            }
+            else
+            {
+                return str;
+            }
+        }
+
+        public static JObject GetFirstJson(string str)
+        {
+            int firstCrlBracInd = str.IndexOf("{", StringComparison.Ordinal);
+            if (firstCrlBracInd == -1)
+            {
+                return JObject.Parse("{}");
+            }
+
+            int cnt = 1;
+            for (int i = firstCrlBracInd + 1; i < str.Length; i++)
+            {
+                if (str[i] == '{') cnt++;
+                if (str[i] == '}') cnt--;
+                if (cnt == 0)
+                {
+                    return JObject.Parse(str.Substr(firstCrlBracInd, i));
+                }
+            }
+            return JObject.Parse("{}");
         }
     }
 }

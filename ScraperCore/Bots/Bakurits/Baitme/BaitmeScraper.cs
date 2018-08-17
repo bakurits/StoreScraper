@@ -101,8 +101,7 @@ namespace StoreScraper.Bots.Bakurits.Baitme
 
         private string GetName(HtmlNode item)
         {
-            var name = item.SelectSingleNode("./a").GetAttributeValue("title", null);
-            name = Regex.Replace(name, @"\t|\n|\r", "");
+            var name = item.SelectSingleNode("./a").GetAttributeValue("title", null).EscapeNewLines();
             return name;
         }
         private string GetUrl(HtmlNode item)

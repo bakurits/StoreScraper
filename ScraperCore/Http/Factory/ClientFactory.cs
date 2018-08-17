@@ -16,7 +16,7 @@ using StoreScraper.Models;
 
 namespace StoreScraper.Http.Factory
 {
-    static class ClientFactory
+    public static class ClientFactory
     {
      
         private static Random random = new Random();

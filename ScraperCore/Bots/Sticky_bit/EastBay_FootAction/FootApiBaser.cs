@@ -166,7 +166,7 @@ namespace ScraperCore.Bots.Sticky_bit.EastBay_FootAction
             return biggestSizeObj.GetValue("url").ToString();
         }
 
-        private string getPriceFromJson(JObject main)
+        private string GetPriceFromJson(JObject main)
         {
             JObject sellableUnit = JObject.Parse(main.GetValue("sellableUnits").First.ToString());
             JObject price = JObject.Parse(sellableUnit.GetValue("price").ToString());
@@ -183,7 +183,7 @@ namespace ScraperCore.Bots.Sticky_bit.EastBay_FootAction
             string url = productUrl;
             string img = GetImageUrlFromJson(mainObj);
             string name = mainObj.GetValue("name").ToString();
-            Price productPrice = Utils.ParsePrice(getPriceFromJson(mainObj));
+            Price productPrice = Utils.ParsePrice(GetPriceFromJson(mainObj));
             
             Product product = new Product(this, name, url, productPrice.Value, img, id, productPrice.Currency);
             Console.WriteLine(product);

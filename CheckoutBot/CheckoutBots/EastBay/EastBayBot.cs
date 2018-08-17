@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using StoreScraper.Bots.Sticky_bit.ChampsSports_FootLocker;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
@@ -25,19 +24,47 @@ namespace CheckoutBot.CheckoutBots.EastBay
             throw new NotImplementedException();
         }
 
-        
+        private string ApiUrl { get; } = "https://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/1";
+
         public List<Product> ScrapeReleasePage(CancellationToken token)
         {
-            var timestamp = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds();
-            int monthCount = 2; // this variable stores how many month's information needed 
-            string url =
-                $"https://video.eastbay.com/feeds/release_watch.cfm?variable=products&months={monthCount}&cd=1m&_={timestamp}";
-            
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
-            var doc = client.GetDoc(url, token);
-            
+            var task = client.GetStringAsync(ApiUrl);
+            task.Wait(token);
 
-            throw new NotImplementedException();
+            if (task.IsFaulted) throw new JsonException("Can't get data");
+
+            var produtData = Utils.GetFirstJson(task.Result).GetValue("releases");
+            var products = GetProducts(produtData);
+            return products;
+        }
+
+        private List<Product> GetProducts(JToken data)
+        {
+            var products = new List<Product>();
+            foreach (var day in data)
+            {
+                var productsOnDay = day["products"];
+                foreach (var productData in productsOnDay)
+                {
+                    string url = ((string) productData["buyNowURL"]).StringBefore("/?sid=");
+                    double price = (double) productData["price"];
+                    string image = (string) productData["primaryImageURL"];
+                    string dateInJson = (string) productData["launchDateTimeUTC"];
+                    string dateFormat = "yyyy-MM-dd'T'HH:mm:ss.fff'Z'";
+                    DateTime date = DateTime.ParseExact(dateFormat, dateInJson, null);
+                    Product product = new Product(null,
+                        (string) productData["name"], // name
+                        url, // url
+                        price, // price
+                        image, // image
+                        url, //id
+                        "USD", // currency 
+                        date < DateTime.UtcNow ? (DateTime?) null : date); // date
+                }
+            }
+
+            return products;
         }
     }
 }
