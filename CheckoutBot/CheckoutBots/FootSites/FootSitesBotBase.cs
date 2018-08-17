@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,7 +34,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
 
         public abstract void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token);
         public abstract void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token);
-        public abstract void Login(string username, string password);
+        public abstract HttpClient Login(string username, string password);
 
         public List<Product> ScrapeReleasePage(CancellationToken token)
         {

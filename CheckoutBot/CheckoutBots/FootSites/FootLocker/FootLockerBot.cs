@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading;
 using CheckoutBot.Models;
 
@@ -16,7 +20,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootLocker
             throw new NotImplementedException();
         }
 
-        public override void Login(string username, string password)
+        public override HttpClient Login(string username, string password)
         {
             throw new NotImplementedException();
         }

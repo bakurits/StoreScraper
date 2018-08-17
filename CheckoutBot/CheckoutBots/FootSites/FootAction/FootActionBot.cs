@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading;
 using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
@@ -19,7 +22,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootAction
             throw new NotImplementedException();
         }
 
-        public void Login(string username, string password)
+        public HttpClient Login(string username, string password)
         {
             throw new NotImplementedException();
         }
