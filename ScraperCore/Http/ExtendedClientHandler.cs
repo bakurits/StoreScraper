@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
@@ -16,18 +17,15 @@ namespace ScraperCore.Http
         {
             var nativeMessage =  base.SendAsync(request, cancellationToken);
 
-            
 
-            var hasEncodingHeader = nativeMessage.Result.Headers.TryGetValues("Content-Encoding", out var result);
-
-            if(!hasEncodingHeader) return nativeMessage;
-
-
-            if (result.Contains("br"))
+            if (nativeMessage.Result.Content.Headers.ContentEncoding.Contains("br"))
             {
                 using (var stream = new BrotliStream(nativeMessage.Result.Content.ReadAsStreamAsync().Result, CompressionMode.Decompress))
                 {
-                    nativeMessage.Result.Content = new StreamContent(stream);
+                    var outputStream = new MemoryStream();
+                    stream.CopyTo(outputStream);
+                    outputStream.Seek(0, SeekOrigin.Begin);
+                    nativeMessage.Result.Content = new StreamContent(outputStream); 
                 }
             }
 

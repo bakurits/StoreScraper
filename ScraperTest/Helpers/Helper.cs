@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperCore.Bots.Sticky_bit.EastBay_FootAction;
 using StoreScraper;
 using StoreScraper.Core;
+using StoreScraper.Http;
 using StoreScraper.Models;
 
 namespace ScraperTest.Helpers
@@ -49,7 +50,7 @@ namespace ScraperTest.Helpers
             AppSettings.Default = AppSettings.Load();
 
             Logger.Instance.OnLogged += (message, color) => Debug.WriteLine(message);
-            //CookieCollector.Default = new CookieCollector();
+            CookieCollector.Default = new CookieCollector();
         }
     }
 }
