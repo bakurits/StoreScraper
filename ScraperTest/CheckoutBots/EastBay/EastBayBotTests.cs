@@ -1,16 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using CheckoutBot.CheckoutBots.EastBay;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
+using CheckoutBot.CheckoutBots.EastBay;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
-using StoreScraper.Helpers;
 using StoreScraper.Models;
 
-namespace CheckoutBotTests
+namespace ScraperTest.CheckoutBots.EastBay
 {
     [TestClass()]
     public class EastBayBotTests
@@ -30,7 +26,11 @@ namespace CheckoutBotTests
         [TestMethod()]
         public void ScrapeReleasePageTest()
         {
-            EastBayBot bot = new EastBayBot();
+            EastBayBot bot = new EastBayBot()
+            {
+                WebsiteBaseUrl = "https://www.eastbay.com/",
+                WebsiteName = "Eastbay"
+            };
             List<Product> res = bot.ScrapeReleasePage(CancellationToken.None);
             Helper.PrintFindItemsResults(res);
         }
