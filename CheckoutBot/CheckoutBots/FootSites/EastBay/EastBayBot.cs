@@ -1,18 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading;
-using CheckoutBot.CheckoutBots.FootSites;
-using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using StoreScraper.Bots.Sticky_bit.ChampsSports_FootLocker;
-using StoreScraper.Helpers;
-using StoreScraper.Http.Factory;
-using StoreScraper.Models;
 
-namespace CheckoutBot.CheckoutBots.EastBay
+namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 {
     public class EastBayBot : FootSitesBotBase
     {
@@ -39,7 +29,7 @@ namespace CheckoutBot.CheckoutBots.EastBay
             throw new NotImplementedException();
         }
 
-        public EastBayBot(string WebsiteName, string WebSiteBaseUrl, string releasePageEndpoint) : base(WebsiteName, WebSiteBaseUrl, releasePageEndpoint)
+        public EastBayBot(string websiteName, string webSiteBaseUrl, string releasePageEndpoint) : base(websiteName, webSiteBaseUrl, releasePageEndpoint)
         {
         }
     }

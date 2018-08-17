@@ -1,17 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using CheckoutBot.CheckoutBots.FootSites;
-using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
-using ScraperCore.Bots.Sticky_bit.EastBay_FootAction;
-using StoreScraper;
-using StoreScraper.Models;
 
-namespace CheckoutBot.CheckoutBots.FootLocker
+namespace CheckoutBot.CheckoutBots.FootSites.FootLocker
 {
     class FootLockerBot : FootSitesBotBase
     {

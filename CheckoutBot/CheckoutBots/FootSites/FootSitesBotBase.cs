@@ -23,10 +23,10 @@ namespace CheckoutBot.CheckoutBots.FootSites
         public string WebsiteBaseUrl { get; set; }
         public string ReleasePageApiEndpoint { get; set; }
 
-        protected FootSitesBotBase(string WebsiteName, string WebSiteBaseUrl, string releasePageEndpoint)
+        protected FootSitesBotBase(string websiteName, string webSiteBaseUrl, string releasePageEndpoint)
         {
-            this.WebsiteName = WebsiteName;
-            this.WebsiteBaseUrl = WebSiteBaseUrl;
+            this.WebsiteName = websiteName;
+            this.WebsiteBaseUrl = webSiteBaseUrl;
             this.ReleasePageApiEndpoint = releasePageEndpoint;
         }
 

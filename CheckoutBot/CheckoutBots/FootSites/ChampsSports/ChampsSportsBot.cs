@@ -2,9 +2,8 @@
 using System.Threading;
 using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
-using StoreScraper.Bots.Sticky_bit.ChampsSports_FootLocker;
 
-namespace CheckoutBot.CheckoutBots.ChampsSports
+namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
 {
     class ChampsSportsBot : IGuestCheckouter, IAccountCheckouter
     {
