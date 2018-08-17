@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
-using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
+using StoreScraper.Http.Factory;
 using StoreScraper.Models;
 
 namespace StoreScraper.Bots.Bakurits.Antonioli

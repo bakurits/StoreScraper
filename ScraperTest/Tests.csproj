@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BotTests\FootStoresTests.cs" />
+    <Compile Include="CheckoutBots\EastBay\EastBayBotTests.cs" />
     <Compile Include="MinorTests\UtilsTests.cs" />
     <Compile Include="MinorTests\SlackWebHookTests.cs" />
     <Compile Include="ScraperTests\DavitBezhanishvili\AwLabScraperTests.cs" />

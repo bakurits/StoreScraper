@@ -132,13 +132,13 @@ namespace ScraperCore.Bots.Sticky_bit.EastBay_FootAction
             return document;
         }
 
-        private string getIdFromUrl(string productUrl)
+        private string GetIdFromUrl(string productUrl)
         {
-            string suffix = productUrl.Substring(productUrl.LastIndexOf("/"));
-            return suffix.Substring(1, suffix.IndexOf(".") -1 );
+            string suffix = productUrl.Substring(productUrl.LastIndexOf("/", StringComparison.Ordinal));
+            return suffix.Substring(1, suffix.IndexOf(".", StringComparison.Ordinal) -1 );
         }
 
-        private string getPDPInfo(HtmlNodeCollection nodes)
+        private string GetPdpInfo(HtmlNodeCollection nodes)
         {
             foreach (var node in nodes)
             {
@@ -153,13 +153,13 @@ namespace ScraperCore.Bots.Sticky_bit.EastBay_FootAction
 
         private string GetInfoJson(HtmlNode document)
         {
-            string preInfo = getPDPInfo(document.SelectNodes("//script"));
-            int startind = preInfo.IndexOf("=") + 1;
-            int len = preInfo.LastIndexOf("}") - startind;
+            string preInfo = GetPdpInfo(document.SelectNodes("//script"));
+            int startind = preInfo.IndexOf("=", StringComparison.Ordinal) + 1;
+            int len = preInfo.LastIndexOf("}", StringComparison.Ordinal) - startind;
             return preInfo.Substring(startind, len+1);
         }
 
-        private string getImageUrlFromJson(JObject main)
+        private string GetImageUrlFromJson(JObject main)
         {
             JObject firstItem = JObject.Parse(main.GetValue("images").First.ToString());
             JObject biggestSizeObj = JObject.Parse(firstItem.GetValue("variations").Last.ToString());
@@ -179,9 +179,9 @@ namespace ScraperCore.Bots.Sticky_bit.EastBay_FootAction
 
             string jsonStr = GetInfoJson(document);
             JObject mainObj = JObject.Parse(jsonStr);
-            string id = getIdFromUrl(productUrl);
+            string id = GetIdFromUrl(productUrl);
             string url = productUrl;
-            string img = getImageUrlFromJson(mainObj);
+            string img = GetImageUrlFromJson(mainObj);
             string name = mainObj.GetValue("name").ToString();
             Price productPrice = Utils.ParsePrice(getPriceFromJson(mainObj));
             
