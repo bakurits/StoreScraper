@@ -66,7 +66,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
                         var image = GetImage(productData);
                         
 
-                        var product = new Product(null, name, url, price, image, url, "USD", date);
+                        var product = new Product(this.WebsiteName, name, url, price, image, url, "USD", date);
 
                         products.Add(product);
                     }
