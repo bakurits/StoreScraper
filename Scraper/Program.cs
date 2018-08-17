@@ -59,7 +59,7 @@ namespace StoreScraper
                 if (type.IsSubclassOf(typeof(ScraperBase)))
                 {
                     bool disabled =
-                        type.CustomAttributes.Any(attr => attr.AttributeType == typeof(DisabledScraperAttribute));
+                        type.CustomAttributes.Any(attr => attr.AttributeType == typeof(DisableInGUI));
                     if (!disabled)
                     {
                         yield return (ScraperBase) Activator.CreateInstance(type);

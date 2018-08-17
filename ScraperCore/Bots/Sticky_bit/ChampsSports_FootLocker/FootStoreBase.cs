@@ -32,7 +32,7 @@ namespace StoreScraper.Bots.Sticky_bit.ChampsSports_FootLocker
 
     }
 
-    [DisabledScraper]
+    [DisableInGUI]
     public class FootSimpleBase : ScraperBase
     {
         public sealed override string WebsiteName { get; set; }

@@ -14,7 +14,7 @@ using StoreScraper.Models;
 
 namespace StoreScraper.Bots.Sticky_bit.YOOX
 {
-    [DisabledScraper]
+    [DisableInGUI]
     public class YOOXScraper : ScraperBase
     {
         public sealed override string WebsiteName { get; set; }
