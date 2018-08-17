@@ -179,11 +179,18 @@ namespace ScraperCore.Bots.Sticky_bit.EastBay_FootAction
             JArray sellableUnit = JArray.Parse(main.GetValue("sellableUnits").ToString());
             for (int i = 0; i < sellableUnit.Count; i++)
             {
-                Console.WriteLine(sellableUnit[i]);
-                string size = sellableUnit[i]["attributes"][0]["value"].ToString();
-                string description = sellableUnit[i]["attributes"][1]["value"].ToString();
+                try
+                {
+                    Console.WriteLine(sellableUnit[i]);
+                    string size = sellableUnit[i]["attributes"][0]["value"].ToString();
+                    string description = sellableUnit[i]["attributes"][1]["value"].ToString();
 
-                productDetails.AddSize(size, description);
+                    productDetails.AddSize(size, description);
+                }
+                catch (Exception e)
+                {
+                    return;
+                }
             }
         }
 
