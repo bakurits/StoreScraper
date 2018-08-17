@@ -69,6 +69,19 @@ namespace StoreScraper.Models
             this.ReleaseTime = releaseTime;
         }
 
+        public Product(string StoreName, string name, string url, double price, string imageUrl, string id, string currency = "$", DateTime? releaseTime = null)
+        {
+            this.Name = HtmlEntity.DeEntitize(name.Trim());
+            this.Url = url;
+            this.Price = price;
+            this.Id = id;
+            this.StoreName = StoreName;
+            this.StoreName = ScrapedBy.WebsiteName;
+            this.ImageUrl = imageUrl;
+            this.Currency = currency;
+            this.ReleaseTime = releaseTime;
+        }
+
         public Product()
         {
         }
