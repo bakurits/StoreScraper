@@ -53,7 +53,7 @@ namespace StoreScraper.Http.Factory
         public static StringPair[] EdgeHeaders = new StringPair[]
         {
             ("Accept", "*/*"),
-            ("Accept-Encoding","gzip, deflate"),
+            ("Accept-Encoding","gzip, deflate, br"),
             ("Accept-Language", "en-US; q=0.7, en; q=0.3"),
             ("Cache-Control", "no-cache"),
             ("Connection", "Keep-Alive"),
@@ -64,7 +64,7 @@ namespace StoreScraper.Http.Factory
         {
             FirefoxUserAgentHeader,
             FirefoxAcceptHeader,
-            ("Accept-Encoding", "gzip, deflate"),
+            ("Accept-Encoding", "gzip, deflate, br"),
             ("Accept-Language", "en-US,en; q=0.5"),
             ("Cache-Control", "no-cache"),
             ("Pramgma","no-cache"),
@@ -73,7 +73,7 @@ namespace StoreScraper.Http.Factory
             ("Upgrade-Insecure-Requests", "1"),
         };
 
-        public static StringPair[] DefaultHeaders = EdgeHeaders;
+        public static StringPair[] DefaultHeaders = FireFoxHeaders;
 
 
         public static StringPair[] FireFoxHeaders2 = 
