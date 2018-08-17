@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
@@ -46,25 +47,74 @@ namespace CheckoutBot.CheckoutBots.EastBay
             {
                 var productsOnDay = day["products"];
                 foreach (var productData in productsOnDay)
-                {
-                    string url = ((string) productData["buyNowURL"]).StringBefore("/?sid=");
-                    double price = (double) productData["price"];
-                    string image = (string) productData["primaryImageURL"];
-                    string dateInJson = (string) productData["launchDateTimeUTC"];
-                    string dateFormat = "yyyy-MM-dd'T'HH:mm:ss.fff'Z'";
-                    DateTime date = DateTime.ParseExact(dateFormat, dateInJson, null);
-                    Product product = new Product(null,
-                        (string) productData["name"], // name
-                        url, // url
-                        price, // price
-                        image, // image
-                        url, //id
-                        "USD", // currency 
-                        date < DateTime.UtcNow ? (DateTime?) null : date); // date
-                }
+                    try
+                    {
+                        var date = GetDate(productData);
+                        if (date < DateTime.UtcNow) continue;
+                        var name = GetName(productData);
+                        var price = GetPrice(productData);
+                        var url = GetUrl(productData);
+                        var image = GetImage(productData);
+                        
+
+                        var product = new Product(new EastBayScraper(),
+                            name,
+                            url,
+                            price,
+                            image,
+                            url,
+                            "USD",
+                            date);
+
+                        products.Add(product);
+                    }
+                    catch
+                    {
+                        Debug.WriteLine(productData);
+                    }
             }
 
             return products;
+        }
+
+        private string GetName(JToken productData)
+        {
+            if (productData["name"].Type != JTokenType.Null)
+                return (string) productData["name"];
+            return "Not Avaliable";
+        }
+
+        private double GetPrice(JToken productData)
+        {
+            if (productData["price"].Type != JTokenType.Null)
+                return (double) productData["price"];
+            return 0;
+        }
+
+        private string GetUrl(JToken productData)
+        {
+            if (productData["buyNowURL"].Type != JTokenType.Null)
+                return ((string) productData["buyNowURL"]).StringBefore("/?sid=");
+            return "Not Avaliable";
+        }
+
+        private string GetImage(JToken productData)
+        {
+            if (productData["primaryImageURL"].Type != JTokenType.Null)
+                return (string) productData["primaryImageURL"];
+            return "Not Avaliable";
+        }
+
+        private DateTime GetDate(JToken productData)
+        {
+            if (productData["launchDateTimeUTC"].Type != JTokenType.Null)
+            {
+                var dateInJson = (string) productData["launchDateTimeUTC"];
+                var date = DateTime.Parse(dateInJson);
+                return date;
+            }
+
+            return DateTime.MaxValue;
         }
     }
 }

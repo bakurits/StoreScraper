@@ -66,7 +66,7 @@ namespace StoreScraper.Http
 
             _proxylessClient = ClientFactory.CreateHttpCLient(null, true).AddHeaders(ClientFactory.DefaultHeaders);
 
-            Task.Run((Action)Monitor);
+             Task.Factory.StartNew((Action)Monitor, _cancellationTokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
         private void Monitor()
