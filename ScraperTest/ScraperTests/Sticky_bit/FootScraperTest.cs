@@ -28,10 +28,10 @@ namespace ScraperTest.ScraperTests.Stycky_bit
         }
 
         [TestMethod]
-        public void FootLocker()
+        public void FootLockerGetProducts()
         {
             FootAPIBase.FootLockerScraper scraper = new FootAPIBase.FootLockerScraper();
-            scraper.FindItems(out var lst, Helper.SearchSettings, CancellationToken.None);
+            scraper.FindItems(out var lst, Helper.FootApiSearchSettingsSearchSettings, CancellationToken.None);
             Helper.PrintFindItemsResults(lst);
         }
 
@@ -41,6 +41,14 @@ namespace ScraperTest.ScraperTests.Stycky_bit
             FootAPIBase.FootActionScraper scraper = new FootAPIBase.FootActionScraper();
             scraper.FindItems(out var lst, Helper.FootApiSearchSettingsSearchSettings, CancellationToken.None);
             Helper.PrintFindItemsResults(lst);
+        }
+
+        [TestMethod]
+        public void FootLockerGetProductDetails()
+        {
+            string url = "https://www.footlocker.com/product/nike-kobe-ad-nxt-360--mens/087102.html";
+            FootAPIBase.FootLockerScraper scraper = new FootAPIBase.FootLockerScraper();
+            Console.WriteLine(scraper.GetProductDetails(url, CancellationToken.None));
         }
 
         [TestMethod]

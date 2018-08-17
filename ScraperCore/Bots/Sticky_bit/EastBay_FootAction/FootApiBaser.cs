@@ -173,6 +173,20 @@ namespace ScraperCore.Bots.Sticky_bit.EastBay_FootAction
             return price.GetValue("formattedOriginalPrice").ToString();
         }
 
+        private void addSizes(JObject main, ProductDetails productDetails)
+        {
+            Console.WriteLine("abaababa");
+            JArray sellableUnit = JArray.Parse(main.GetValue("sellableUnits").ToString());
+            for (int i = 0; i < sellableUnit.Count; i++)
+            {
+                Console.WriteLine(sellableUnit[i]);
+                string size = sellableUnit[i]["attributes"][0]["value"].ToString();
+                string description = sellableUnit[i]["attributes"][1]["value"].ToString();
+
+                productDetails.AddSize(size, description);
+            }
+        }
+
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var document = GetWebpage(productUrl, token);
@@ -184,11 +198,21 @@ namespace ScraperCore.Bots.Sticky_bit.EastBay_FootAction
             string img = GetImageUrlFromJson(mainObj);
             string name = mainObj.GetValue("name").ToString();
             Price productPrice = Utils.ParsePrice(GetPriceFromJson(mainObj));
-            
-            Product product = new Product(this, name, url, productPrice.Value, img, id, productPrice.Currency);
-            Console.WriteLine(product);
+            ProductDetails productDetails = new ProductDetails()
+            {
+                Name = name,
+                Price = productPrice.Value,
+                ImageUrl = img,
+                Url = productUrl,
+                Id = productUrl,
+                Currency = productPrice.Currency,
+                ScrapedBy = this
+            };
 
-            return new ProductDetails();
+            addSizes(mainObj, productDetails);
+            Console.WriteLine(productDetails);
+
+            return productDetails;
         }
 
         public class FootLockerScraper : FootAPIBase

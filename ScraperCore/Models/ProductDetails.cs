@@ -7,7 +7,6 @@ namespace StoreScraper.Models
     {
         public List<StringPair> SizesList { set; get; } = new List<StringPair>();
 
-
         /// <summary>
         /// Adds new size in sizes array
         /// </summary>
