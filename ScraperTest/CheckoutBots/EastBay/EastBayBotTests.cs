@@ -4,7 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using ScraperTest.Helpers;
+using StoreScraper.Helpers;
+using StoreScraper.Models;
 
 namespace CheckoutBotTests
 {
@@ -26,7 +30,9 @@ namespace CheckoutBotTests
         [TestMethod()]
         public void ScrapeReleasePageTest()
         {
-            throw new NotImplementedException();
+            EastBayBot bot = new EastBayBot();
+            List<Product> res = bot.ScrapeReleasePage(CancellationToken.None);
+            Helper.PrintFindItemsResults(res);
         }
     }
 }
