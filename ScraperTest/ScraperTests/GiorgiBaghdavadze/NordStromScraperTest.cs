@@ -24,7 +24,7 @@ namespace ScraperTest.ScraperTests.GiorgiBaghdavadze
         {
             var product = new Product()
             {
-                Url = "https://shop.nordstrom.com/s/good-hyouman-lexi-new-day-tee/4983229?origin=keywordsearch-personalize...",
+                Url = "https://shop.nordstrom.com/s/tory-burch-miller-flip-flop-women/2963432",
                 ScrapedBy = Scraper
             };
 
