@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net.Http;
 using System.Threading;
 using CheckoutBot.CheckoutBots.FootSites;
 using CheckoutBot.Interfaces;
@@ -34,7 +35,7 @@ namespace CheckoutBot.CheckoutBots.EastBay
             throw new NotImplementedException();
         }
 
-        public override void Login(string username, string password)
+        public override HttpClient Login(string username, string password)
         {
             throw new NotImplementedException();
         }

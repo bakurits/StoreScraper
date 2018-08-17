@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Threading;
 using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
@@ -18,7 +19,7 @@ namespace CheckoutBot.CheckoutBots.ChampsSports
             throw new NotImplementedException();
         }
 
-        public void Login(string username, string password)
+        public HttpClient Login(string username, string password)
         {
             throw new NotImplementedException();
         }

@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Net.Http;
+using System.Threading;
 using CheckoutBot.Models;
 
 namespace CheckoutBot.Interfaces
@@ -7,6 +8,12 @@ namespace CheckoutBot.Interfaces
     {
         void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token);
 
-        void Login(string username, string password);
+        /// <summary>
+        /// This Method accuire account and any other cookies need to checkout as logged in user.
+        /// </summary>
+        /// <param name="username">username or email of account</param>
+        /// <param name="password">passsword of account</param>
+        /// <returns>HttpClient which is used to accuire accout session cookies</returns>
+        HttpClient Login(string username, string password);
     }
 }
