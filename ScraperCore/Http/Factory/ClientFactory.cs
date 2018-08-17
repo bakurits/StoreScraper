@@ -11,6 +11,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Remote;
+using ScraperCore.Http;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
@@ -143,7 +144,7 @@ namespace StoreScraper.Http.Factory
 
         public static HttpClient CreateHttpCLient(WebProxy proxy = null, bool autoCookies = false)
         {
-            HttpClientHandler handler = new HttpClientHandler()
+            HttpClientHandler handler = new ExtendedClientHandler()
             {
                 UseCookies = autoCookies,
                 MaxAutomaticRedirections = 3,

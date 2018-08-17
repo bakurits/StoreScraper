@@ -73,6 +73,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\ScraperBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\SearchMonitoringTask.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\UrlMonitoringTask.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Http\ExtendedClientHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Http\Factory\ClientFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\DiscordPoster.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\SlackPoster.cs" />
