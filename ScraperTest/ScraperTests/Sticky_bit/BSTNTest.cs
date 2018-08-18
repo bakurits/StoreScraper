@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
 using StoreScraper.Bots.Sticky_bit.BSTN;
 
-namespace ScraperTest.ScraperTests.Stycky_bit
+namespace ScraperTest.ScraperTests.Sticky_bit
 {
     [TestClass]
     public class BSTNTest

@@ -1,24 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
 using System.Net;
-using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Xml;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 using StoreScraper;
 using StoreScraper.Attributes;
-using StoreScraper.Bots.Bakurits.Antonioli;
 using StoreScraper.Core;
 using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
-namespace ScraperCore.Bots.Sticky_bit.EastBay_FootAction
+namespace FootLocker_FootAction
 {
    [DisableInGUI]
     public class FootAPIBase : ScraperBase
