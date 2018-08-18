@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
@@ -27,8 +28,15 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze.Nakedcph
                 $"https://www.nakedcph.com/search/searchbytext/{settings.KeyWords}/1?orderBy=Published";
             var request = ClientFactory.GetProxiedFirefoxClient(autoCookies:true);
             var document = request.GetDoc(searchUrl, token);
-            Logger.Instance.WriteErrorLog("Unexpected html!");
             var nodes = document.DocumentNode.SelectSingleNode("//div[@id='products']");
+
+            if (nodes == null)
+            {
+                Logger.Instance.WriteErrorLog("Unexpected html!");
+                Logger.Instance.SaveHtmlSnapshop(document);
+                throw new WebException();
+            }
+
             HtmlNodeCollection children = nodes.SelectNodes("./div");
 
             if (children == null)

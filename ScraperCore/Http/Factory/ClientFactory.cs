@@ -29,6 +29,9 @@ namespace StoreScraper.Http.Factory
         public static StringPair FirefoxUserAgentHeader = ("User-Agent",
             "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0");
 
+        public static StringPair FirefoxUserAgentHeaderOlder = ("User-Agent",
+            "Mozilla/5.0 (Windows NT 6.1; rv:52.0) Gecko/20100101 Firefox/52.0");
+
         public static StringPair ChromeUserAgentHeader =
             ("User-Agent",
                 @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36");
@@ -62,7 +65,7 @@ namespace StoreScraper.Http.Factory
 
         public static StringPair[] FireFoxHeaders =
         {
-            FirefoxUserAgentHeader,
+            FirefoxUserAgentHeaderOlder,
             FirefoxAcceptHeader,
             ("Accept-Encoding", "gzip, deflate, br"),
             ("Accept-Language", "en-US,en; q=0.5"),

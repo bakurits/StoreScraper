@@ -16,11 +16,13 @@ namespace StoreScraper.Core
         public static Logger Instance = new Logger();
 
         public DateTime LastLogSave { get; set; }
+        public DateTime LastSnapshotSave { get; set; }
         public event ColoredLogHandler OnLogged;
 
         private const int MaxLogBytes = 1024 * 1024 * 10;
         private const string SnapshotFolderName = "HtmlSnapshots";
         private const string LogsFolderName = "Logs";
+        private const int SnapshotSaveTimeoutSeconds = 5;
 
         public Logger()
         {
@@ -34,6 +36,20 @@ namespace StoreScraper.Core
             {
                 Directory.CreateDirectory(LogsFolderName);
             }
+
+            var files = Directory.GetFiles(SnapshotFolderName);
+
+            foreach (var file in files)
+            {
+                try
+                {
+                    File.Delete(file);
+                }
+                catch
+                {
+                    // ignored
+                }
+            }
         }
 
         public void WriteErrorLog(string errorMessage)
@@ -45,13 +61,6 @@ namespace StoreScraper.Core
             OnLogged?.Invoke(log, Color.Red);
         }
 
-
-        public void SaveLog()
-        {
-           
-            string logFileName = $"{LastLogSave:g} - {DateTime.Now:g}.rtf".EscapeFileName();
-            string path = Path.Combine(LogsFolderName, logFileName);
-        }
 
         public void WriteVerboseLog(string message)
         {
@@ -65,7 +74,10 @@ namespace StoreScraper.Core
         public void SaveHtmlSnapshop(HtmlDocument document)
         {
             if(document == null) return;
-            string filename = DateTime.Now.ToString(CultureInfo.InvariantCulture).EscapeFileName() + "html";
+            if(LastSnapshotSave + TimeSpan.FromSeconds(SnapshotSaveTimeoutSeconds) > DateTime.Now) return;
+
+            this.LastSnapshotSave = DateTime.Now;
+            string filename = DateTime.Now.ToString(CultureInfo.InvariantCulture).EscapeFileName() + ".html";
 
             string filePath = Path.Combine(SnapshotFolderName, filename);
 
