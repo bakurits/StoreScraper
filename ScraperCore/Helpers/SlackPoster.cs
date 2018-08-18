@@ -22,7 +22,7 @@ namespace StoreScraper.Helpers
 
 
 
-        public async Task<HttpResponseMessage> PostMessage(string apiUrl, ProductDetails product, CancellationToken token)
+        public async Task<HttpResponseMessage> PostMessage(string apiUrl, ProductDetails productDetails, CancellationToken token)
         {
             const string formater = @"{{
                 ""attachments"": [
@@ -40,23 +40,16 @@ namespace StoreScraper.Helpers
 
 
 
-            string szs;
+            string currency = productDetails.Currency.HtmlDeEntitize();
+            string name = productDetails.Name.EscapeNewLines().HtmlDeEntitize();
+            string sizes = string.Join("\\n ",
+                productDetails.SizesList.Select(sizInfo => $"{sizInfo.Key}[{sizInfo.Value}]".HtmlDeEntitize()));
 
-            try
-            {
-                szs = product.GetDetails(token).ToString();
-            }
-            catch (Exception e)
-            {
-                Logger.Instance.WriteErrorLog($"while getting product details {e.Message}");
-                szs = "Error occured while getting details";
-            }
+            string textMessage = $"*Price*:\\n{productDetails.Price + currency}\\n" +
+                                 $"*Store link*:\\n{productDetails.Url}\\n" +
+                                 $"*Available sizes are*:\\n{sizes}\\n";
 
-            string textMessage = $"*Price*:\\n{product.Price + product.Currency}\\n" +
-                                 $"*Store link*:\\n{product.Url}\\n" +
-                                 $"*Available sizes are*:\\n{szs}\\n";
-
-            string myJson = string.Format(formater, product.Url, textMessage, product.ImageUrl, product.Name, DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds);
+            string myJson = string.Format(formater, productDetails.Url, textMessage, productDetails.ImageUrl, name, DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds);
 
             return await PostMessageAsync(myJson, apiUrl, token);
         }

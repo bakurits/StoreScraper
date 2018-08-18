@@ -76,10 +76,6 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
                 message.Method = HttpMethod.Get;
                 message.RequestUri = new Uri(url);
 
-                //client.DefaultRequestHeaders.TryAddWithoutValidation("Referer", "https://www.off---white.com/en/US/");
-                //client.DefaultRequestHeaders.Remove("Accept");
-                //client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "image/webp,image/apng,image/*,*/*;q=0.8");
-
                 var cc = client.SendAsync(message, CancellationToken.None).Result;
                 res = cc.Content.ReadAsStringAsync().Result;
                 cc.Dispose();

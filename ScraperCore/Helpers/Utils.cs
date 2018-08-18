@@ -288,6 +288,16 @@ namespace StoreScraper.Helpers
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string HtmlDeEntitize(this string str)
+        {
+            return HtmlEntity.DeEntitize(str);
+        }
+
+        /// <summary>
         /// This function finds string before some pattern
         /// </summary>
         /// <example>

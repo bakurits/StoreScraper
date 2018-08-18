@@ -44,13 +44,7 @@ namespace StoreScraper.Helpers
 
             public async Task<HttpResponseMessage> Send()
             {
-                string json = JsonConvert.SerializeObject(this,
-                    Newtonsoft.Json.Formatting.None,
-                    new JsonSerializerSettings
-                    {
-                        NullValueHandling = NullValueHandling.Ignore
-                    });
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var content = new StringContent(this.JsonToString(), Encoding.UTF8, "application/json");
                 return await ClientFactory.GeneralClient.PostAsync(_webhookUrl, content, _token);
             }
         }
@@ -191,14 +185,17 @@ namespace StoreScraper.Helpers
 
         public async Task<HttpResponseMessage> PostMessage(string webhookUrl, ProductDetails productDetails, CancellationToken token)
         {
-
-            string textMessage = $"*Price*:\n{productDetails.Price + productDetails.Currency}\n" +
+            string currency = productDetails.Currency.HtmlDeEntitize();
+            string name = productDetails.Name.EscapeNewLines().HtmlDeEntitize();
+            string sizes = string.Join("\n",
+                productDetails.SizesList.Select(sizInfo => $"{sizInfo.Key}[{sizInfo.Value}]".HtmlDeEntitize()));
+            string textMessage = $"*Price*:\n{productDetails.Price + currency}\n" +
                                  $"*Store link*:\n{productDetails.Url}\n" +
-                                 $"*Available sizes are*:\n{productDetails.ToString()}\n";
+                                 $"*Available sizes are*:\n{sizes}\n";
 
             Embed embed = new Embed()
             {
-                Title = productDetails.Name.EscapeNewLines(),
+                Title = name,
                 Type = "rich",
                 Description = textMessage,
                 Url = productDetails.Url,
