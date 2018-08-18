@@ -5,7 +5,7 @@ using ScraperTest.Helpers;
 using StoreScraper.Bots.Sticky_bit.YOOX;
 using StoreScraper.Models;
 
-namespace ScraperTest.ScraperTests.Stycky_bit
+namespace ScraperTest.ScraperTests.Sticky_bit
 {
     [TestClass]
     public class YOOXTest
