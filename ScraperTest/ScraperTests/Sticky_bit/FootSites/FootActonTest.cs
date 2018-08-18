@@ -12,7 +12,7 @@ using StoreScraper.Models;
 namespace ScraperTest.ScraperTests.Sticky_bit.FootSites
 {
     [TestClass]
-    class FootActonTest
+    public class FootActonTest
     {
         [TestMethod]
         public void FindItems()

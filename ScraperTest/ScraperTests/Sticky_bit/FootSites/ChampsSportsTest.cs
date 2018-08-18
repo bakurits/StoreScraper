@@ -12,7 +12,7 @@ using StoreScraper.Models;
 namespace ScraperTest.ScraperTests.Sticky_bit.FootSites
 {
     [TestClass]
-    class ChampsSportsTest
+    public class ChampsSportsTest
     {
         [TestMethod]
         public void FindItems()
@@ -22,6 +22,7 @@ namespace ScraperTest.ScraperTests.Sticky_bit.FootSites
             Helper.PrintFindItemsResults(lst);
         }
 
+        [TestMethod]
         public void GetProductDetails()
         {
             FootSimpleBase.ChampsSportsScraper scraper = new FootSimpleBase.ChampsSportsScraper();
