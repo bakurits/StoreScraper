@@ -14,7 +14,6 @@ using StoreScraper.Models;
 
 namespace StoreScraper.Bots.Sticky_bit.YOOX
 {
-    [DisableInGUI]
     public class YOOXScraper : ScraperBase
     {
         public sealed override string WebsiteName { get; set; }
@@ -143,9 +142,48 @@ namespace StoreScraper.Bots.Sticky_bit.YOOX
             return sizes;
         }
 
+        private HtmlNode GetWebpage(string url, CancellationToken token)
+        {
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var document = client.GetDoc(url, token).DocumentNode;
+            return document;
+        }
+
+        private static string getID(string url)
+        {
+            return url.Substring(url.IndexOf("us/")+3, 10);
+        }
+
+        private void addSizes(HtmlNode document, ProductDetails productDetails)
+        {
+            HtmlNodeCollection liNodes = document.SelectNodes("//*[@id=\"itemSizes\"]/ul/li");
+            foreach (var liNode in liNodes)
+            {
+                productDetails.AddSize(Utils.EscapeNewLines(liNode.InnerText), "Unknown");
+            }
+        }
+
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            return null;
+            var document = GetWebpage(productUrl, token);
+            string id = getID (productUrl);
+            string url = productUrl;
+            string img = document.SelectSingleNode("//*[@class=\"item-image\"]/img")?.GetAttributeValue("src", null);
+            string name = Utils.EscapeNewLines(document.SelectSingleNode("//*[@id=\"itemTitle\"]/h1/a").InnerText);
+            Price productPrice = Utils.ParsePrice(document.SelectSingleNode("//*[@itemprop=\"price\"]")?.InnerText);
+            ProductDetails productDetails = new ProductDetails()
+            {
+                Name = name,
+                Price = productPrice.Value,
+                ImageUrl = img,
+                Url = productUrl,
+                Id = productUrl,
+                Currency = productPrice.Currency,
+                ScrapedBy = this
+            };
+
+            addSizes(document, productDetails);
+            return productDetails;
         }
     }
 }
