@@ -327,5 +327,15 @@ namespace StoreScraper.Helpers
             }
             return JObject.Parse("{}");
         }
+
+        public static string JsonToString(this Object value)
+        {
+            return JsonConvert.SerializeObject(value,
+                Newtonsoft.Json.Formatting.None,
+                new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                });
+        }
     }
 }
