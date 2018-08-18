@@ -963,7 +963,7 @@
                                 <DockPanel HorizontalAlignment="Right">
 
 
-                                    <Button  Margin="6,20" HorizontalAlignment="Right"   Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0">
+                                    <Button Click="importProfiles" Margin="6,20" HorizontalAlignment="Right"   Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0">
                                         <Button.Resources>
                                             <Style TargetType="{x:Type Border}">
                                                 <Setter Property="CornerRadius" Value="5"/>

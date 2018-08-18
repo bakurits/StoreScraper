@@ -23,10 +23,6 @@ namespace CheckoutBot
     /// </summary>
     public partial class MainWindow : Window
     {
-
-        List<Profile> profiles = new List<Profile>();
-
-
         public MainWindow()
         {
             InitializeComponent();
@@ -152,7 +148,50 @@ namespace CheckoutBot
         {
             string output = JsonConvert.SerializeObject(profileList.Items);
             Console.WriteLine(output);
+
+            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+            dlg.FileName = "profiles"; // Default file name
+            dlg.DefaultExt = ".json"; // Default file extension
+            dlg.Filter = "JSON (.json)|*.json"; // Filter files by extension
+
+            // Show save file dialog box
+            Nullable<bool> result = dlg.ShowDialog();
+
+            // Process save file dialog box results
+            if (result == true)
+            {
+                // Save document
+                string filename = dlg.FileName;
+                System.IO.File.WriteAllText(filename, output);
+            }
+
         }
+
+        private void importProfiles(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            dlg.FileName = "profiles"; // Default file name
+            dlg.DefaultExt = ".json"; // Default file extension
+            dlg.Filter = "JSON (.json)|*.json"; // Filter files by extension
+
+            // Show save file dialog box
+            Nullable<bool> result = dlg.ShowDialog();
+
+            // Process save file dialog box results
+            if (result == true)
+            {
+                // Save document
+                string filename = dlg.FileName;
+                string json = System.IO.File.ReadAllText(filename);
+
+                Profile[] profiles;
+                profiles = JsonConvert.DeserializeObject<Profile[]>(json);
+                profileList.ItemsSource = profiles;
+            }
+
+
+        }
+
 
 
 
