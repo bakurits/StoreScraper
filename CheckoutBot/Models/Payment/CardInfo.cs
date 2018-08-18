@@ -12,5 +12,6 @@ namespace CheckoutBot.Models.Payment
         public DateTime ValidUntil { get; set; }
 
         public string CSC { get; set; }
+        public CardType Type { get; set; }
     }
 }

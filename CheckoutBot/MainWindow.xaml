@@ -518,12 +518,12 @@
 
                                         <StackPanel Grid.Row="4" Grid.ColumnSpan="2">
                                             <Label Content="Country" Foreground="#576379" FontWeight="SemiBold" />
-                                            <ComboBox Name="shippingAddress_country" Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}">
+                                            <ComboBox SelectionChanged="handleShippingCountrySelect" Name="shippingAddress_country" Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}">
 
                                             </ComboBox>
                                         </StackPanel>
 
-                                        <StackPanel Grid.Row="4" Grid.Column="2">
+                                        <StackPanel Grid.Row="4" Grid.Column="2" Name="shippingState">
                                             <Label Content="State" Foreground="#576379" FontWeight="SemiBold" />
                                             <ComboBox Name="shippingAddress_state" Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}">
                                                 <ComboBoxItem>New York</ComboBoxItem>
@@ -641,12 +641,12 @@
 
                                         <StackPanel Grid.Row="4" Grid.ColumnSpan="1">
                                             <Label Content="Country" Foreground="#576379" FontWeight="SemiBold" />
-                                            <ComboBox Name="billingAddress_country" Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}">
+                                            <ComboBox SelectionChanged="handleBillingCountrySelect" Name="billingAddress_country" Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}">
 
                                             </ComboBox>
                                         </StackPanel>
 
-                                        <StackPanel Grid.Row="4" Grid.Column="2">
+                                        <StackPanel Grid.Row="4" Grid.Column="2" Name="billingState">
                                             <Label Content="State" Foreground="#576379" FontWeight="SemiBold" />
                                             <ComboBox Name="billingAddress_state" Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}">
                                                 <ComboBoxItem>New York</ComboBoxItem>
@@ -688,7 +688,7 @@
 
                                             <DockPanel HorizontalAlignment="Left">
 
-                                                <ToggleButton Foreground="Black" Width="50" Margin="5">
+                                                <ToggleButton Foreground="Black" Width="50" Margin="5" Name="visaCheckBox" Click="handleVisaSelect">
                                                     <ToggleButton.Template>
                                                         <ControlTemplate TargetType="{x:Type ToggleButton}">
                                                                 <Image>
@@ -715,7 +715,7 @@
                                                     </ToggleButton.Template>
                                                 </ToggleButton>
 
-                                                <ToggleButton Foreground="Black" Width="50"  Margin="5">
+                                                <ToggleButton Foreground="Black" Width="50"  Margin="5"  Name="mastercardCheckBox" Click="handleMastercardSelect">
                                                     <ToggleButton.Template>
                                                         <ControlTemplate TargetType="{x:Type ToggleButton}">
                                                             <Image>
@@ -742,7 +742,7 @@
                                                     </ToggleButton.Template>
                                                 </ToggleButton>
 
-                                                <ToggleButton Foreground="Black" Width="50"  Margin="5">
+                                                <ToggleButton Foreground="Black" Width="50"  Margin="5"  Name="americanexpressCheckBox" Click="handleAmericanexpressSelect">
                                                     <ToggleButton.Template>
                                                         <ControlTemplate TargetType="{x:Type ToggleButton}">
                                                             <Image>

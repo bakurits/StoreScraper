@@ -36,11 +36,6 @@ namespace CheckoutBot
             items.Add(new TaskItem() { Keywords = "puma", Size = 8, Retries = "0", Status = "Done", ListImage = "/images/list_done.png" });
             tasksList.ItemsSource = items;
 
-           /* List<ProfileItem> profiles = new List<ProfileItem>();
-            profiles.Add(new ProfileItem() { ProfileName = "steve1", Name = "Steve Vue", CreditCard = "**** 0005", Date = "08/16/2018" });
-            profiles.Add(new ProfileItem() { ProfileName = "steve2", Name = "Steve Vue", CreditCard = "**** 1025", Date = "08/16/2018"  });
-            profiles.Add(new ProfileItem() { ProfileName = "steve3", Name = "Steve Vue", CreditCard = "**** 1234", Date = "08/16/2018" });
-            profileList.ItemsSource = profiles;*/
 
             List<TaskItem> successfulItems = new List<TaskItem>();
             successfulItems.Add(new TaskItem() { Keywords = "nike air", Size = 12, Retries = "1", Status = "Done", ListImage = "/images/list_done.png" });
@@ -73,6 +68,10 @@ namespace CheckoutBot
 
             }
 
+            shippingAddress_country.SelectedValue = Countries.UnitedStated;
+            billingAddress_country.SelectedValue = Countries.UnitedStated;
+            shippingAddress_state.SelectedValue = States.Alabama;
+            billingAddress_state.SelectedValue = States.Alabama;
 
         }
 
@@ -89,6 +88,65 @@ namespace CheckoutBot
             }
         }
 
+        private void handleVisaSelect(object sender, RoutedEventArgs e)
+        {
+            mastercardCheckBox.IsChecked = false;
+            americanexpressCheckBox.IsChecked = false;
+        }
+
+        private void handleMastercardSelect(object sender, RoutedEventArgs e)
+        {
+            visaCheckBox.IsChecked = false;
+            americanexpressCheckBox.IsChecked = false;
+        }
+
+        private void handleAmericanexpressSelect(object sender, RoutedEventArgs e)
+        {
+            mastercardCheckBox.IsChecked = false;
+            visaCheckBox.IsChecked = false;
+        }
+
+        private void handleShippingCountrySelect(object sender, RoutedEventArgs e)
+        {
+            if (shippingAddress_country.SelectedValue == null)
+            {
+                return;
+            }
+
+            Countries shippingCountry;
+            Enum.TryParse<Countries>(shippingAddress_country.SelectedValue.ToString(), out shippingCountry);
+            
+            if (shippingCountry != Countries.UnitedStated)
+            {
+                shippingState.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                shippingState.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void handleBillingCountrySelect(object sender, RoutedEventArgs e)
+        {
+            if (billingAddress_country.SelectedValue == null)
+            {
+                return;
+            }
+
+            Countries shippingCountry;
+            Enum.TryParse<Countries>(billingAddress_country.SelectedValue.ToString(), out shippingCountry);
+
+            if (shippingCountry != Countries.UnitedStated)
+            {
+                billingState.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                billingState.Visibility = Visibility.Visible;
+            }
+        }
+
+
         private void addProfile(object sender, RoutedEventArgs e)
         {
 
@@ -98,12 +156,7 @@ namespace CheckoutBot
             Enum.TryParse<Countries>(billingAddress_country.SelectedValue.ToString(), out billingCountry);
 
 
-            States shippingState;
-            Enum.TryParse<States>(shippingAddress_state.SelectedValue.ToString(), out shippingState);
-            States billingState;
-            Enum.TryParse<States>(billingAddress_state.SelectedValue.ToString(), out billingState);
-
-
+            
             var shippingAddress = new ShippinInfo()
             {
                 City = shippingAddress_city.Text,
@@ -111,8 +164,11 @@ namespace CheckoutBot
                 AddressLine1 = shippingAddress_address1.Text,
                 AddressLine2 = shippingAddress_address2.Text,
                 Country = shippingCountry,
-                State = shippingState
+                FirstName = shippingAddress_firstName.Text,
+                LastName = shippingAddress_lastName.Text
             };
+
+
 
             var billingAddress = new ShippinInfo()
             {
@@ -121,16 +177,45 @@ namespace CheckoutBot
                 AddressLine1 = billingAddress_address1.Text,
                 AddressLine2 = billingAddress_address2.Text,
                 Country = billingCountry,
-                State = billingState
+                FirstName = billingAddress_firstName.Text,
+                LastName = billingAddress_lastName.Text
             };
 
+            States shipping_state;
+            if (shippingState.Visibility != Visibility.Hidden)
+            {
+                Enum.TryParse<States>(shippingAddress_state.SelectedValue.ToString(), out shipping_state);
+                shippingAddress.State = shipping_state;
+            }
+            States billing_state;
+            if (billingState.Visibility != Visibility.Hidden)
+            {
+                Enum.TryParse<States>(billingAddress_state.SelectedValue.ToString(), out billing_state);
+                billingAddress.State = billing_state;
+            }
+
+
+            CardType ccType = CardType.Visa;
+
+            if (visaCheckBox.IsChecked == true)
+            {
+                ccType = CardType.Visa;
+            }else if (mastercardCheckBox.IsChecked == true)
+            {
+                ccType = CardType.MaterCard;
+            }
+            else if (americanexpressCheckBox.IsChecked == true)
+            {
+                ccType = CardType.AmericanExpress;
+            }
 
             var creditCard = new CardInfo()
             {
                 CartNumber = cardNumber.Text,
                 CSC = cardCSC.Text,
                 ValidUntil = new DateTime(int.Parse(cardExpYear.Text), int.Parse(cardExpMonth.Text), 1),
-                CardHolderName = cardHolder.Text
+                CardHolderName = cardHolder.Text,
+                Type = ccType
             };
 
             Profile profile = new Profile()
@@ -139,21 +224,18 @@ namespace CheckoutBot
                 ShippingAddress = shippingAddress,
                 BillingAddress = billingAddress,
                 CreditCard = creditCard,
-                ListShippingName = shippingAddress_firstName.Text,
+                ListShippingName = shippingAddress.FirstName + " " + shippingAddress.LastName,
                 ListCardLastDigits = "**** " + creditCard.CartNumber.Substring(creditCard.CartNumber.Length - 4),
-                DateCreated = new DateTime()
-
+                DateCreated =  DateTime.Now
+     
         };
 
-            profiles.Add(profile);
-
-            profileList.ItemsSource = profiles;
+            profileList.Items.Add(profile);
         }
 
-
-
-
     }
+
+
 
     public class TaskItem
     {
@@ -165,35 +247,6 @@ namespace CheckoutBot
         public string Status { get; set; }
         public string ListImage { get; set; }
 
-    }
-
-
-    public class AddressContainer
-    {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Phone { get; set; }
-        public string Address { get; set; }
-        public string ZIP { get; set; }
-        public string Apartment { get; set; }
-        public string Country { get; set; }
-        public string State { get; set; }
-    }
-
-    public class CardContainer
-    {
-        public string Number { get; set; }
-        public string ExpMonth { get; set; }
-        public string ExpYear { get; set; }
-        public string CSC { get; set; }
-    }
-
-    public class ProfileItem
-    {
-        public string ProfileName { get; set; }
-        public string Name { get; set; }
-        public string CreditCard { get; set; }
-        public string Date { get; set; }
     }
 
 
