@@ -13,7 +13,7 @@ using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
-namespace StoreScraper.Bots.Sticky_bit.ChampsSports_FootLocker
+namespace StoreScraper.Bots.Sticky_bit.ChampsSports_EastBay
 {
     public class Gender
     {

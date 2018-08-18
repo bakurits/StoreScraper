@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ScraperCore.Bots.Sticky_bit.EastBay_FootAction;
+using FootLocker_FootAction;
 using ScraperTest.Helpers;
-using StoreScraper.Bots.Sticky_bit.ChampsSports_FootLocker;
+using StoreScraper.Bots.Sticky_bit.ChampsSports_EastBay;
 using StoreScraper.Models;
 
 namespace ScraperTest.ScraperTests.Sticky_bit.FootSites
