@@ -283,6 +283,7 @@
             // 
             // Btn_Reset
             // 
+            this.Btn_Reset.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.Btn_Reset.Location = new System.Drawing.Point(478, 226);
             this.Btn_Reset.Name = "Btn_Reset";
             this.Btn_Reset.Size = new System.Drawing.Size(131, 23);

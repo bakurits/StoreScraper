@@ -76,11 +76,10 @@ namespace StoreScraper
         public void Save()
         {
             var serializer = new XmlSerializer(typeof(AppSettings));
-            var stream = new FileStream(DataFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite);
-
-            serializer.Serialize(stream, this);
-
-            stream.Dispose();
+            using (var stream = new FileStream(DataFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+            {
+                serializer.Serialize(stream, this); 
+            }
         }
     }
 }
