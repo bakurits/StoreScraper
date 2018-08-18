@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:CheckoutBot"
         mc:Ignorable="d"
         
-        Title="MainWindow" Height="600" Width="860">
+        Title="MainWindow" Height="650" Width="860">
     <Window.Background>
         <LinearGradientBrush EndPoint="1.5,1.5" StartPoint="0.504,0.03">
             <GradientStop Color="#2976C1" Offset="0"/>
@@ -406,6 +406,15 @@
 
                             <StackPanel Margin="0 10">
                                 <StackPanel >
+                                    <Label Content="Profile Name" Foreground="#576379" FontWeight="SemiBold" />
+                                    <TextBox Name="profileName" Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                        <TextBox.Resources>
+                                            <Style TargetType="{x:Type Border}">
+                                                <Setter Property="CornerRadius" Value="5"/>
+                                            </Style>
+                                        </TextBox.Resources>
+
+                                    </TextBox>
                                     <Label Content="Shipping Address" Foreground="#576379" FontWeight="Bold" FontSize="15" Margin="0 0 0 10"/>
 
                                 </StackPanel>
@@ -424,6 +433,8 @@
                                             <RowDefinition Height="1*" />
                                             <RowDefinition Height="1*" />
                                             <RowDefinition Height="1*" />
+                                            <RowDefinition Height="1*" />
+                                            <RowDefinition Height="1*" />
 
                                         </Grid.RowDefinitions>
 
@@ -431,7 +442,7 @@
 
                                         <StackPanel Grid.Column="0" Grid.ColumnSpan="2">
                                             <Label Content="First Name" Foreground="#576379" FontWeight="SemiBold" />
-                                            <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                            <TextBox Name="shippingAddress_firstName" Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
                                                 <TextBox.Resources>
                                                     <Style TargetType="{x:Type Border}">
                                                         <Setter Property="CornerRadius" Value="5"/>
@@ -443,7 +454,7 @@
 
                                         <StackPanel Grid.Column="2">
                                             <Label Content="Last Name" Foreground="#576379" FontWeight="SemiBold" />
-                                            <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                            <TextBox Name="shippingAddress_lastName" Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
                                                 <TextBox.Resources>
                                                     <Style TargetType="{x:Type Border}">
                                                         <Setter Property="CornerRadius" Value="5"/>
@@ -454,21 +465,11 @@
                                         </StackPanel>
 
 
-                                        <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
-                                            <Label Content="Phone number" Foreground="#576379" FontWeight="SemiBold" />
-                                            <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
-                                                <TextBox.Resources>
-                                                    <Style TargetType="{x:Type Border}">
-                                                        <Setter Property="CornerRadius" Value="5"/>
-                                                    </Style>
-                                                </TextBox.Resources>
-
-                                            </TextBox>
-                                        </StackPanel>
+                                        <StackPanel Grid.Row="1" Grid.ColumnSpan="2"/>
 
                                         <StackPanel Grid.Row="2" Grid.ColumnSpan="2">
-                                            <Label Content="Address" Foreground="#576379" FontWeight="SemiBold" />
-                                            <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                            <Label Content="AddressLine1" Foreground="#576379" FontWeight="SemiBold" />
+                                            <TextBox Name="shippingAddress_address1" Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
                                                 <TextBox.Resources>
                                                     <Style TargetType="{x:Type Border}">
                                                         <Setter Property="CornerRadius" Value="5"/>
@@ -479,51 +480,8 @@
                                         </StackPanel>
 
                                         <StackPanel Grid.Row="2" Grid.Column="2">
-                                            <DockPanel>
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="1*" />
-                                                        <ColumnDefinition Width="1*" />
-                                                    </Grid.ColumnDefinitions>
-                                                    <StackPanel Grid.Column="0">
-                                                        <Label Content="ZIP" Foreground="#576379" FontWeight="SemiBold" />
-                                                        <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
-                                                            <TextBox.Resources>
-                                                                <Style TargetType="{x:Type Border}">
-                                                                    <Setter Property="CornerRadius" Value="5"/>
-                                                                </Style>
-                                                            </TextBox.Resources>
-
-                                                        </TextBox>
-                                                    </StackPanel>
-
-
-                                                    <StackPanel Grid.Column="1">
-                                                        <Label Content="Apartment" Foreground="#576379" FontWeight="SemiBold" />
-                                                        <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
-                                                            <TextBox.Resources>
-                                                                <Style TargetType="{x:Type Border}">
-                                                                    <Setter Property="CornerRadius" Value="5"/>
-                                                                </Style>
-                                                            </TextBox.Resources>
-
-                                                        </TextBox>
-                                                    </StackPanel>
-                                                </Grid>
-                                            </DockPanel>
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Row="3" Grid.ColumnSpan="2">
-                                            <Label Content="Country" Foreground="#576379" FontWeight="SemiBold" />
-                                            <ComboBox Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}">
-                                                <ComboBoxItem>New York</ComboBoxItem>
-
-                                            </ComboBox>
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Row="3" Grid.Column="2">
-                                            <Label Content="State" Foreground="#576379" FontWeight="SemiBold" />
-                                            <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                            <Label Content="AddressLine2" Foreground="#576379" FontWeight="SemiBold" />
+                                            <TextBox Name="shippingAddress_address2" Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
                                                 <TextBox.Resources>
                                                     <Style TargetType="{x:Type Border}">
                                                         <Setter Property="CornerRadius" Value="5"/>
@@ -532,10 +490,50 @@
 
                                             </TextBox>
 
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="3" Grid.ColumnSpan="2">
+                                            <Label Content="City" Foreground="#576379" FontWeight="SemiBold" />
+                                            <TextBox Name="shippingAddress_city" Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                                <TextBox.Resources>
+                                                    <Style TargetType="{x:Type Border}">
+                                                        <Setter Property="CornerRadius" Value="5"/>
+                                                    </Style>
+                                                </TextBox.Resources>
+
+                                            </TextBox>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="3" Grid.Column="2">
+                                            <Label Content="ZIP" Foreground="#576379" FontWeight="SemiBold" />
+                                            <TextBox HorizontalAlignment="Left" Name="shippingAddress_zip" Margin="6 0 " BorderBrush="#ebecf0" Padding="3" MinWidth="70">
+                                                <TextBox.Resources>
+                                                    <Style TargetType="{x:Type Border}">
+                                                        <Setter Property="CornerRadius" Value="5"/>
+                                                    </Style>
+                                                </TextBox.Resources>
+
+                                            </TextBox>
 
                                         </StackPanel>
 
                                         <StackPanel Grid.Row="4" Grid.ColumnSpan="2">
+                                            <Label Content="Country" Foreground="#576379" FontWeight="SemiBold" />
+                                            <ComboBox Name="shippingAddress_country" Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}">
+
+                                            </ComboBox>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="4" Grid.Column="2">
+                                            <Label Content="State" Foreground="#576379" FontWeight="SemiBold" />
+                                            <ComboBox Name="shippingAddress_state" Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}">
+                                                <ComboBoxItem>New York</ComboBoxItem>
+
+                                            </ComboBox>
+
+
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Row="5" Grid.ColumnSpan="2">
                                             <Label Content="Billing Address" Foreground="#576379" FontWeight="Bold" FontSize="15" Margin="0 10"/>
 
                                         </StackPanel>
@@ -545,7 +543,7 @@
 
                                 </DockPanel>
 
-                                <DockPanel>
+                                <DockPanel Margin="0 10" >
                                     <Grid >
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="1*" />
@@ -566,7 +564,7 @@
                                         <StackPanel Grid.Column="0">
 
                                             <Label Content="First Name" Foreground="#576379" FontWeight="SemiBold" />
-                                            <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                            <TextBox Name="billingAddress_firstName" Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
                                                 <TextBox.Resources>
                                                     <Style TargetType="{x:Type Border}">
                                                         <Setter Property="CornerRadius" Value="5"/>
@@ -578,7 +576,7 @@
 
                                         <StackPanel Grid.Column="1">
                                             <Label Content="Last Name" Foreground="#576379" FontWeight="SemiBold" />
-                                            <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                            <TextBox Name="billingAddress_lastName" Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
                                                 <TextBox.Resources>
                                                     <Style TargetType="{x:Type Border}">
                                                         <Setter Property="CornerRadius" Value="5"/>
@@ -589,9 +587,12 @@
                                         </StackPanel>
 
 
-                                        <StackPanel Grid.Row="1">
-                                            <Label Content="Phone number" Foreground="#576379" FontWeight="SemiBold" />
-                                            <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+
+
+
+                                        <StackPanel Grid.Row="2" Grid.ColumnSpan="1">
+                                            <Label Content="AddressLine1" Foreground="#576379" FontWeight="SemiBold" />
+                                            <TextBox Name="billingAddress_address1" Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
                                                 <TextBox.Resources>
                                                     <Style TargetType="{x:Type Border}">
                                                         <Setter Property="CornerRadius" Value="5"/>
@@ -601,9 +602,21 @@
                                             </TextBox>
                                         </StackPanel>
 
-                                        <StackPanel Grid.Row="2">
-                                            <Label Content="Address" Foreground="#576379" FontWeight="SemiBold" />
-                                            <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                        <StackPanel Grid.Row="2" Grid.Column="2">
+                                            <Label Content="AddressLine2" Foreground="#576379" FontWeight="SemiBold" />
+                                            <TextBox Name="billingAddress_address2" Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                                <TextBox.Resources>
+                                                    <Style TargetType="{x:Type Border}">
+                                                        <Setter Property="CornerRadius" Value="5"/>
+                                                    </Style>
+                                                </TextBox.Resources>
+
+                                            </TextBox>
+
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="3" Grid.ColumnSpan="1">
+                                            <Label Content="City" Foreground="#576379" FontWeight="SemiBold" />
+                                            <TextBox Name="billingAddress_city" Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
                                                 <TextBox.Resources>
                                                     <Style TargetType="{x:Type Border}">
                                                         <Setter Property="CornerRadius" Value="5"/>
@@ -613,59 +626,34 @@
                                             </TextBox>
                                         </StackPanel>
 
-                                        <StackPanel Grid.Row="2" Grid.Column="1">
-                                            <DockPanel>
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="1*" />
-                                                        <ColumnDefinition Width="1*" />
-                                                    </Grid.ColumnDefinitions>
-                                                    <StackPanel Grid.Column="0">
-                                                        <Label Content="ZIP" Foreground="#576379" FontWeight="SemiBold" />
-                                                        <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
-                                                            <TextBox.Resources>
-                                                                <Style TargetType="{x:Type Border}">
-                                                                    <Setter Property="CornerRadius" Value="5"/>
-                                                                </Style>
-                                                            </TextBox.Resources>
+                                        <StackPanel Grid.Row="3" Grid.Column="2">
+                                            <Label Content="ZIP" Foreground="#576379" FontWeight="SemiBold" />
+                                            <TextBox HorizontalAlignment="Left" Name="billingAddress_zip" Margin="6 0 " BorderBrush="#ebecf0" Padding="3" MinWidth="70">
+                                                <TextBox.Resources>
+                                                    <Style TargetType="{x:Type Border}">
+                                                        <Setter Property="CornerRadius" Value="5"/>
+                                                    </Style>
+                                                </TextBox.Resources>
 
-                                                        </TextBox>
-                                                    </StackPanel>
+                                            </TextBox>
 
-
-                                                    <StackPanel Grid.Column="1">
-                                                        <Label Content="Apartment" Foreground="#576379" FontWeight="SemiBold" />
-                                                        <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
-                                                            <TextBox.Resources>
-                                                                <Style TargetType="{x:Type Border}">
-                                                                    <Setter Property="CornerRadius" Value="5"/>
-                                                                </Style>
-                                                            </TextBox.Resources>
-
-                                                        </TextBox>
-                                                    </StackPanel>
-                                                </Grid>
-                                            </DockPanel>
                                         </StackPanel>
 
-                                        <StackPanel Grid.Row="3">
+                                        <StackPanel Grid.Row="4" Grid.ColumnSpan="1">
                                             <Label Content="Country" Foreground="#576379" FontWeight="SemiBold" />
-                                            <ComboBox Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}">
-                                                <ComboBoxItem>New York</ComboBoxItem>
+                                            <ComboBox Name="billingAddress_country" Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}">
 
                                             </ComboBox>
                                         </StackPanel>
 
-                                        <StackPanel Grid.Row="3" Grid.Column="1">
+                                        <StackPanel Grid.Row="4" Grid.Column="2">
                                             <Label Content="State" Foreground="#576379" FontWeight="SemiBold" />
-                                            <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
-                                                <TextBox.Resources>
-                                                    <Style TargetType="{x:Type Border}">
-                                                        <Setter Property="CornerRadius" Value="5"/>
-                                                    </Style>
-                                                </TextBox.Resources>
+                                            <ComboBox Name="billingAddress_state" Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}">
+                                                <ComboBoxItem>New York</ComboBoxItem>
 
-                                            </TextBox>
+                                            </ComboBox>
+
+
                                         </StackPanel>
 
 
@@ -695,7 +683,7 @@
 
                                         <StackPanel Grid.Column="0" Grid.ColumnSpan="2">
 
-                                            <Label Content="Payment Information" Foreground="#576379" FontWeight="Bold" FontSize="15" Margin="0 10"/>
+                                            <Label Content="Payment Information" Foreground="#576379" FontWeight="Bold" FontSize="15" Margin="0 20 0 10"/>
                                             <Label Content="Select Credit Card" Foreground="#576379" FontWeight="SemiBold" />
 
                                             <DockPanel HorizontalAlignment="Left">
@@ -781,7 +769,7 @@
                                                     </ToggleButton.Template>
                                                 </ToggleButton>
 
-                                                <ToggleButton Foreground="Black" Width="50"  Margin="5">
+                                                <!--ToggleButton Foreground="Black" Width="50"  Margin="5">
                                                     <ToggleButton.Template>
                                                         <ControlTemplate TargetType="{x:Type ToggleButton}">
                                                             <Image>
@@ -806,13 +794,23 @@
 
                                                         </ControlTemplate>
                                                     </ToggleButton.Template>
-                                                </ToggleButton>
+                                                </ToggleButton-->
 
 
                                             </DockPanel>
 
+
+                                            <Label Content="Credit Card Holder Name" Foreground="#576379" FontWeight="SemiBold" Margin="0 20 0 0"/>
+                                            <TextBox Name="cardHolder" Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                                <TextBox.Resources>
+                                                    <Style TargetType="{x:Type Border}">
+                                                        <Setter Property="CornerRadius" Value="5"/>
+                                                    </Style>
+                                                </TextBox.Resources>
+
+                                            </TextBox>
                                             <Label Content="Credit Card Number" Foreground="#576379" FontWeight="SemiBold" Margin="0 20 0 0"/>
-                                            <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                            <TextBox Name="cardNumber" Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
                                                 <TextBox.Resources>
                                                     <Style TargetType="{x:Type Border}">
                                                         <Setter Property="CornerRadius" Value="5"/>
@@ -825,7 +823,7 @@
 
                                                 <StackPanel Width="70">
                                                     <Label Content="Month" Foreground="#576379" FontWeight="SemiBold" Margin="0 20 0 0"/>
-                                                    <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                                    <TextBox Name="cardExpMonth" Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
                                                         <TextBox.Resources>
                                                             <Style TargetType="{x:Type Border}">
                                                                 <Setter Property="CornerRadius" Value="5"/>
@@ -837,7 +835,7 @@
 
                                                 <StackPanel  Width="70">
                                                     <Label Content="Year" Foreground="#576379" FontWeight="SemiBold" Margin="0 20 0 0"/>
-                                                    <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                                    <TextBox Name="cardExpYear" Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
                                                         <TextBox.Resources>
                                                             <Style TargetType="{x:Type Border}">
                                                                 <Setter Property="CornerRadius" Value="5"/>
@@ -848,8 +846,8 @@
                                                 </StackPanel>
 
                                                 <StackPanel  Width="70">
-                                                    <Label Content="CCV" Foreground="#576379" FontWeight="SemiBold" Margin="0 20 0 0"/>
-                                                    <TextBox Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                                    <Label Content="CSC" Foreground="#576379" FontWeight="SemiBold" Margin="0 20 0 0"/>
+                                                    <TextBox Name="cardCSC" Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
                                                         <TextBox.Resources>
                                                             <Style TargetType="{x:Type Border}">
                                                                 <Setter Property="CornerRadius" Value="5"/>
@@ -888,7 +886,7 @@
 
 
 
-                                <Button Margin="6,20" Width="100" HorizontalAlignment="Left" Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0">
+                                <Button Margin="6,20" Width="100" HorizontalAlignment="Left" Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0" Click="addProfile">
                                     <Button.Resources>
                                         <Style TargetType="{x:Type Border}">
                                             <Setter Property="CornerRadius" Value="5"/>
@@ -921,10 +919,10 @@
                                                 </DataTemplate>
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
-                                        <GridViewColumn Header="Profile Name" Width="auto" DisplayMemberBinding="{Binding ProfileName}" />
-                                        <GridViewColumn Header="Name" Width="auto" DisplayMemberBinding="{Binding Name}" />
-                                        <GridViewColumn Header="Credit Card" Width="auto" DisplayMemberBinding="{Binding CreditCard}" />
-                                        <GridViewColumn Header="Date Created"  Width="auto" DisplayMemberBinding="{Binding Date}" />
+                                        <GridViewColumn Header="Profile Name" Width="auto" DisplayMemberBinding="{Binding Name}" />
+                                        <GridViewColumn Header="Name" Width="auto" DisplayMemberBinding="{Binding ListShippingName}" />
+                                        <GridViewColumn Header="Credit Card" Width="auto" DisplayMemberBinding="{Binding ListCardLastDigits}" />
+                                        <GridViewColumn Header="Date Created"  Width="auto" DisplayMemberBinding="{Binding DateCreated}" />
 
 
                                     </GridView>
