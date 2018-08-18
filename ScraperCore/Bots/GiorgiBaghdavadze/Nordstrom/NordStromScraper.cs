@@ -26,7 +26,7 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.Nordstrom
             var request = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = request.GetDoc(searchUrl, token);
             var ds = document.DocumentNode;
-            var nodes = ds.SelectSingleNode("//div[contains(@class, 'resultSet_5ymz9')]/div");
+            var nodes = ds.SelectSingleNode("//div[contains(@class, 'resultSet_ZST5Lg')]/div");
             if (nodes == null)
             {
                 return;
@@ -92,7 +92,7 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.Nordstrom
 
         private string getProductName(HtmlNode child)
         {
-            return child.SelectSingleNode(".//span[contains(@class,navigationLink_1cd0fW) and contains(@class, 'light_Zn7rgm')]").InnerText;
+            return child.SelectSingleNode(".//span[contains(@class,navigationLink_Z18Gs4y) and contains(@class, 'light_ZztMQb')]").InnerText;
         }
 
         private void LoadSingleProduct(List<Product> listOfProducts, HtmlNode child, SearchSettingsBase settings)
