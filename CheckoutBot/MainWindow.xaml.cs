@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using CheckoutBot.Models.Shipping;
 using CheckoutBot.Models.Payment;
 using CheckoutBot.Models;
+using Newtonsoft.Json;
 
 namespace CheckoutBot
 {
@@ -147,6 +148,14 @@ namespace CheckoutBot
         }
 
 
+        private void exportProfiles(object sender, RoutedEventArgs e)
+        {
+            string output = JsonConvert.SerializeObject(profileList.Items);
+            Console.WriteLine(output);
+        }
+
+
+
         private void addProfile(object sender, RoutedEventArgs e)
         {
 
@@ -211,7 +220,7 @@ namespace CheckoutBot
 
             var creditCard = new CardInfo()
             {
-                CartNumber = cardNumber.Text,
+                CardNumber = cardNumber.Text,
                 CSC = cardCSC.Text,
                 ValidUntil = new DateTime(int.Parse(cardExpYear.Text), int.Parse(cardExpMonth.Text), 1),
                 CardHolderName = cardHolder.Text,
@@ -224,8 +233,6 @@ namespace CheckoutBot
                 ShippingAddress = shippingAddress,
                 BillingAddress = billingAddress,
                 CreditCard = creditCard,
-                ListShippingName = shippingAddress.FirstName + " " + shippingAddress.LastName,
-                ListCardLastDigits = "**** " + creditCard.CartNumber.Substring(creditCard.CartNumber.Length - 4),
                 DateCreated =  DateTime.Now
      
         };
@@ -258,6 +265,38 @@ namespace CheckoutBot
 
 
     }
+
+
+    public sealed class CreditCard4DigitsConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return "";
+            return value.ToString().Length < 4 ? value.ToString() : "**** " + value.ToString().Substring(value.ToString().Length - 4);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new Exception("Not implemented yet!");
+        }
+    }
+
+
+    public sealed class ShippingNameConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return "";
+            ShippinInfo address = (ShippinInfo)value;
+            return address.FirstName + " " + address.LastName;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new Exception("Not implemented yet!");
+        }
+    }
+
 
 
 }

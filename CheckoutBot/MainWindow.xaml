@@ -14,6 +14,10 @@
         </LinearGradientBrush>
     </Window.Background>
     <Window.Resources>
+
+        <local:CreditCard4DigitsConverter x:Key="CreditCard4DigitsConverter" />
+        <local:ShippingNameConverter x:Key="ShippingNameConverter" />
+
         <Style x:Key="ComboBoxTest2" TargetType="{x:Type ComboBox}">
             <Setter Property="Template">
                 <Setter.Value>
@@ -920,8 +924,8 @@
                                             </GridViewColumn.CellTemplate>
                                         </GridViewColumn>
                                         <GridViewColumn Header="Profile Name" Width="auto" DisplayMemberBinding="{Binding Name}" />
-                                        <GridViewColumn Header="Name" Width="auto" DisplayMemberBinding="{Binding ListShippingName}" />
-                                        <GridViewColumn Header="Credit Card" Width="auto" DisplayMemberBinding="{Binding ListCardLastDigits}" />
+                                        <GridViewColumn Header="Name" Width="auto" DisplayMemberBinding="{Binding ShippingAddress, Converter={StaticResource ShippingNameConverter}}" />
+                                        <GridViewColumn Header="Credit Card" Width="auto" DisplayMemberBinding="{Binding Path=CreditCard.CardNumber, Converter={StaticResource CreditCard4DigitsConverter}}" />
                                         <GridViewColumn Header="Date Created"  Width="auto" DisplayMemberBinding="{Binding DateCreated}" />
 
 
@@ -943,18 +947,44 @@
 
                             </ListView>
 
+                            <DockPanel>
+                                <Button Margin="6,20"  HorizontalAlignment="Left" Padding="5" Background="#ffffff" Foreground="#787878" BorderBrush="#787878">
+                                    <Button.Resources>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="CornerRadius" Value="5"/>
 
-                            <Button Margin="6,20"  HorizontalAlignment="Left" Padding="5" Background="#ffffff" Foreground="#787878" BorderBrush="#787878">
-                                <Button.Resources>
-                                    <Style TargetType="{x:Type Border}">
-                                        <Setter Property="CornerRadius" Value="5"/>
+                                        </Style>
+                                    </Button.Resources>
 
-                                    </Style>
-                                </Button.Resources>
+                                    DELETE SELECTED
+                                </Button>
 
-                                DELETE SELECTED
-                            </Button>
 
+                                <DockPanel HorizontalAlignment="Right">
+
+
+                                    <Button  Margin="6,20" HorizontalAlignment="Right"   Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0">
+                                        <Button.Resources>
+                                            <Style TargetType="{x:Type Border}">
+                                                <Setter Property="CornerRadius" Value="5"/>
+                                            </Style>
+                                        </Button.Resources>
+
+                                        IMPORT
+                                    </Button>
+
+
+                                    <Button Click="exportProfiles" Margin="6,20"  HorizontalAlignment="Right" Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0">
+                                        <Button.Resources>
+                                            <Style TargetType="{x:Type Border}">
+                                                <Setter Property="CornerRadius" Value="5"/>
+                                            </Style>
+                                        </Button.Resources>
+
+                                        EXPORT
+                                    </Button>
+                                </DockPanel>
+                            </DockPanel>
 
 
 

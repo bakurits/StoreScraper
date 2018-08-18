@@ -17,8 +17,5 @@ namespace CheckoutBot.Models
         public CardInfo CreditCard {get; set;}
 
         public DateTime DateCreated { get; set; }
-        public string ListShippingName { get; set; }
-        public string ListCardLastDigits { get; set; }
-
     }
 }

@@ -7,7 +7,7 @@ namespace CheckoutBot.Models.Payment
     {
         public string CardHolderName { get; set; }
 
-        public string CartNumber { get; set; }
+        public string CardNumber { get; set; }
 
         public DateTime ValidUntil { get; set; }
 
