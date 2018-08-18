@@ -13,7 +13,7 @@ using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
-namespace ScraperCore.Bots.Sticky_bit.EastBay_FootAction
+namespace FootLocker_FootAction
 {
    [DisableInGUI]
     public class FootAPIBase : ScraperBase

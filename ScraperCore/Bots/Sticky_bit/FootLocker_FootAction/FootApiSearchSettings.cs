@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using StoreScraper.Models;
 
-namespace ScraperCore.Bots.Sticky_bit.EastBay_FootAction
+namespace FootLocker_FootAction
 {
     public class FootApiSearchSettings : SearchSettingsBase
     {

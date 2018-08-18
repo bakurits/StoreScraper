@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ScraperCore.Bots.Sticky_bit.EastBay_FootAction;
+using FootLocker_FootAction;
 using StoreScraper;
 using StoreScraper.Core;
 using StoreScraper.Http;

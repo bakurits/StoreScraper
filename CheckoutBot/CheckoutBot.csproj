@@ -138,6 +138,7 @@
     <Compile Include="Models\GuestCheckoutSettings.cs" />
     <Compile Include="Models\Payment\CardType.cs" />
     <Compile Include="Models\ProductBuyOptions.cs" />
+    <Compile Include="Models\Profile.cs" />
     <Compile Include="Models\Shipping\Countries.cs" />
     <Compile Include="Models\Shipping\ShippinInfo.cs" />
     <Compile Include="Models\Shipping\States.cs" />
