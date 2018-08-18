@@ -64,7 +64,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Bots\Mstanojevic\UebervartShop\UebervartShopScrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bots\Sticky_bit\BSTN\BSTNScraper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bots\Sticky_bit\ChampsSports_FootLocker\FootStoreBase.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Bots\Sticky_bit\EastBay_FootAction\FootApiBaser.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bots\Sticky_bit\EastBay_FootAction\FootApiBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bots\Sticky_bit\EastBay_FootAction\FootApiSearchSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bots\Sticky_bit\YOOX\YOOXScraper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\BrowserManager.cs" />

@@ -102,13 +102,6 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.TitoloShop
         {
             var document = GetWebpage(productUrl, token);
             const string xPath = "//*[@id='attributesize-size_eu']/option";
-            var nodes = document.SelectNodes(xPath);
-            if (nodes == null)
-            {
-                throw new RuntimeBinderInternalCompilerException();
-            }
-
-            var sizes = nodes.Select(node => node.InnerText.Trim()).Where(element => !element.Contains("Choose"));
             string name = document.SelectSingleNode("//h1[contains(@class,'product-name')]/strong").InnerText;
             
             string priceIntoString = document.SelectSingleNode("//span[@class='price'][last()]").InnerText;
@@ -126,6 +119,15 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.TitoloShop
                 Currency = "CHF",
                 ScrapedBy = this
             };
+
+            var nodes = document.SelectNodes(xPath);
+            if (nodes == null)
+            {
+                return details;
+            }
+
+            var sizes = nodes.Select(node => node.InnerText.Trim()).Where(element => !element.Contains("Choose"));
+
             foreach (var size in sizes)
             {
                 details.AddSize(size, "Unknown");
