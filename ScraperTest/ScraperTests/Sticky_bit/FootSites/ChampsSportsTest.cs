@@ -26,7 +26,7 @@ namespace ScraperTest.ScraperTests.Sticky_bit.FootSites
         public void GetProductDetails()
         {
             FootSimpleBase.ChampsSportsScraper scraper = new FootSimpleBase.ChampsSportsScraper();
-            ProductDetails productDetails = scraper.GetProductDetails("https://www.champssports.com/product/model:258371/sku:B76079/adidas-originals-nmd-r1-mens/grey/white/#sku-B76079", CancellationToken.None);
+            ProductDetails productDetails = scraper.GetProductDetails("https://www.champssports.com/product/model:98963/sku:R7719800/nike-air-force-1-low-mens/", CancellationToken.None);
             Console.WriteLine(productDetails);
         }
     }

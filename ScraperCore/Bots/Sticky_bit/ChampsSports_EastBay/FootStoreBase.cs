@@ -4,9 +4,12 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Policy;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
 using HtmlAgilityPack;
+using Newtonsoft.Json.Linq;
 using StoreScraper.Attributes;
 using StoreScraper.Core;
 using StoreScraper.Http.Factory;
@@ -258,19 +261,94 @@ namespace StoreScraper.Bots.Sticky_bit.ChampsSports_EastBay
             listOfProducts.Add(product);
         }
 
-        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
+        private HtmlNode GetWebpage(string url, CancellationToken token)
         {
-            var client = ClientFactory.GetProxiedFirefoxClient().AddHeaders(ClientFactory.HtmlOnlyHeader);
-            var node = client.GetDoc(productUrl, token)
-                .DocumentNode;
-            HtmlNodeCollection sizes = node.SelectNodes("//*[@class=\"product_sizes\"]//*[@class=\"button\"]");
-            ProductDetails details = new ProductDetails();
-            foreach (var s in sizes.Select(size => size.InnerText.Trim()))
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            return client.GetDoc(url, token).DocumentNode;
+
+        }
+
+        private JObject GetMainJSON(HtmlNode document)
+        {
+            HtmlNodeCollection scriptNodes = document.SelectNodes("//script");
+            Regex modelRegex = new Regex("var model *\t*\n*\r*= *{ *\t*\n*\r*");
+            
+            foreach (var scriptNode in scriptNodes)
             {
-                details.AddSize(s, "Unknown");
+                string script = scriptNode.InnerHtml;
+                if (modelRegex.IsMatch(script))
+                {
+                    Match firstMatch = modelRegex.Match(script);
+                    string afterModel = script.Substring(firstMatch.Index);
+                    string afterBracket = afterModel.Substring(afterModel.IndexOf("{"));
+                    string betweenModels = afterBracket.Substring(0, afterBracket.IndexOf("var model"));
+                    string JSONString = betweenModels.Substring(0, betweenModels.LastIndexOf("}")+1);
+                    return JObject.Parse(JSONString);
+                }
+            }
+            return new JObject();
+        }
+
+        private string getImg(HtmlNode document)
+        {
+            string img = document.SelectSingleNode("//*[@id=\"product_mixedmedia\"]//img")?.GetAttributeValue("src", null);
+            if (img == null)
+            {
+                img = document.SelectSingleNode("//*[@id=\"product_images\"]//img")?.GetAttributeValue("src", null);
+            }
+            int ind = 0;
+            while (img[ind] == '/')
+            {
+                ind++;
             }
 
-            return details;
+            img = img.Substring(ind);
+
+            return img;
+        }
+
+        private void addSizes(JObject main, ProductDetails productDetails)
+        {
+            JArray sizeArr = JArray.Parse(main["AVAILABLE_SIZES"].ToString());
+            foreach (var elem in sizeArr)
+            {
+                productDetails.AddSize(elem.ToString(), "Unknown");
+            }
+        }
+
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
+        {
+            var document = GetWebpage(productUrl, token);
+            JObject mainObj = GetMainJSON(document);
+
+            string id = mainObj["ALLSKUS"].First.ToString();
+            string img = getImg(document);
+            Price price;
+            if (mainObj["PR_SALE"] != null)
+            {
+                price = Utils.ParsePrice(mainObj["PR_SALE"].ToString());
+            }
+            else
+            {
+                price = Utils.ParsePrice(mainObj["PR_LIST"].ToString());
+            }
+
+            string name = mainObj["NM"].ToString();
+
+            ProductDetails productDetails = new ProductDetails()
+            {
+                Name = name,
+                Price = price.Value,
+                ImageUrl = img,
+                Url = productUrl,
+                Id = id,
+                Currency = "USD",
+                ScrapedBy = this
+            };
+
+            addSizes(mainObj, productDetails);
+
+            return productDetails;
         }
 
         public class ChampsSportsScraper : FootSimpleBase
