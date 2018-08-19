@@ -19,7 +19,7 @@ namespace StoreScraper.Bots.Higuhigu.Consortium
         public override string WebsiteBaseUrl { get; set; } = "http://www.consortium.co.uk";
         public override bool Active { get; set; }
 
-        private const string SearchFormat = @"https://www.consortium.co.uk/latest";
+        private const string SearchFormat = @"http://www.consortium.co.uk/latest";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {

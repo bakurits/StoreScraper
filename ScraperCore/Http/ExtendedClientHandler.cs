@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace ScraperCore.Http
 {
     public class ExtendedClientHandler : HttpClientHandler
     {
+        [DebuggerStepThrough]
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var nativeMessage =  base.SendAsync(request, cancellationToken);

@@ -14,8 +14,8 @@ namespace StoreScraper.Models
     public class WebHook
     {
 
-        private static readonly Uri _slackHookHost = new Uri("https://hooks.slack.com");
-        private static readonly Uri _discordHookHost = new Uri("https://discordapp.com");
+        private static readonly Uri _slackHookHost = new Uri("http://hooks.slack.com");
+        private static readonly Uri _discordHookHost = new Uri("http://discordapp.com");
         private static readonly SlackPoster _slackPoster = new SlackPoster();
         private static readonly DiscordPoster _discordPoster = new DiscordPoster();
 

@@ -56,19 +56,18 @@ namespace StoreScraper
             }
 
             var serializer = new XmlSerializer(typeof(AppSettings));
-            var stream = new FileStream(DataFilePath, FileMode.Open);
-
-            try
+            using ( var stream = new FileStream(DataFilePath, FileMode.Open))
             {
-                var data = serializer.Deserialize(stream) as AppSettings;
-                stream.Dispose();
-                return data;
-            }
-            catch
-            {
-                stream.Dispose();
-                File.Delete(DataFilePath);
-                return new AppSettings();
+                try
+                {
+                    var data = serializer.Deserialize(stream) as AppSettings;
+                    return data;
+                }
+                catch
+                {
+                    File.Delete(DataFilePath);
+                    return new AppSettings();
+                } 
             }
         }
 

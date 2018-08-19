@@ -338,7 +338,7 @@ namespace StoreScraper.Helpers
             return JObject.Parse("{}");
         }
 
-        public static string JsonToString(this Object value)
+        public static string JsonToString(this object value)
         {
             return JsonConvert.SerializeObject(value,
                 Newtonsoft.Json.Formatting.None,

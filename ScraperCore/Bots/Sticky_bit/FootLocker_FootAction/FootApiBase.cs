@@ -219,7 +219,7 @@ namespace FootLocker_FootAction
 
         public class FootLockerScraper : FootAPIBase
         {
-            public FootLockerScraper() : base("FootLocker", "https://www.footlocker.com")
+            public FootLockerScraper() : base("FootLocker", "http://www.footlocker.com")
             {
             }
 
@@ -227,7 +227,7 @@ namespace FootLocker_FootAction
 
         public class FootActionScraper : FootAPIBase
         {
-            public FootActionScraper() : base("FootAction", "https://www.footaction.com")
+            public FootActionScraper() : base("FootAction", "http://www.footaction.com")
             {
             }
         }

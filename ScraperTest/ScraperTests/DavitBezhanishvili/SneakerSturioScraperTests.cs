@@ -29,7 +29,7 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
         {
             var scraper = new SneakerStudioScraper();
 
-            var testUrl = "https://sneakerstudio.com/product-eng-16341-.html";
+            var testUrl = "http://sneakerstudio.com/product-eng-16341-.html";
 
             var details = scraper.GetProductDetails(testUrl, CancellationToken.None);
             Helper.PrintGetDetailsResult(details.SizesList);
@@ -39,7 +39,7 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
         {
             var scraper = new SneakerStudioScraper();
 
-            var testUrl = "https://sneakerstudio.com/product-eng-14715-Mens-shoes-sneakers-adidas-Originals-Padiham-SPZL-Spezial-Night-Navy-AC7747.html";
+            var testUrl = "http://sneakerstudio.com/product-eng-14715-Mens-shoes-sneakers-adidas-Originals-Padiham-SPZL-Spezial-Night-Navy-AC7747.html";
 
             var details = scraper.GetProductDetails(testUrl, CancellationToken.None);
             Helper.PrintGetDetailsResult(details.SizesList);
@@ -49,7 +49,7 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
         {
             var scraper = new SneakerStudioScraper();
 
-            var testUrl = "https://sneakerstudio.com/product-eng-16256-Mens-shorts-Alpha-Industries-Kerosene-Short-Camo-176205-125.html";
+            var testUrl = "http://sneakerstudio.com/product-eng-16256-Mens-shorts-Alpha-Industries-Kerosene-Short-Camo-176205-125.html";
 
             var details = scraper.GetProductDetails(testUrl, CancellationToken.None);
             Helper.PrintGetDetailsResult(details.SizesList);

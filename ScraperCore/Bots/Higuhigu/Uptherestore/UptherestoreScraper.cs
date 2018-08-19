@@ -15,10 +15,10 @@ namespace StoreScraper.Bots.Higuhigu.Uptherestore
     public class UptherestoreScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Uptherestore";
-        public override string WebsiteBaseUrl { get; set; } = "https://uptherestore.com";
+        public override string WebsiteBaseUrl { get; set; } = "http://uptherestore.com";
         public override bool Active { get; set; }
 
-        private const string SearchFormat = @"https://uptherestore.com/latest/";
+        private const string SearchFormat = @"http://uptherestore.com/latest/";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {

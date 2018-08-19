@@ -27,7 +27,7 @@ namespace ScraperTest.ScraperTests.Higuhigu
             OkiniScraper scraper = new OkiniScraper();
             Product curProduct = new Product(scraper,
                 "What",
-                "https://row.oki-ni.com/nike-air-max-180-sneaker-in-black-wolf-grey-pink-blast-aq9974-001-68nikm2470blk",
+                "http://row.oki-ni.com/nike-air-max-180-sneaker-in-black-wolf-grey-pink-blast-aq9974-001-68nikm2470blk",
                 1,
                 "whatever",
                 "whatever",

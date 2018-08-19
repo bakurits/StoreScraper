@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using CheckoutBot.CheckoutBots.FootSites.EastBay;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ScraperCore;
 using ScraperTest.Helpers;
 using StoreScraper.Models;
 

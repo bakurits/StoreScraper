@@ -25,9 +25,7 @@ namespace ScraperTest.ScraperTests.GiorgiBaghdavadze
         {
             var product = new Product()
             {
-                Url = "https://en.titolo.ch/c-p-company-x-adidas-tee-shirt",
-                //Url = "https://en.titoloshop.com/air-force-1-07-lv8-just-do-it-lntc",
-
+                Url = "http://en.titoloshop.com/air-force-1-07-lv8-just-do-it-lntc",
                 ScrapedBy = scraper
             };
 
