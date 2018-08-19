@@ -13,7 +13,7 @@ namespace StoreScraper.Bots.Mstanojevic.Sneakersnstuff
     public class SneakersnstuffScrapper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Sneakersnstuff";
-        public override string WebsiteBaseUrl { get; set; } = "https://www.sneakersnstuff.com";
+        public override string WebsiteBaseUrl { get; set; } = "http://www.sneakersnstuff.com";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";

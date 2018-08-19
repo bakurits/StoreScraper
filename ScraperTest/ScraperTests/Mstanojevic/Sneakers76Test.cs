@@ -26,7 +26,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         public void GetProductDetailsTest()
         {
             Product curProduct = new Product(new Sneakers76Scrapper(), "Unknown",
-                "https://www.sneakers76.com/en/nike/2993-atmos-x-nike-air-max-95-we-love-nike-aq0925-002.html?search_query=nike&results=336",
+                "http://www.sneakers76.com/en/nike/2993-atmos-x-nike-air-max-95-we-love-nike-aq0925-002.html?search_query=nike&results=336",
                 0,
                 "",
                 "id");

@@ -15,10 +15,10 @@ namespace StoreScraper.Bots.Higuhigu.Okini
     public class OkiniScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Okini";
-        public override string WebsiteBaseUrl { get; set; } = "https://row.oki-ni.com";
+        public override string WebsiteBaseUrl { get; set; } = "http://row.oki-ni.com";
         public override bool Active { get; set; }
 
-        private const string SearchFormat = @"https://row.oki-ni.com/catalogsearch/result/?q={0}&product_list_order=created_at";
+        private const string SearchFormat = @"http://row.oki-ni.com/catalogsearch/result/?q={0}&product_list_order=created_at";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {

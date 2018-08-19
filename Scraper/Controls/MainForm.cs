@@ -291,8 +291,9 @@ namespace StoreScraper.Controls
         {
             Btn_Save_Click(null, null);
             this.Hide();
-            Task.Run(() => MainForm_FormClosed(null, null));
             Process.Start(Application.ExecutablePath);
+            Application.Exit();
+            Environment.Exit(Environment.ExitCode);
         }
 
         private void Btn_ClearAllLogs_Click(object sender, EventArgs e)

@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
+using System.Windows.Controls;
 using CheckoutBot.Models;
 using Jurassic.Library;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
+using StoreScraper.Models;
 
 namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 {
@@ -47,7 +50,10 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         }
         public override HttpClient Login(string username, string password)
         {
-            HttpClient client = ClientFactory.CreateHttpCLient(autoCookies:true).AddHeaders(ClientFactory.FireFoxHeaders);
+            HttpClient client = ClientFactory.CreateProxiedHttpClient(autoCookies:true).AddHeaders(ClientFactory.FireFoxHeaders);
+//            var client = new HttpClient();
+//            client.AddHeaders(("User-Agent",
+//                "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0_3 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) GSA/37.1.171590344 Mobile/15A432 Safari/604.1"));
             var ignore = client.GetDoc(WebsiteBaseUrl, CancellationToken.None);
             var requestKey = GetRequestKey(client);
             string url = "https://www.eastbay.com/account/gateway";
@@ -64,26 +70,59 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 
         private string GetRequestKey(HttpClient client)
         {
-            string url =
-                $"https://www.eastbay.com/account/gateway?action=requestKey&_={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
             string res = "";
-            using (var message = new HttpRequestMessage())
-            {
-                message.Headers.Clear();
-                message.Headers.Add("Accept", "application/json, text/javascript, */*; q=0.01");
-                message.Headers.TryAddWithoutValidation("X-requested-with", "XMLHttpRequest");
-                message.Headers.Referrer = new Uri("https://www.eastbay.com/");
-                message.Method = HttpMethod.Get;
-                message.RequestUri = new Uri(url);
+            client.DefaultRequestHeaders.Clear();
 
-                var cc = client.SendAsync(message, CancellationToken.None).Result;
-                res = cc.Content.ReadAsStringAsync().Result;
-                cc.Dispose();
-            }
+            string url1 = "https://www.eastbay.com/akam/10/781257a1";
+
+            var newHeader = new StringPair[]
+            {
+                (@"Host", @"www.eastbay.com"),
+                (@"User-Agent", @"Mozilla/5.0 (Windows NT 10.0; …) Gecko/20100101 Firefox/61.0"),
+                (@"Accept", @"*/*"),
+                (@"Accept-Encoding", @"gzip, deflate, br"),
+                (@"Accept-Language", @"en-US,en;q=0.5"),
+                (@"Referer", @"https://www.eastbay.com/"),
+                (@"Cache-Control", @"no-cache"),
+                (@"Connection", @"keep-alive"),
+                (@"Pragma", @"no-cache"),
+            };
+
+            client.AddHeaders(newHeader);
+
+            var resp1 = client.GetAsync(url1);
+            resp1.Result.EnsureSuccessStatusCode();
+
+            client.DefaultRequestHeaders.Remove("Accept");
+            client.DefaultRequestHeaders.Add("Accept", "application/json, text/javascript, */*; q=0.01");
+            client.DefaultRequestHeaders.Add(@"X-Requested-With", @"XMLHttpRequest");
+
+            string url =
+                $"https://www.champssports.com/account/gateway?action=requestKey&_={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+
+            var resp = client.GetAsync(url);
+            resp.Result.EnsureSuccessStatusCode();
+
+            //using (var message = new HttpRequestMessage())
+            //{
+            //    message.Headers.Clear();
+            //    message.Headers.TryAddWithoutValidation("Accept", "application/json, text/javascript, */*; q=0.01");
+            //    message.Headers.TryAddWithoutValidation("X-Requested-With", "XMLHttpRequest");
+            //    message.Headers.Referrer = new Uri("https://www.eastbay.com/");
+            //    message.Method = HttpMethod.Get;
+               
+            //    message.RequestUri = new Uri(url);
+
+            //    var cc = client.SendAsync(message, CancellationToken.None).Result;
+            //    cc.EnsureSuccessStatusCode();
+            //    res = cc.Content.ReadAsStringAsync().Result;
+            //    cc.Dispose();
+            //}
             
             var json = Utils.GetFirstJson(res);
             return (string) json["data"]["RequestKey"];
         }
+
 
         public EastBayBot(string websiteName, string webSiteBaseUrl, string releasePageEndpoint) : base(websiteName, webSiteBaseUrl, releasePageEndpoint)
         {

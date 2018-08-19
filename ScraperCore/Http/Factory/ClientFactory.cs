@@ -65,14 +65,14 @@ namespace StoreScraper.Http.Factory
 
         public static StringPair[] FireFoxHeaders =
         {
-            FirefoxUserAgentHeaderOlder,
+            FirefoxUserAgentHeader,
             FirefoxAcceptHeader,
             ("Accept-Encoding", "gzip, deflate, br"),
             ("Accept-Language", "en-US,en; q=0.5"),
             ("Cache-Control", "no-cache"),
             ("Pramgma","no-cache"),
             ("Connection", "keep-alive"),
-            ("DNT","1"),
+            //("DNT","1"),
             ("Upgrade-Insecure-Requests", "1"),
         };
 
@@ -154,6 +154,8 @@ namespace StoreScraper.Http.Factory
                 AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
                 AllowAutoRedirect = true,
             };
+
+            handler.ServerCertificateCustomValidationCallback = (message, certificate2, arg3, arg4) => true;
 
             if (proxy != null)
             {

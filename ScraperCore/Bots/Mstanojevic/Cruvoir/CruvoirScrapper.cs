@@ -13,7 +13,7 @@ namespace StoreScraper.Bots.Mstanojevic.Cruvoir
     public class CruvoirScrapper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Cruvoir";
-        public override string WebsiteBaseUrl { get; set; } = "https://www.Cruvoir.com";
+        public override string WebsiteBaseUrl { get; set; } = "http://www.Cruvoir.com";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";

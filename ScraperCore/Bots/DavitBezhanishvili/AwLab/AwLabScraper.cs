@@ -15,14 +15,14 @@ namespace StoreScraper.Bots.DavitBezhanishvili.AwLab
     public class AwLabScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Aw-lab";
-        public override string WebsiteBaseUrl { get; set; } = "https://en.aw-lab.com";
+        public override string WebsiteBaseUrl { get; set; } = "http://en.aw-lab.com";
         public override bool Active { get; set; }
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
             var searchUrl =
-                $"https://en.aw-lab.com/shop/catalogsearch/result/index/q/{settings.KeyWords}";
+                $"http://en.aw-lab.com/shop/catalogsearch/result/index/q/{settings.KeyWords}";
             var request = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = request.GetDoc(searchUrl, token);
           //  Logger.Instance.WriteErrorLog("Unexpected html!");

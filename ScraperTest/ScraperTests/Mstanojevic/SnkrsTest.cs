@@ -27,9 +27,9 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         public void GetProductDetailsTest()
         {
             Product curProduct = new Product(new SnkrsScrapper(), "Unknown",
-                "https://www.snkrs.com/en/nike/m2k-tekno-blackoff-white-8222.html",
+                "http://www.snkrs.com/en/nike/m2k-tekno-blackoff-white-8222.html",
                 420,
-                "https://media.snkrs.com/43202-thickbox/m2k-tekno-blackoff-white.jpg",
+                "http://media.snkrs.com/43202-thickbox/m2k-tekno-blackoff-white.jpg",
                 "id");
 
 

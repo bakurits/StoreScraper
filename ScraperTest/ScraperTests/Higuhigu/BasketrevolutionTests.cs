@@ -27,7 +27,7 @@ namespace ScraperTest.ScraperTests.Higuhigu
             BasketrevolutionScraper scraper = new BasketrevolutionScraper();
             Product curProduct = new Product(scraper,
                 "Wut",
-                "https://www.basketrevolution.es/jordan-super-fly-2017-black-infrared/",
+                "http://www.basketrevolution.es/jordan-super-fly-2017-black-infrared/",
                 1,
                 "whatever",
                 "whatever",

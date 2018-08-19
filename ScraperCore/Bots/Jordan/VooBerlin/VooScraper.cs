@@ -17,10 +17,10 @@ namespace StoreScraper.Bots.Jordan.VooBerlin
     public class VooScraper: ScraperBase
     {
         public override string WebsiteName { get; set; } = "VooBerlin";
-        public override string WebsiteBaseUrl { get; set; } = "https://vooberlin.com/";
+        public override string WebsiteBaseUrl { get; set; } = "http://vooberlin.com/";
         public override bool Active { get; set; }
         
-        private const string SearchUrl = @"https://www.vooberlin.com/search?sSearch={0}&p={1}";
+        private const string SearchUrl = @"http://www.vooberlin.com/search?sSearch={0}&p={1}";
         
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {   

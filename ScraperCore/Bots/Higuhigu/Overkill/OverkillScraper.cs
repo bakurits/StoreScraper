@@ -16,10 +16,10 @@ namespace StoreScraper.Bots.Higuhigu.Overkill
     public class OverkillScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Overkill";
-        public override string WebsiteBaseUrl { get; set; } = "https://www.overkillshop.com/";
+        public override string WebsiteBaseUrl { get; set; } = "http://www.overkillshop.com/";
         public override bool Active { get; set; }
 
-        private const string SearchFormat = @"https://www.overkillshop.com/en/new-products.html?limit=150";
+        private const string SearchFormat = @"http://www.overkillshop.com/en/new-products.html?limit=150";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {

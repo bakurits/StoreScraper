@@ -29,7 +29,7 @@ namespace ScraperTest.ScraperTests.Higuhigu
             UptherestoreScraper scraper = new UptherestoreScraper();
             Product curProduct = new Product(scraper,
                 "Nike Air Jordan Wmns 1 Retro",
-                "https://uptherestore.com/latest/og-cso-lx-black-white",
+                "http://uptherestore.com/latest/og-cso-lx-black-white",
                 1,
                 "whatever",
                 "whatever",

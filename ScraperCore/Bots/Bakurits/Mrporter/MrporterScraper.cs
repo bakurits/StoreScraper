@@ -18,12 +18,12 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
 {
     public class MrporterScraper : ScraperBase
     {
-        private const string SearchUrlFormat = @"https://www.mrporter.com/mens/search/{0}?keywords={0}&pn={1}";
+        private const string SearchUrlFormat = @"http://www.mrporter.com/mens/search/{0}?keywords={0}&pn={1}";
 
 
         private bool _active;
         public override string WebsiteName { get; set; } = "Mrporter";
-        public override string WebsiteBaseUrl { get; set; } = "https://www.mrporter.com/";
+        public override string WebsiteBaseUrl { get; set; } = "http://www.mrporter.com/";
 
         public override bool Active
         {
@@ -33,7 +33,7 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
                 if (!_active && value)
                 {
                     CookieCollector.Default.RegisterActionAsync(WebsiteName,
-                        (httpClient, token) => httpClient.GetAsync("https://www.mrporter.com/mens/whats-new"),
+                        (httpClient, token) => httpClient.GetAsync("http://www.mrporter.com/mens/whats-new"),
                         TimeSpan.FromMinutes(20)).Wait();
                     _active = true;
                 }
@@ -212,7 +212,7 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
             var imgNode = imageCollection[ind];
             var aHref = htmlNode.SelectSingleNode("./div/a").GetAttributeValue("href", "");
             var imgSrc = imgNode.GetAttributeValue("src", "");
-            var url = "https://www.mrporter.com/" +
+            var url = "http://www.mrporter.com/" +
                       aHref.Substring(aHref.IndexOf("/", 1, StringComparison.Ordinal) + 1);
             var imgUrl = "https:" + imgSrc;
 

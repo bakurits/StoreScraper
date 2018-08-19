@@ -18,10 +18,10 @@ namespace ScraperTest.MinorTests
             {
                 ScrapedBy = new ShelflifeScraper(),
                 Name = "Vans x Van Gogh UA SK8-Hi - Almond Blossom/True White",
-                Url = "https://www.shelflife.co.za/products/Vans-x-Van-Gogh-UA-SK8-Hi-Almond-Blossom-True-White",
+                Url = "http://www.shelflife.co.za/products/Vans-x-Van-Gogh-UA-SK8-Hi-Almond-Blossom-True-White",
                 Price = 1399.00,
-                ImageUrl = "https://www.shelflife.co.za/pics/product/large/vn0a38geubl-side.jpg",
-                Id = "https://www.shelflife.co.za/products/Vans-x-Van-Gogh-UA-SK8-Hi-Almond-Blossom-True-White",
+                ImageUrl = "http://www.shelflife.co.za/pics/product/large/vn0a38geubl-side.jpg",
+                Id = "http://www.shelflife.co.za/products/Vans-x-Van-Gogh-UA-SK8-Hi-Almond-Blossom-True-White",
                 Currency = "£",
                 SizesList = new List<StringPair>
                 {
@@ -31,7 +31,7 @@ namespace ScraperTest.MinorTests
                 }
             };
             var task = new DiscordPoster().PostMessage(
-                "https://discordapp.com/api/webhooks/468240680414609429/kKJB9L4I8AfQWWDcqf0vpAj9OYDqxLAJ9gHl1b2B5xg8c5X2Ic4FpcSHAE8_0vKqZBoP",
+                "http://discordapp.com/api/webhooks/468240680414609429/kKJB9L4I8AfQWWDcqf0vpAj9OYDqxLAJ9gHl1b2B5xg8c5X2Ic4FpcSHAE8_0vKqZBoP",
                 productDetails, CancellationToken.None);
 
             try

@@ -27,7 +27,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         public void GetProductDetailsTest()
         {
             Product curProduct = new Product(new UebervartShopScrapper(), "Unknown",
-                "https://www.uebervart-shop.de/nike-air-revarderchi-red-brown/",
+                "http://www.uebervart-shop.de/nike-air-revarderchi-red-brown/",
                 420,
                 "",
                 "id");
