@@ -9,12 +9,13 @@ using StoreScraper.Models;
 
 namespace CheckoutBot.Models
 {
-    public class GuestCheckoutSettings
+    public class GuestCheckoutSettings : ICheckoutSettings
     {
         public ShippinInfo Shipping;
-        public CardInfo CartInfo;
-        public Product ProductToBuy;
-        public ProductBuyOptions BuyOptions;
+        public Card Cart;
+
+        public Product ProductToBuy{get; set; }
+        public ProductBuyOptions BuyOptions{get; set;}
     }
 
 }

@@ -29,7 +29,19 @@ namespace StoreScraper.Controls
             PGrid_Settings.SelectedObject = AppSettings.Default;
             PGrid_Bot.SelectedObject = new SearchSettingsBase();
             RTbx_Proxies.Text = string.Join("\r\n", AppSettings.Default.Proxies);
-            Logger.Instance.OnLogged += (message, color) => Rtbx_EventLog.AppendText(message,color);
+            Logger.Instance.OnLogged += (message, color) =>
+            {
+                Rtbx_EventLog.Invoke((MethodInvoker)delegate
+                {
+                    if (Rtbx_EventLog.Text.Length > Logger.MaxLogBytes)
+                    {
+                        Rtbx_EventLog.SaveFile($"Logs\\EventLog{DateTime.Now.ToFileTime()}");
+                        Rtbx_EventLog.Clear();
+                    }
+                });
+
+                Rtbx_EventLog.AppendText(message, color);
+            };
             CultureInfo.CurrentUICulture = new CultureInfo("en-US");
             CultureInfo.CurrentCulture = new CultureInfo("en-US");
         }
@@ -97,7 +109,16 @@ namespace StoreScraper.Controls
             {
                 if (task.IsFaulted)
                 {
-                    Rtbx_DebugLog.AppendText(task.Exception?.StackTrace + "\r\n");
+
+                    Rtbx_DebugLog.Invoke((MethodInvoker) delegate
+                    {
+                        if (Rtbx_DebugLog.Text.Length > Logger.MaxLogBytes)
+                        {
+                            Rtbx_DebugLog.Clear();
+                        }
+                    });
+
+                    Rtbx_DebugLog.AppendText(task.Exception?.StackTrace + Environment.NewLine);
                     label_FindingStatus.Text = @"Some Errors!";
                     label_FindingStatus.ForeColor = Color.Red;
                 }
@@ -149,20 +170,7 @@ namespace StoreScraper.Controls
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            AppSettings.Default.Save();
             CookieCollector.Default.Dispose();
-            var processes = Process.GetProcessesByName("firefox");
-            foreach (var process in processes)
-            {
-                try
-                {
-                    process.Kill();
-                }
-                catch
-                {
-                    //ingored
-                }
-            }
             Environment.Exit(Environment.ExitCode);
         }
 
@@ -180,14 +188,11 @@ namespace StoreScraper.Controls
 
         private void Btn_Save_Click(object sender, EventArgs e)
         {
-            AppSettings.Default.Proxies = RTbx_Proxies.Text.Replace("\r", "").Split('\n').ToList().ConvertAll<string>(proxy => 
+            AppSettings.Default.Proxies = RTbx_Proxies.Text.Replace("\r", "").Split('\n').ToList();
+            if (AppSettings.Default.Proxies.Count == 1 && AppSettings.Default.Proxies.FirstOrDefault() == "")
             {
-                if (!proxy.Contains("http://") && !proxy.Contains("https://"))
-                {
-                    return "http://" + proxy;
-                }
-                else return proxy;
-            });
+                AppSettings.Default.Proxies = new List<string>();
+            }
 
             AppSettings.Default.Save();
         }
@@ -248,20 +253,16 @@ namespace StoreScraper.Controls
                         convertedFilter = SearchSettingsBase.ConvertToChild(searchOptions, store.SearchSettingsType);
                     }
 
-                    for (int i = 0; i < AppSettings.Default.ProxyRotationRetryCount; i++)
+                    try
                     {
-                        try
-                        {
-                            store.ScrapeItems(out var curProductsList, convertedFilter, _findTokenSource.Token);
-                            monTask.OldItems.Add(curProductsList);
-                        }
-                        catch
-                        {
-                            if(i == AppSettings.Default.ProxyRotationRetryCount - 1)
-                                MessageBox.Show($"Error Occured while trying to obtain current products with specified search criteria on {store.WebsiteName}");
-                            throw new Exception();
-                        } 
+                        store.ScrapeItems(out var curProductsList, convertedFilter, _findTokenSource.Token);
+                        monTask.OldItems.Add(curProductsList);
                     }
+                    catch
+                    {
+                        MessageBox.Show($"Error Occured while trying to obtain current products with specified search criteria on {store.WebsiteName}");
+                        throw new Exception();
+                    } 
                 }
 
 

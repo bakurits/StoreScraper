@@ -14,7 +14,7 @@ namespace CheckoutBot.Models
         public string Name { get; set; }
         public ShippinInfo ShippingAddress { get; set; }
         public ShippinInfo BillingAddress { get; set; }
-        public CardInfo CreditCard {get; set;}
+        public Card CreditCard {get; set;}
 
         public DateTime DateCreated { get; set; }
     }

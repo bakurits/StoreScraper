@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using StoreScraper.Core;
 using StoreScraper.Models;
 
 namespace StoreScraper
@@ -57,16 +58,32 @@ namespace StoreScraper
         /// <param name="token"></param>
         public void ScrapeItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
+            listOfProducts = new List<Product>();
             List<Product> products = new List<Product>();
-            listOfProducts = products;
             settings.KeyWords.Split(',').AsParallel().ForAll(k =>
             {
                 k = k.Trim();
                 var s = (SearchSettingsBase)settings.Clone();
                 s.KeyWords = k;
-                FindItems(out var list, s, token);
-                products.AddRange(list);
+                for (int i = 0; i < AppSettings.Default.ProxyRotationRetryCount; i++)
+                {
+                    try
+                    {
+                        FindItems(out var list, s, token);
+                        products.AddRange(list);
+                        break;
+                    }
+                    catch
+                    {
+                        if (i == AppSettings.Default.ProxyRotationRetryCount - 1)
+                        {
+                            throw;
+                        }
+                    }
+                }
             });
+
+            listOfProducts.AddRange(products);
         }
 
         public virtual void Initialize()

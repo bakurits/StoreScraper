@@ -145,6 +145,7 @@
     <Compile Include="CheckoutBots\FootSites\FootAction\FootActionBot.cs" />
     <Compile Include="CheckoutBots\FootSites\FootLocker\FootLockerBot.cs" />
     <Compile Include="CheckoutBots\FootSites\FootSitesBotBase.cs" />
+    <Compile Include="Core\ProductMonitoringTask.cs" />
     <Compile Include="Env.cs" />
     <Compile Include="Interfaces\IAccountCheckouter.cs" />
     <Compile Include="Interfaces\IGuestCheckouter.cs" />
@@ -154,11 +155,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interfaces\IreleasePageScraper.cs" />
-    <Compile Include="Models\AccountCheckoutSettings.cs" />
-    <Compile Include="Models\Payment\CardInfo.cs" />
-    <Compile Include="Models\GuestCheckoutSettings.cs" />
-    <Compile Include="Models\Payment\CardType.cs" />
-    <Compile Include="Models\ProductBuyOptions.cs" />
+    <Compile Include="Models\Checkout\AccountCheckoutSettings.cs" />
+    <Compile Include="Models\Checkout\ICheckoutSettings.cs" />
+    <Compile Include="Models\Payment\Card.cs" />
+    <Compile Include="Models\Checkout\GuestCheckoutSettings.cs" />
+    <Compile Include="Models\Payment\IPaymentMethod.cs" />
+    <Compile Include="Models\Checkout\ProductBuyOptions.cs" />
     <Compile Include="Models\Profile.cs" />
     <Compile Include="Models\Shipping\Countries.cs" />
     <Compile Include="Models\Shipping\ShippinInfo.cs" />
@@ -227,6 +229,7 @@
   <ItemGroup>
     <Resource Include="images\recaptcha.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\ScraperCore\ScraperCore.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Brotli.NET.1.0.19\build\Brotli.NET.targets" Condition="Exists('..\packages\Brotli.NET.1.0.19\build\Brotli.NET.targets')" />
