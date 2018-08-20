@@ -194,6 +194,15 @@ namespace StoreScraper.Controls
                 AppSettings.Default.Proxies = new List<string>();
             }
 
+
+            AppSettings.Default.Proxies.ConvertAll<string>(proxy =>
+            {
+                if (proxy.StartsWith("http://")) return proxy;
+                if (proxy.StartsWith("https://")) return proxy.Replace("https://", "http://");
+
+                return "http://" + proxy;
+            });
+
             AppSettings.Default.Save();
         }
 

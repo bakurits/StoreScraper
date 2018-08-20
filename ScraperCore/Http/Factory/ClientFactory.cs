@@ -24,6 +24,8 @@ namespace StoreScraper.Http.Factory
 
         public static StringPair JsonXmlAcceptHeader = ("Accept", "application/xml, application/json");
 
+        public static StringPair JsonAcceptHeader = ("Accept", "application/json");
+
         public static StringPair HtmlOnlyHeader = ("Accept", "text/html");
 
         public static StringPair FirefoxUserAgentHeader = ("User-Agent",
