@@ -10,6 +10,7 @@ using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ScraperCore.Interfaces;
 using StoreScraper.Attributes;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
@@ -18,7 +19,7 @@ using StoreScraper.Models;
 namespace CheckoutBot.CheckoutBots.FootSites
 {
     [DisableInGUI]
-    public abstract class FootSitesBotBase : IGuestCheckouter, IAccountCheckouter, IReleasePageScraper
+    public abstract class FootSitesBotBase : IWebsiteScraper, IGuestCheckouter, IAccountCheckouter, IReleasePageScraper
     {
         public string WebsiteName { get; set; }
         public string WebsiteBaseUrl { get; set; }
@@ -66,7 +67,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
                         var image = GetImage(productData);
                         
 
-                        var product = new Product(this.WebsiteName, name, url, price, image, url, "USD", date);
+                        var product = new Product(this, name, url, price, image, url, "USD", date);
 
                         products.Add(product);
                     }

@@ -4,12 +4,13 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ScraperCore.Interfaces;
 using StoreScraper.Core;
 using StoreScraper.Models;
 
 namespace StoreScraper
 {
-    public abstract class ScraperBase
+    public abstract class ScraperBase : IWebsiteScraper
     {
         [Browsable(false)] public abstract string WebsiteName { get; set; }
 

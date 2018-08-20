@@ -98,15 +98,22 @@ namespace StoreScraper.Http.Factory
         public static WebProxy ParseProxy(string proxy)
         {
 
-            var tokens = proxy.Split(':');
-            if (tokens.Length > 3)
+            try
             {
-                var password = tokens[tokens.Length - 1];
-                var userName = tokens[tokens.Length - 2];
-                var address = new UriBuilder(string.Join(":", tokens, 0, tokens.Length - 2)).Uri;
-                var cred = new NetworkCredential(userName, password);
+                var tokens = proxy.Split(':');
+                if (tokens.Length > 3)
+                {
+                    var password = tokens[tokens.Length - 1];
+                    var userName = tokens[tokens.Length - 2];
+                    var address = new UriBuilder(string.Join(":", tokens, 0, tokens.Length - 2)).Uri;
+                    var cred = new NetworkCredential(userName, password);
 
-                return new WebProxy(address, true, null, cred);
+                    return new WebProxy(address, true, null, cred);
+                }
+            }
+            catch
+            {
+               //
             }
 
             try

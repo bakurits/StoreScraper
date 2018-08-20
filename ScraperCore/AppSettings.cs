@@ -15,7 +15,7 @@ namespace StoreScraper
     [Serializable]
     public class AppSettings
     {
-        public const string DataFileName = "config.xml";
+        public const string DataFileName = "config.json";
         public static AppSettings Default;
         public static string DataDir;
         [JsonIgnore]

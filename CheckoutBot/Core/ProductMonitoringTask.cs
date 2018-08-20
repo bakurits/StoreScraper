@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
 using StoreScraper.Models;
 
@@ -27,7 +28,12 @@ namespace CheckoutBot.Core
 
         public void Monitor()
         {
-            throw new NotImplementedException();
+            if (CheckoutInfo is GuestCheckoutSettings guestCheckout)
+            {
+                if(!(guestCheckout.ProductToBuy.ScrapedBy is IGuestCheckouter checkouter)) throw new InvalidOperationException();
+
+                
+            }
         }
     }
 }

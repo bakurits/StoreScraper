@@ -5,6 +5,7 @@ using System.Threading;
 using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
 using HtmlAgilityPack;
+using ScraperCore.Interfaces;
 
 namespace StoreScraper.Models
 {
@@ -13,17 +14,9 @@ namespace StoreScraper.Models
         [DisplayName("Store")]
         public string StoreName { get; set; } = "";
 
-        private ScraperBase _scraperBy;
 
         [Browsable(false)]
-        public ScraperBase ScrapedBy {
-            get => _scraperBy;
-            set
-            {
-                _scraperBy = value;
-                this.StoreName = value.WebsiteName;
-            }
-        }
+        public IWebsiteScraper ScrapedBy { get; set; }
 
         public string Name { get; set; } = "";
 
@@ -56,26 +49,15 @@ namespace StoreScraper.Models
         public DateTime? ReleaseTime { get; set; }
 
 
-        public Product(ScraperBase scrapedBy, string name, string url, double price, string imageUrl, string id, string currency = "$", DateTime? releaseTime = null)
+        public Product(IWebsiteScraper scrapedBy, string name, string url, double price, string imageUrl, 
+            string id, string currency = "$", DateTime? releaseTime = null)
         {
             this.Name = HtmlEntity.DeEntitize(name.Trim());
             this.Url = url;
             this.Price = price;
             this.Id = id;
             this.ScrapedBy = scrapedBy;
-            this.StoreName = ScrapedBy.WebsiteName;
-            this.ImageUrl = imageUrl;
-            this.Currency = currency;
-            this.ReleaseTime = releaseTime;
-        }
-
-        public Product(string storeName, string name, string url, double price, string imageUrl, string id, string currency = "$", DateTime? releaseTime = null)
-        {
-            this.Name = HtmlEntity.DeEntitize(name.Trim());
-            this.Url = url;
-            this.Price = price;
-            this.Id = id;
-            this.StoreName = storeName;
+            this.StoreName = scrapedBy.WebsiteName;
             this.ImageUrl = imageUrl;
             this.Currency = currency;
             this.ReleaseTime = releaseTime;
@@ -88,7 +70,9 @@ namespace StoreScraper.Models
 
         public virtual ProductDetails GetDetails(CancellationToken token)
         {
-           return this.ScrapedBy.GetProductDetails(this.Url, token);
+            if(!(this.ScrapedBy is ScraperBase scraperBy)) throw new InvalidOperationException("Scraper which scraped this product not supports GetDetails method");
+
+            return scraperBy.GetProductDetails(this.Url, token);
         }
 
         public override bool Equals(object obj)

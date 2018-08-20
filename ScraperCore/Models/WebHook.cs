@@ -5,22 +5,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using Newtonsoft.Json;
 using StoreScraper.Core;
 using StoreScraper.Helpers;
 using StoreScraper.Interfaces;
 
 namespace StoreScraper.Models
 {
+    [JsonObject]
     public class WebHook
     {
-
+        [JsonIgnore]
         private static readonly Uri _slackHookHost = new Uri("http://hooks.slack.com");
+
+        [JsonIgnore]
         private static readonly Uri _discordHookHost = new Uri("http://discordapp.com");
+
+        [JsonIgnore]
         private static readonly SlackPoster _slackPoster = new SlackPoster();
+
+        [JsonIgnore]
         private static readonly DiscordPoster _discordPoster = new DiscordPoster();
 
         [Browsable(false)]
         [XmlIgnore]
+        [JsonIgnore]
         public IWebHookPoster Poster { get; set; }
 
         private string _webHookUrl = "";
