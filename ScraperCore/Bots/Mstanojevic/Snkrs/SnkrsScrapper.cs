@@ -15,7 +15,7 @@ namespace StoreScraper.Bots.Mstanojevic.Snkrs
     public class SnkrsScrapper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "SNKRS";
-        public override string WebsiteBaseUrl { get; set; } = "http://www.snkrs.com";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.snkrs.com";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";

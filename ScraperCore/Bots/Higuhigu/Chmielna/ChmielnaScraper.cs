@@ -14,10 +14,10 @@ namespace StoreScraper.Bots.Higuhigu.Chmielna
     public class ChmielnaScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Chmielna20";
-        public override string WebsiteBaseUrl { get; set; } = "http://chmielna20.pl";
+        public override string WebsiteBaseUrl { get; set; } = "https://chmielna20.pl";
         public override bool Active { get; set; }
 
-        private const string SearchFormat = @"http://chmielna20.pl/en/products/sneaker/keyword,sneaker/sort,1?keyword={0}";
+        private const string SearchFormat = @"https://chmielna20.pl/en/products/sneaker/keyword,sneaker/sort,1?keyword={0}";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {

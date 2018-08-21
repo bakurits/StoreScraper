@@ -27,9 +27,9 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         public void GetProductDetailsTest()
         {
             Product curProduct = new Product(new FootShopScrapper(), "Unknown",
-                "http://www.footshop.eu/en/mens-shoes/31146-converse-one-star-ox-apple-green-sharp-green.html",
+                "https://www.footshop.eu/en/mens-shoes/31146-converse-one-star-ox-apple-green-sharp-green.html",
                 420,
-                "http://1256852360.rsc.cdn77.org/en/170459/converse-one-star-ox-apple-green-sharp-green.jpg",
+                "https://1256852360.rsc.cdn77.org/en/170459/converse-one-star-ox-apple-green-sharp-green.jpg",
                 "id");
 
 

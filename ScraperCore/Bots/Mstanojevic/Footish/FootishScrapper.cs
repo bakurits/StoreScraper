@@ -15,7 +15,7 @@ namespace StoreScraper.Bots.Mstanojevic.Footish
     public class FootishScrapper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Footish.se";
-        public override string WebsiteBaseUrl { get; set; } = "http://www.footish.se";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.footish.se";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";
@@ -25,7 +25,7 @@ namespace StoreScraper.Bots.Mstanojevic.Footish
             listOfProducts = new List<Product>();
 
   
-            string restApiUrl = "http://www.footish.se/Services/Rest/v2/json/en-GB/EUR/search/full/" + settings.KeyWords + "/200/1";
+            string restApiUrl = "https://www.footish.se/Services/Rest/v2/json/en-GB/EUR/search/full/" + settings.KeyWords + "/200/1";
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var response = Utils.GetParsedJson(client, restApiUrl, token);
             Console.WriteLine(response["TotalProducts"]);
@@ -102,7 +102,7 @@ namespace StoreScraper.Bots.Mstanojevic.Footish
                 JObject obj = JObject.Parse(trimmed);
 
                 string productId = obj["ProductId"].ToString();
-                string restApiUrl = "http://www.footish.se/Services/Rest/v2/json/en-GB/EUR/products/"+productId;
+                string restApiUrl = "https://www.footish.se/Services/Rest/v2/json/en-GB/EUR/products/"+productId;
                 //Console.WriteLine(restApiUrl);
                 var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
                 var response = Utils.GetParsedJson(client, restApiUrl, token);

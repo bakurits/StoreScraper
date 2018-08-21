@@ -29,9 +29,9 @@ namespace ScraperTest.ScraperTests.Bakurits
         public void GetProductDetailsTest()
         {
             Product curProduct = new Product(new AntonioliScraper(), "Unknown",
-                "http://www.antonioli.eu/en/GE/women/products/jc8230w115-black",
+                "https://www.antonioli.eu/en/GE/women/products/jc8230w115-black",
                 420,
-                "http://d3hed5rtv63hp1.cloudfront.net/products/280972/large/JC8230W115-BLACK-6014.jpg?1519741368",
+                "https://d3hed5rtv63hp1.cloudfront.net/products/280972/large/JC8230W115-BLACK-6014.jpg?1519741368",
                 "id");
 
 

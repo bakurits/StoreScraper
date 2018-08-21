@@ -12,7 +12,7 @@ namespace StoreScraper.Bots.Mstanojevic.FootShop
     public class FootShopScrapper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "FootShop";
-        public override string WebsiteBaseUrl { get; set; } = "http://www.footshop.eu";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.footshop.eu";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";
@@ -24,7 +24,7 @@ namespace StoreScraper.Bots.Mstanojevic.FootShop
 
             string gender = "male";
 
-            string restApiUrl = "http://www.footshop.eu/en/?controller=products&listing_type=search&listing_type_id=0&search_query=" + settings.KeyWords + "&page=1";
+            string restApiUrl = "https://www.footshop.eu/en/?controller=products&listing_type=search&listing_type_id=0&search_query=" + settings.KeyWords + "&page=1";
 
             if (gender != null)
             {

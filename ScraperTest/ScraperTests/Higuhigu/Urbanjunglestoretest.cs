@@ -26,7 +26,7 @@ namespace ScraperTest.ScraperTests.Higuhigu
             UrbanjunglestoreScraper scraper = new UrbanjunglestoreScraper();
             Product curProduct = new Product(scraper, 
                 "Nike Air Jordan Wmns 1 Retro",
-                "http://www.urbanjunglestore.com/it/nike-wmns-air-jordan-1-retro-low-ns-ah7232-623.html",
+                "https://www.urbanjunglestore.com/it/nike-wmns-air-jordan-1-retro-low-ns-ah7232-623.html",
                 1,
                 "whatever",
                 "whatever",
@@ -40,7 +40,7 @@ namespace ScraperTest.ScraperTests.Higuhigu
         }
 
         // Nike Air Jordan Wmns 1 Retro
-        // "http://www.urbanjunglestore.com/it/nike-wmns-air-jordan-1-retro-low-ns-ah7232-623.html"
+        // "https://www.urbanjunglestore.com/it/nike-wmns-air-jordan-1-retro-low-ns-ah7232-623.html"
         // new Product(this, name, url, price, imageUrl, url, "EUR")
     }
 

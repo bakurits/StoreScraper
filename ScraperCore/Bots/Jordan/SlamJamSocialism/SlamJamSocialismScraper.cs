@@ -17,10 +17,10 @@ namespace StoreScraper.Bots.Jordan.SlamJamSocialism
     public class SlamJamSocialismScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "SlamJamSocialism";
-        public override string WebsiteBaseUrl { get; set; } = "http://slamjamsocialism.com/";
+        public override string WebsiteBaseUrl { get; set; } = "https://slamjamsocialism.com/";
         public override bool Active { get; set; }
         
-        private const string SearchUrl = @"http://www.slamjamsocialism.com/module/ambjolisearch/jolisearch?search_query={0}";
+        private const string SearchUrl = @"https://www.slamjamsocialism.com/module/ambjolisearch/jolisearch?search_query={0}";
         
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
@@ -62,7 +62,7 @@ namespace StoreScraper.Bots.Jordan.SlamJamSocialism
                 
               
                
-                var page = GetWebpage("http://www.slamjamsocialism.com/module/ambjolisearch/jolisearch?search_query="+settings.KeyWords+"&p="+x.ToString(), token);
+                var page = GetWebpage("https://www.slamjamsocialism.com/module/ambjolisearch/jolisearch?search_query="+settings.KeyWords+"&p="+x.ToString(), token);
                
                 var results =  page.SelectNodes("//div[contains(@class, 'product-container')]");
                 foreach (var item in results)

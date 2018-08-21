@@ -27,7 +27,7 @@ namespace ScraperTest.ScraperTests.Bakurits
         public void GetProductDetailsTest()
         {
             Product curProduct = new Product(new ShelflifeScraper(), "INCOTEX Slim - Fit Pleated Brushed Stretch - Cotton Trousers",
-                "http://www.shelflife.co.za/products/Nike-Air-More-Money-Olive",
+                "https://www.shelflife.co.za/products/Nike-Air-More-Money-Olive",
                 2399,
                 "pics/product/large/aj2998-200-side.jpg",
                 "id");

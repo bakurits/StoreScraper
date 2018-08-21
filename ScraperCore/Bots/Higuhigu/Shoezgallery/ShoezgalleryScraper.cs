@@ -14,10 +14,10 @@ namespace StoreScraper.Bots.Higuhigu.Shoezgallery
     public class ShoezgalleryScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Shoezgallery";
-        public override string WebsiteBaseUrl { get; set; } = "http://www.shoezgallery.com";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.shoezgallery.com";
         public override bool Active { get; set; }
 
-        private const string SearchFormat = @"http://www.shoezgallery.com/en/recherche?orderby=date&orderway=desc&r=true&search_query=sneaker&submit_search={0}";
+        private const string SearchFormat = @"https://www.shoezgallery.com/en/recherche?orderby=date&orderway=desc&r=true&search_query=sneaker&submit_search={0}";
       
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {

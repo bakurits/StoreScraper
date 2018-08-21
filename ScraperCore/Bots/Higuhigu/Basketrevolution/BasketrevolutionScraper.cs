@@ -15,10 +15,10 @@ namespace StoreScraper.Bots.Higuhigu.Basketrevolution
     public class BasketrevolutionScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Basketrevolution";
-        public override string WebsiteBaseUrl { get; set; } = "http://www.basketrevolution.es";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.basketrevolution.es";
         public override bool Active { get; set; }
 
-        private const string SearchFormat = @"http://www.basketrevolution.es/catalogsearch/result/index/?dir=asc&limit=all&order=created_at&q={0}";
+        private const string SearchFormat = @"https://www.basketrevolution.es/catalogsearch/result/index/?dir=asc&limit=all&order=created_at&q={0}";
        
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {

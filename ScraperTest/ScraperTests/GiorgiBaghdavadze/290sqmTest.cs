@@ -22,7 +22,7 @@ namespace ScraperTest.ScraperTests.GiorgiBaghdavadze
         {
             var product = new Product()
             {
-                Url = "http://ist.290sqm.com/index.php?route=product/product&product_id=12445&search=t-shirt",
+                Url = "https://ist.290sqm.com/index.php?route=product/product&product_id=12445&search=t-shirt",
                 ScrapedBy = Scraper
             };
 

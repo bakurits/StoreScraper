@@ -16,10 +16,10 @@ namespace StoreScraper.Bots.Jordan.BounceWear
     public class BounceWearScrape: ScraperBase
     {
         public override string WebsiteName { get; set; } = "BounceWear";
-        public override string WebsiteBaseUrl { get; set; } = "http://bouncewear.com/";
+        public override string WebsiteBaseUrl { get; set; } = "https://bouncewear.com/";
         public override bool Active { get; set; }
         
-        private const string SearchUrl = "http://bouncewear.com/search";
+        private const string SearchUrl = "https://bouncewear.com/search";
         
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {

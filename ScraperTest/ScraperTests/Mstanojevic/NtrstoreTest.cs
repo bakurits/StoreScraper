@@ -27,7 +27,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         public void GetProductDetailsTest()
         {
         /*Product curProduct = new Product(new NtrstoreScraper(), "Unknown",
-            "http://www.ntrstore.com/nike-flyknit-lunar-3",
+            "https://www.ntrstore.com/nike-flyknit-lunar-3",
             420,
             "",
             "id");
@@ -46,7 +46,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         
 
             Product curProduct = new Product(new NtrstoreScraper(), "Unknown",
-            "http://www.ntrstore.com/air-180-og-white-ultramarine",
+            "https://www.ntrstore.com/air-180-og-white-ultramarine",
             420,
             "",
             "id");

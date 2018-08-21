@@ -10,9 +10,9 @@ namespace StoreScraper.Bots.Bakurits.Shelflife
 {
     public class ShelflifeScraper : ScraperBase
     {
-        private const string SearchFormat = "http://www.shelflife.co.za/Search?search={0}";
+        private const string SearchFormat = "https://www.shelflife.co.za/Search?search={0}";
         public override string WebsiteName { get; set; } = "Shelflife";
-        public override string WebsiteBaseUrl { get; set; } = "http://www.shelflife.co.za/";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.shelflife.co.za/";
         public override bool Active { get; set; }
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,

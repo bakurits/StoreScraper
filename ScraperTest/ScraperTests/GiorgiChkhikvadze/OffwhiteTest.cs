@@ -25,7 +25,7 @@ namespace ScraperTest.ScraperTests.GiorgiChkhikvadze
         public void TestGetDetails()
         {
 
-            var details = new OffWhiteScraper().GetProductDetails("http://www.off---white.com/en/GE/men/products/omel003e180260109901#image-0", CancellationToken.None);
+            var details = new OffWhiteScraper().GetProductDetails("https://www.off---white.com/en/GE/men/products/omel003e180260109901#image-0", CancellationToken.None);
             Console.WriteLine(details);
         }
 
@@ -33,7 +33,7 @@ namespace ScraperTest.ScraperTests.GiorgiChkhikvadze
         public void TestGetDetails2()
         {
             var scraper = new OffWhiteScraper {Active = true};
-            var details = scraper.GetProductDetails("http://www.off---white.com/en/GE/men/products/omel003e180260109901#image-0", CancellationToken.None);
+            var details = scraper.GetProductDetails("https://www.off---white.com/en/GE/men/products/omel003e180260109901#image-0", CancellationToken.None);
 
             Console.WriteLine(string.Join(" ", details.SizesList));
         }
