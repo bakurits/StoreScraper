@@ -16,10 +16,10 @@ namespace StoreScraper.Bots.Jordan.Byparra
     public class ByparraScraper: ScraperBase
     {
         public override string WebsiteName { get; set; } = "Byparra";
-        public override string WebsiteBaseUrl { get; set; } = "http://byparra.com/";
+        public override string WebsiteBaseUrl { get; set; } = "https://byparra.com/";
         public override bool Active { get; set; }
         
-        private const string SearchUrl = @"http://byparra.com/?q={0}";
+        private const string SearchUrl = @"https://byparra.com/?q={0}";
         
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
@@ -65,7 +65,7 @@ namespace StoreScraper.Bots.Jordan.Byparra
 
         private double GetPrice(string url, CancellationToken token)
         {
-            var urlNew = "http://byparra.com" + url.Substring(1);
+            var urlNew = "https://byparra.com" + url.Substring(1);
             var resp = GetWebpage(urlNew, token);    
             var price = resp.SelectSingleNode("//p[contains(@class, 'price')]/b").InnerHtml;
             return ParsePrice(price);
@@ -109,7 +109,7 @@ namespace StoreScraper.Bots.Jordan.Byparra
             var product = resp.SelectSingleNode("//div[contains(@class, 'row col-wrap')]");
             var name = product.SelectSingleNode("//h2[1]").InnerHtml;
             var price = Utils.ParsePrice(product.SelectSingleNode("//p[contains(@class, 'price')][1]/b").InnerHtml);
-            var imgurl = "http://byparra.com" + product
+            var imgurl = "https://byparra.com" + product
                              .SelectSingleNode("//div[@class='item active'][1]/img[@class='img-responsive'][1]")
                              .GetAttributeValue("src", null);
             var sizes = product.SelectSingleNode("//select[contains(@class,'form-control')][1]");

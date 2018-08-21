@@ -280,9 +280,9 @@ namespace StoreScraper.Bots.Sticky_bit.ChampsSports_EastBay
                 {
                     Match firstMatch = modelRegex.Match(script);
                     string afterModel = script.Substring(firstMatch.Index);
-                    string afterBracket = afterModel.Substring(afterModel.IndexOf("{"));
-                    string betweenModels = afterBracket.Substring(0, afterBracket.IndexOf("var model"));
-                    string JSONString = betweenModels.Substring(0, betweenModels.LastIndexOf("}")+1);
+                    string afterBracket = afterModel.Substring(afterModel.IndexOf("{", StringComparison.Ordinal));
+                    string betweenModels = afterBracket.Substring(0, afterBracket.IndexOf("var model", StringComparison.Ordinal));
+                    string JSONString = betweenModels.Substring(0, betweenModels.LastIndexOf("}", StringComparison.Ordinal)+1);
                     return JObject.Parse(JSONString);
                 }
             }
@@ -353,14 +353,14 @@ namespace StoreScraper.Bots.Sticky_bit.ChampsSports_EastBay
 
         public class ChampsSportsScraper : FootSimpleBase
         {
-            public ChampsSportsScraper() : base("ChampsSports", "http://www.champssports.com")
+            public ChampsSportsScraper() : base("ChampsSports", "https://www.champssports.com")
             {
             }
         }
 
         public class EastBayScraper : FootSimpleBase
         {
-            public EastBayScraper() : base("EastBay", "http://www.eastbay.com")
+            public EastBayScraper() : base("EastBay", "https://www.eastbay.com")
             {
             }
         }

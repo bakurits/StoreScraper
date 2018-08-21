@@ -27,7 +27,7 @@ namespace ScraperTest.ScraperTests.Higuhigu
             ChmielnaScraper scraper = new ChmielnaScraper();
             Product curProduct = new Product(scraper,
                 "Nike Air Jordan Wmns 1 Retro",
-                "http://chmielna20.pl/en/puma-x-fenty-chelsea-sneaker-boot-sterling-blue-36626601.html",
+                "https://chmielna20.pl/en/puma-x-fenty-chelsea-sneaker-boot-sterling-blue-36626601.html",
                 1,
                 "whatever",
                 "whatever",

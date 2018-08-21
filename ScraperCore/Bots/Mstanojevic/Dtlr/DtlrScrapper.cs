@@ -15,7 +15,7 @@ namespace StoreScraper.Bots.Mstanojevic.Dtlr
     public class DtlrScrapper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "DTLR";
-        public override string WebsiteBaseUrl { get; set; } = "http://www.dtlr.com";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.dtlr.com";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";

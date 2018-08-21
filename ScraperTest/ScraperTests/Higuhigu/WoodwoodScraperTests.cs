@@ -29,7 +29,7 @@ namespace ScraperTest.ScraperTests.Higuhigu
             WoodwoodScraper scraper = new WoodwoodScraper();
             Product curProduct = new Product(scraper,
                 "Whatever",
-                "http://www.woodwood.com/commodity/5598-double-a-joel-jacket",
+                "https://www.woodwood.com/commodity/5598-double-a-joel-jacket",
                 1,
                 "whatever",
                 "whatever",

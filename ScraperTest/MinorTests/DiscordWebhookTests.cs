@@ -2,18 +2,17 @@
 using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StoreScraper.Bots.Bakurits.Mrporter;
 using StoreScraper.Bots.Bakurits.Shelflife;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
 namespace ScraperTest.MinorTests
 {
-    [TestClass()]
-    public class SlackWebHookTests
+    [TestClass]
+    public class DiscordWebhookTests
     {
-        [TestMethod()]
-        public void PostMessageTest()
+        [TestMethod]
+        public void SendTest()
         {
             ProductDetails productDetails = new ProductDetails
             {
@@ -31,11 +30,18 @@ namespace ScraperTest.MinorTests
                     new StringPair() {Key = "XXL", Value = "1"}
                 }
             };
-            var task = new SlackPoster().PostMessage("https://hooks.slack.com/services/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", productDetails, CancellationToken.None);
+            var task = new DiscordPoster().PostMessage(
+                "https://discordapp.com/api/webhooks/468240680414609429/kKJB9L4I8AfQWWDcqf0vpAj9OYDqxLAJ9gHl1b2B5xg8c5X2Ic4FpcSHAE8_0vKqZBoP",
+                productDetails, CancellationToken.None);
 
-            Debug.WriteLine(task.Result.Content.ReadAsStringAsync().Result);
-
-            task.Result.EnsureSuccessStatusCode();
+            try
+            {
+                task.Result.EnsureSuccessStatusCode();
+            }
+            finally
+            {
+                Debug.WriteLine(task.Result.Content.ReadAsStringAsync().Result);
+            }
         }
     }
 }

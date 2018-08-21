@@ -23,7 +23,7 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze
     public class OffWhiteScraper : ScraperBase
     {
         public sealed override string WebsiteName { get; set; } = "Off---white";
-        public sealed override string WebsiteBaseUrl { get; set; } = "http://Off---white.com";
+        public sealed override string WebsiteBaseUrl { get; set; } = "https://Off---white.com";
 
         private bool _active;
 
@@ -48,7 +48,7 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze
         [Browsable(false)]
         public List<string> CurrentCart { get; set; } = new List<string>();
 
-        private const string SearchUrlFormat = @"http://www.off---white.com/en/US/search?q={0}";
+        private const string SearchUrlFormat = @"https://www.off---white.com/en/US/search?q={0}";
 
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings
@@ -144,7 +144,7 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze
         /// <param name="item"></param>
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
-            var url = "http://www.off---white.com" + item.SelectSingleNode("./a").GetAttributeValue("href", "");
+            var url = "https://www.off---white.com" + item.SelectSingleNode("./a").GetAttributeValue("href", "");
             string name = item.SelectSingleNode("./a/figure/figcaption/div").InnerText;
             var priceNode = item.SelectSingleNode("./a/figure/figcaption/div[4]/span[1]/strong");
 
@@ -231,7 +231,7 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze
             var engine = new Jurassic.ScriptEngine();
             engine.SetGlobalValue("interop", "15");
 
-            var task = client.GetAsync("http://www.off---white.com/en/US/", HttpCompletionOption.ResponseContentRead, token);
+            var task = client.GetAsync("https://www.off---white.com/en/US/", HttpCompletionOption.ResponseContentRead, token);
 
             using (var result = task.Result)
             {
@@ -241,12 +241,12 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze
 
                 using (var message = new HttpRequestMessage())
                 {
-                    message.Headers.Referrer = new Uri("http://www.off---white.com/en/US/");
+                    message.Headers.Referrer = new Uri("https://www.off---white.com/en/US/");
                     message.Headers.Add("Accept", "image/webp,image/apng,image/*,*/*;q=0.8");
                     message.Method = HttpMethod.Get;
-                    message.RequestUri = new Uri("http://www.off---white.com/favicon.ico");
+                    message.RequestUri = new Uri("https://www.off---white.com/favicon.ico");
 
-                    //client.DefaultRequestHeaders.TryAddWithoutValidation("Referer", "http://www.off---white.com/en/US/");
+                    //client.DefaultRequestHeaders.TryAddWithoutValidation("Referer", "https://www.off---white.com/en/US/");
                     //client.DefaultRequestHeaders.Remove("Accept");
                     //client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "image/webp,image/apng,image/*,*/*;q=0.8");
 
@@ -280,10 +280,10 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze
                 using (var message2 = new HttpRequestMessage())
                 {
                 
-                    message2.Headers.Referrer = new Uri("http://www.off---white.com/en/US/");
+                    message2.Headers.Referrer = new Uri("https://www.off---white.com/en/US/");
                     message2.RequestUri =
                         new Uri(
-                            $"http://www.off---white.com/cdn-cgi/l/chk_jschl?jschl_vc={answer}&pass={pass}&jschl_answer={calc}");
+                            $"https://www.off---white.com/cdn-cgi/l/chk_jschl?jschl_vc={answer}&pass={pass}&jschl_answer={calc}");
                     message2.Method = HttpMethod.Get;
 
                     using (var resultTask = client.SendAsync(message2, token))

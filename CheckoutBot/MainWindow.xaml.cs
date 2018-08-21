@@ -40,15 +40,15 @@ namespace CheckoutBot
             successfulItems.Add(new TaskItem() { Keywords = "puma", Size = 8, Retries = "0", Status = "Done", ListImage = "/images/list_done.png" });
             successfulTaks.ItemsSource = successfulItems;
             List<TokenItem> tokenItems = new List<TokenItem>();
-            tokenItems.Add(new TokenItem() { Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
-            tokenItems.Add(new TokenItem() { Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
-            tokenItems.Add(new TokenItem() { Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
-            tokenItems.Add(new TokenItem() { Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
-            tokenItems.Add(new TokenItem() { Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
-            tokenItems.Add(new TokenItem() { Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
-            tokenItems.Add(new TokenItem() { Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
-            tokenItems.Add(new TokenItem() { Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
-            tokenItems.Add(new TokenItem() { Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
+            tokenItems.Add(new TokenItem() { Site = "https://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
+            tokenItems.Add(new TokenItem() { Site = "https://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
+            tokenItems.Add(new TokenItem() { Site = "https://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
+            tokenItems.Add(new TokenItem() { Site = "https://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
+            tokenItems.Add(new TokenItem() { Site = "https://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
+            tokenItems.Add(new TokenItem() { Site = "https://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
+            tokenItems.Add(new TokenItem() { Site = "https://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
+            tokenItems.Add(new TokenItem() { Site = "https://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
+            tokenItems.Add(new TokenItem() { Site = "https://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
             tokens.ItemsSource = tokenItems;
 
             foreach (var item in Enum.GetValues(typeof(Countries)))
