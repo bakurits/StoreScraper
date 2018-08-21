@@ -34,6 +34,9 @@ namespace CheckoutBot.Core
                 if(!(guestCheckout.ProductToBuy.ScrapedBy is IGuestCheckouter checkouter)) throw new InvalidOperationException();
 
                 
+            }else if (CheckoutInfo is AccountCheckoutSettings accountCheckout)
+            {
+                if(!(accountCheckout.ProductToBuy.ScrapedBy is IAccountCheckouter checkouter)) throw new InvalidOperationException();
             }
         }
     }
