@@ -29,7 +29,6 @@ namespace StoreScraper.Bots.Jordan.Ruvilla
             listOfProducts = new List<Product>();
             GetProductDetails("http://www.ruvilla.com/new-balance-m530-st-jude-m530sjy.html", token);
 
-            return;
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             GetWebpage(client, WebsiteBaseUrl, token);
             listOfProducts = new List<Product>();

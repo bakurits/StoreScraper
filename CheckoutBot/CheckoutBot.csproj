@@ -127,6 +127,10 @@
     <Compile Include="CheckoutBots\FootSites\EastBay\EastBayBot.cs" />
     <Compile Include="CheckoutBots\FootSites\FootAction\FootActionBot.cs" />
     <Compile Include="CheckoutBots\FootSites\FootLocker\FootLockerBot.cs" />
+    <Compile Include="CheckoutBots\FootSites\FootSiteBaseParts\FootSiteBotBase.Checkout.cs" />
+    <Compile Include="CheckoutBots\FootSites\FootSiteBaseParts\FootSitesBotBase.Login.cs" />
+    <Compile Include="CheckoutBots\FootSites\FootSiteBaseParts\FootSitesBotBase.ShippingPayment.cs" />
+    <Compile Include="CheckoutBots\FootSites\FootSiteBaseParts\FootSteBase.AddToCard.cs" />
     <Compile Include="CheckoutBots\FootSites\FootSitesBotBase.cs" />
     <Compile Include="Core\ProductMonitoringTask.cs" />
     <Compile Include="Env.cs" />
