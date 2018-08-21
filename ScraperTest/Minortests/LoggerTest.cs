@@ -13,7 +13,7 @@ namespace ScraperTest.MinorTests
         public void TestSnapshotSave()
         {
             Logger logger = new Logger();
-            string html = new WebClient().DownloadString("http://www.google.com/");
+            string html = new WebClient().DownloadString("https://www.google.com/");
             var document = new HtmlDocument();
             document.LoadHtml(html);
             logger.SaveHtmlSnapshop(document);
