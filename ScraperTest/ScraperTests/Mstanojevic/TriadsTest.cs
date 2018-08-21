@@ -27,9 +27,9 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         public void GetProductDetailsTest()
         {
             Product curProduct = new Product(new TriadsScrapper(), "Unknown",
-                "https://www.triads.co.uk/triads-mens-c1/footwear-c24/trainers-c211/thunder-desert-bright-white-p85358",
+                "http://www.triads.co.uk/triads-mens-c1/footwear-c24/trainers-c211/thunder-desert-bright-white-p85358",
                 420,
-                "https://www.triads.co.uk/images/products/medium/1533740596-00841700.jpg",
+                "http://www.triads.co.uk/images/products/medium/1533740596-00841700.jpg",
                 "id");
 
 

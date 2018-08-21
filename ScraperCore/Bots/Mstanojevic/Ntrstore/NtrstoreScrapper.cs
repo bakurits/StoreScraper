@@ -15,7 +15,7 @@ namespace StoreScraper.Bots.Mstanojevic.Ntrstore
     public class NtrstoreScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "NTR store";
-        public override string WebsiteBaseUrl { get; set; } = "https://www.ntrstore.com";
+        public override string WebsiteBaseUrl { get; set; } = "http://www.ntrstore.com";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";

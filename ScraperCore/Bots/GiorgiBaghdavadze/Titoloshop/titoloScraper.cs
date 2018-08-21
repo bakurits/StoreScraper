@@ -17,14 +17,14 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.TitoloShop
     public  class TitoloScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Titoloshop";
-        public override string WebsiteBaseUrl { get; set; } = "https://en.titoloshop.com";
+        public override string WebsiteBaseUrl { get; set; } = "http://en.titoloshop.com";
         public override bool Active { get; set; }
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
             var searchUrl =
-                $"https://en.titoloshop.com/catalogsearch/result/index/?dir=desc&order=created_at&q={settings.KeyWords}";
+                $"http://en.titoloshop.com/catalogsearch/result/index/?dir=desc&order=created_at&q={settings.KeyWords}";
             var request = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = request.GetDoc(searchUrl, token);
             Logger.Instance.WriteErrorLog("Unexpected html!");

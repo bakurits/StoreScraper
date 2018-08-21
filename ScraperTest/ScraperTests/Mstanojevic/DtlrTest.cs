@@ -26,7 +26,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         public void GetProductDetailsTest()
         {
             Product curProduct = new Product(new DtlrScrapper(), "Unknown",
-                "https://www.dtlr.com/nike-air-huarache-run-ultra-gs-847569-600.html",
+                "http://www.dtlr.com/nike-air-huarache-run-ultra-gs-847569-600.html",
                 0,
                 "",
                 "id");

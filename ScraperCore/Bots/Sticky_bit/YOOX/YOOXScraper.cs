@@ -34,7 +34,7 @@ namespace StoreScraper.Bots.Sticky_bit.YOOX
         public YOOXScraper()
         {
             this.WebsiteName = "YOOX";
-            this.WebsiteBaseUrl = "https://www.yoox.com/us";
+            this.WebsiteBaseUrl = "http://www.yoox.com/us";
             this.Active = true;
         }
 

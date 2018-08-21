@@ -30,7 +30,7 @@ namespace StoreScraper.Bots.Sticky_bit.BSTN
         public BSTNScraper()
         {
             this.WebsiteName = "BSTN";
-            this.WebsiteBaseUrl = "https://www.bstn.com/";
+            this.WebsiteBaseUrl = "http://www.bstn.com/";
             this.Active = true;
         }
 

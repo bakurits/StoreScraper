@@ -15,10 +15,10 @@ namespace StoreScraper.Bots.Higuhigu.Ycmc
     public class YcmcScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Ycmc";
-        public override string WebsiteBaseUrl { get; set; } = "https://www.ycmc.com/";
+        public override string WebsiteBaseUrl { get; set; } = "http://www.ycmc.com/";
         public override bool Active { get; set; }
 
-        private const string SearchFormat = @"https://www.ycmc.com/new-arrivals.html?limit=120";
+        private const string SearchFormat = @"http://www.ycmc.com/new-arrivals.html?limit=120";
         private const string priceRegex = "\\$(\\d+(\\.\\d+)?)";
 
 

@@ -27,7 +27,7 @@ namespace ScraperTest.ScraperTests.Higuhigu
             YcmcScraper scraper = new YcmcScraper();
             Product curProduct = new Product(scraper,
                 "Whatever",
-                "https://www.ycmc.com/new-arrivals/adibreak-romper.html",
+                "http://www.ycmc.com/new-arrivals/adibreak-romper.html",
                 1,
                 "whatever",
                 "whatever",

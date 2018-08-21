@@ -27,7 +27,7 @@ namespace ScraperTest.ScraperTests.Higuhigu
             EinhalbScraper scraper = new EinhalbScraper();
             Product curProduct = new Product(scraper,
                 "Nike Air Jordan Wmns 1 Retro",
-                "https://www.43einhalb.com/en/nike-air-jordan-1-retro-high-premium-white-221783",
+                "http://www.43einhalb.com/en/nike-air-jordan-1-retro-high-premium-white-221783",
                 1,
                 "whatever",
                 "whatever",

@@ -26,7 +26,7 @@ namespace ScraperTest.ScraperTests.Higuhigu
             NighshopScraper scraper = new NighshopScraper();
             Product curProduct = new Product(scraper,
                 "Nike Air Jordan Wmns 1 Retro",
-                "https://www.nighshop.com/adidas-by-raf-simons-replicant-ozweego-belgium-schwarz-rot-gelb-f34234",
+                "http://www.nighshop.com/adidas-by-raf-simons-replicant-ozweego-belgium-schwarz-rot-gelb-f34234",
                 1,
                 "whatever",
                 "whatever",
