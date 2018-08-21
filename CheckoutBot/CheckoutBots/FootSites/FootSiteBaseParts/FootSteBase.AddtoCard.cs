@@ -13,7 +13,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
     {
         /// <summary>
         /// Adds product specified in settings to cart.
-        /// Will be called imediately when product will get available.
+        /// Will be called immediately when product will get available.
         /// </summary>
         /// <param name="client"></param>
         /// <param name="settings"></param>

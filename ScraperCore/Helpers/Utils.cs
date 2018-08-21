@@ -183,7 +183,7 @@ namespace StoreScraper.Helpers
                 {
                     if (i == maxTries - 1)
                     {
-                        Logger.Instance.WriteErrorLog($"Can't connect to webiste url: {url}. ErrorMessage: {e.Message}");
+                        Logger.Instance.WriteErrorLog($"Can't connect to website url: {url}. ErrorMessage: {e.Message}");
                         throw;
                     }
                 }
@@ -194,8 +194,8 @@ namespace StoreScraper.Helpers
 
             }
 
-            Logger.Instance.WriteErrorLog($"Can't connect to webiste url: {url}");
-            throw new WebException($"Can't connect to webiste url: {url}");
+            Logger.Instance.WriteErrorLog($"Can't connect to website url: {url}");
+            throw new WebException($"Can't connect to website url: {url}");
         }
 
         public static HttpClient AddCookies(this HttpClient client, params Cookie[] cookies)
@@ -241,8 +241,8 @@ namespace StoreScraper.Helpers
 
 
         /// <summary>
-        /// Method return currency string by recognising
-        /// the first charracter in the price string
+        /// Method return currency string by recognizing
+        /// the first character in the price string
         /// consider adding more currency strings
         /// in the cases
         /// </summary>
@@ -320,20 +320,20 @@ namespace StoreScraper.Helpers
 
         public static JObject GetFirstJson(string str)
         {
-            int firstCrlBracInd = str.IndexOf("{", StringComparison.Ordinal);
-            if (firstCrlBracInd == -1)
+            int firstCrlBraInd = str.IndexOf("{", StringComparison.Ordinal);
+            if (firstCrlBraInd == -1)
             {
                 return JObject.Parse("{}");
             }
 
             int cnt = 1;
-            for (int i = firstCrlBracInd + 1; i < str.Length; i++)
+            for (int i = firstCrlBraInd + 1; i < str.Length; i++)
             {
                 if (str[i] == '{') cnt++;
                 if (str[i] == '}') cnt--;
                 if (cnt == 0)
                 {
-                    return JObject.Parse(str.Substr(firstCrlBracInd, i));
+                    return JObject.Parse(str.Substr(firstCrlBraInd, i));
                 }
             }
             return JObject.Parse("{}");

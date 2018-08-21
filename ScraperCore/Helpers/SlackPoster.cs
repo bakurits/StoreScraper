@@ -24,7 +24,7 @@ namespace StoreScraper.Helpers
 
         public async Task<HttpResponseMessage> PostMessage(string apiUrl, ProductDetails productDetails, CancellationToken token)
         {
-            const string formater = @"{{
+            const string formatter = @"{{
                 ""attachments"": [
                     {{
                         ""fallback"": ""{3}"",
@@ -49,7 +49,7 @@ namespace StoreScraper.Helpers
                                  $"*Store link*:\\n{productDetails.Url}\\n" +
                                  $"*Available sizes are*:\\n{sizes}\\n";
 
-            string myJson = string.Format(formater, productDetails.Url, textMessage, productDetails.ImageUrl, name, DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds);
+            string myJson = string.Format(formatter, productDetails.Url, textMessage, productDetails.ImageUrl, name, DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds);
 
             return await PostMessageAsync(myJson, apiUrl, token);
         }

@@ -14,7 +14,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
     {
         /// <summary>
         /// Fills information about shipping and payment in current session.
-        /// Will be called imediately obtaining session cookies.
+        /// Will be called immediately obtaining session cookies.
         /// Will be called only in guest checkout.
         /// </summary>
         /// <param name="client">HttpClient in which session cookies is already generated</param>

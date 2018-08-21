@@ -53,8 +53,8 @@ namespace CheckoutBot.CheckoutBots.FootSites
 
             if (task.IsFaulted) throw new JsonException("Can't get data");
 
-            var produtData = Utils.GetFirstJson(task.Result).GetValue("releases");
-            var products = GetProducts(produtData);
+            var productData = Utils.GetFirstJson(task.Result).GetValue("releases");
+            var products = GetProducts(productData);
             return products;
         }
 
@@ -92,7 +92,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
         {
             if (productData["name"].Type != JTokenType.Null)
                 return (string) productData["name"];
-            return "Not Avaliable";
+            return "Not Available";
         }
 
         private double GetPrice(JToken productData)
@@ -106,14 +106,14 @@ namespace CheckoutBot.CheckoutBots.FootSites
         {
             if (productData["buyNowURL"].Type != JTokenType.Null)
                 return ((string) productData["buyNowURL"]).StringBefore("/?sid=");
-            return "Not Avaliable";
+            return "Not Available";
         }
 
         private string GetImage(JToken productData)
         {
             if (productData["primaryImageURL"].Type != JTokenType.Null)
                 return (string) productData["primaryImageURL"];
-            return "Not Avaliable";
+            return "Not Available";
         }
 
         private DateTime GetDate(JToken productData)

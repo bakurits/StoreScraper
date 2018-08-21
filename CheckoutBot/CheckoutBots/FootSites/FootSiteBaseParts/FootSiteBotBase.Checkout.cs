@@ -12,7 +12,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
     {
         /// <summary>
         /// Does final checkout post request simulation.
-        /// Wll be called imediately when product released, after AddtoCart 
+        /// Wll be called immediately when product released, after AddtoCart 
         /// </summary>
         /// <param name="client"></param>
         protected void Checkout(HttpClient client)

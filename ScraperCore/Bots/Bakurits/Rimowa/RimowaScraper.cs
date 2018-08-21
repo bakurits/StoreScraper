@@ -22,7 +22,7 @@ namespace StoreScraper.Bots.Bakurits.Rimowa
         public override Type SearchSettingsType { get; set; } = typeof(SearchSettingsBase);
 
 
-        private const string Searchformat = @"http://www.rimowa.com/search?q={0}&srule=newest&sz=12&start={1}&format=page-element";
+        private const string SearchFormat = @"http://www.rimowa.com/search?q={0}&srule=newest&sz=12&start={1}&format=page-element";
         
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
@@ -32,7 +32,7 @@ namespace StoreScraper.Bots.Bakurits.Rimowa
             int seenProducts = 0;
             for (int i = 0; seenProducts < MaxItemCount; i++)
             {
-                string url = string.Format(Searchformat, settings.KeyWords, i * 12);
+                string url = string.Format(SearchFormat, settings.KeyWords, i * 12);
                 urls.Add(url);
                 seenProducts += 12;
             }
