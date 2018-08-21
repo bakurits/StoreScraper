@@ -36,7 +36,11 @@ namespace CheckoutBot.CheckoutBots.FootSites
 
         public abstract void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token);
         public abstract void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token);
-        public abstract HttpClient Login(string username, string password);
+
+        public HttpClient Login(string username, string password)
+        {
+            throw new NotImplementedException();
+        }
 
         public List<Product> ScrapeReleasePage(CancellationToken token)
         {
