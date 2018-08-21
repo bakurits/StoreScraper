@@ -27,7 +27,7 @@ namespace ScraperTest.ScraperTests.Higuhigu
             ShoezgalleryScraper scraper = new ShoezgalleryScraper();
             Product curProduct = new Product(scraper,
                 "Nike Air Jordan Wmns 1 Retro",
-                "http://www.shoezgallery.com/en/p9727-plato-sneaker-satellite-no-name-plato-sneaker-bandana-black?search_query=sneaker&results=13",
+                "https://www.shoezgallery.com/en/p9727-plato-sneaker-satellite-no-name-plato-sneaker-bandana-black?search_query=sneaker&results=13",
                 1,
                 "whatever",
                 "whatever",

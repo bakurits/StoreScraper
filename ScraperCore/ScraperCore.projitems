@@ -82,6 +82,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Http\FirefoxHttpClientStorage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ISearchSettingsValidator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IWebHookPoster.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IWebsiteScraper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Info.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Price.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Product.cs" />

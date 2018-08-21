@@ -14,7 +14,7 @@ namespace StoreScraper.Core
         public SearchSettingsBase SearchSettings { get; set; }
 
         /// <summary>
-        /// Type of this is list of lists because separate list is for each store.
+        /// TypeOfPayment of this is list of lists because separate list is for each store.
         /// </summary>
         public List<List<Product>> OldItems { get; set; } = new List<List<Product>>();
 
@@ -33,19 +33,14 @@ namespace StoreScraper.Core
         {
             List<Product> lst = null;
 
-            for (var i = 0; i < AppSettings.Default.ProxyRotationRetryCount/2; i++)
+            try
             {
-                try
-                {
-                    store.ScrapeItems(out lst, SearchSettings, token);
-                    Logger.Instance.WriteVerboseLog($"{store.WebsiteName} search success! found {lst.Count} products!!");
-                    break;
-                }
-                catch (Exception e)
-                {
-                    Logger.Instance.WriteErrorLog($"{store.WebsiteName} search failed rotating proxy.. \n Error msg: {e}");
-                    if (i == 4) return;
-                }
+                store.ScrapeItems(out lst, SearchSettings, token);
+                Logger.Instance.WriteVerboseLog($"{store.WebsiteName} search success! found {lst.Count} products!!");
+            }
+            catch (Exception e)
+            {
+                Logger.Instance.WriteErrorLog($"{store.WebsiteName} search failed!!\n Error msg: {e}");
             }
 
             Logger.Instance.WriteVerboseLog($"({SearchSettings}) epoch completed");

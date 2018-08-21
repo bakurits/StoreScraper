@@ -19,10 +19,10 @@ namespace StoreScraper.Core
         public DateTime LastSnapshotSave { get; set; }
         public event ColoredLogHandler OnLogged;
 
-        private const int MaxLogBytes = 1024 * 1024 * 10;
-        private const string SnapshotFolderName = "HtmlSnapshots";
-        private const string LogsFolderName = "Logs";
-        private const int SnapshotSaveTimeoutSeconds = 5;
+        public const int MaxLogBytes = 1024 * 1024 * 10;
+        public const string SnapshotFolderName = "HtmlSnapshots";
+        public const string LogsFolderName = "Logs";
+        public const int SnapshotSaveTimeoutSeconds = 5;
 
         public Logger()
         {

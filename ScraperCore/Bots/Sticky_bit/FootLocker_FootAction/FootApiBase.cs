@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Xml;
 using HtmlAgilityPack;
@@ -46,31 +47,33 @@ namespace FootLocker_FootAction
             }
             string searchUrl = WebsiteBaseUrl + $"/api/products/search?currentPage=0&pageSize=50&sort=newArrivals&query={settings.KeyWords}%3Arelevance";
             if (gender != FootApiSearchSettings.GenderEnum.Any)
-                searchUrl += $"3Agender%{gender.GetDescription()}";
-            using (var client = ClientFactory.CreateProxiedHttpClient().AddHeaders(ClientFactory.JsonXmlAcceptHeader))
+            searchUrl += $"3Agender%{gender.GetDescription()}";
+            var client = ClientFactory.GetProxiedFirefoxClient();
+            var message = new HttpRequestMessage();
+            message.Method = HttpMethod.Get;
+            message.RequestUri = new Uri(searchUrl);
+            message.Headers.Add("Accept", ClientFactory.JsonXmlAcceptHeader.Value);
+            var responseText = client.SendAsync(message, token).Result.Content.ReadAsStringAsync().Result;
+            var xmlDocument = new XmlDocument();
+            xmlDocument.LoadXml(responseText);
+            var products = xmlDocument.SelectNodes("productCategorySearchPage/products");
+            if (products == null)
             {
-                var responseText = client.GetAsync(searchUrl, token).Result.Content.ReadAsStringAsync().Result;
-                var xmlDocument = new XmlDocument();
-                xmlDocument.LoadXml(responseText);
-                var products = xmlDocument.SelectNodes("productCategorySearchPage/products");
-                if (products == null)
-                {
-                    Logger.Instance.WriteVerboseLog("[Error] Uncexpected XML!!");
-                    throw new WebException("Undexpected XML");
-                }
+                Logger.Instance.WriteVerboseLog("[Error] Uncexpected XML!!");
+                throw new WebException("Undexpected XML");
+            }
 
-                int sum = 0;
+            int sum = 0;
 
-                foreach (XmlNode singleContact in products)
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (sum > 50) break;
+            foreach (XmlNode singleContact in products)
+            {
+                token.ThrowIfCancellationRequested();
+                if (sum > 50) break;
 #if DEBUG
-                    LoadSingleProduct(listOfProducts, settings, singleContact, ref sum);
+                LoadSingleProduct(listOfProducts, settings, singleContact, ref sum);
 #else
                 LoadSingleProductTryCatchWraper(listOfProducts, settings, singleContact, ref sum);
 #endif
-                }
             }
         }
 

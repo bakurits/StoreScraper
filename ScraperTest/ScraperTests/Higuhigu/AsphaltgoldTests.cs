@@ -29,7 +29,7 @@ namespace ScraperTest.ScraperTests.Higuhigu
             AsphaltgoldScraper scraper = new AsphaltgoldScraper();
             Product curProduct = new Product(scraper,
                 "Whatever",
-                "http://asphaltgold.de/en/nike-s-s-top-taped-poly-sail-black.html",
+                "https://asphaltgold.de/en/nike-s-s-top-taped-poly-sail-black.html",
                 1,
                 "whatever",
                 "whatever",

@@ -24,6 +24,8 @@ namespace StoreScraper.Http.Factory
 
         public static StringPair JsonXmlAcceptHeader = ("Accept", "application/xml, application/json");
 
+        public static StringPair JsonAcceptHeader = ("Accept", "application/json");
+
         public static StringPair HtmlOnlyHeader = ("Accept", "text/html");
 
         public static StringPair FirefoxUserAgentHeader = ("User-Agent",
@@ -98,15 +100,22 @@ namespace StoreScraper.Http.Factory
         public static WebProxy ParseProxy(string proxy)
         {
 
-            var tokens = proxy.Split(':');
-            if (tokens.Length > 3)
+            try
             {
-                var password = tokens[tokens.Length - 1];
-                var userName = tokens[tokens.Length - 2];
-                var address = new UriBuilder(string.Join(":", tokens, 0, tokens.Length - 2)).Uri;
-                var cred = new NetworkCredential(userName, password);
+                var tokens = proxy.Split(':');
+                if (tokens.Length > 3)
+                {
+                    var password = tokens[tokens.Length - 1];
+                    var userName = tokens[tokens.Length - 2];
+                    var address = new UriBuilder(string.Join(":", tokens, 0, tokens.Length - 2)).Uri;
+                    var cred = new NetworkCredential(userName, password);
 
-                return new WebProxy(address, true, null, cred);
+                    return new WebProxy(address, true, null, cred);
+                }
+            }
+            catch
+            {
+               //
             }
 
             try
@@ -124,6 +133,28 @@ namespace StoreScraper.Http.Factory
             if (!AppSettings.Default.UseProxy || AppSettings.Default.Proxies.Count <= 0) return null;
             var proxyStr = AppSettings.Default.Proxies[random.Next(AppSettings.Default.Proxies.Count - 1)];
             return ParseProxy(proxyStr);
+        }
+
+
+        public static FirefoxDriver CreateFirefoxDriver(bool headless = true)
+        {
+            var proxy = GetRandomProxy();
+
+            FirefoxOptions options = new FirefoxOptions()
+            {
+                Proxy = new Proxy()
+                {
+                    IsAutoDetect = false,
+                    Kind = ProxyKind.Manual,
+                    HttpProxy = proxy.Address.AbsoluteUri,
+                    SslProxy =  proxy.Address.AbsoluteUri
+                },
+            };
+
+            options.AddArguments("-private", "-new-instance");
+            if(headless) options.AddArgument("-headless");
+
+            return new FirefoxDriver(options);
         }
 
         /// <summary>
@@ -155,7 +186,6 @@ namespace StoreScraper.Http.Factory
                 AllowAutoRedirect = true,
             };
 
-            handler.ServerCertificateCustomValidationCallback = (message, certificate2, arg3, arg4) => true;
 
             if (proxy != null)
             {

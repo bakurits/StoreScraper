@@ -27,7 +27,7 @@ namespace ScraperTest.ScraperTests.Higuhigu
             OverkillScraper scraper = new OverkillScraper();
             Product curProduct = new Product(scraper,
                 "Whatever",
-                "http://www.overkillshop.com/en/adidas-wmns-track-top-dh4196.html",
+                "https://www.overkillshop.com/en/adidas-wmns-track-top-dh4196.html",
                 1,
                 "whatever",
                 "whatever",

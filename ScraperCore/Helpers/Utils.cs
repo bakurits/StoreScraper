@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -347,5 +348,38 @@ namespace StoreScraper.Helpers
                     NullValueHandling = NullValueHandling.Ignore
                 });
         }
+
+        public static void TrySeveralTimes(Action action, int attemptCount)
+        {
+            for (int i = 0; i < attemptCount; i++)
+            {
+                try
+                {
+                    action();
+                }
+                catch
+                {
+                    if (i == attemptCount - 1) throw;
+                }
+            }
+        }
+
+        public static object TrySeveralTimes(Func<object> action, int attemptCount)
+        {
+            for (int i = 0; i < attemptCount; i++)
+            {
+                try
+                {
+                    return action();
+                }
+                catch
+                {
+                    if (i == attemptCount - 1) throw;
+                }
+            }
+
+            return null;
+        }
+
     }
 }

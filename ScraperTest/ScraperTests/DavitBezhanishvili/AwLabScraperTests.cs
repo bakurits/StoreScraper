@@ -31,7 +31,7 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
         {
             var scraper = new AwLabScraper();
        
-            var testUrl = "http://en.aw-lab.com/shop/women/sales/diadora-game-l-low-5041641";
+            var testUrl = "https://en.aw-lab.com/shop/women/sales/diadora-game-l-low-5041641";
 
             var details = scraper.GetProductDetails(testUrl, CancellationToken.None);
             Debug.WriteLine(details.Currency);

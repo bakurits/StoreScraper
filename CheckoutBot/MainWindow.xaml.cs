@@ -257,13 +257,13 @@ namespace CheckoutBot
                 ccType = CardType.AmericanExpress;
             }
 
-            var creditCard = new CardInfo()
+            var creditCard = new Card()
             {
-                CardNumber = cardNumber.Text,
+                Id = cardNumber.Text,
                 CSC = cardCSC.Text,
                 ValidUntil = new DateTime(int.Parse(cardExpYear.Text), int.Parse(cardExpMonth.Text), 1),
                 CardHolderName = cardHolder.Text,
-                Type = ccType
+                TypeOfCard = ccType
             };
 
             Profile profile = new Profile()

@@ -1,27 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Xml.Serialization;
+using Newtonsoft.Json;
 using ScraperCore;
 using StoreScraper.Models;
 
 
 namespace StoreScraper
 {
+    [JsonObject]
     [Serializable]
     public class AppSettings
     {
-        public const string DataFileName = "config.xml";
+        public const string DataFileName = "config.json";
         public static AppSettings Default;
         public static string DataDir;
-        [XmlIgnore] public static string DataFilePath;
-
+        [JsonIgnore]
         [XmlIgnore] 
+        public static string DataFilePath;
+
+        [XmlIgnore]
+        [JsonIgnore]
         [Browsable(false)] 
         public List<ScraperBase> AvailableScrapers;
 
         public static int InitialBrowserCount { get; set; } = 0;
+
 
         [Browsable(false)]
         public List<string> Proxies { get; set; } = new List<string>();
@@ -41,7 +48,7 @@ namespace StoreScraper
         {
             DataDir = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                Env.ProductName);
+                "StoreScraper");
 
             DataFilePath = Path.Combine(DataDir, DataFileName);
         }
@@ -55,30 +62,36 @@ namespace StoreScraper
                 return new AppSettings();
             }
 
-            var serializer = new XmlSerializer(typeof(AppSettings));
-            using ( var stream = new FileStream(DataFilePath, FileMode.Open))
+
+            var jsonData = File.ReadAllText(DataFilePath);
+
+            try
             {
-                try
-                {
-                    var data = serializer.Deserialize(stream) as AppSettings;
-                    return data;
-                }
-                catch
-                {
-                    File.Delete(DataFilePath);
-                    return new AppSettings();
-                } 
+                var data = JsonConvert.DeserializeObject<AppSettings>(jsonData);
+                return data;
             }
+            catch
+            {
+                //ignored
+            } 
+           
+
+            try
+            {
+                File.Delete(DataFilePath);
+            }
+            catch
+            {
+                //ingored
+            }
+            return new AppSettings();
         }
 
 
         public void Save()
         {
-            var serializer = new XmlSerializer(typeof(AppSettings));
-            using (var stream = new FileStream(DataFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite))
-            {
-                serializer.Serialize(stream, this); 
-            }
+            var jsonData = JsonConvert.SerializeObject(this);
+            File.WriteAllText(DataFilePath,jsonData);
         }
     }
 }

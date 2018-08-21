@@ -18,10 +18,10 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 {
     public class EastBayBot : FootSitesBotBase
     {
-        private const string ApiUrl  = "https://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/1";
+        private const string ApiUrl  = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/1";
 
 
-        public EastBayBot() : base("EastBay", "https://www.eastbay.com", ApiUrl)
+        public EastBayBot() : base("EastBay", "http://www.eastbay.com", ApiUrl)
         {
 
         }
@@ -56,7 +56,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 //                "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0_3 like Mac OS X) AppleWebKit/604.1.34 (KHTML, like Gecko) GSA/37.1.171590344 Mobile/15A432 Safari/604.1"));
             var ignore = client.GetDoc(WebsiteBaseUrl, CancellationToken.None);
             var requestKey = GetRequestKey(client);
-            string url = "https://www.eastbay.com/account/gateway";
+            string url = "http://www.eastbay.com/account/gateway";
             LoginRequestData requestData = new LoginRequestData()
             {
                 Email = username,
@@ -73,7 +73,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             string res = "";
             client.DefaultRequestHeaders.Clear();
 
-            string url1 = "https://www.eastbay.com/akam/10/781257a1";
+            string url1 = "http://www.eastbay.com/akam/10/781257a1";
 
             var newHeader = new StringPair[]
             {
@@ -82,7 +82,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
                 (@"Accept", @"*/*"),
                 (@"Accept-Encoding", @"gzip, deflate, br"),
                 (@"Accept-Language", @"en-US,en;q=0.5"),
-                (@"Referer", @"https://www.eastbay.com/"),
+                (@"Referer", @"http://www.eastbay.com/"),
                 (@"Cache-Control", @"no-cache"),
                 (@"Connection", @"keep-alive"),
                 (@"Pragma", @"no-cache"),
@@ -98,7 +98,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             client.DefaultRequestHeaders.Add(@"X-Requested-With", @"XMLHttpRequest");
 
             string url =
-                $"https://www.champssports.com/account/gateway?action=requestKey&_={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+                $"http://www.champssports.com/account/gateway?action=requestKey&_={DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
 
             var resp = client.GetAsync(url);
             resp.Result.EnsureSuccessStatusCode();
@@ -108,7 +108,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             //    message.Headers.Clear();
             //    message.Headers.TryAddWithoutValidation("Accept", "application/json, text/javascript, */*; q=0.01");
             //    message.Headers.TryAddWithoutValidation("X-Requested-With", "XMLHttpRequest");
-            //    message.Headers.Referrer = new Uri("https://www.eastbay.com/");
+            //    message.Headers.Referrer = new Uri("http://www.eastbay.com/");
             //    message.Method = HttpMethod.Get;
                
             //    message.RequestUri = new Uri(url);

@@ -269,7 +269,7 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze
                 script = script.Replace("a.value", "interop");
                 script = script.Replace("t = document.createElement('div');", string.Empty);
                 script = script.Replace("t.innerHTML=\"<a href='/'>x</a>\";", string.Empty);
-                script = script.Replace("t = t.firstChild.href", "t='https://www.off---white.com/';");
+                script = script.Replace("t = t.firstChild.href", "t='http://www.off---white.com/';");
 
 
 

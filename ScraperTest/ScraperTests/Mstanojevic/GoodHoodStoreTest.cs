@@ -27,9 +27,9 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         public void GetProductDetailsTest()
         {
             Product curProduct = new Product(new GoodHoodStoreScrapper(), "Zoom Fly BeTrue - White/Black-Palest Purple",
-                "http://goodhoodstore.com/store/nike-zoom-fly-betrue-white-black-palest-purple-38067",
+                "https://goodhoodstore.com/store/nike-zoom-fly-betrue-white-black-palest-purple-38067",
                 420,
-                "http://assets.cdn.goodhoodstore.com/products/38544/medium/VANS_GOODHOOD_AW17_147-2.jpg",
+                "https://assets.cdn.goodhoodstore.com/products/38544/medium/VANS_GOODHOOD_AW17_147-2.jpg",
                 "id");
 
 

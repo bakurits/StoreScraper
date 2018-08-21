@@ -4,16 +4,18 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ScraperCore.Interfaces;
+using StoreScraper.Core;
 using StoreScraper.Models;
 
 namespace StoreScraper
 {
-    public abstract class ScraperBase
+    public abstract class ScraperBase : IWebsiteScraper
     {
         [Browsable(false)] public abstract string WebsiteName { get; set; }
 
         /// <summary>
-        /// Full url of website https://example.com.
+        /// Full url of website http://example.com.
         /// </summary>
         public abstract string WebsiteBaseUrl { get; set; }
 
@@ -57,16 +59,36 @@ namespace StoreScraper
         /// <param name="token"></param>
         public void ScrapeItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
+            listOfProducts = new List<Product>();
             List<Product> products = new List<Product>();
-            listOfProducts = products;
+            List<Exception> exceptions = new List<Exception>();
             settings.KeyWords.Split(',').AsParallel().ForAll(k =>
             {
                 k = k.Trim();
                 var s = (SearchSettingsBase)settings.Clone();
                 s.KeyWords = k;
-                FindItems(out var list, s, token);
-                products.AddRange(list);
+                for (int i = 0; i < AppSettings.Default.ProxyRotationRetryCount; i++)
+                {
+                    try
+                    {
+                        FindItems(out var list, s, token);
+                        products.AddRange(list);
+                        break;
+                    }
+                    catch(Exception e)
+                    {
+                        if (i == AppSettings.Default.ProxyRotationRetryCount - 1)
+                        {
+                            Logger.Instance.WriteErrorLog($"Error while search {WebsiteName} with keyword {k}");
+                            exceptions.Add(e);
+                        }
+                    }
+                }
+
+                if(exceptions.Count > 0) throw new AggregateException(exceptions);
             });
+
+            listOfProducts.AddRange(products);
         }
 
         public virtual void Initialize()

@@ -40,7 +40,8 @@ namespace StoreScraper.Bots.Sticky_bit.BSTN
             int closeLiCnt = 0;
 
             byte[] arrayOfMyString = Encoding.UTF8.GetBytes(html);
-            using (var memoryStream = new MemoryStream(arrayOfMyString))
+            
+            using(var memoryStream = new MemoryStream(arrayOfMyString))
             {
                 using (var reader = new StreamReader(memoryStream))
                 {
@@ -76,6 +77,7 @@ namespace StoreScraper.Bots.Sticky_bit.BSTN
 
             HtmlNode container = null;
             HtmlNode node = InitialNavigation(searchUrl, token);
+            if(!HTMLChecker(node.InnerHtml)) throw new Exception("Unexpected html");
             container = node.SelectSingleNode(UlXpath);
 
             HtmlNodeCollection children = container.SelectNodes("./li/div");

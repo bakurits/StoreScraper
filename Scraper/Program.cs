@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -31,24 +32,18 @@ namespace StoreScraper
 
             CookieCollector.Default = new CookieCollector();
             ServicePointManager.CheckCertificateRevocationList = false;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.SystemDefault;
-
             ServicePointManager.Expect100Continue = false;
 
 
             ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
 
             AppSettings.Default.AvailableScrapers = GetScrapers().ToList();
-            AppSettings.Default.AvailableScrapers.Sort((s1, s2) => string.Compare(s1.WebsiteName, s2.WebsiteName));
+            AppSettings.Default.AvailableScrapers.Sort((s1, s2) => string.CompareOrdinal(s1.WebsiteName, s2.WebsiteName));
 
             Application.Run(new MainForm());
         }
 
 
-        static void OnProcessExit(object sender, EventArgs e)
-        {
-            CookieCollector.Default.Dispose();
-        }
 
         public static IEnumerable<ScraperBase> GetScrapers()
         {
@@ -74,7 +69,7 @@ namespace StoreScraper
             try
             {
                 using (var client = new WebClient())
-                using (client.OpenRead("http://clients3.google.com/generate_204"))
+                using (client.OpenRead("https://clients3.google.com/generate_204"))
                 {
                     return true;
                 }
