@@ -61,6 +61,7 @@ namespace StoreScraper
         {
             listOfProducts = new List<Product>();
             List<Product> products = new List<Product>();
+            List<Exception> exceptions = new List<Exception>();
             settings.KeyWords.Split(',').AsParallel().ForAll(k =>
             {
                 k = k.Trim();
@@ -74,14 +75,17 @@ namespace StoreScraper
                         products.AddRange(list);
                         break;
                     }
-                    catch
+                    catch(Exception e)
                     {
                         if (i == AppSettings.Default.ProxyRotationRetryCount - 1)
                         {
-                            throw;
+                            Logger.Instance.WriteErrorLog($"Error while search {WebsiteName} with keyword {k}");
+                            exceptions.Add(e);
                         }
                     }
                 }
+
+                if(exceptions.Count > 0) throw new AggregateException(exceptions);
             });
 
             listOfProducts.AddRange(products);

@@ -135,6 +135,28 @@ namespace StoreScraper.Http.Factory
             return ParseProxy(proxyStr);
         }
 
+
+        public static FirefoxDriver CreateFirefoxDriver(bool headless = true)
+        {
+            var proxy = GetRandomProxy();
+
+            FirefoxOptions options = new FirefoxOptions()
+            {
+                Proxy = new Proxy()
+                {
+                    IsAutoDetect = false,
+                    Kind = ProxyKind.Manual,
+                    HttpProxy = proxy.Address.AbsoluteUri,
+                    SslProxy =  proxy.Address.AbsoluteUri
+                },
+            };
+
+            options.AddArguments("-private", "-new-instance");
+            if(headless) options.AddArgument("-headless");
+
+            return new FirefoxDriver(options);
+        }
+
         /// <summary>
         /// Gets scrapping optimized http client.
         /// </summary>
@@ -164,7 +186,6 @@ namespace StoreScraper.Http.Factory
                 AllowAutoRedirect = true,
             };
 
-            handler.ServerCertificateCustomValidationCallback = (message, certificate2, arg3, arg4) => true;
 
             if (proxy != null)
             {

@@ -48,7 +48,7 @@ namespace StoreScraper
         {
             DataDir = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                Env.ProductName);
+                "StoreScraper");
 
             DataFilePath = Path.Combine(DataDir, DataFileName);
         }
