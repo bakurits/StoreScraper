@@ -27,9 +27,9 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         public void GetProductDetailsTest()
         {
             Product curProduct = new Product(new CruvoirScrapper(), "Unknown",
-                "http://cruvoir.com/collections/sneakers/products/black-pod-s3-1-sneaker",
+                "https://cruvoir.com/collections/sneakers/products/black-pod-s3-1-sneaker",
                 420,
-                "http://cdn.shopify.com/s/files/1/2666/2006/products/13029260_13855022_1000_1400x.jpg?v=1529190499",
+                "https://cdn.shopify.com/s/files/1/2666/2006/products/13029260_13855022_1000_1400x.jpg?v=1529190499",
                 "id");
 
 

@@ -25,7 +25,7 @@ namespace ScraperTest.ScraperTests.Higuhigu
         public void GetProductDetailsTest()
         {
             SoleboxScraper scraper = new SoleboxScraper();
-            ProductDetails details = scraper.GetProductDetails("http://www.solebox.com/en/Footwear/Basketball/Air-Jordan-1Retro-Hi-Premium.html", CancellationToken.None);
+            ProductDetails details = scraper.GetProductDetails("https://www.solebox.com/en/Footwear/Basketball/Air-Jordan-1Retro-Hi-Premium.html", CancellationToken.None);
             foreach (var sz in details.SizesList)
             {
                 Debug.WriteLine(sz);

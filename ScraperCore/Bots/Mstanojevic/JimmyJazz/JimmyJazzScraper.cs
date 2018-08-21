@@ -14,7 +14,7 @@ namespace StoreScraper.Bots.Mstanojevic.JimmyJazz
     public class JimmyJazzScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "JimmyJazz";
-        public override string WebsiteBaseUrl { get; set; } = "http://www.jimmyjazz.com";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.jimmyjazz.com";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";
@@ -116,7 +116,7 @@ namespace StoreScraper.Bots.Mstanojevic.JimmyJazz
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, string gender, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = "http://search.jimmyjazz.com/search/keywords-"+settings.KeyWords.Replace(" ", "_") + "--res_per_page-100";
+            string url = "https://search.jimmyjazz.com/search/keywords-"+settings.KeyWords.Replace(" ", "_") + "--res_per_page-100";
 
             if (settings.MaxPrice > 0)
             {   

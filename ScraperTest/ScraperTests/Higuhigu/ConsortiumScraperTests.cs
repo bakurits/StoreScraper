@@ -29,7 +29,7 @@ namespace ScraperTest.ScraperTests.Higuhigu
             ConsortiumScraper scraper = new ConsortiumScraper();
             Product curProduct = new Product(scraper,
                 "Whatever",
-                "http://www.consortium.co.uk/adidas-originals-nmd-racer-primeknit-grey-one-grey-one-solar-pink.html",
+                "https://www.consortium.co.uk/adidas-originals-nmd-racer-primeknit-grey-one-grey-one-solar-pink.html",
                 1,
                 "whatever",
                 "whatever",

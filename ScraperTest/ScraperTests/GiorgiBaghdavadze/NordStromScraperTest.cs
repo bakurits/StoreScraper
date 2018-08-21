@@ -24,7 +24,7 @@ namespace ScraperTest.ScraperTests.GiorgiBaghdavadze
         {
             var product = new Product()
             {
-                Url = "http://shop.nordstrom.com/s/tory-burch-miller-flip-flop-women/2963432",
+                Url = "https://shop.nordstrom.com/s/tory-burch-miller-flip-flop-women/2963432",
                 ScrapedBy = Scraper
             };
 

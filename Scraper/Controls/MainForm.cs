@@ -89,7 +89,10 @@ namespace StoreScraper.Controls
             scraper.ScrapeItems(out var products, convertedFilter, _findTokenSource.Token);
             if (AppSettings.Default.PostStartMessage)
             {
-               products.ForEach(product => PostProduct(product.GetDetails(_findTokenSource.Token)));
+                products.AsParallel().ForAll( product =>
+                {
+                    PostProduct(product.GetDetails(_findTokenSource.Token));
+                });
             }
 
 

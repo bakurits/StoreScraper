@@ -25,7 +25,7 @@ namespace ScraperTest.ScraperTests.GiorgiBaghdavadze
         {
             var product = new Product()
             {
-                Url = "http://en.titoloshop.com/air-force-1-07-lv8-just-do-it-lntc",
+                Url = "https://en.titoloshop.com/air-force-1-07-lv8-just-do-it-lntc",
                 ScrapedBy = scraper
             };
 

@@ -12,7 +12,7 @@ namespace StoreScraper.Bots.Mstanojevic.UebervartShop
     public class UebervartShopScrapper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "UebervartShop";
-        public override string WebsiteBaseUrl { get; set; } = "http://www.uebervart-shop.de";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.uebervart-shop.de";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";

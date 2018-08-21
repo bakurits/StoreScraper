@@ -41,7 +41,7 @@ namespace StoreScraper.Helpers
 
 
             string currency = productDetails.Currency.HtmlDeEntitize();
-            string name = productDetails.Name.EscapeNewLines().HtmlDeEntitize();
+            string name = productDetails.Name.HtmlDeEntitize().EscapeNewLines();
             string sizes = string.Join("\\n ",
                 productDetails.SizesList.Select(sizInfo => $"{sizInfo.Key}[{sizInfo.Value}]".HtmlDeEntitize()));
 
@@ -56,7 +56,8 @@ namespace StoreScraper.Helpers
 
         public async Task<HttpResponseMessage> PostMessageAsync(string messageJson, string apiUrl, CancellationToken token)
         {
-            return await ClientFactory.GeneralClient.PostAsync(apiUrl, new StringContent(messageJson, Encoding.UTF8, "application/json"), token);
+            var content = new StringContent(messageJson, Encoding.UTF8, "application/json");
+            return await ClientFactory.GeneralClient.PostAsync(apiUrl, content, token);
         }
 
 

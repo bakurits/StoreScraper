@@ -17,16 +17,16 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
     public class SneakerStudioScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "SneakerStudio";
-        public override string WebsiteBaseUrl { get; set; } = "http://sneakerstudio.com";
+        public override string WebsiteBaseUrl { get; set; } = "https://sneakerstudio.com";
         public override bool Active { get; set; }
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
             var searchUrl =
-                new Uri("http://sneakerstudio.com/settings.php?sort_order=date-d&curr=USD");
+                new Uri("https://sneakerstudio.com/settings.php?sort_order=date-d&curr=USD");
 
-            var referer = new Uri($"http://sneakerstudio.com/search.php?text={settings.KeyWords}");
+            var referer = new Uri($"https://sneakerstudio.com/search.php?text={settings.KeyWords}");
 
             var client = ClientFactory.GetProxiedFirefoxClient();
             HttpRequestMessage message = new HttpRequestMessage();
@@ -124,7 +124,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
         private HtmlNode GetWebpage(string url, CancellationToken token)
         {
             var searchUrl =
-                new Uri("http://sneakerstudio.com/settings.php?curr=USD");
+                new Uri("https://sneakerstudio.com/settings.php?curr=USD");
 
             var referer = new Uri(url);
 

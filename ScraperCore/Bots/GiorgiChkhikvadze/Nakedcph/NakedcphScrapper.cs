@@ -17,7 +17,7 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze.Nakedcph
     public class NakedcphScrapper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Nakedcph";
-        public override string WebsiteBaseUrl { get; set; } = "http://www.nakedcph.com";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.nakedcph.com";
         public override bool Active { get; set; }
 
 
@@ -25,7 +25,7 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze.Nakedcph
         {
             listOfProducts = new List<Product>();
             var searchUrl =
-                $"http://www.nakedcph.com/search/searchbytext/{settings.KeyWords}/1?orderBy=Published";
+                $"https://www.nakedcph.com/search/searchbytext/{settings.KeyWords}/1?orderBy=Published";
             var request = ClientFactory.GetProxiedFirefoxClient(autoCookies:true);
             var document = request.GetDoc(searchUrl, token);
             var nodes = document.DocumentNode.SelectSingleNode("//div[@id='products']");
