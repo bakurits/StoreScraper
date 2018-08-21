@@ -299,7 +299,7 @@ namespace StoreScraper.Controls
 
         private void Btn_SaveRestart_Click(object sender, EventArgs e)
         {
-            AppSettings.Default.Save();
+            Btn_Save_Click(null, null);
             this.Hide();
             Process.Start(Application.ExecutablePath);
             Application.Exit();
