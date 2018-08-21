@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
+using CheckoutBot.Models.Checkout;
 using StoreScraper.Models;
 
 namespace CheckoutBot.CheckoutBots.FootSites.FootAction

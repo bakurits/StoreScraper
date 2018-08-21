@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
+using CheckoutBot.Models.Checkout;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ScraperCore.Interfaces;

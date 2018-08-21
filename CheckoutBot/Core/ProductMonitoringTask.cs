@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
+using CheckoutBot.Models.Checkout;
 using StoreScraper.Models;
 
 namespace CheckoutBot.Core

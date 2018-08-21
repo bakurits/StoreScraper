@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CheckoutBot.Models;
+using CheckoutBot.Models.Checkout;
 using HtmlAgilityPack;
 using StoreScraper.Models;
 

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Controls;
 using CheckoutBot.Models;
+using CheckoutBot.Models.Checkout;
 using Jurassic.Library;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

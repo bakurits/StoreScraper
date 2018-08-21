@@ -8,7 +8,7 @@ namespace CheckoutBot.Captcha
 {
     public abstract class CaptchaAPIBase
     {
-        private string _apiKey;
+        protected string _apiKey;
 
         public CaptchaAPIBase(string apiKey)
         {

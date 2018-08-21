@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using CheckoutBot.Captcha;
+using HtmlAgilityPack;
+using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 
 namespace CheckoutBot.TwoCaptcha 
@@ -11,11 +15,11 @@ namespace CheckoutBot.TwoCaptcha
     {
         public override bool GetCaptchaResponse(string siteKey, string url, out string result)
         {
-            string requestUrl = "http://2captcha.com/in.php?key=" + _apiKey + "&method=userrecaptcha&googlekey=" + site_key + "&pageurl=" + url;
+            string requestUrl = "http://2captcha.com/in.php?key=" + _apiKey + "&method=userrecaptcha&googlekey=" + siteKey + "&pageurl=" + url;
 
             try
             {
-                HtmlNode node = GeneralClient.GetDoc(request_url).DocumentNode;
+                HtmlNode node = ClientFactory.GeneralClient.GetDoc(requestUrl, CancellationToken.None).DocumentNode;
                 string response = node.InnerHtml;
                 if (response.Length < 3)
                 {
@@ -31,7 +35,7 @@ namespace CheckoutBot.TwoCaptcha
 
                         for (int i = 0; i < 24; i++)
                         {
-                            HtmlNode answerNode = GeneralClient.GetDoc(secondRequestUrl).DocumentNode;
+                            HtmlNode answerNode = ClientFactory.GeneralClient.GetDoc(secondRequestUrl, CancellationToken.None).DocumentNode;
                             string answerResponse = answerNode.InnerHtml;
 
                             if (answerResponse.Length < 3)
@@ -70,6 +74,10 @@ namespace CheckoutBot.TwoCaptcha
             catch { }
             result = "Unknown error";
             return false;
+        }
+
+        public TwoCaptchaAPI(string apiKey) : base(apiKey)
+        {
         }
     }
 }

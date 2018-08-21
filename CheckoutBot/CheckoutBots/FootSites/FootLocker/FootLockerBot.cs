@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using CheckoutBot.Models.Checkout;
+using System;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
-using CheckoutBot.Models;
 
 namespace CheckoutBot.CheckoutBots.FootSites.FootLocker
 {
