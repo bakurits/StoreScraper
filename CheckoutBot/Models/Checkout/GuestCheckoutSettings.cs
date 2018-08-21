@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CheckoutBot.Models.Payment;
+﻿using CheckoutBot.Models.Payment;
 using CheckoutBot.Models.Shipping;
 using StoreScraper.Models;
 
-namespace CheckoutBot.Models
+namespace CheckoutBot.Models.Checkout
 {
     public class GuestCheckoutSettings : ICheckoutSettings
     {

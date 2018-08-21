@@ -12,7 +12,5 @@ namespace CheckoutBot.Models.Shipping
         public string AddressLine2 { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-
-
     }
 }
