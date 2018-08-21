@@ -37,19 +37,6 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             throw new NotImplementedException();
         }
 
-        [JsonObject]
-        private class LoginRequestData
-        {
-            [JsonProperty("action")]
-            public string Action { get; set; } = "login";
-            [JsonProperty("email")]
-            public string Email { get; set; }
-            [JsonProperty("password")]
-            public string Password { get; set; }
-            [JsonProperty("requestKey")]
-            public string RequestKey { get; set; }
-        }
-       
 
 
         public EastBayBot(string websiteName, string webSiteBaseUrl, string releasePageEndpoint) : base(websiteName, webSiteBaseUrl, releasePageEndpoint)
