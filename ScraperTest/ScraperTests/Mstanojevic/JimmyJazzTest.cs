@@ -27,9 +27,9 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         public void GetProductDetailsTest()
         {
             Product curProduct = new Product(new JimmyJazzScraper(), "AIR MAX 95 OG",
-                "https://www.jimmyjazz.com/mens/footwear/nike-air-max-95-og/AT2865-100?color=White",
+                "http://www.jimmyjazz.com/mens/footwear/nike-air-max-95-og/AT2865-100?color=White",
                 420,
-                "https://44a54cd7e43cae68d339-79fdfac25b5b7a089d2cf87c8db56622.ssl.cf2.rackcdn.com/AH8396-102/AH8396-102_white_1000_1.jpg",
+                "http://44a54cd7e43cae68d339-79fdfac25b5b7a089d2cf87c8db56622.ssl.cf2.rackcdn.com/AH8396-102/AH8396-102_white_1000_1.jpg",
                 "id");
 
 

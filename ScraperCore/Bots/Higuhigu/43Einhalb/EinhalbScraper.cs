@@ -14,11 +14,11 @@ namespace StoreScraper.Bots.Higuhigu._43Einhalb
     public class EinhalbScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "43Einhalb";
-        public override string WebsiteBaseUrl { get; set; } = "https://www.43einhalb.com";
+        public override string WebsiteBaseUrl { get; set; } = "http://www.43einhalb.com";
 
         public override bool Active { get; set; }
 
-        private const string SearchFormat = @"https://www.43einhalb.com/en/search/{0}/page/1/sort/date_new/perpage/72";
+        private const string SearchFormat = @"http://www.43einhalb.com/en/search/{0}/page/1/sort/date_new/perpage/72";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {

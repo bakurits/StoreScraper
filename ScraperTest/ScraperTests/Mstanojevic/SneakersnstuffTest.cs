@@ -26,9 +26,9 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         public void GetProductDetailsTest()
         {
             Product curProduct = new Product(new SneakersnstuffScrapper(), "Unknown",
-                "https://www.sneakersnstuff.com/en/product/30856/nike-air-safari-se",
+                "http://www.sneakersnstuff.com/en/product/30856/nike-air-safari-se",
                 420,
-                "https://www.sneakersnstuff.com/images/205337/large.jpg",
+                "http://www.sneakersnstuff.com/images/205337/large.jpg",
                 "id");
 
 

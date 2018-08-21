@@ -32,7 +32,7 @@ namespace ScraperTest.ScraperTests.GiorgiChkhikvadze
         {
             var product = new Product()
             {
-                Url = "https://www.nakedcph.com/adidas-originals-t-shirt-ce1666/p/6724",
+                Url = "http://www.nakedcph.com/adidas-originals-t-shirt-ce1666/p/6724",
                 ScrapedBy = scrapper
             };
 

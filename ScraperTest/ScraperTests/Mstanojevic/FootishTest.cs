@@ -27,9 +27,9 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         public void GetProductDetailsTest()
         {
             Product curProduct = new Product(new FootishScrapper(), "Unknown",
-                "https://www.footish.se/en/sneakers/nike-air-footscape-nm-852629-001",
+                "http://www.footish.se/en/sneakers/nike-air-footscape-nm-852629-001",
                 420,
-                "https://www.footish.se/pub_images/large/nike-air-max-2017-at0044-001-p21554.jpg",
+                "http://www.footish.se/pub_images/large/nike-air-max-2017-at0044-001-p21554.jpg",
                 "30136");
 
 

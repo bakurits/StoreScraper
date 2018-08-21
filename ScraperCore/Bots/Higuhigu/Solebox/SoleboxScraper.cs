@@ -14,10 +14,10 @@ namespace StoreScraper.Bots.Higuhigu.Solebox
     public class SoleboxScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Solebox";
-        public override string WebsiteBaseUrl { get; set; } = "https://www.solebox.com";
+        public override string WebsiteBaseUrl { get; set; } = "http://www.solebox.com";
         public override bool Active { get; set; }
 
-        private const string SearchFormat = @"https://www.solebox.com/en/variant/?ldtype=grid&_artperpage=240&listorderby=oxinsert&listorder=desc&pgNr=0&searchparam={0}";
+        private const string SearchFormat = @"http://www.solebox.com/en/variant/?ldtype=grid&_artperpage=240&listorderby=oxinsert&listorder=desc&pgNr=0&searchparam={0}";
         private const string noResults = "Sorry, no results found for your searchterm";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)

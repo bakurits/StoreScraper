@@ -27,7 +27,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         public void GetProductDetailsTest()
         {
             Product curProduct = new Product(new ShinzoScrapper(), "Unknown",
-                "https://www.shinzo.paris/en/running-shoes/111-nike-air-zoom-vomero-12-863762-001.html?search_query=nike&results=906",
+                "http://www.shinzo.paris/en/running-shoes/111-nike-air-zoom-vomero-12-863762-001.html?search_query=nike&results=906",
                 420,
                 "",
                 "id");

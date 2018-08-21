@@ -30,7 +30,7 @@ namespace ScraperTest.ScraperTests.Higuhigu
             EndclothingScraper scraper = new EndclothingScraper();
             Product curProduct = new Product(scraper,
                 "Whatever",
-                "https://www.endclothing.com/us/air-jordan-12-retro-gg-510815-100.html",
+                "http://www.endclothing.com/us/air-jordan-12-retro-gg-510815-100.html",
                 1,
                 "whatever",
                 "whatever",

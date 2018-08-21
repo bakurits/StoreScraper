@@ -15,10 +15,10 @@ namespace StoreScraper.Bots.Higuhigu.Nighshop
     public class NighshopScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Nighshop";
-        public override string WebsiteBaseUrl { get; set; } = "https://www.nighshop.com/";
+        public override string WebsiteBaseUrl { get; set; } = "http://www.nighshop.com/";
         public override bool Active { get; set; }
 
-        private const string SearchFormat = @"https://www.nighshop.com/";
+        private const string SearchFormat = @"http://www.nighshop.com/";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {

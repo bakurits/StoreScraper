@@ -14,7 +14,7 @@ namespace StoreScraper.Bots.Mstanojevic.GoodHoodStore
     public class GoodHoodStoreScrapper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "GoodHoodStore";
-        public override string WebsiteBaseUrl { get; set; } = "https://www.goodhoodstore.com";
+        public override string WebsiteBaseUrl { get; set; } = "http://www.goodhoodstore.com";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";

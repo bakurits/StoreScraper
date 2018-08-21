@@ -13,7 +13,7 @@ namespace StoreScraper.Bots.Mstanojevic.Triads
     public class TriadsScrapper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Triads";
-        public override string WebsiteBaseUrl { get; set; } = "https://www.triads.co.uk";
+        public override string WebsiteBaseUrl { get; set; } = "http://www.triads.co.uk";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";
@@ -73,7 +73,7 @@ namespace StoreScraper.Bots.Mstanojevic.Triads
             };
 
             string id = productUrl.Substring(productUrl.Length - 5);
-            string restApiUrl = "https://www.triads.co.uk/ajax/get_product_options/"+id;
+            string restApiUrl = "http://www.triads.co.uk/ajax/get_product_options/"+id;
 
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var response = Utils.GetParsedJson(client, restApiUrl, token);

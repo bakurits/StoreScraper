@@ -14,13 +14,13 @@ namespace StoreScraper.Bots.Bakurits.Antonioli
     public class AntonioliScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Antonioli";
-        public override string WebsiteBaseUrl { get; set; } = "https://www.antonioli.eu";
+        public override string WebsiteBaseUrl { get; set; } = "http://www.antonioli.eu";
         public override bool Active { get; set; }
 
         public override Type SearchSettingsType { get; set; } = typeof(AntonioliSearchSettings);
 
 
-        private readonly string _searchformat = @"https://www.antonioli.eu/en/search?utf8=✓&q={0}&gender={1}";
+        private readonly string _searchformat = @"http://www.antonioli.eu/en/search?utf8=✓&q={0}&gender={1}";
         private static readonly string[] Gender = { "men", "women" };
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)

@@ -69,7 +69,7 @@ namespace StoreScraper
             try
             {
                 using (var client = new WebClient())
-                using (client.OpenRead("https://clients3.google.com/generate_204"))
+                using (client.OpenRead("http://clients3.google.com/generate_204"))
                 {
                     return true;
                 }
