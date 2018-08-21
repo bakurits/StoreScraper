@@ -140,6 +140,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Captcha\TwoCaptchaAPI.cs" />
+    <Compile Include="Captcha\CaptchaAPIBase.cs" />
     <Compile Include="CheckoutBots\FootSites\ChampsSports\ChampsSportsBot.cs" />
     <Compile Include="CheckoutBots\FootSites\EastBay\EastBayBot.cs" />
     <Compile Include="CheckoutBots\FootSites\FootAction\FootActionBot.cs" />

@@ -99,6 +99,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CaptchaTests\TwoCaptchaTest.cs" />
     <Compile Include="CheckoutBots\EastBay\EastBayBotTests.cs" />
     <Compile Include="MinorTests\UtilsTests.cs" />
     <Compile Include="MinorTests\SlackWebHookTests.cs" />
