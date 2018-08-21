@@ -15,7 +15,7 @@ namespace StoreScraper.Bots.Mstanojevic.Shinzo
     public class ShinzoScrapper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Shinzo";
-        public override string WebsiteBaseUrl { get; set; } = "https://www.shinzo.paris";
+        public override string WebsiteBaseUrl { get; set; } = "http://www.shinzo.paris";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";

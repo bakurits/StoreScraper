@@ -17,13 +17,13 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze._290sqm
     public class IstSqm : ScraperBase
     {
         public override string WebsiteName { get; set; } = "290sqm";
-        public override string WebsiteBaseUrl { get; set; } = "https://ist.290sqm.com";
+        public override string WebsiteBaseUrl { get; set; } = "http://ist.290sqm.com";
         public override bool Active { get; set; }
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
             var searchUrl =
-                $"https://ist.290sqm.com/index.php?route=product/search&search={settings.KeyWords}";
+                $"http://ist.290sqm.com/index.php?route=product/search&search={settings.KeyWords}";
             var request = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = request.GetDoc(searchUrl, token);
             Logger.Instance.WriteErrorLog("Unexpected html!");

@@ -14,10 +14,10 @@ namespace StoreScraper.Bots.Bakurits.Baitme
     public class BaitmeScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Bait";
-        public override string WebsiteBaseUrl { get; set; } = "https://www.baitme.com/";
+        public override string WebsiteBaseUrl { get; set; } = "http://www.baitme.com/";
         public override bool Active { get; set; }
 
-        private readonly string _urlFormat = @"https://www.baitme.com/catalogsearch/result/?q={0}";
+        private readonly string _urlFormat = @"http://www.baitme.com/catalogsearch/result/?q={0}";
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();

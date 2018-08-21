@@ -16,10 +16,10 @@ namespace StoreScraper.Models
     public class WebHook
     {
         [JsonIgnore]
-        private static readonly Uri _slackHookHost = new Uri("https://hooks.slack.com");
+        private static readonly Uri _slackHookHost = new Uri("http://hooks.slack.com");
 
         [JsonIgnore]
-        private static readonly Uri _discordHookHost = new Uri("https://discordapp.com");
+        private static readonly Uri _discordHookHost = new Uri("http://discordapp.com");
 
         [JsonIgnore]
         private static readonly SlackPoster _slackPoster = new SlackPoster();

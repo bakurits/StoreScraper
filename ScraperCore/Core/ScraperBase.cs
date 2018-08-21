@@ -15,7 +15,7 @@ namespace StoreScraper
         [Browsable(false)] public abstract string WebsiteName { get; set; }
 
         /// <summary>
-        /// Full url of website https://example.com.
+        /// Full url of website http://example.com.
         /// </summary>
         public abstract string WebsiteBaseUrl { get; set; }
 
