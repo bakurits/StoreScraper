@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using System.Threading;
@@ -18,8 +19,7 @@ namespace StoreScraper.Bots.Higuhigu.Urbanjunglestore
         public override string WebsiteBaseUrl { get; set; } = "http://www.urbanjunglestore.com";
         public override bool Active { get; set; }
 
-        private const string SearchFormat = @"http://www.urbanjunglestore.com/it/catalogsearch/result/?cat=137&q={0}";
-        private const string sizesRegex = "title=\"USA(\\d+(,\\d+)?)-EU(\\d+(,\\d+)?)\"";
+        private const string SearchFormat = @"https://www.urbanjunglestore.com/it/latest-products.html";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
@@ -87,7 +87,9 @@ namespace StoreScraper.Bots.Higuhigu.Urbanjunglestore
             var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
             if (Utils.SatisfiesCriteria(product, settings))
             {
-                listOfProducts.Add(product);
+                var keyWordSplit = settings.KeyWords.Split(' ');
+                if (keyWordSplit.All(keyWord => product.Name.ToLower().Contains(keyWord.ToLower())))
+                    listOfProducts.Add(product);
             }
         }
 
@@ -127,10 +129,10 @@ namespace StoreScraper.Bots.Higuhigu.Urbanjunglestore
             }
 
             var root = document.DocumentNode;
-            var name = root.SelectSingleNode("//h1[@itemprop='name']").InnerText.Trim();
+            var name = root.SelectSingleNode("//h1[@itemprop='name']")?.InnerText.Trim();
             var priceNode = root.SelectSingleNode("//div[@class='price-box']//span[@class='price'][last()]");
-            var price = Utils.ParsePrice(priceNode.InnerText);
-            var image = root.SelectSingleNode("//img[@id='image-main']").GetAttributeValue("src", null);
+            var price = Utils.ParsePrice(priceNode?.InnerText);
+            var image = root.SelectSingleNode("//img[@id='image-main']")?.GetAttributeValue("src", null);
 
             ProductDetails result = new ProductDetails()
             {
@@ -143,17 +145,21 @@ namespace StoreScraper.Bots.Higuhigu.Urbanjunglestore
                 ScrapedBy = this
             };
 
-            var jsonStr = Regex.Match(root.InnerHtml, @"var spConfig = new Product.Config\((.*)\)").Groups[1].Value;
-            var tokenStr = Regex.Match(jsonStr, "\"(\\d+)\":").Groups[1].Value;
-            JObject parsed = JObject.Parse(jsonStr);
-            var sizes = parsed.SelectToken("attributes").SelectToken(tokenStr).SelectToken("options");
-            foreach (JToken sz in sizes.Children())
+
+            if (root.InnerHtml.Contains("new Product.Config"))
             {
-                var sizeName = (string)sz.SelectToken("label");
-                JArray products = (JArray)sz.SelectToken("products");
-                if (products.Count > 0)
+                var jsonStr = Regex.Match(root.InnerHtml, @"var spConfig = new Product.Config\((.*)\)").Groups[1].Value;
+                var tokenStr = Regex.Match(jsonStr, "\"(\\d+)\":").Groups[1].Value;
+                JObject parsed = JObject.Parse(jsonStr);
+                var sizes = parsed.SelectToken("attributes").SelectToken(tokenStr).SelectToken("options");
+                foreach (JToken sz in sizes.Children())
                 {
-                    result.AddSize(sizeName, "Unknown");
+                    var sizeName = (string)sz.SelectToken("label");
+                    JArray products = (JArray)sz.SelectToken("products");
+                    if (products.Count > 0)
+                    {
+                        result.AddSize(sizeName, "Unknown");
+                    }
                 }
             }
             return result;

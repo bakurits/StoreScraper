@@ -124,10 +124,10 @@ namespace StoreScraper.Bots.Higuhigu._43Einhalb
             var sizeNodes = root.SelectNodes("//select[@class='customSelectBox']/option[@class='']");
             var sizes = sizeNodes?.Select(node => node.InnerText.Trim()).ToList();
 
-            var name = root.SelectSingleNode("//span[@class='productName']").InnerText.Trim();
+            var name = root.SelectSingleNode("//span[@class='productName']")?.InnerText.Trim();
             var priceNode = root.SelectSingleNode("//span[@itemprop='price']");
-            var price = Utils.ParsePrice(priceNode.InnerText);
-            var image = root.SelectSingleNode("//a[@class='galleriaTrigger']/img").GetAttributeValue("src", null);
+            var price = Utils.ParsePrice(priceNode?.InnerText);
+            var image = root.SelectSingleNode("//a[@class='galleriaTrigger']/img")?.GetAttributeValue("src", null);
 
             ProductDetails result = new ProductDetails()
             {

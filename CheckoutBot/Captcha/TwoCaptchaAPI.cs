@@ -1,30 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading;
 using CheckoutBot.Captcha;
 using HtmlAgilityPack;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
+using System.Threading.Tasks;
 
 namespace CheckoutBot.TwoCaptcha 
 {
     public class TwoCaptchaAPI : CaptchaAPIBase
     {
-        public override bool GetCaptchaResponse(string siteKey, string url, out string result)
+        public async override Task<string> GetCaptchaResponse(string siteKey, string url)
         {
             string requestUrl = "http://2captcha.com/in.php?key=" + _apiKey + "&method=userrecaptcha&googlekey=" + siteKey + "&pageurl=" + url;
-
+           
             try
             {
-                HtmlNode node = ClientFactory.GeneralClient.GetDoc(requestUrl, CancellationToken.None).DocumentNode;
+                HtmlDocument doc = await ClientFactory.GeneralClient.GetDocTask(requestUrl, CancellationToken.None);
+                var node = doc.DocumentNode;
                 string response = node.InnerHtml;
                 if (response.Length < 3)
                 {
-                    result = response;
-                    return false;
+                    return "";
                 }
                 else
                 {
@@ -35,45 +31,40 @@ namespace CheckoutBot.TwoCaptcha
 
                         for (int i = 0; i < 24; i++)
                         {
-                            HtmlNode answerNode = ClientFactory.GeneralClient.GetDoc(secondRequestUrl, CancellationToken.None).DocumentNode;
-                            string answerResponse = answerNode.InnerHtml;
+                            HtmlDocument answerDoc = await ClientFactory.GeneralClient.GetDocTask(secondRequestUrl, CancellationToken.None);
+                            var answerNode = answerDoc.DocumentNode;
+                             string answerResponse = answerNode.InnerHtml;
 
                             if (answerResponse.Length < 3)
                             {
-                                result = answerResponse;
-                                return false;
+                                return "";
                             }
                             else
                             {
                                 if (answerResponse.Substring(0, 3) == "OK|")
                                 {
-                                    result = answerResponse.Remove(0, 3);
-                                    return true;
+                                    return answerResponse.Remove(0, 3);
                                 }
                                 else if (answerResponse != "CAPCHA_NOT_READY")
                                 {
-                                    result = answerResponse;
-                                    return false;
+                                    return "";
                                 }
                             }
 
                         Thread.Sleep(5000);
                         }
 
-                        result = "Timeout";
-                        return false;
+                        return "";
                     }
                     else
                     {
-                        result = response;
-                        return false;
+                        return "";
                     }
                 }
                     
             }
             catch { }
-            result = "Unknown error";
-            return false;
+            return "";
         }
 
         public TwoCaptchaAPI(string apiKey) : base(apiKey)

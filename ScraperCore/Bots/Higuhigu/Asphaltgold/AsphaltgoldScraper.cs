@@ -144,10 +144,10 @@ namespace StoreScraper.Bots.Higuhigu.Asphaltgold
             var sizeNodes = root.SelectNodes("//li[contains(@id, 'option_')]/div");
             var sizes = sizeNodes?.Select(node => node.InnerText.Trim()).ToList();
 
-            var name = root.SelectSingleNode("//span[@class='attr-name']").InnerText.Trim();
+            var name = root.SelectSingleNode("//span[@class='attr-name']")?.InnerText.Trim();
             var priceNode = root.SelectSingleNode("//span[@itemprop='price'][last()]");
-            var price = Utils.ParsePrice(priceNode.InnerText);
-            var image = root.SelectSingleNode("//meta[@property='og:image']").GetAttributeValue("content", null);
+            var price = Utils.ParsePrice(priceNode?.InnerText);
+            var image = root.SelectSingleNode("//meta[@property='og:image']")?.GetAttributeValue("content", null);
 
             ProductDetails result = new ProductDetails()
             {

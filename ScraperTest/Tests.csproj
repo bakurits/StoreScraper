@@ -72,6 +72,9 @@
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Nuget-AntiCaptcha, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\M.AntiCaptcha.1.0.0\lib\netstandard2.0\Nuget-AntiCaptcha.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
@@ -80,6 +83,7 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CaptchaTests\AntiCaptchaTest.cs" />
     <Compile Include="CaptchaTests\TwoCaptchaTest.cs" />
     <Compile Include="CheckoutBots\EastBay\EastBayBotTests.cs" />
     <Compile Include="MinorTests\UtilsTests.cs" />

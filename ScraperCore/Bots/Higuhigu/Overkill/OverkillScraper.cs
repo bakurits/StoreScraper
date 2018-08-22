@@ -128,10 +128,10 @@ namespace StoreScraper.Bots.Higuhigu.Overkill
             }
 
             var root = document.DocumentNode;
-            var name = root.SelectSingleNode("//div[@class='row-fluid product-name']/div[contains(@class, 'span')]/h2").InnerText.Trim().Replace("<br>", "\n");
+            var name = root.SelectSingleNode("//div[@class='row-fluid product-name']/div[contains(@class, 'span')]/h2")?.InnerText.Trim().Replace("<br>", "\n");
             var priceNode = root.SelectSingleNode("//div[contains(@class, 'price-box')]//span[@class='price']");
-            var price = Utils.ParsePrice(priceNode.InnerText);
-            var image = root.SelectSingleNode("//meta[@property='og:image']").GetAttributeValue("content", null);
+            var price = Utils.ParsePrice(priceNode?.InnerText);
+            var image = root.SelectSingleNode("//meta[@property='og:image']")?.GetAttributeValue("content", null);
 
             ProductDetails result = new ProductDetails()
             {
@@ -144,17 +144,21 @@ namespace StoreScraper.Bots.Higuhigu.Overkill
                 ScrapedBy = this
             };
 
-            var jsonStr = Regex.Match(root.InnerHtml, @"var spConfig = new Product.Config\((.*)\)").Groups[1].Value;
-            var tokenStr = Regex.Match(jsonStr, "\"(\\d+)\":").Groups[1].Value;
-            JObject parsed = JObject.Parse(jsonStr);
-            var sizes = parsed.SelectToken("attributes").SelectToken(tokenStr).SelectToken("options");
-            foreach (JToken sz in sizes.Children())
+
+            if (root.InnerHtml.Contains("new Product.Config"))
             {
-                var sizeName = (string)sz.SelectToken("label");
-                JArray products = (JArray)sz.SelectToken("products");
-                if (products.Count > 0)
+                var jsonStr = Regex.Match(root.InnerHtml, @"var spConfig = new Product.Config\((.*)\)").Groups[1].Value;
+                var tokenStr = Regex.Match(jsonStr, "\"(\\d+)\":").Groups[1].Value;
+                JObject parsed = JObject.Parse(jsonStr);
+                var sizes = parsed.SelectToken("attributes").SelectToken(tokenStr).SelectToken("options");
+                foreach (JToken sz in sizes.Children())
                 {
-                    result.AddSize(sizeName, "Unknown");
+                    var sizeName = (string)sz.SelectToken("label");
+                    JArray products = (JArray)sz.SelectToken("products");
+                    if (products.Count > 0)
+                    {
+                        result.AddSize(sizeName, "Unknown");
+                    }
                 }
             }
             return result;

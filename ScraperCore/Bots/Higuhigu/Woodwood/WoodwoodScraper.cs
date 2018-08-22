@@ -96,6 +96,7 @@ namespace StoreScraper.Bots.Higuhigu.Woodwood
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
+            if (item.InnerHtml.Contains("Coming soon")) return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             var price = GetPrice(item);
@@ -143,10 +144,10 @@ namespace StoreScraper.Bots.Higuhigu.Woodwood
             var sizeNodes = root.SelectNodes("//select[contains(@id, 'form-size')]//option[not(@value='')]");
             var sizes = sizeNodes?.Select(node => node.InnerText.Trim()).ToList();
 
-            var name = root.SelectSingleNode("//h1[@class='headline']").InnerText.Trim();
+            var name = root.SelectSingleNode("//h1[@class='headline']")?.InnerText.Trim();
             var priceNode = root.SelectSingleNode("//span[@class='price']");
-            var price = Utils.ParsePrice(priceNode.InnerText);
-            var image = root.SelectSingleNode("//a[@id='commodity-show-image']/img").GetAttributeValue("src", null);
+            var price = Utils.ParsePrice(priceNode?.InnerText);
+            var image = root.SelectSingleNode("//a[@id='commodity-show-image']/img")?.GetAttributeValue("src", null);
 
             ProductDetails result = new ProductDetails()
             {

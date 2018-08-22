@@ -124,10 +124,10 @@ namespace StoreScraper.Bots.Higuhigu.Endclothing
             }
 
             var root = document.DocumentNode;
-            var name = root.SelectSingleNode("//h1[@class='page-title']/span").InnerText.Trim();
+            var name = root.SelectSingleNode("//h1[@class='page-title']/span")?.InnerText.Trim();
             var priceNode = root.SelectSingleNode("//span[@class='price'][last()]");
-            var price = Utils.ParsePrice(priceNode.InnerText);
-            var image = root.SelectSingleNode("//img[@class='swiper-slide']").GetAttributeValue("src", null);
+            var price = Utils.ParsePrice(priceNode?.InnerText);
+            var image = root.SelectSingleNode("//img[@class='swiper-slide']")?.GetAttributeValue("src", null);
 
             ProductDetails result = new ProductDetails()
             {
@@ -140,17 +140,21 @@ namespace StoreScraper.Bots.Higuhigu.Endclothing
                 ScrapedBy = this
             };
 
-            var jsonStr = Regex.Match(root.InnerHtml, "\"spConfig\": (.*?),\n").Groups[1].Value;
-            var tokenStr = Regex.Match(jsonStr, "\"(\\d+)\":").Groups[1].Value;
-            JObject parsed = JObject.Parse(jsonStr);
-            var sizes = parsed.SelectToken("attributes").SelectToken(tokenStr).SelectToken("options");
-            foreach (JToken sz in sizes.Children())
+
+            if (root.InnerHtml.Contains("spConfig"))
             {
-                var sizeName = (string)sz.SelectToken("label");
-                JArray products = (JArray)sz.SelectToken("products");
-                if (products.Count > 0)
+                var jsonStr = Regex.Match(root.InnerHtml, "\"spConfig\": (.*?),\n").Groups[1].Value;
+                var tokenStr = Regex.Match(jsonStr, "\"(\\d+)\":").Groups[1].Value;
+                JObject parsed = JObject.Parse(jsonStr);
+                var sizes = parsed.SelectToken("attributes").SelectToken(tokenStr).SelectToken("options");
+                foreach (JToken sz in sizes.Children())
                 {
-                    result.AddSize(sizeName, "Unknown");
+                    var sizeName = (string)sz.SelectToken("label");
+                    JArray products = (JArray)sz.SelectToken("products");
+                    if (products.Count > 0)
+                    {
+                        result.AddSize(sizeName, "Unknown");
+                    }
                 }
             }
             return result;

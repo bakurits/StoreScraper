@@ -122,10 +122,10 @@ namespace StoreScraper.Bots.Higuhigu.Chmielna
             var sizeNodes = root.SelectNodes("//div[@class='selector']/ul/li");
             var sizes = sizeNodes?.Select(node => node.GetAttributeValue("data-sizeeu", null)).ToList();
 
-            var name = root.SelectSingleNode("//div[@class='product__name']/h1").InnerText.Trim();
+            var name = root.SelectSingleNode("//div[@class='product__name']/h1")?.InnerText.Trim();
             var priceNode = root.SelectSingleNode("//span[@class='product__price_shop']");
-            var price = Utils.ParsePrice(priceNode.InnerText);
-            var image = root.SelectSingleNode("//div[@class='item zoom']/img").GetAttributeValue("src", null);
+            var price = Utils.ParsePrice(priceNode?.InnerText);
+            var image = root.SelectSingleNode("//div[@class='item zoom']/img")?.GetAttributeValue("src", null);
 
             ProductDetails result = new ProductDetails()
             {

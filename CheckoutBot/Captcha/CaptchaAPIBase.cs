@@ -15,6 +15,6 @@ namespace CheckoutBot.Captcha
             _apiKey = apiKey;
         }
 
-        public abstract bool GetCaptchaResponse(string siteKey, string url, out string result);
+        public abstract Task<string> GetCaptchaResponse(string siteKey, string url);
     }
 }
