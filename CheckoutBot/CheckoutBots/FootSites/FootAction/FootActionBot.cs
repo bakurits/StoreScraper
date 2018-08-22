@@ -11,26 +11,22 @@ using StoreScraper.Models;
 
 namespace CheckoutBot.CheckoutBots.FootSites.FootAction
 {
-    class FootActionBot : IGuestCheckouter, IAccountCheckouter, IReleasePageScraper
+    class FootActionBot : FootSitesBotBase
     {
-        public void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
+        private const string ApiUrl = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/34";
+
+        public override void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
         {
             throw new NotImplementedException();
         }
 
-        public void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token)
+        public override void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token)
         {
             throw new NotImplementedException();
         }
 
-        public HttpClient Login(string username, string password)
+        public FootActionBot() : base("FootAction", "https://www.footaction.com/", ApiUrl)
         {
-            throw new NotImplementedException();
-        }
-
-        public List<Product> ScrapeReleasePage(CancellationToken token)
-        {
-            throw new NotImplementedException();
         }
     }
 }

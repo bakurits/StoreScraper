@@ -105,7 +105,7 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze
                 throw new WebException("Undexpected Html");
             }
 
-            var items = container.SelectChildren("article");
+            var items = container.SelectNodes("./article");
 
 
 

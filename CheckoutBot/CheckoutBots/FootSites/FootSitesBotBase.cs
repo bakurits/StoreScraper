@@ -20,7 +20,7 @@ using StoreScraper.Models;
 namespace CheckoutBot.CheckoutBots.FootSites
 {
     [DisableInGUI]
-    public abstract class FootSitesBotBase : IWebsiteScraper, IGuestCheckouter, IAccountCheckouter, IReleasePageScraper
+    public abstract partial class FootSitesBotBase : IWebsiteScraper, IGuestCheckouter, IAccountCheckouter, IReleasePageScraper
     {
         public string WebsiteName { get; set; }
         public string WebsiteBaseUrl { get; set; }
@@ -34,10 +34,17 @@ namespace CheckoutBot.CheckoutBots.FootSites
         }
 
 
-        public abstract void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token);
-        public abstract void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token);
-        public abstract HttpClient Login(string username, string password);
+        public virtual void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
+        {
 
+        }
+
+        public virtual void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token)
+        {
+            
+        }
+
+      
         public List<Product> ScrapeReleasePage(CancellationToken token)
         {
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);

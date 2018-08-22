@@ -7,22 +7,23 @@ using CheckoutBot.Models.Checkout;
 
 namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
 {
-    class ChampsSportsBot : IGuestCheckouter, IAccountCheckouter
+    class ChampsSportsBot : FootSitesBotBase
     {
-       
-        public void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token)
+        private const string ApiUrl = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/34";
+
+
+        public override void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token)
         {
             throw new NotImplementedException();
         }
 
-        public HttpClient Login(string username, string password)
+        public override void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
         {
             throw new NotImplementedException();
         }
 
-        public void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
+        public ChampsSportsBot() : base("ChampsSports", "https://www.champssports.com/", ApiUrl)
         {
-            throw new NotImplementedException();
         }
     }
 }

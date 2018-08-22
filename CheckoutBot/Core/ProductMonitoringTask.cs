@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
+using StoreScraper.Helpers;
 using StoreScraper.Models;
 
 namespace CheckoutBot.Core
@@ -29,11 +30,26 @@ namespace CheckoutBot.Core
 
         public void Monitor()
         {
-            if (CheckoutInfo is GuestCheckoutSettings guestCheckout)
-            {
-                if(!(guestCheckout.ProductToBuy.ScrapedBy is IGuestCheckouter checkouter)) throw new InvalidOperationException();
+            var targetProduct = CheckoutInfo.ProductToBuy;
+            var buyOptions = CheckoutInfo.BuyOptions;
 
-                
+            switch (CheckoutInfo)
+            {
+                case GuestCheckoutSettings guestCheckout:
+                {
+                    if(!(guestCheckout.ProductToBuy.ScrapedBy is IGuestCheckouter checkouter)) throw new InvalidOperationException();
+                    var startTime = targetProduct.ReleaseTime.Value - TimeSpan.FromMinutes(3); 
+                    Utils.WaitToBecomeTrue(() => DateTime.Now >= startTime, MonitoringTokenSource.Token);
+
+                    break;
+                }
+                case AccountCheckoutSettings accountCheckout:
+                {
+                    if(!(accountCheckout.ProductToBuy.ScrapedBy is IAccountCheckouter checkouter)) throw new InvalidOperationException();
+                    var startTime = targetProduct.ReleaseTime.Value - TimeSpan.FromMinutes(3); 
+                    Utils.WaitToBecomeTrue(() => DateTime.Now >= startTime, MonitoringTokenSource.Token);
+                    break;
+                }
             }
         }
     }

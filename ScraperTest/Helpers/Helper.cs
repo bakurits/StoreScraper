@@ -35,12 +35,12 @@ namespace ScraperTest.Helpers
 
         public static void PrintFindItemsResults(List<Product> list)
         {
-            Debug.WriteLine(string.Join("\n", list));
+            Console.WriteLine(string.Join("\n", list));
         }
 
         public static void PrintGetDetailsResult(List<StringPair> sizes)
         {
-            Debug.WriteLine(string.Join("\n", sizes.Select(size => $"{size.Key}[{size.Value}]")));
+            Console.WriteLine(string.Join("\n", sizes.Select(size => $"{size.Key}[{size.Value}]")));
         }
 
         [AssemblyInitialize]
@@ -50,7 +50,7 @@ namespace ScraperTest.Helpers
             if (!Directory.Exists(AppSettings.DataDir)) Directory.CreateDirectory(AppSettings.DataDir);
             AppSettings.Default = AppSettings.Load();
 
-            Logger.Instance.OnLogged += (message, color) => Debug.WriteLine(message);
+            Logger.Instance.OnLogged += (message, color) => Console.WriteLine(message);
             CookieCollector.Default = new CookieCollector();
         }
     }

@@ -17,11 +17,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootLocker
             throw new NotImplementedException();
         }
 
-        public override HttpClient Login(string username, string password)
-        {
-            throw new NotImplementedException();
-        }
-
+       
         public const string ReleasePageUrl = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/21";
 
         public FootLockerBot() : base("Footlocker", "http://www.footlocker.com", "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/21")

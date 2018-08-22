@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ScraperTest.Helpers;
 using StoreScraper.Bots.Higuhigu.Chmielna;
 using StoreScraper.Models;
 
@@ -34,10 +35,6 @@ namespace ScraperTest.ScraperTests.Higuhigu
                 "EUR");
 
             ProductDetails details = scraper.GetProductDetails(curProduct.Url, CancellationToken.None);
-            foreach (var sz in details.SizesList)
-            {
-                Debug.WriteLine(sz);
-            }
         }
     }
 }
