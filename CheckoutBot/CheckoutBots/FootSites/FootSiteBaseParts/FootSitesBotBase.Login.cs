@@ -29,17 +29,21 @@ namespace CheckoutBot.CheckoutBots.FootSites
             driver.Navigate().GoToUrl(this.WebsiteBaseUrl);
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
             var loginPupupButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//button[contains(text(),'Sign In')]")));
+            token.ThrowIfCancellationRequested();
             loginPupupButton.Click();
 
             var emailTextBox = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//input[@type='EMAIL']")));
+            token.ThrowIfCancellationRequested();
             emailTextBox.SendKeys(username);
 
 
             var passwordTextBox = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//input[@type='PASSWORD']")));
+            token.ThrowIfCancellationRequested();
             passwordTextBox.SendKeys(password);
 
 
             var singinButon = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//button[normalize-space(text())='Sign In']")));
+            token.ThrowIfCancellationRequested();
             singinButon.Click();
 
             throw new NotImplementedException();
