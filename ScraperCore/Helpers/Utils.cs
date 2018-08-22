@@ -16,6 +16,7 @@ using HtmlAgilityPack;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
 using StoreScraper.Core;
 using StoreScraper.Http.Factory;
@@ -381,7 +382,6 @@ namespace StoreScraper.Helpers
                 Task.Delay(checkIntervalMiliSeconds, token).Wait(token);
             }
         }
-
 
         public static void SimulateTyping(this IWebDriver driver, string keysToType)
         {

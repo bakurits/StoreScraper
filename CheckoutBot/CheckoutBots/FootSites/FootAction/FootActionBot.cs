@@ -33,7 +33,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootAction
 
         public override HttpClient Login(string username, string password, CancellationToken token)
         {
-            var driver = ClientFactory.CreateProxiedFirefoxDriver(true);
+            var driver = ClientFactory.CreateProxiedChromeDriver(true);
             driver.Navigate().GoToUrl(this.WebsiteBaseUrl);
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
             var weAreSorryBanner = driver.FindElementById("backendErrorHeader");
