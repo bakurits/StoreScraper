@@ -28,6 +28,7 @@ namespace ScraperTest.CheckoutBots.EastBay
         public void LoginTest()
         {
             EastBayBot bot = new EastBayBot();
+            bot.Login("bakuricucxashvili@gmail.com", "Yrf7B2RHW", CancellationToken.None);
         } 
 
         [TestMethod()]

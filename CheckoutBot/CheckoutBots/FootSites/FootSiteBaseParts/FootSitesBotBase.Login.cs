@@ -23,14 +23,14 @@ namespace CheckoutBot.CheckoutBots.FootSites
         /// <param name="password"></param>
         /// <param name="token"></param>
         /// <returns>HttpClient which contains session cookies of logged user</returns>
-        protected HttpClient Login(string username, string password, CancellationToken token)
+        public HttpClient Login(string username, string password, CancellationToken token)
         {
             var driver = ClientFactory.CreateProxiedFirefoxDriver(true);
             driver.Navigate().GoToUrl(this.WebsiteBaseUrl);
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
-            var loginPupupButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//button[contains(text(),'Sign In')]")));
+            var loginPopupButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//button[contains(text(),'Sign In')]")));
             token.ThrowIfCancellationRequested();
-            loginPupupButton.Click();
+            loginPopupButton.Click();
 
             var emailTextBox = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//input[@type='EMAIL']")));
             token.ThrowIfCancellationRequested();
@@ -42,9 +42,9 @@ namespace CheckoutBot.CheckoutBots.FootSites
             passwordTextBox.SendKeys(password);
 
 
-            var singinButon = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//button[normalize-space(text())='Sign In']")));
+            var signinButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//button[normalize-space(text())='Sign In']")));
             token.ThrowIfCancellationRequested();
-            singinButon.Click();
+            signinButton.Click();
 
             throw new NotImplementedException();
         }

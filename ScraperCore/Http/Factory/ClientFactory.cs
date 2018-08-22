@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Configuration;
@@ -163,7 +164,6 @@ namespace StoreScraper.Http.Factory
 #else
             options.AddArgument("-headless");
 #endif
-
             return new FirefoxDriver(options);
         }
 
