@@ -7,6 +7,11 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootLocker
 {
     class FootLockerBot : FootSitesBotBase
     {
+        public override HttpClient Login(string username, string password, CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
         {
             throw new NotImplementedException();

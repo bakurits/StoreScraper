@@ -27,6 +27,11 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 
         }
 
+        public override HttpClient Login(string username, string password, CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
         public override  void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
         {
             throw new NotImplementedException();
