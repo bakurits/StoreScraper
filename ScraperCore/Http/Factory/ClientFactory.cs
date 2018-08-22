@@ -164,7 +164,80 @@ namespace StoreScraper.Http.Factory
 #else
             options.AddArgument("-headless");
 #endif
-            return new FirefoxDriver(options);
+            var result = new FirefoxDriver(options);
+            result.Manage().Window.Maximize();
+            return result;
+        }
+
+
+        
+        public static ChromeDriver CreateProxiedChromeDriver(bool showInDebugMode = true)
+        {
+            var proxy = GetRandomProxy();
+
+            ChromeOptions options = new ChromeOptions()
+            {
+                AcceptInsecureCertificates = true
+            };    
+            
+            if (proxy != null)
+            {
+                options.Proxy = new Proxy()
+                {
+                    IsAutoDetect = false,
+                    Kind = ProxyKind.Manual,
+                    HttpProxy = proxy.Address.AbsoluteUri,
+                    SslProxy = proxy.Address.AbsoluteUri
+                };
+            }
+            options.AddArguments("--incognito", "--disable-infobars", "--start-maximized");
+
+#if DEBUG
+            if (!showInDebugMode) options.AddArgument("--headless");
+#else
+            options.AddArgument("-headless");
+#endif
+
+            ChromeDriverService service = ChromeDriverService.CreateDefaultService();            
+
+            var result =  new ChromeDriver(service, options);
+            return result;
+        }
+
+
+        public static ChromeDriver CreateMobileChromeDriver(bool showInDebugMode = true)
+        {
+            var proxy = GetRandomProxy();
+
+            ChromeOptions options = new ChromeOptions()
+            {
+                AcceptInsecureCertificates = true
+            };    
+            
+            if (proxy != null)
+            {
+                options.Proxy = new Proxy()
+                {
+                    IsAutoDetect = false,
+                    Kind = ProxyKind.Manual,
+                    HttpProxy = proxy.Address.AbsoluteUri,
+                    SslProxy = proxy.Address.AbsoluteUri
+                };
+            }
+
+            options.EnableMobileEmulation("iPad");
+
+            options.AddArguments("--incognito");
+
+#if DEBUG
+            if (!showInDebugMode) options.AddArgument("--headless");
+#else
+            options.AddArgument("-headless");
+#endif
+
+            ChromeDriverService service = ChromeDriverService.CreateDefaultService();            
+
+            return new ChromeDriver(service, options);
         }
 
         /// <summary>
