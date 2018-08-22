@@ -26,11 +26,6 @@ namespace StoreScraper.Helpers
 {
     public static class Utils
     {
-        public static IEnumerable<HtmlNode> SelectChildren(this HtmlNode parent, string tagName)
-        {
-            return parent.ChildNodes.Where(child => child.Name == tagName);
-        }
-
         /// <summary>
         /// Gets Image from specified Url
         /// And resizes it to supplied width, height
@@ -59,13 +54,7 @@ namespace StoreScraper.Helpers
 
         public static string EscapeFileName(this string fileName)
         {
-
-            foreach (char c in System.IO.Path.GetInvalidFileNameChars())
-            {
-                fileName = fileName.Replace(c, '_');
-            }
-
-            return fileName;
+            return System.IO.Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c, '_'));
         }
 
 
@@ -339,7 +328,7 @@ namespace StoreScraper.Helpers
             return JObject.Parse("{}");
         }
 
-        public static string JsonToString(this object value)
+        public static string ToJsonString(this object value)
         {
             return JsonConvert.SerializeObject(value,
                 Newtonsoft.Json.Formatting.None,
@@ -379,6 +368,17 @@ namespace StoreScraper.Helpers
             }
 
             return null;
+        }
+
+
+        public static void WaitToBecomeTrue(this Func<bool> predicate, CancellationToken token, int checkIntervalMiliSeconds = 100)
+        {
+            while (true)
+            {
+                if (predicate()) return;
+                token.ThrowIfCancellationRequested();
+                Task.Delay(checkIntervalMiliSeconds, token).Wait(token);
+            }
         }
 
     }

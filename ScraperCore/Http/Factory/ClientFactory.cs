@@ -19,7 +19,7 @@ namespace StoreScraper.Http.Factory
 {
     public static class ClientFactory
     {
-     
+
         private static Random random = new Random();
 
         public static StringPair JsonXmlAcceptHeader = ("Accept", "application/xml, application/json");
@@ -38,7 +38,7 @@ namespace StoreScraper.Http.Factory
             ("User-Agent",
                 @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36");
 
-        public static StringPair ChromeAcceptHeader = 
+        public static StringPair ChromeAcceptHeader =
             ("Accept",
             @"text/html, application/xhtml+xml, application/xml;q=0.9, image/webp,image/apng, */*;q=0.8");
 
@@ -81,7 +81,7 @@ namespace StoreScraper.Http.Factory
         public static StringPair[] DefaultHeaders = FireFoxHeaders;
 
 
-        public static StringPair[] FireFoxHeaders2 = 
+        public static StringPair[] FireFoxHeaders2 =
         {
             FirefoxUserAgentHeader,
             FirefoxAcceptHeader,
@@ -115,7 +115,7 @@ namespace StoreScraper.Http.Factory
             }
             catch
             {
-               //
+                //
             }
 
             try
@@ -136,23 +136,33 @@ namespace StoreScraper.Http.Factory
         }
 
 
-        public static FirefoxDriver CreateFirefoxDriver(bool headless = true)
+        public static FirefoxDriver CreateProxiedFirefoxDriver(bool showWindowInDebugMode = true)
         {
             var proxy = GetRandomProxy();
 
             FirefoxOptions options = new FirefoxOptions()
             {
-                Proxy = new Proxy()
+                AcceptInsecureCertificates = true,
+            };
+
+            if (proxy != null)
+            {
+                options.Proxy = new Proxy()
                 {
                     IsAutoDetect = false,
                     Kind = ProxyKind.Manual,
                     HttpProxy = proxy.Address.AbsoluteUri,
-                    SslProxy =  proxy.Address.AbsoluteUri
-                },
-            };
+                    SslProxy = proxy.Address.AbsoluteUri
+                };
+            }
 
             options.AddArguments("-private", "-new-instance");
-            if(headless) options.AddArgument("-headless");
+
+#if DEBUG
+            if (!showWindowInDebugMode) options.AddArgument("-headless");
+#else
+            options.AddArgument("-headless");
+#endif
 
             return new FirefoxDriver(options);
         }
@@ -193,7 +203,7 @@ namespace StoreScraper.Http.Factory
                 handler.Proxy = proxy;
             }
 
-            HttpClient client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(15)};
+            HttpClient client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(15) };
             return client;
         }
 
