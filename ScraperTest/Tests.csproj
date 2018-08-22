@@ -57,6 +57,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Anticaptcha, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\anticaptcha.1.0.5\lib\Anticaptcha.dll</HintPath>
+    </Reference>
     <Reference Include="dotMemory.Unit, Version=111.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.dotMemoryUnit.3.0.20171219.105559\lib\net35\dotMemory.Unit.dll</HintPath>
     </Reference>
@@ -140,6 +143,7 @@
     <Compile Include="ScraperTests\Mstanojevic\SneakersnstuffTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\UebervartShopTest.cs" />
     <Compile Include="ScraperTests\GiorgiBaghdavadze\290sqmTest.cs" />
+    <Compile Include="Test.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

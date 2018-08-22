@@ -1,5 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using CheckoutBot.Anti_Captcha;
+﻿using CheckoutBot.Captcha;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ScraperTest.CaptchaTests
 {

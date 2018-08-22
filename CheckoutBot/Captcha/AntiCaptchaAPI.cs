@@ -1,26 +1,25 @@
-﻿using CheckoutBot.Captcha;
+﻿using System.Threading.Tasks;
 using Nuget_AntiCaptcha;
-using Nuget_AntiCaptcha.Responses;
 using Nuget_AntiCaptcha.Captchas;
-using System.Threading.Tasks;
+using Nuget_AntiCaptcha.Responses;
 
-namespace CheckoutBot.Anti_Captcha
+namespace CheckoutBot.Captcha
 {
     public class AntiCaptchaAPI : CaptchaAPIBase
     {
-        public async override Task<string> GetCaptchaResponse(string siteKey, string url)
+        public override async Task<string> GetCaptchaResponse(string siteKey, string url)
         {
-            AntiCaptcha Client = new AntiCaptcha(_apiKey);
+            AntiCaptcha client = new AntiCaptcha(_apiKey);
             NoCaptchaTaskProxyless task = new NoCaptchaTaskProxyless
             {
                 websiteKey = siteKey,
                 websiteURL = url
             };
-            TaskResponse response = await Client.SubmitTask(task);
+            TaskResponse response = await client.SubmitTask(task);
 
             while (true)
             {
-                NoCaptchaSolution solution = await Client.GetNoCaptchaSolution(response.taskId);
+                NoCaptchaSolution solution = await client.GetNoCaptchaSolution(response.taskId);
                 if (solution.errorId != 0)
                 {
                     return "";

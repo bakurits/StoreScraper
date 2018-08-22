@@ -1,15 +1,14 @@
 ﻿using System.Threading;
-using CheckoutBot.Captcha;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
-using System.Threading.Tasks;
 
-namespace CheckoutBot.TwoCaptcha 
+namespace CheckoutBot.Captcha 
 {
     public class TwoCaptchaAPI : CaptchaAPIBase
     {
-        public async override Task<string> GetCaptchaResponse(string siteKey, string url)
+        public override async Task<string> GetCaptchaResponse(string siteKey, string url)
         {
             string requestUrl = "http://2captcha.com/in.php?key=" + _apiKey + "&method=userrecaptcha&googlekey=" + siteKey + "&pageurl=" + url;
            
@@ -26,8 +25,8 @@ namespace CheckoutBot.TwoCaptcha
                 {
                     if (response.Substring(0, 3) == "OK|")
                     {
-                        string captchaID = response.Remove(0, 3);
-                        string secondRequestUrl = "http://2captcha.com/res.php?key=" + _apiKey + "&action=get&id=" + captchaID;
+                        string captchaId = response.Remove(0, 3);
+                        string secondRequestUrl = "http://2captcha.com/res.php?key=" + _apiKey + "&action=get&id=" + captchaId;
 
                         for (int i = 0; i < 24; i++)
                         {
@@ -45,7 +44,7 @@ namespace CheckoutBot.TwoCaptcha
                                 {
                                     return answerResponse.Remove(0, 3);
                                 }
-                                else if (answerResponse != "CAPCHA_NOT_READY")
+                                else if (answerResponse != "CAPTCHA_NOT_READY")
                                 {
                                     return "";
                                 }
@@ -63,7 +62,11 @@ namespace CheckoutBot.TwoCaptcha
                 }
                     
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
+
             return "";
         }
 
