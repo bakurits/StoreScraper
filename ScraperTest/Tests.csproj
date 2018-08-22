@@ -89,6 +89,9 @@
     <Compile Include="CaptchaTests\AntiCaptchaTest.cs" />
     <Compile Include="CaptchaTests\TwoCaptchaTest.cs" />
     <Compile Include="CheckoutBots\EastBay\EastBayBotTests.cs" />
+    <Compile Include="CheckoutBots\FootSites\EastBay\EastBayBotTests.cs" />
+    <Compile Include="CheckoutBots\FootSites\FootAction\FootActionBotTests.cs" />
+    <Compile Include="CheckoutBots\FootSites\FootLocker\FootLockerBotTests.cs" />
     <Compile Include="MinorTests\UtilsTests.cs" />
     <Compile Include="MinorTests\SlackWebHookTests.cs" />
     <Compile Include="ScraperTests\DavitBezhanishvili\AwLabScraperTests.cs" />

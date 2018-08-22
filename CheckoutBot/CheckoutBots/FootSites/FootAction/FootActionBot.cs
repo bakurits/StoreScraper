@@ -9,13 +9,14 @@ using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 using StoreScraper.Models;
 using ExpectedConditions = SeleniumExtras.WaitHelpers.ExpectedConditions;
 
 namespace CheckoutBot.CheckoutBots.FootSites.FootAction
 {
-    class FootActionBot : FootSitesBotBase
+    public class FootActionBot : FootSitesBotBase
     {
         private const string ApiUrl = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/34";
 
@@ -35,6 +36,12 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootAction
             var driver = ClientFactory.CreateProxiedFirefoxDriver(true);
             driver.Navigate().GoToUrl(this.WebsiteBaseUrl);
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
+            var weAreSorryBanner = driver.FindElementById("backendErrorHeader");
+            if (weAreSorryBanner != null)
+            {
+                driver.SimulateTyping(Keys.Escape);
+            }
+
             var loginPopupButton = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.XPath("//button[contains(text(),'Sign In')]")));
             token.ThrowIfCancellationRequested();
             loginPopupButton.Click();
