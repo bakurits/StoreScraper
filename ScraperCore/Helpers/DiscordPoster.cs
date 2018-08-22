@@ -44,7 +44,7 @@ namespace StoreScraper.Helpers
 
             public async Task<HttpResponseMessage> Send()
             {
-                var content = new StringContent(this.JsonToString(), Encoding.UTF8, "application/json");
+                var content = new StringContent(this.ToJsonString(), Encoding.UTF8, "application/json");
                 return await ClientFactory.GeneralClient.PostAsync(_webhookUrl, content, _token);
             }
         }
