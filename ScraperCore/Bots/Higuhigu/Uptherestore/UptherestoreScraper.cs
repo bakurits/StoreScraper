@@ -55,7 +55,7 @@ namespace StoreScraper.Bots.Higuhigu.Uptherestore
                 throw new WebException("Can't connect to website");
             }
             var node = document.DocumentNode;
-            var items = node.SelectNodes("//li[contains(@class, 'item')]/div");
+            var items = node.SelectNodes("//li[contains(@class, 'item')]");
             if (items == null)
             {
                 Logger.Instance.WriteErrorLog("Uncexpected Html!!");
@@ -105,7 +105,7 @@ namespace StoreScraper.Bots.Higuhigu.Uptherestore
 
         private Price GetPrice(HtmlNode item)
         {
-            string priceStr = item.SelectSingleNode(".//span[@class='price'][last()]").InnerText;
+            string priceStr = item.SelectSingleNode(".//span[@class='price'][last()]")?.InnerText;
             return Utils.ParsePrice(priceStr);
 
         }
@@ -128,10 +128,10 @@ namespace StoreScraper.Bots.Higuhigu.Uptherestore
             var sizeNodes = root.SelectNodes("//li[contains(@id, 'option')]/a/span");
             var sizes = sizeNodes?.Select(node => node?.InnerText).ToList();
 
-            var name = root.SelectSingleNode("//h1[@itemprop='name']").InnerText.Replace("<br>", "\n").Trim();
+            var name = root.SelectSingleNode("//h1[@itemprop='name']")?.InnerText.Replace("<br>", "\n").Trim();
             var priceNode = root.SelectSingleNode(".//span[@class='price'][last()]");
-            var price = Utils.ParsePrice(priceNode.InnerText);
-            var image = root.SelectSingleNode("//div[@class='owl-carousel']//img").GetAttributeValue("src", null);
+            var price = Utils.ParsePrice(priceNode?.InnerText);
+            var image = root.SelectSingleNode("//div[@class='owl-carousel']//img")?.GetAttributeValue("src", null);
 
             ProductDetails result = new ProductDetails()
             {

@@ -122,10 +122,10 @@ namespace StoreScraper.Bots.Higuhigu.Shoezgallery
             var sizeNodes = root.SelectNodes("//a[contains(@class, 'attribute_link')]");
             var sizes = sizeNodes?.Select(node => node.InnerText).ToList();
 
-            var name = root.SelectSingleNode("//h1[contains(@class, 'product-name')]").InnerText.Trim();
+            var name = root.SelectSingleNode("//h1[contains(@class, 'product-name')]")?.InnerText.Trim();
             var priceNode = root.SelectSingleNode(".//span[@itemprop='price'][last()]");
-            var price = Utils.ParsePrice(priceNode.InnerText);
-            var image = root.SelectSingleNode("//ul[@class='product-slider']/li/a").GetAttributeValue("src", null);
+            var price = Utils.ParsePrice(priceNode?.InnerText);
+            var image = root.SelectSingleNode("//ul[@class='product-slider']/li/a")?.GetAttributeValue("src", null);
 
             ProductDetails result = new ProductDetails()
             {

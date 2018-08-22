@@ -113,9 +113,7 @@ namespace StoreScraper.Bots.Higuhigu.Nighshop
 
         private Price GetPrice(HtmlNode item)
         {
-            var priceSpan = item.SelectSingleNode(".//span[@class='regular-price']/span");
-            var priceSpanSecond = priceSpan.SelectSingleNode(".//p[@class='special-price']/span");
-            if (priceSpanSecond != null) priceSpan = priceSpanSecond;
+            var priceSpan = item.SelectSingleNode(".//span[@class='price'][last()]");
             string priceStr = priceSpan.InnerText;
             return Utils.ParsePrice(priceStr);
         }
@@ -136,10 +134,10 @@ namespace StoreScraper.Bots.Higuhigu.Nighshop
             }
 
             var root = document.DocumentNode;
-            var name = root.SelectSingleNode("//div[@class='product-name']/h1").InnerText.Trim();
+            var name = root.SelectSingleNode("//div[@class='product-name']/h1")?.InnerText.Trim();
             var priceNode = root.SelectSingleNode("//span[@class='price'][last()]");
-            var price = Utils.ParsePrice(priceNode.InnerText);
-            var image = root.SelectSingleNode("//img[@class='owl-lazy']").GetAttributeValue("data-src", null);
+            var price = Utils.ParsePrice(priceNode?.InnerText);
+            var image = root.SelectSingleNode("//img[@class='owl-lazy']")?.GetAttributeValue("data-src", null);
 
             ProductDetails result = new ProductDetails()
             {

@@ -19,8 +19,7 @@ namespace StoreScraper.Bots.Higuhigu.Ycmc
         public override bool Active { get; set; }
 
         private const string SearchFormat = @"http://www.ycmc.com/new-arrivals.html?limit=120";
-        private const string priceRegex = "\\$(\\d+(\\.\\d+)?)";
-
+ 
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
@@ -127,10 +126,10 @@ namespace StoreScraper.Bots.Higuhigu.Ycmc
             var sizeNodes = root.SelectNodes("//span[contains(@class, 'size_group_code_item')]/a");
             var sizes = sizeNodes?.Select(node => node?.InnerText).ToList();
 
-            var name = root.SelectSingleNode("//div[@class='product-name']/h1").InnerText.Trim();
+            var name = root.SelectSingleNode("//div[@class='product-name']/h1")?.InnerText.Trim();
             var priceNode = root.SelectSingleNode(".//div[@class='price-box']//span[@class='price'][last()]");
-            var price = Utils.ParsePrice(priceNode.InnerText.Replace(",", "."));
-            var image = root.SelectSingleNode("//ul[@class='product-image-thumbs']/li/img").GetAttributeValue("src", null);
+            var price = Utils.ParsePrice(priceNode?.InnerText.Replace(",", "."));
+            var image = root.SelectSingleNode("//ul[@class='product-image-thumbs']/li/img")?.GetAttributeValue("src", null);
 
             ProductDetails result = new ProductDetails()
             {
