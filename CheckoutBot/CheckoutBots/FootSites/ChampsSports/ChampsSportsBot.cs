@@ -1,38 +1,32 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading;
-using CheckoutBot.Interfaces;
-using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using StoreScraper.Http.Factory;
-using static OpenQA.Selenium.Support.UI.ExpectedConditions;
+using static SeleniumExtras.WaitHelpers.ExpectedConditions;
 
 namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
 {
-    class ChampsSportsBot : FootSitesBotBase
+    public class ChampsSportsBot : FootSitesBotBase
     {
         private const string ApiUrl = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/34";
+
+        public ChampsSportsBot() : base("ChampsSports", "https://www.champssports.com/", ApiUrl)
+        {
+        }
 
 
         public override void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token)
         {
             throw new NotImplementedException();
         }
-        private IWebElement GetVisibleElementByXPath(WebDriverWait wait, string xPath, CancellationToken token)
-        {
-            var element = wait.Until(ElementIsVisible(By.XPath(xPath)));
-            token.ThrowIfCancellationRequested();
-            return element;
-        }
-        private IWebElement GetClickableElementByXPath(WebDriverWait wait, string xPath, CancellationToken token)
-        {
-            var element = wait.Until(ElementToBeClickable(By.XPath(xPath)));
-            token.ThrowIfCancellationRequested();
-            return element;
-        }
 
+        public override void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
 
         public override HttpClient Login(string username, string password, CancellationToken token)
         {
@@ -56,13 +50,18 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
             throw new NotImplementedException();
         }
 
-        public override void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
+        private IWebElement GetVisibleElementByXPath(WebDriverWait wait, string xPath, CancellationToken token)
         {
-            throw new NotImplementedException();
+            var element = wait.Until(ElementIsVisible(By.XPath(xPath)));
+            token.ThrowIfCancellationRequested();
+            return element;
         }
 
-        public ChampsSportsBot() : base("ChampsSports", "https://www.champssports.com/", ApiUrl)
+        private IWebElement GetClickableElementByXPath(WebDriverWait wait, string xPath, CancellationToken token)
         {
+            var element = wait.Until(ElementToBeClickable(By.XPath(xPath)));
+            token.ThrowIfCancellationRequested();
+            return element;
         }
     }
 }

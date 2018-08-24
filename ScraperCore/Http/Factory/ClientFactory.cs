@@ -18,6 +18,7 @@ using StoreScraper.Models;
 
 namespace StoreScraper.Http.Factory
 {
+
     public static class ClientFactory
     {
 
@@ -56,7 +57,7 @@ namespace StoreScraper.Http.Factory
         };
 
 
-        public static StringPair[] EdgeHeaders = new StringPair[]
+        public static StringPair[] EdgeHeaders = 
         {
             ("Accept", "*/*"),
             ("Accept-Encoding","gzip, deflate, br"),
@@ -171,7 +172,7 @@ namespace StoreScraper.Http.Factory
 
 
         
-        public static ChromeDriver CreateProxiedChromeDriver(bool showInDebugMode = true)
+        public static ChromeDriver CreateProxiedChromeDriver(bool showInDebugMode = true, bool ingocgnito = true)
         {
             var proxy = GetRandomProxy();
 
@@ -190,10 +191,18 @@ namespace StoreScraper.Http.Factory
                     SslProxy = proxy.Address.AbsoluteUri
                 };
             }
-            options.AddArguments("--incognito", "--disable-infobars", "--start-maximized");
+            options.AddArguments("--disable-infobars", "--start-maximized", "--disable-plugins-discovery");
+
+            if (ingocgnito)
+            {
+                options.AddArgument("--incognito");
+            }
 
 #if DEBUG
-            if (!showInDebugMode) options.AddArgument("--headless");
+            if (!showInDebugMode)
+            {
+                options.AddArgument("--headless");
+            }
 #else
             options.AddArgument("-headless");
 #endif
@@ -227,7 +236,7 @@ namespace StoreScraper.Http.Factory
 
             options.EnableMobileEmulation("iPad");
 
-            options.AddArguments("--incognito");
+            options.AddArguments("--incognito", "--start-maximized", "--profile-directory=Default", "--disable-extensions", "--disable-plugins-discovery");
 
 #if DEBUG
             if (!showInDebugMode) options.AddArgument("--headless");

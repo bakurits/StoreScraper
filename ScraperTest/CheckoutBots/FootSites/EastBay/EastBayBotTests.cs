@@ -9,29 +9,29 @@ using StoreScraper.Models;
 
 namespace ScraperTest.CheckoutBots.FootSites.EastBay
 {
-    [TestClass()]
+    [TestClass]
     public class EastBayBotTests
     {
-        [TestMethod()]
+        [TestMethod]
         public void GuestCheckOutTest()
         {
             throw new NotImplementedException();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void AccountCheckoutTest()
         {
             throw new NotImplementedException();
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void LoginTest()
         {
             EastBayBot bot = new EastBayBot();
             bot.Login("bakuricucxashvili@gmail.com", "Yrf7B2RHW", CancellationToken.None);
         } 
 
-        [TestMethod()]
+        [TestMethod]
         public void ScrapeReleasePageTest()
         {
             EastBayBot bot = new EastBayBot();

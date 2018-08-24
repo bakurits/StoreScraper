@@ -35,14 +35,10 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootAction
         {
             var driver = ClientFactory.CreateProxiedChromeDriver(true);
             driver.Navigate().GoToUrl(this.WebsiteBaseUrl);
+            Thread.Sleep(2000);
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
-            var weAreSorryBanner = driver.FindElementById("backendErrorHeader");
-            if (weAreSorryBanner != null)
-            {
-                driver.SimulateTyping(Keys.Escape);
-            }
 
-            var loginPopupButton = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.XPath("//button[contains(text(),'Sign In')]")));
+            var loginPopupButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//button[contains(text(),'Sign In')]")));
             token.ThrowIfCancellationRequested();
             loginPopupButton.Click();
 

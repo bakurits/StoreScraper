@@ -24,20 +24,27 @@ namespace CheckoutBot.Core
 
         public void StartMonitoring()
         {
-            Task.Factory.StartNew(Monitor, MonitoringTokenSource.Token, TaskCreationOptions.LongRunning,
+            Task.Factory.StartNew(
+                this.Monitor,
+                this.MonitoringTokenSource.Token,
+                TaskCreationOptions.LongRunning,
                 TaskScheduler.Default);
         }
 
         public void Monitor()
         {
-            var targetProduct = CheckoutInfo.ProductToBuy;
-            var buyOptions = CheckoutInfo.BuyOptions;
+            var targetProduct = this.CheckoutInfo.ProductToBuy;
+            var buyOptions = this.CheckoutInfo.BuyOptions;
 
-            switch (CheckoutInfo)
+            switch (this.CheckoutInfo)
             {
                 case GuestCheckoutSettings guestCheckout:
                 {
-                    if(!(guestCheckout.ProductToBuy.ScrapedBy is IGuestCheckouter checkouter)) throw new InvalidOperationException();
+                    if (!(guestCheckout.ProductToBuy.ScrapedBy is IGuestCheckouter checkouter))
+                    {
+                        throw new InvalidOperationException();
+                    }
+
                     var startTime = targetProduct.ReleaseTime.Value - TimeSpan.FromMinutes(3); 
                     Utils.WaitToBecomeTrue(() => DateTime.Now >= startTime, MonitoringTokenSource.Token);
 
@@ -45,9 +52,13 @@ namespace CheckoutBot.Core
                 }
                 case AccountCheckoutSettings accountCheckout:
                 {
-                    if(!(accountCheckout.ProductToBuy.ScrapedBy is IAccountCheckouter checkouter)) throw new InvalidOperationException();
+                    if (!(accountCheckout.ProductToBuy.ScrapedBy is IAccountCheckouter checkouter))
+                    {
+                        throw new InvalidOperationException();
+                    }
+
                     var startTime = targetProduct.ReleaseTime.Value - TimeSpan.FromMinutes(3); 
-                    Utils.WaitToBecomeTrue(() => DateTime.Now >= startTime, MonitoringTokenSource.Token);
+                    Utils.WaitToBecomeTrue(() => DateTime.Now >= startTime, this.MonitoringTokenSource.Token);
                     break;
                 }
             }
