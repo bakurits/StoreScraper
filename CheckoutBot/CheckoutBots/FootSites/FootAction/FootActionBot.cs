@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
-using CheckoutBot.Farctory;
+using CheckoutBot.Factory;
 using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;

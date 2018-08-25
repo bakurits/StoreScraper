@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using CheckoutBot.Farctory;
+using CheckoutBot.Factory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
@@ -23,20 +23,20 @@ namespace ScraperTest.MinorTests
     [TestClass]
     public class SeleniumTests
     {
-        private FirefoxDriver driver;
+        private FirefoxDriver _driver;
 
         [TestMethod]
         public void FootSitesDetectionTest()
         {
-            this.driver = DriverFactory.CreateFirefoxDriver();
-            this.driver.Navigate().GoToUrl("https://www.footaction.com");
-            driver.ExecuteScript("document.cookie =\"_abck=; expires=Thu, 01 Jan 1970 00:00:01 GMT;\"");
-            driver.ExecuteScript(
+            this._driver = DriverFactory.CreateFirefoxDriver();
+            this._driver.Navigate().GoToUrl("https://www.footaction.com");
+            _driver.ExecuteScript("document.cookie =\"_abck=; expires=Thu, 01 Jan 1970 00:00:01 GMT;\"");
+            _driver.ExecuteScript(
                 "document.cookie = \"_abck=null\"");
-            this.driver.Navigate().Refresh();
+            this._driver.Navigate().Refresh();
 
 
-            var sorryBanner = this.driver.FindElements(By.Id("backendErrorHeader"));
+            var sorryBanner = this._driver.FindElements(By.Id("backendErrorHeader"));
 
             Assert.IsTrue(sorryBanner.Count == 0, "Bot is probably detected");
         }
@@ -45,8 +45,8 @@ namespace ScraperTest.MinorTests
         [TestCleanup]
         public void CleanUp()
         { 
-            this.driver.Close();
-            this.driver.Quit();
+            this._driver.Close();
+            this._driver.Quit();
         }
     }
 }

@@ -4,12 +4,12 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using StoreScraper.Http.Factory;
 
-namespace CheckoutBot.Farctory
+namespace CheckoutBot.Factory
 {
     public class DriverFactory
     {
          /// <summary>
-        /// Cretes FootSites webscrapping optimized Firefox driver. proxy is randomly chosen from application proxy pool
+        /// Creates FootSites web-scrapping optimized Firefox driver. proxy is randomly chosen from application proxy pool
         /// </summary>
         /// <param name="showWindowInDebugMode">when set to true browser window will be shown in debug mode.</param>
         /// <returns></returns>
@@ -21,7 +21,7 @@ namespace CheckoutBot.Farctory
         }
 
         /// <summary>
-        /// Cretes FootSites webscrapping optimized Firefox driver
+        /// Creates FootSites web-scrapping optimized Firefox driver
         /// </summary>
         /// <param name="proxy">proxy to use. null means no proxy</param>
         /// <param name="showWindowInDebugMode">when set to true browser window will be shown in debug mode.</param>
@@ -45,8 +45,8 @@ namespace CheckoutBot.Farctory
                 };
             }
 
-            const string UserAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0";
-            options.AddArguments("-private", "-new-instance", $"--useragent={UserAgent}");
+            const string userAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0";
+            options.AddArguments("-private", "-new-instance", $"--useragent={userAgent}");
 
 #if DEBUG
             if (!showWindowInDebugMode) options.AddArgument("-headless");

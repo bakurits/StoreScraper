@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading;
-using CheckoutBot.Farctory;
+using CheckoutBot.Factory;
 using CheckoutBot.Models.Checkout;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;

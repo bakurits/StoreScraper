@@ -1,12 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using CheckoutBot.Farctory;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CheckoutBot.Factory;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CheckoutBot.Farctory
+namespace ScraperTest.Factory
 {
     [TestClass]
     public class DriverFactoryTests

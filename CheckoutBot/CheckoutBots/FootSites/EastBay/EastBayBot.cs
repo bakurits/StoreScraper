@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading;
-using CheckoutBot.Farctory;
+using CheckoutBot.Factory;
 using CheckoutBot.Models.Checkout;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
@@ -60,11 +60,12 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 
         public override void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
         {
-            string url = "https://www.eastbay.com/checkout/?uri=checkout";
-
-            var driver = ClientFactory.CreateProxiedFirefoxDriver(true);
-            driver.Navigate().GoToUrl(url);
+            var driver = DriverFactory.CreateFirefoxDriver();
+            driver.Navigate().GoToUrl(this.WebsiteBaseUrl);
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
+
+            var cartContainer = GetClickableElementByXPath(wait, "//div[@id = 'header_cart_button']", token);
+            cartContainer.Click();
 
             SelectElement select = new SelectElement(GetVisibleElementByXPath(wait, "//select[@id = 'billCountry']", token));
             try

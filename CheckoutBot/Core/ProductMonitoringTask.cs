@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using CheckoutBot.Interfaces;
@@ -12,7 +13,7 @@ namespace CheckoutBot.Core
     public class ProductMonitoringTask
     {
         /// <summary>
-        /// Target Product which to buy imediately after released
+        /// Target Product which to buy immediately after released
         /// </summary>
         public ICheckoutSettings CheckoutInfo { get; set; }
 
@@ -45,6 +46,7 @@ namespace CheckoutBot.Core
                         throw new InvalidOperationException();
                     }
 
+                    Debug.Assert(targetProduct.ReleaseTime != null, "targetProduct.ReleaseTime != null");
                     var startTime = targetProduct.ReleaseTime.Value - TimeSpan.FromMinutes(3); 
                     Utils.WaitToBecomeTrue(() => DateTime.Now >= startTime, MonitoringTokenSource.Token);
 
@@ -57,6 +59,7 @@ namespace CheckoutBot.Core
                         throw new InvalidOperationException();
                     }
 
+                    Debug.Assert(targetProduct.ReleaseTime != null, "targetProduct.ReleaseTime != null");
                     var startTime = targetProduct.ReleaseTime.Value - TimeSpan.FromMinutes(3); 
                     Utils.WaitToBecomeTrue(() => DateTime.Now >= startTime, this.MonitoringTokenSource.Token);
                     break;
