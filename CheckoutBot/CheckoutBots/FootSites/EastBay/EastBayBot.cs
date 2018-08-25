@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading;
+using CheckoutBot.Farctory;
 using CheckoutBot.Models.Checkout;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
@@ -37,7 +38,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 
         public override HttpClient Login(string username, string password, CancellationToken token)
         {
-            var driver = ClientFactory.CreateProxiedFirefoxDriver(true);
+            var driver = DriverFactory.CreateFirefoxDriver();
             driver.Navigate().GoToUrl(this.WebsiteBaseUrl);
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
 
