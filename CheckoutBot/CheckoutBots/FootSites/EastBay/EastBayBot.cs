@@ -4,8 +4,11 @@ using System.Threading;
 using CheckoutBot.Models.Checkout;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using StoreScraper.Core;
 using StoreScraper.Http.Factory;
+#pragma warning disable CS0618 // Type or member is obsolete
 using static OpenQA.Selenium.Support.UI.ExpectedConditions;
+#pragma warning restore CS0618 // Type or member is obsolete
 
 namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 {
@@ -54,8 +57,25 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             throw new NotImplementedException();
         }
 
-        public override  void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
+        public override void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
         {
+            string url = "https://www.eastbay.com/checkout/?uri=checkout";
+
+            var driver = ClientFactory.CreateProxiedFirefoxDriver(true);
+            driver.Navigate().GoToUrl(url);
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
+
+            SelectElement select = new SelectElement(GetVisibleElementByXPath(wait, "//select[@id = 'billCountry']", token));
+            try
+            {
+                select.SelectByText(settings.Shipping.Country.ToString());
+            }
+            catch 
+            {
+                Logger.Instance.WriteErrorLog("This country isn't available");
+            }
+            
+            
             throw new NotImplementedException();
         }
 
