@@ -6,9 +6,10 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
+using CheckoutBot.Farctory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Firefox;
 using ScraperCore.Http;
 
 using StoreScraper.Helpers;
@@ -22,12 +23,12 @@ namespace ScraperTest.MinorTests
     [TestClass]
     public class SeleniumTests
     {
-        private ChromeDriver driver;
+        private FirefoxDriver driver;
 
         [TestMethod]
         public void FootSitesDetectionTest()
         {
-            this.driver = ClientFactory.CreateProxiedChromeDriver();
+            this.driver = DriverFactory.CreateFirefoxDriver();
             this.driver.Navigate().GoToUrl("https://www.footaction.com");
             driver.ExecuteScript("document.cookie =\"_abck=; expires=Thu, 01 Jan 1970 00:00:01 GMT;\"");
             driver.ExecuteScript(

@@ -161,6 +161,7 @@
     <Compile Include="CheckoutBots\FootSites\FootSitesBotBase.cs" />
     <Compile Include="Core\ProductMonitoringTask.cs" />
     <Compile Include="Env.cs" />
+    <Compile Include="Farctory\DriverFactory.cs" />
     <Compile Include="Interfaces\IAccountCheckouter.cs" />
     <Compile Include="Interfaces\IGuestCheckouter.cs" />
     <Compile Include="MainWindow.xaml.cs">
@@ -258,6 +259,7 @@
       <Name>AkamaiBypasser</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\ScraperCore\ScraperCore.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Brotli.NET.1.0.19\build\Brotli.NET.targets" Condition="Exists('..\packages\Brotli.NET.1.0.19\build\Brotli.NET.targets')" />

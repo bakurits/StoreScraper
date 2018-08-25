@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
+using CheckoutBot.Farctory;
 using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
@@ -33,7 +34,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootAction
 
         public override HttpClient Login(string username, string password, CancellationToken token)
         {
-            var driver = ClientFactory.CreateProxiedChromeDriver(true);
+            var driver = DriverFactory.CreateFirefoxDriver();
             driver.Navigate().GoToUrl(this.WebsiteBaseUrl);
             Thread.Sleep(2000);
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
