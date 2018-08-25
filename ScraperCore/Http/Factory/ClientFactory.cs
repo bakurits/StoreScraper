@@ -141,7 +141,12 @@ namespace StoreScraper.Http.Factory
         public static FirefoxDriver CreateProxiedFirefoxDriver(bool showWindowInDebugMode = true)
         {
             var proxy = GetRandomProxy();
+            return CreateFirefoxDriver(proxy, showWindowInDebugMode);
+        }
 
+        public static FirefoxDriver CreateFirefoxDriver(System.Net.WebProxy proxy, bool showWindowInDebugMode = true)
+        {
+            
             FirefoxOptions options = new FirefoxOptions()
             {
                 AcceptInsecureCertificates = true,
@@ -158,7 +163,8 @@ namespace StoreScraper.Http.Factory
                 };
             }
 
-            options.AddArguments("-private", "-new-instance");
+            const string UserAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0";
+            options.AddArguments("-private", "-new-instance", $"--useragent={UserAgent}");
 
 #if DEBUG
             if (!showWindowInDebugMode) options.AddArgument("-headless");

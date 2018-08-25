@@ -38,15 +38,14 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ExtenderFirefoxOptions.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="WebContext.cs" />
     <Compile Include="WebDriver.cs" />
     <Compile Include="WebProxy.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

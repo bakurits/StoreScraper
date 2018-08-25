@@ -7,33 +7,17 @@ using System.Threading.Tasks;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
+using Titanium.Web.Proxy.Models;
 
 namespace AkamaiBypasser
 {
-    public class WebDriver : FirefoxDriver
-  {
-    public static string UserAgent { get; } = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0";
-
-    private static FirefoxOptions GetOptions(WebContext ctx)
+    public class ExtendedFireFoxDriver : FirefoxDriver
     {
-      var options = new FirefoxOptions();
+        public WebProxy LocalProxy { get; set; }
 
-      options.AcceptInsecureCertificates = true;
-      // options.AddArgument("--headless");
-      options.AddArguments($"--useragent={UserAgent}", "-private");
-      options.Proxy = new Proxy()
-      {
-        Kind = ProxyKind.Manual,
-        SslProxy = ctx.Proxy.Address,
-        HttpProxy = ctx.Proxy.Address,
-        IsAutoDetect = false,
-      };
-
-      return options;
+        public ExtendedFireFoxDriver(ExtendedFirefoxOptions options) : base(options.WithNewLocalProxy())
+        {
+            LocalProxy = options.LocalProxy;
+        }
     }
-
-    public WebDriver(WebContext ctx) : base(GetOptions(ctx))
-    {
-    }
-  }
 }
