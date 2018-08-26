@@ -57,7 +57,7 @@ namespace StoreScraper.Models
             this.Price = price;
             this.Id = id;
             this.ScrapedBy = scrapedBy;
-            this.StoreName = scrapedBy.WebsiteName;
+            this.StoreName = scrapedBy?.WebsiteName;
             this.ImageUrl = imageUrl;
             this.Currency = currency;
             this.ReleaseTime = releaseTime;

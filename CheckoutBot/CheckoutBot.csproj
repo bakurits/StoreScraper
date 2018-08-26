@@ -151,6 +151,7 @@
     <Compile Include="Captcha\TwoCaptchaAPI.cs" />
     <Compile Include="Captcha\CaptchaAPIBase.cs" />
     <Compile Include="CheckoutBots\FootSites\ChampsSports\ChampsSportsBot.cs" />
+    <Compile Include="CheckoutBots\FootSites\checkRelaeseDates.cs" />
     <Compile Include="CheckoutBots\FootSites\EastBay\EastBayBot.cs" />
     <Compile Include="CheckoutBots\FootSites\FootAction\FootActionBot.cs" />
     <Compile Include="CheckoutBots\FootSites\FootLocker\FootLockerBot.cs" />

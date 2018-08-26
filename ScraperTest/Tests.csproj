@@ -91,6 +91,7 @@
   <ItemGroup>
     <Compile Include="CaptchaTests\AntiCaptchaTest.cs" />
     <Compile Include="CaptchaTests\TwoCaptchaTest.cs" />
+    <Compile Include="CheckoutBots\FootSites\checkReleaseTimeTest.cs" />
     <Compile Include="CheckoutBots\FootSites\EastBay\EastBayBotTests.cs" />
     <Compile Include="CheckoutBots\FootSites\FootAction\FootActionBotTests.cs" />
     <Compile Include="CheckoutBots\FootSites\FootLocker\FootLockerBotTests.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="ScraperTests\DavitBezhanishvili\AwLabScraperTests.cs" />
     <Compile Include="ScraperTests\Bakurits\RimowaScraperTest.cs" />
     <Compile Include="ScraperTests\DavitBezhanishvili\SneakerSturioScraperTests.cs" />
+    <Compile Include="ScraperTests\GiorgiBaghdavadze\SeleniumTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\FootShopTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\SnkrsTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\TriadsTest.cs" />

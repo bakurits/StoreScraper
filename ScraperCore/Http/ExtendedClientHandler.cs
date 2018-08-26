@@ -46,7 +46,7 @@ namespace ScraperCore.Http
                     return  nativeMessage.Result;
                 }
 
-            }));
+            }), cancellationToken);
            
             return newMessage;
         }
