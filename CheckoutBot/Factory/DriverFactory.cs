@@ -45,8 +45,12 @@ namespace CheckoutBot.Factory
                 };
             }
 
-            const string userAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0";
-            options.AddArguments("-private", "-new-instance", $"--useragent={userAgent}");
+            options.AddArguments("-private", "-new-instance");
+            options.SetPreference("browser.cache.memory.enable", false);
+            options.SetPreference("browser.cache.disk.enable", false);
+            options.SetPreference("browser.cache.offline.enable", false);
+            options.SetPreference("network.http.use-cache", false);
+            options.SetPreference("privacy.trackingprotection.enabled", false);
 
 #if DEBUG
             if (!showWindowInDebugMode) options.AddArgument("-headless");

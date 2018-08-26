@@ -30,12 +30,6 @@ namespace ScraperTest.MinorTests
         {
             this._driver = DriverFactory.CreateFirefoxDriver();
             this._driver.Navigate().GoToUrl("https://www.footaction.com");
-            _driver.ExecuteScript("document.cookie =\"_abck=; expires=Thu, 01 Jan 1970 00:00:01 GMT;\"");
-            _driver.ExecuteScript(
-                "document.cookie = \"_abck=null\"");
-            this._driver.Navigate().Refresh();
-
-
             var sorryBanner = this._driver.FindElements(By.Id("backendErrorHeader"));
 
             Assert.IsTrue(sorryBanner.Count == 0, "Bot is probably detected");

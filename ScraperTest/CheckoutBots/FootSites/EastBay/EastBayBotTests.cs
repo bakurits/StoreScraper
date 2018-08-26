@@ -8,7 +8,6 @@ using CheckoutBot.Models.Payment;
 using CheckoutBot.Models.Shipping;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
-using StoreScraper.Bots.Sticky_bit.ChampsSports_EastBay;
 using StoreScraper.Models;
 
 namespace ScraperTest.CheckoutBots.FootSites.EastBay
@@ -43,7 +42,7 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
                     TypeOfPayment = PaymentType.Card,
                     ValidUntil = DateTime.MaxValue,
                 },
-                ProductToBuy = new Product(new FootSimpleBase.EastBayScraper(),
+                ProductToBuy = new Product(bot,
                     "ASICS TIGER GEL-DIABLO - MEN'S",
                     "https://www.eastbay.com/product/model:293596/sku:1A129001/",
                     120,
