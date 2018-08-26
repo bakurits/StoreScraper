@@ -11,11 +11,17 @@ using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using ScraperCore.Interfaces;
 using StoreScraper.Attributes;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 using StoreScraper.Models;
+#pragma warning disable CS0618 // Type or member is obsolete
+using static OpenQA.Selenium.Support.UI.ExpectedConditions;
+#pragma warning restore CS0618 // Type or member is obsolete
+
 
 namespace CheckoutBot.CheckoutBots.FootSites
 {
@@ -126,6 +132,20 @@ namespace CheckoutBot.CheckoutBots.FootSites
             }
 
             return DateTime.MaxValue;
+        }
+
+
+        public static IWebElement GetVisibleElementByXPath(string xPath, WebDriverWait wait, CancellationToken token)
+        {
+            var element = wait.Until(ElementIsVisible(By.XPath(xPath)));
+            token.ThrowIfCancellationRequested();
+            return element;
+        }
+        public static IWebElement GetClickableElementByXPath(string xPath, WebDriverWait wait, CancellationToken token)
+        {
+            var element = wait.Until(ElementToBeClickable(By.XPath(xPath)));
+            token.ThrowIfCancellationRequested();
+            return element;
         }
     }
 }

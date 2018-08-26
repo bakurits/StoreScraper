@@ -66,20 +66,23 @@ namespace AkamaiBypasser
         {
             var request = args.WebSession.Request;
             var response = args.WebSession.Response;
-       
+
             if (request.OriginalUrl == "/_bm/bd-1-30")
-
-            if (response.StatusCode == 200)
             {
-                string body = await args.GetResponseBodyAsString();
+                if (response.StatusCode == 200)
+                {
+                    string body = await args.GetResponseBodyAsString();
 
-                args.SetResponseBodyString
-                (
-                    Resources.anti_akamai +
-                    Environment.NewLine +
-                    body
-                );
+                    args.SetResponseBodyString
+                    (
+                        Resources.anti_akamai +
+                        Environment.NewLine +
+                        body
+                    );
+                }
             }
+
+           
         }
 
         private int GetAvailablePort()

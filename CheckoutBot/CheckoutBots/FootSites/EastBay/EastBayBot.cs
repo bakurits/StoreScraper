@@ -3,56 +3,37 @@ using System.Net.Http;
 using System.Threading;
 using CheckoutBot.Factory;
 using CheckoutBot.Models.Checkout;
-using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using StoreScraper.Core;
-using StoreScraper.Http.Factory;
-#pragma warning disable CS0618 // Type or member is obsolete
-using static OpenQA.Selenium.Support.UI.ExpectedConditions;
-#pragma warning restore CS0618 // Type or member is obsolete
 
 namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 {
     public class EastBayBot : FootSitesBotBase
     {
-        private const string ApiUrl  = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/1";
+        private const string ApiUrl = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/1";
 
 
         public EastBayBot() : base("EastBay", "http://www.eastbay.com", ApiUrl)
         {
-
-        }
-
-        private IWebElement GetVisibleElementByXPath(WebDriverWait wait, string xPath, CancellationToken token)
-        {
-            var element = wait.Until(ElementIsVisible(By.XPath(xPath)));
-            token.ThrowIfCancellationRequested();
-            return element;
-        }
-        private IWebElement GetClickableElementByXPath(WebDriverWait wait, string xPath, CancellationToken token)
-        {
-            var element = wait.Until(ElementToBeClickable(By.XPath(xPath)));
-            token.ThrowIfCancellationRequested();
-            return element;
         }
 
         public override HttpClient Login(string username, string password, CancellationToken token)
         {
             var driver = DriverFactory.CreateFirefoxDriver();
-            driver.Navigate().GoToUrl(this.WebsiteBaseUrl);
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
+            driver.Navigate().GoToUrl(WebsiteBaseUrl);
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
 
-            var loginPopupButton = GetClickableElementByXPath(wait, "//div[@id='header_account_button']/a/span", token);
+            var loginPopupButton = GetClickableElementByXPath("//div[@id='header_account_button']/a/span", wait, token);
             loginPopupButton.Click();
 
-            var emailTextBox = GetVisibleElementByXPath(wait, "//input[@id='login_email']", token);
+            var emailTextBox = GetVisibleElementByXPath("//input[@id='login_email']", wait, token);
             emailTextBox.SendKeys(username);
 
 
-            var passwordTextBox = GetVisibleElementByXPath(wait, "//input[@id='login_password']", token);
+            var passwordTextBox = GetVisibleElementByXPath("//input[@id='login_password']", wait, token);
             passwordTextBox.SendKeys(password);
 
-            var signinButton = GetClickableElementByXPath(wait, "//input[@id='login_submit']", token);
+            var signinButton = GetClickableElementByXPath("//input[@id='login_submit']", wait, token);
             signinButton.Click();
 
             throw new NotImplementedException();
@@ -61,23 +42,23 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         public override void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
         {
             var driver = DriverFactory.CreateFirefoxDriver();
-            driver.Navigate().GoToUrl(this.WebsiteBaseUrl);
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
+            driver.Navigate().GoToUrl(WebsiteBaseUrl);
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
 
-            var cartContainer = GetClickableElementByXPath(wait, "//div[@id = 'header_cart_button']", token);
+            var cartContainer = GetClickableElementByXPath("//div[@id = 'header_cart_button']", wait, token);
             cartContainer.Click();
 
-            SelectElement select = new SelectElement(GetVisibleElementByXPath(wait, "//select[@id = 'billCountry']", token));
+            var select = new SelectElement(GetVisibleElementByXPath("//select[@id = 'billCountry']", wait, token));
             try
             {
                 select.SelectByText(settings.Shipping.Country.ToString());
             }
-            catch 
+            catch
             {
                 Logger.Instance.WriteErrorLog("This country isn't available");
             }
-            
-            
+
+
             throw new NotImplementedException();
         }
 
@@ -87,8 +68,8 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         }
 
 
-
-        public EastBayBot(string websiteName, string webSiteBaseUrl, string releasePageEndpoint) : base(websiteName, webSiteBaseUrl, releasePageEndpoint)
+        public EastBayBot(string websiteName, string webSiteBaseUrl, string releasePageEndpoint) : base(websiteName,
+            webSiteBaseUrl, releasePageEndpoint)
         {
         }
     }
