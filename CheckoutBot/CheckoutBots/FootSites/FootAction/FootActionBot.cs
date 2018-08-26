@@ -41,7 +41,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootAction
 
             var loginPopupButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//button[contains(text(),'Sign In')]")));
             token.ThrowIfCancellationRequested();
-            loginPopupButton.Click();
+            driver.ClickAtRandomPoint(loginPopupButton);
 
             var emailTextBox = wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//input[@type='EMAIL']")));
             token.ThrowIfCancellationRequested();
@@ -55,7 +55,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootAction
 
             var signinButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//button[normalize-space(text())='Sign In']")));
             token.ThrowIfCancellationRequested();
-            signinButton.Click();
+            driver.ClickAtRandomPoint(signinButton);
 
             throw new NotImplementedException();
         }

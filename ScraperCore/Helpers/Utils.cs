@@ -139,6 +139,14 @@ namespace StoreScraper.Helpers
             return !(Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) is DescriptionAttribute attribute) ? value.ToString() : attribute.Description;
         }
 
+        public static void ClickAtRandomPoint(this IWebDriver driver,IWebElement elem)
+        {
+            Actions actions = new Actions(driver);
+            actions.MoveToElement(elem, R.Next(0, elem.Size.Width), R.Next(0, elem.Size.Height));
+            actions.Click();
+            actions.Build().Perform();
+        }
+
         public static HtmlDocument PostDoc(this HttpClient client, string url, CancellationToken token, FormUrlEncodedContent postParams)
         {
             
