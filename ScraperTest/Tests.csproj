@@ -91,6 +91,7 @@
   <ItemGroup>
     <Compile Include="CaptchaTests\AntiCaptchaTest.cs" />
     <Compile Include="CaptchaTests\TwoCaptchaTest.cs" />
+    <Compile Include="CheckoutBots\FootSites\checkReleaseTimeTest.cs" />
     <Compile Include="CheckoutBots\FootSites\EastBay\EastBayBotTests.cs" />
     <Compile Include="CheckoutBots\FootSites\FootAction\FootActionBotTests.cs" />
     <Compile Include="CheckoutBots\FootSites\FootLocker\FootLockerBotTests.cs" />
