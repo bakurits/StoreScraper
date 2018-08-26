@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using CheckoutBot.CheckoutBots.FootSites.FootLocker;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -7,12 +8,13 @@ namespace ScraperTest.CheckoutBots.FootSites.FootLocker
     [TestClass()]
     public class FootLockerBotTests
     {
-        private FootLockerBot _bot;
+        private readonly FootLockerBot _bot;
 
         [TestMethod()]
         public void LoginTest()
         {
-            throw new NotImplementedException();
+            FootLockerBot bot = new FootLockerBot();
+            bot.Login("bakuricucxashvili@gmail.com", "Yrf7B2RHW", CancellationToken.None);
         }
 
         [TestMethod()]
