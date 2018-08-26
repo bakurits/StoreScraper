@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace CheckoutBot.CheckoutBots.FootSites.FootLocker
 {
-    class FootLockerBot : FootSitesBotBase
+    public class FootLockerBot : FootSitesBotBase
     {
         public override HttpClient Login(string username, string password, CancellationToken token)
         {

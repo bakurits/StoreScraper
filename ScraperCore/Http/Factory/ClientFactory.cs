@@ -18,6 +18,7 @@ using StoreScraper.Models;
 
 namespace StoreScraper.Http.Factory
 {
+
     public static class ClientFactory
     {
 
@@ -56,7 +57,7 @@ namespace StoreScraper.Http.Factory
         };
 
 
-        public static StringPair[] EdgeHeaders = new StringPair[]
+        public static StringPair[] EdgeHeaders = 
         {
             ("Accept", "*/*"),
             ("Accept-Encoding","gzip, deflate, br"),
@@ -136,36 +137,7 @@ namespace StoreScraper.Http.Factory
             return ParseProxy(proxyStr);
         }
 
-
-        public static FirefoxDriver CreateProxiedFirefoxDriver(bool showWindowInDebugMode = true)
-        {
-            var proxy = GetRandomProxy();
-
-            FirefoxOptions options = new FirefoxOptions()
-            {
-                AcceptInsecureCertificates = true,
-            };
-
-            if (proxy != null)
-            {
-                options.Proxy = new Proxy()
-                {
-                    IsAutoDetect = false,
-                    Kind = ProxyKind.Manual,
-                    HttpProxy = proxy.Address.AbsoluteUri,
-                    SslProxy = proxy.Address.AbsoluteUri
-                };
-            }
-
-            options.AddArguments("-private", "-new-instance");
-
-#if DEBUG
-            if (!showWindowInDebugMode) options.AddArgument("-headless");
-#else
-            options.AddArgument("-headless");
-#endif
-            return new FirefoxDriver(options);
-        }
+       
 
         /// <summary>
         /// Gets scrapping optimized http client.

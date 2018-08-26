@@ -4,18 +4,20 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
+using CheckoutBot.Factory;
 using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
+using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 using StoreScraper.Models;
 using ExpectedConditions = SeleniumExtras.WaitHelpers.ExpectedConditions;
 
 namespace CheckoutBot.CheckoutBots.FootSites.FootAction
 {
-    class FootActionBot : FootSitesBotBase
+    public class FootActionBot : FootSitesBotBase
     {
         private const string ApiUrl = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/34";
 
@@ -32,10 +34,12 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootAction
 
         public override HttpClient Login(string username, string password, CancellationToken token)
         {
-            var driver = ClientFactory.CreateProxiedFirefoxDriver(true);
+            var driver = DriverFactory.CreateFirefoxDriver();
             driver.Navigate().GoToUrl(this.WebsiteBaseUrl);
+            Thread.Sleep(2000);
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
-            var loginPopupButton = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementToBeClickable(By.XPath("//button[contains(text(),'Sign In')]")));
+
+            var loginPopupButton = wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//button[contains(text(),'Sign In')]")));
             token.ThrowIfCancellationRequested();
             loginPopupButton.Click();
 

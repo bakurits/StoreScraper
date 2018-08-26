@@ -24,8 +24,13 @@ namespace ScraperCore.Http
             {
                 try
                 {
-                    if (!nativeMessage.Result.Content.Headers.ContentEncoding.Contains("br")) return nativeMessage.Result;
-                    using (var stream = new BrotliStream(nativeMessage.Result.Content.ReadAsStreamAsync().Result,
+                    if (!nativeMessage.Result.Content.Headers.ContentEncoding.Contains("br"))
+                    {
+                        return nativeMessage.Result;
+                    }
+
+                    using (var stream = new BrotliStream(
+                        nativeMessage.Result.Content.ReadAsStreamAsync().Result,
                         CompressionMode.Decompress))
                     {
                         var outputStream = new MemoryStream();
