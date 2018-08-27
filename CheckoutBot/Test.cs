@@ -20,7 +20,7 @@ namespace TestConsole
 
             Console.WriteLine("getting the CAPTCHA...");
 
-            String res = "";
+            string res = "";
             res = ac.GetBalance();
             Console.WriteLine("Balance: {0}", res);
 

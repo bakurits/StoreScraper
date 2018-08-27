@@ -164,6 +164,7 @@
     <Compile Include="Env.cs" />
     <Compile Include="Factory\DriverFactory.cs" />
     <Compile Include="Interfaces\IAccountCheckouter.cs" />
+    <Compile Include="Interfaces\ICustomAvailabilityChecker.cs" />
     <Compile Include="Interfaces\IGuestCheckouter.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

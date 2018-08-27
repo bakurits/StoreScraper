@@ -51,6 +51,10 @@ namespace CheckoutBot.Factory
             options.SetPreference("browser.cache.offline.enable", false);
             options.SetPreference("network.http.use-cache", false);
             options.SetPreference("privacy.trackingprotection.enabled", false);
+            options.SetPreference("privacy.trackingprotection.pbmode.enabled", false);
+            options.SetPreference("plugin.state.flash", 1);
+            options.SetPreference("dom.ipc.plugins.enabled.libflashplayer.so", true);
+            options.AcceptInsecureCertificates = true;
 
 #if DEBUG
             if (!showWindowInDebugMode) options.AddArgument("-headless");
