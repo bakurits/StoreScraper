@@ -75,14 +75,7 @@ namespace CheckoutBot
 
         private void handleAccountType(object sender, RoutedEventArgs e)
         {
-            if (userRadioBtn.IsChecked == true)
-            {
-                accComboBox.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                accComboBox.Visibility = Visibility.Hidden;
-            }
+            accComboBox.Visibility = userRadioBtn.IsChecked == true ? Visibility.Visible : Visibility.Hidden;
         }
 
         private void handleVisaSelect(object sender, RoutedEventArgs e)
@@ -110,8 +103,7 @@ namespace CheckoutBot
                 return;
             }
 
-            Countries shippingCountry;
-            Enum.TryParse<Countries>(shippingAddress_country.SelectedValue.ToString(), out shippingCountry);
+            Enum.TryParse<Countries>(shippingAddress_country.SelectedValue.ToString(), out var shippingCountry);
             
             if (shippingCountry != Countries.UnitedStated)
             {
@@ -130,8 +122,7 @@ namespace CheckoutBot
                 return;
             }
 
-            Countries shippingCountry;
-            Enum.TryParse<Countries>(billingAddress_country.SelectedValue.ToString(), out shippingCountry);
+            Enum.TryParse<Countries>(billingAddress_country.SelectedValue.ToString(), out var shippingCountry);
 
             if (shippingCountry != Countries.UnitedStated)
             {
@@ -155,7 +146,7 @@ namespace CheckoutBot
             dlg.Filter = "JSON (.json)|*.json"; // Filter files by extension
 
             // Show save file dialog box
-            Nullable<bool> result = dlg.ShowDialog();
+            bool? result = dlg.ShowDialog();
 
             // Process save file dialog box results
             if (result == true)
@@ -175,7 +166,7 @@ namespace CheckoutBot
             dlg.Filter = "JSON (.json)|*.json"; // Filter files by extension
 
             // Show save file dialog box
-            Nullable<bool> result = dlg.ShowDialog();
+            bool? result = dlg.ShowDialog();
 
             // Process save file dialog box results
             if (result == true)
@@ -184,8 +175,7 @@ namespace CheckoutBot
                 string filename = dlg.FileName;
                 string json = System.IO.File.ReadAllText(filename);
 
-                Profile[] profiles;
-                profiles = JsonConvert.DeserializeObject<Profile[]>(json);
+                var profiles = JsonConvert.DeserializeObject<Profile[]>(json);
                 profileList.ItemsSource = profiles;
             }
 
@@ -197,11 +187,8 @@ namespace CheckoutBot
 
         private void addProfile(object sender, RoutedEventArgs e)
         {
-
-            Countries shippingCountry;
-            Enum.TryParse<Countries>(shippingAddress_country.SelectedValue.ToString(), out shippingCountry);
-            Countries billingCountry;
-            Enum.TryParse<Countries>(billingAddress_country.SelectedValue.ToString(), out billingCountry);
+            Enum.TryParse<Countries>(shippingAddress_country.SelectedValue.ToString(), out var shippingCountry);
+            Enum.TryParse<Countries>(billingAddress_country.SelectedValue.ToString(), out var billingCountry);
 
 
             
@@ -229,16 +216,15 @@ namespace CheckoutBot
                 LastName = billingAddress_lastName.Text
             };
 
-            States shipping_state;
             if (shippingState.Visibility != Visibility.Hidden)
             {
-                Enum.TryParse<States>(shippingAddress_state.SelectedValue.ToString(), out shipping_state);
+                Enum.TryParse<States>(shippingAddress_state.SelectedValue.ToString(), out var shipping_state);
                 shippingAddress.State = shipping_state;
             }
-            States billing_state;
+
             if (billingState.Visibility != Visibility.Hidden)
             {
-                Enum.TryParse<States>(billingAddress_state.SelectedValue.ToString(), out billing_state);
+                Enum.TryParse<States>(billingAddress_state.SelectedValue.ToString(), out var billing_state);
                 billingAddress.State = billing_state;
             }
 

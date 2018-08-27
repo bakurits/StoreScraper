@@ -35,6 +35,20 @@ namespace ScraperTest.MinorTests
             Assert.IsTrue(sorryBanner.Count == 0, "Bot is probably detected");
         }
 
+        [TestMethod]
+        public void StandardSeleniumTest()
+        {
+            this._driver = new FirefoxDriver();
+            Thread.Sleep(int.MaxValue);
+        }
+
+        [TestMethod]
+        public void ExtendedDriverTests()
+        {
+            _driver = DriverFactory.CreateFirefoxDriver();
+            Thread.Sleep(int.MaxValue);
+        }
+
 
         [TestCleanup]
         public void CleanUp()

@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
+using StoreScraper.Models;
 using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
 using HtmlAgilityPack;
@@ -87,9 +88,6 @@ namespace StoreScraper.Models
             return this.Url.GetHashCode();
         }
 
-        public override string ToString()
-        {
-            return $"{this.Name} - {this.Price + this.Currency} {Environment.NewLine + this.Url}";
-        }
+        public override string ToString() => this.Name;
     }
 }

@@ -18,6 +18,7 @@ using Newtonsoft.Json.Linq;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
+using StoreScraper.Attributes;
 using StoreScraper.Core;
 using StoreScraper.Http.Factory;
 using StoreScraper.Models;
@@ -227,6 +228,20 @@ namespace StoreScraper.Helpers
         }
 
 
+        public static IEnumerable<T> GetAllSubClassInstances<T>()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+
+            foreach (var type in assembly.GetTypes())
+            {
+                if (!type.IsSubclassOf(typeof(T))) continue;
+                bool disabled = type.CustomAttributes.Any(attr => attr.AttributeType == typeof(DisableInGUI));
+                if (!disabled)
+                {
+                    yield return (T) Activator.CreateInstance(type);
+                }
+            }
+        }
 
         public static Dictionary<string, string> CurrencyConversionSet = new Dictionary<string, string>()
         {

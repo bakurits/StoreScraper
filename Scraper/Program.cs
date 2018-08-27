@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using System.Windows.Forms;
 using StoreScraper.Attributes;
 using StoreScraper.Controls;
+using StoreScraper.Helpers;
 using StoreScraper.Http;
 
 namespace StoreScraper
@@ -37,30 +38,10 @@ namespace StoreScraper
 
             ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
 
-            AppSettings.Default.AvailableScrapers = GetScrapers().ToList();
+            AppSettings.Default.AvailableScrapers = Utils.GetAllSubClassInstances<ScraperBase>().ToList();
             AppSettings.Default.AvailableScrapers.Sort((s1, s2) => string.CompareOrdinal(s1.WebsiteName, s2.WebsiteName));
 
             Application.Run(new MainForm());
-        }
-
-
-
-        public static IEnumerable<ScraperBase> GetScrapers()
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-
-            foreach (var type in assembly.GetTypes())
-            {
-                if (type.IsSubclassOf(typeof(ScraperBase)))
-                {
-                    bool disabled =
-                        type.CustomAttributes.Any(attr => attr.AttributeType == typeof(DisableInGUI));
-                    if (!disabled)
-                    {
-                        yield return (ScraperBase) Activator.CreateInstance(type);
-                    }
-                }
-            }
         }
 
 

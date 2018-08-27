@@ -147,6 +147,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="AppData.cs" />
     <Compile Include="Captcha\AntiCaptchaAPI.cs" />
     <Compile Include="Captcha\TwoCaptchaAPI.cs" />
     <Compile Include="Captcha\CaptchaAPIBase.cs" />
@@ -160,6 +161,7 @@
     <Compile Include="CheckoutBots\FootSites\FootSiteBaseParts\FootSitesBotBase.ShippingPayment.cs" />
     <Compile Include="CheckoutBots\FootSites\FootSiteBaseParts\FootSteBase.AddToCard.cs" />
     <Compile Include="CheckoutBots\FootSites\FootSitesBotBase.cs" />
+    <Compile Include="Core\Helper.cs" />
     <Compile Include="Core\ProductMonitoringTask.cs" />
     <Compile Include="Env.cs" />
     <Compile Include="Factory\DriverFactory.cs" />
@@ -172,7 +174,7 @@
     <Compile Include="Test.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interfaces\IreleasePageScraper.cs" />
+    <Compile Include="Interfaces\IReleasePageScraper.cs" />
     <Compile Include="Models\Checkout\AccountCheckoutSettings.cs" />
     <Compile Include="Models\Checkout\ICheckoutSettings.cs" />
     <Compile Include="Models\Payment\Card.cs" />
@@ -249,11 +251,6 @@
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\xunit.analyzers.0.10.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="chromedriver.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AkamaiBotTesting\AkamaiBypasser.csproj">
