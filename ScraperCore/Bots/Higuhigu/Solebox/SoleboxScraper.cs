@@ -54,6 +54,10 @@ namespace StoreScraper.Bots.Higuhigu.Solebox
                 throw new WebException("Can't connect to website");
             }
             var node = document.DocumentNode;
+            if(node.InnerHtml.Contains(noResults))
+            {
+                return null;
+            }
             var items = node.SelectNodes("//li[@class='productData']");
             if (items == null)
             {

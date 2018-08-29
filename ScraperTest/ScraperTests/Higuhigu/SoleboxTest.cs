@@ -15,7 +15,7 @@ namespace ScraperTest.ScraperTests.Higuhigu
             SoleboxScraper scraper = new SoleboxScraper();
             SearchSettingsBase settings = new SearchSettingsBase()
             {
-                KeyWords = "jordan"
+                KeyWords = "Air+Presto"
             };
 
             scraper.FindItems(out var lst, settings, CancellationToken.None);
