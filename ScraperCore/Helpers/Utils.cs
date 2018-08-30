@@ -18,6 +18,7 @@ using Newtonsoft.Json.Linq;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
+using ScraperCore.Models;
 using StoreScraper.Attributes;
 using StoreScraper.Core;
 using StoreScraper.Http.Factory;
@@ -48,6 +49,11 @@ namespace StoreScraper.Helpers
         {
             var negKeyWords = settingsBase.NegKeyWrods.ToLower().Split(' ').ToList();
             var lName = product.Name.ToLower();
+
+            if (settingsBase.Mode == SearchMode.NewArrivalsPage && !settingsBase.parsedKeywords.Any(kGroup => kGroup.All(keyword => product.Name.Contains(keyword))))
+            {
+                return false;
+            }
 
             if (negKeyWords[0] != "" && negKeyWords.Find(word => lName.Contains(word)) != null) return false;
 
