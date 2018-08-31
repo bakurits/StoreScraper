@@ -12,14 +12,14 @@ namespace StoreScraper.Models
 
         public static SearchSettingsBase ConvertToChild(SearchSettingsBase source, Type childType)
         {
-            var childIntance =  (SearchSettingsBase)Activator.CreateInstance(childType);
+            var childInstance =  (SearchSettingsBase)Activator.CreateInstance(childType);
 
-            childIntance.KeyWords = source.KeyWords;
-            childIntance.MaxPrice = source.MaxPrice;
-            childIntance.MinPrice = source.MinPrice;
-            childIntance.NegKeyWrods = source.NegKeyWrods;
+            childInstance.KeyWords = source.KeyWords;
+            childInstance.MaxPrice = source.MaxPrice;
+            childInstance.MinPrice = source.MinPrice;
+            childInstance.NegKeyWords = source.NegKeyWords;
 
-            return childIntance;
+            return childInstance;
         }
 
 
@@ -27,7 +27,7 @@ namespace StoreScraper.Models
         public string KeyWords { get; set; } = "";
 
         [Category(FilterCatName), DisplayName("Negative Keywords")]
-        public string NegKeyWrods { get; set; } = "";
+        public string NegKeyWords { get; set; } = "";
 
         [Category(FilterCatName), DisplayName("Max. Price")]
         public double MaxPrice { get; set; } = 0;

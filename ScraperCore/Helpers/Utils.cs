@@ -46,7 +46,7 @@ namespace StoreScraper.Helpers
 
         public static bool SatisfiesCriteria(Product product, SearchSettingsBase settingsBase)
         {
-            var negKeyWords = settingsBase.NegKeyWrods.ToLower().Split(' ').ToList();
+            var negKeyWords = settingsBase.NegKeyWords.ToLower().Split(' ').ToList();
             var lName = product.Name.ToLower();
 
             if (negKeyWords[0] != "" && negKeyWords.Find(word => lName.Contains(word)) != null) return false;
@@ -167,7 +167,7 @@ namespace StoreScraper.Helpers
                 throw;
             }
         }
-        
+
 
         public static HtmlDocument GetDoc(Func<HttpClient> clientGenerator, string url, int timeoutSeconds, int maxTries, 
             CancellationToken token, bool autoDispose = false)
@@ -243,7 +243,7 @@ namespace StoreScraper.Helpers
             }
         }
 
-        public static Dictionary<string, string> CurrencyConversionSet = new Dictionary<string, string>()
+        private static readonly Dictionary<string, string> CurrencyConversionSet = new Dictionary<string, string>()
         {
             {"USD", "$"},
             {"&#36", "$"},
@@ -297,7 +297,7 @@ namespace StoreScraper.Helpers
         /// This function finds substring of string
         /// From <c>l</c> to <c>r</c> both inclusive
         /// </summary>
-        public static string Substr(this string str, int l, int r)
+        private static string Substr(this string str, int l, int r)
         {
             return str.Substring(l, r - l + 1);
         }
@@ -326,10 +326,8 @@ namespace StoreScraper.Helpers
             {
                 return str.Substr(0, indx);
             }
-            else
-            {
-                return str;
-            }
+
+            return str;
         }
 
         public static JObject GetFirstJson(string str)
@@ -356,7 +354,7 @@ namespace StoreScraper.Helpers
         public static string ToJsonString(this object value)
         {
             return JsonConvert.SerializeObject(value,
-                Newtonsoft.Json.Formatting.None,
+                Formatting.None,
                 new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Ignore
@@ -396,13 +394,13 @@ namespace StoreScraper.Helpers
         }
 
 
-        public static void WaitToBecomeTrue(this Func<bool> predicate, CancellationToken token, int checkIntervalMiliSeconds = 100)
+        public static void WaitToBecomeTrue(this Func<bool> predicate, CancellationToken token, int checkIntervalMilliSeconds = 100)
         {
             while (true)
             {
                 if (predicate()) return;
                 token.ThrowIfCancellationRequested();
-                Task.Delay(checkIntervalMiliSeconds, token).Wait(token);
+                Task.Delay(checkIntervalMilliSeconds, token).Wait(token);
             }
         }
 

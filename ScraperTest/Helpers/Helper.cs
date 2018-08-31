@@ -20,7 +20,7 @@ namespace ScraperTest.Helpers
        public static readonly SearchSettingsBase SearchSettings = new SearchSettingsBase
         {
             KeyWords = "blue t-shirt",
-            NegKeyWrods = "Woman",
+            NegKeyWords = "Woman",
             MinPrice = 200,
             MaxPrice = 1000,
         };
@@ -29,7 +29,7 @@ namespace ScraperTest.Helpers
         {
             Gender = FootApiSearchSettings.GenderEnum.Any,
             KeyWords = "blue t-shirt",
-            NegKeyWrods = "Woman",
+            NegKeyWords = "Woman",
             MinPrice = 200,
             MaxPrice = 1000,
         };

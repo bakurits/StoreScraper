@@ -28,22 +28,22 @@ namespace StoreScraper
 
 
         /// <summary>
-        /// Determinates bot state. Bot is Active when user have at least 1 product in monitoring list.
+        /// Determines bot state. Bot is Active when user have at least 1 product in monitoring list.
         /// </summary>
         public abstract bool Active { get; set; }
 
 
         /// <summary>
-        /// Searches Produts by searchCriteria.
+        /// Searches Products by searchCriteria.
         /// </summary>
         /// <param name="listOfProducts">List in which to add scraped products</param>
         /// <param name="settings">Search settings and buying options.
         /// each bot may implement and use custom type of settings depending on store</param>
-        /// <param name="token">Canselation token to terminate process when cancel requested</param>
+        /// <param name="token">Cancellation token to terminate process when cancel requested</param>
         public abstract void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token);
 
         /// <summary>
-        /// This method finds products avaliable sizes
+        /// This method finds products available sizes
         /// </summary>
         /// <param name="product"></param>
         /// <param name="token"></param>
@@ -52,7 +52,7 @@ namespace StoreScraper
 
 
         /// <summary>
-        /// Wrapper for FinItems Methods. It does some search settings refractoring before executing FindItems
+        /// Wrapper for FinItems Methods. It does some search settings refactoring before executing FindItems
         /// </summary>
         /// <param name="listOfProducts"></param>
         /// <param name="settings"></param>
