@@ -94,14 +94,14 @@
 
                             
 
-                            <Border Background="#5db8f1" HorizontalAlignment="Left" Width="100">
+                            <Border Background="#5db8f1" HorizontalAlignment="Left" Width="150">
                             <Image Source="/images/logo.png"  />
                             </Border>
                             <TabPanel
                                 VerticalAlignment="Center"
              Grid.Row="0"
              Panel.ZIndex="1"
-             Margin="110,0,60,-1"
+             Margin="160,0,60,-1"
              IsItemsHost="True"
              Background="Transparent" />
                             <Border 
