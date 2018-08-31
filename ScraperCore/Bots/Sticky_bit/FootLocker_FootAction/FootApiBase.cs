@@ -175,13 +175,13 @@ namespace FootLocker_FootAction
         {
             Console.WriteLine("abaababa");
             JArray sellableUnit = JArray.Parse(main.GetValue("sellableUnits").ToString());
-            for (int i = 0; i < sellableUnit.Count; i++)
+            foreach (var item in sellableUnit)
             {
                 try
                 {
-                    Console.WriteLine(sellableUnit[i]);
-                    string size = sellableUnit[i]["attributes"][0]["value"].ToString();
-                    string description = sellableUnit[i]["attributes"][1]["value"].ToString();
+                    Console.WriteLine(item);
+                    string size = item["attributes"][0]["value"].ToString();
+                    string description = item["attributes"][1]["value"].ToString();
 
                     productDetails.AddSize(size, description);
                 }

@@ -21,7 +21,7 @@ namespace ScraperTest.ScraperTests.Bakurits
             };
 
             scraper.FindItems(out var lst, settings, CancellationToken.None);
-            Helpers.Helper.PrintFindItemsResults(lst);
+            Helper.PrintFindItemsResults(lst);
 
         }
 

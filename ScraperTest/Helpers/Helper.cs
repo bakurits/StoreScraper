@@ -10,13 +10,14 @@ using StoreScraper;
 using StoreScraper.Core;
 using StoreScraper.Http;
 using StoreScraper.Models;
+using TestContext = Microsoft.VisualStudio.TestTools.UnitTesting.TestContext;
 
 namespace ScraperTest.Helpers
 {
     [TestClass]
     public class Helper
     {
-       public static SearchSettingsBase SearchSettings = new SearchSettingsBase
+       public static readonly SearchSettingsBase SearchSettings = new SearchSettingsBase
         {
             KeyWords = "blue t-shirt",
             NegKeyWrods = "Woman",
@@ -24,7 +25,7 @@ namespace ScraperTest.Helpers
             MaxPrice = 1000,
         };
 
-        public static FootApiSearchSettings FootApiSearchSettingsSearchSettings = new FootApiSearchSettings
+        public static readonly FootApiSearchSettings FootApiSearchSettingsSearchSettings = new FootApiSearchSettings
         {
             Gender = FootApiSearchSettings.GenderEnum.Any,
             KeyWords = "blue t-shirt",
