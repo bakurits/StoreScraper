@@ -4,13 +4,14 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
 using StoreScraper.Bots.Bakurits.Antonioli;
 using StoreScraper.Models;
+using TestConsole;
 
 namespace ScraperTest.ScraperTests.Bakurits
 {
-    [TestClass]
+    [TestClass]     
     public class AntonioliScraperTest
     {
-        [TestMethod()]
+        [TestMethod]
         public void FindItemsTest()
         {
             AntonioliScraper scraper = new AntonioliScraper();
@@ -21,11 +22,10 @@ namespace ScraperTest.ScraperTests.Bakurits
             };
 
             scraper.FindItems(out var lst, settings, CancellationToken.None);
-            Helpers.Helper.PrintFindItemsResults(lst);
-
+            Helper.PrintFindItemsResults(lst);
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void GetProductDetailsTest()
         {
             Product curProduct = new Product(new AntonioliScraper(), "Unknown",
@@ -41,7 +41,6 @@ namespace ScraperTest.ScraperTests.Bakurits
 
             Helper.PrintGetDetailsResult(details.SizesList);
             Debug.WriteLine(curProduct.Name);
-
         }
     }
 }

@@ -174,7 +174,7 @@ namespace FootLocker_FootAction
         private void addSizes(JObject main, ProductDetails productDetails, string subName)
         {
             JArray sellableUnit = JArray.Parse(main.GetValue("sellableUnits").ToString());
-            for (int i = 0; i < sellableUnit.Count; i++)
+            foreach (var item in sellableUnit)
             {
                 try
                 {

@@ -10,7 +10,7 @@ namespace StoreScraper.Core
 {
     class UrlMonitoringTask : MonitoringTaskBase
     {
-        private ScraperBase _scraper;
+        private readonly ScraperBase _scraper;
         private ProductDetails _oldDetails;
         public string Url { get; set; }
         

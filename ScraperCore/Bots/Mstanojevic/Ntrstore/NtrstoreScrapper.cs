@@ -144,7 +144,7 @@ namespace StoreScraper.Bots.Mstanojevic.Ntrstore
         {
             string title = item.SelectSingleNode("./div/h2[@class='product-name']").InnerHtml.ToLower();
             var validKeywords = settings.KeyWords.ToLower().Split(' ');
-            var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
+            var invalidKeywords = settings.NegKeyWords.ToLower().Split(' ');
             foreach (var keyword in validKeywords)
             {
                 if (!title.Contains(keyword))

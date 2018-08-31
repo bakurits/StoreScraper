@@ -23,8 +23,7 @@ namespace StoreScraper.Core
             for (int s = 0; s < Stores.Count; s++)
             {
                 var oldSearch = OldItems[s];
-                var store = Stores[s];
-                Stores.AsParallel().ForAll(curSotre => { MonitorSingleStore(curSotre, oldSearch, token); });
+                Stores.AsParallel().ForAll(curStore => { MonitorSingleStore(curStore, oldSearch, token); });
             }
 
         }

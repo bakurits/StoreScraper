@@ -21,7 +21,7 @@ namespace ScraperTest.ScraperTests.GiorgiChkhikvadze
                 MaxPrice = 0,
                 MinPrice = 0,
                 KeyWords = "white t-shirt",
-                NegKeyWrods = "",
+                NegKeyWords = "",
             };
             scrapper.FindItems(out var listOfProducts, searchSettingsBase, CancellationToken.None);
             Helper.PrintFindItemsResults(listOfProducts);
