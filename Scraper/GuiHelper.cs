@@ -44,11 +44,12 @@ namespace StoreScraper
                 Stores = scraperBases.ToList(),
                 SearchSettings = new SearchSettingsBase()
                 {
-
+                    KeyWords = string.Join(",", keywords),
+                    NegKeyWords = string.Join(",", negKeywords)
                 }
             };
 
-
+            container.Items.Add(monitoringTask);
         }
     }
 }
