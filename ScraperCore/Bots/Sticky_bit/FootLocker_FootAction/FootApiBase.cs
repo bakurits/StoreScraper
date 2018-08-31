@@ -171,22 +171,24 @@ namespace FootLocker_FootAction
             return price.GetValue("formattedOriginalPrice").ToString();
         }
 
-        private void addSizes(JObject main, ProductDetails productDetails)
+        private void addSizes(JObject main, ProductDetails productDetails, string subName)
         {
-            Console.WriteLine("abaababa");
             JArray sellableUnit = JArray.Parse(main.GetValue("sellableUnits").ToString());
             for (int i = 0; i < sellableUnit.Count; i++)
             {
                 try
                 {
-                    Console.WriteLine(sellableUnit[i]);
                     string size = sellableUnit[i]["attributes"][0]["value"].ToString();
                     string description = sellableUnit[i]["attributes"][1]["value"].ToString();
-
-                    productDetails.AddSize(size, description);
+                    string indicator = sellableUnit[i]["stockLevelStatus"].ToString();
+                    if (indicator == "inStock" && description == subName)
+                    {
+                        productDetails.AddSize(size, description);
+                    }
                 }
                 catch (Exception e)
                 {
+                    Console.WriteLine(e);
                     return;
                 }
             }
@@ -201,6 +203,8 @@ namespace FootLocker_FootAction
             string id = GetIdFromUrl(productUrl);
             string url = productUrl;
             string img = GetImageUrlFromJson(mainObj);
+            string subName = document.SelectSingleNode("//*[@class=\"label\"]").InnerText;
+            Console.WriteLine(subName);
             string name = mainObj.GetValue("name").ToString();
             Price productPrice = Utils.ParsePrice(GetPriceFromJson(mainObj));
             ProductDetails productDetails = new ProductDetails()
@@ -214,8 +218,7 @@ namespace FootLocker_FootAction
                 ScrapedBy = this
             };
 
-            addSizes(mainObj, productDetails);
-            Console.WriteLine(productDetails);
+            addSizes(mainObj, productDetails, subName);
 
             return productDetails;
         }

@@ -27,7 +27,7 @@ namespace ScraperTest.ScraperTests.Sticky_bit.FootSites
         public void GetProductDetails()
         {
             FootAPIBase.FootLockerScraper scraper = new FootAPIBase.FootLockerScraper();
-            ProductDetails productDetails = scraper.GetProductDetails("https://www.footlocker.com/product/nike-kobe-ad-nxt-360--mens/087102.html", CancellationToken.None);
+            ProductDetails productDetails = scraper.GetProductDetails("https://www.footlocker.com/product/Jordan%20Retro%201%20High%20OG%20-%20Men%27s/55088401.html", CancellationToken.None);
             Console.WriteLine(productDetails);
         }
     }
