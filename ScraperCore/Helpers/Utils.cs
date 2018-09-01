@@ -30,6 +30,11 @@ namespace StoreScraper.Helpers
 {
     public static class Utils
     {
+        
+        private static readonly Random R = new Random();
+        
+        #region HttpClient
+
         /// <summary>
         /// Gets Image from specified Url
         /// And resizes it to supplied width, height
@@ -44,28 +49,6 @@ namespace StoreScraper.Helpers
                 return new Bitmap(Image.FromStream(stream, false, true), width, height);
             }
         }
-
-        public static bool SatisfiesCriteria(Product product, SearchSettingsBase settingsBase)
-        {
-            var negKeyWords = settingsBase.NegKeyWords.ToLower().Split(' ').ToList();
-            var lName = product.Name.ToLower();
-
-            if (settingsBase.Mode == SearchMode.NewArrivalsPage && !settingsBase.parsedKeywords.Any(kGroup => kGroup.All(keyword => product.Name.Contains(keyword))))
-            {
-                return false;
-            }
-
-            if (negKeyWords[0] != "" && negKeyWords.Find(word => lName.Contains(word)) != null) return false;
-
-            if (settingsBase.MaxPrice == 0) return true;
-            return product.Price <= settingsBase.MaxPrice && product.Price >= settingsBase.MinPrice;
-        }
-
-        public static string EscapeFileName(this string fileName)
-        {
-            return System.IO.Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c, '_'));
-        }
-
 
         public static JObject GetParsedJson(this HttpClient client, string url, CancellationToken token)
         {
@@ -101,6 +84,7 @@ namespace StoreScraper.Helpers
                 throw;
             }
         }
+
         public static HtmlDocument GetDoc(this HttpClient client, string url, CancellationToken token)
         {
             try
@@ -139,24 +123,9 @@ namespace StoreScraper.Helpers
             }
         }
 
-        public static string GetDescription(this Enum value)
+        public static HtmlDocument PostDoc(this HttpClient client, string url, CancellationToken token,
+            FormUrlEncodedContent postParams)
         {
-            FieldInfo field = value.GetType().GetField(value.ToString());
-
-            return !(Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) is DescriptionAttribute attribute) ? value.ToString() : attribute.Description;
-        }
-
-        public static void ClickAtRandomPoint(this IWebDriver driver,IWebElement elem)
-        {
-            Actions actions = new Actions(driver);
-            actions.MoveToElement(elem, R.Next(0, elem.Size.Width), R.Next(0, elem.Size.Height));
-            actions.Click();
-            actions.Build().Perform();
-        }
-
-        public static HtmlDocument PostDoc(this HttpClient client, string url, CancellationToken token, FormUrlEncodedContent postParams)
-        {
-            
             try
             {
                 using (var response = client.PostAsync(url, postParams, token).Result)
@@ -175,7 +144,8 @@ namespace StoreScraper.Helpers
         }
 
 
-        public static HtmlDocument GetDoc(Func<HttpClient> clientGenerator, string url, int timeoutSeconds, int maxTries, 
+        public static HtmlDocument GetDoc(Func<HttpClient> clientGenerator, string url, int timeoutSeconds,
+            int maxTries,
             CancellationToken token, bool autoDispose = false)
         {
             for (int i = 0; i < maxTries; i++)
@@ -185,19 +155,19 @@ namespace StoreScraper.Helpers
                 {
                     return client.GetDoc(url, token);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     if (i == maxTries - 1)
                     {
-                        Logger.Instance.WriteErrorLog($"Can't connect to website url: {url}. ErrorMessage: {e.Message}");
+                        Logger.Instance.WriteErrorLog(
+                            $"Can't connect to website url: {url}. ErrorMessage: {e.Message}");
                         throw;
                     }
                 }
                 finally
                 {
-                    if(autoDispose) client.Dispose();
+                    if (autoDispose) client.Dispose();
                 }
-
             }
 
             Logger.Instance.WriteErrorLog($"Can't connect to website url: {url}");
@@ -209,7 +179,7 @@ namespace StoreScraper.Helpers
             var list = cookies.ToList();
             var cookieStr = string.Join(";", list.ConvertAll(cookie => $"{cookie.Name}={cookie.Value}"));
 
-           
+
             client.DefaultRequestHeaders.TryAddWithoutValidation("Cookie", cookieStr);
 
             return client;
@@ -225,68 +195,24 @@ namespace StoreScraper.Helpers
             return client;
         }
 
-        private static readonly Random R = new Random();
+        #endregion
 
-        public static T GetRandomValue<T>(this IList<T> list)
+        #region Strings
+
+        public static string EscapeFileName(this string fileName)
         {
-            int index = R.Next(0, list.Count);
-            return list[index];
+            return System.IO.Path.GetInvalidFileNameChars()
+                .Aggregate(fileName, (current, c) => current.Replace(c, '_'));
         }
 
-
-        public static IEnumerable<T> GetAllSubClassInstances<T>()
+        public static string GetDescription(this Enum value)
         {
-            var assembly = Assembly.GetExecutingAssembly();
+            FieldInfo field = value.GetType().GetField(value.ToString());
 
-            foreach (var type in assembly.GetTypes())
-            {
-                if (!type.IsSubclassOf(typeof(T))) continue;
-                bool disabled = type.CustomAttributes.Any(attr => attr.AttributeType == typeof(DisableInGUI));
-                if (!disabled)
-                {
-                    yield return (T) Activator.CreateInstance(type);
-                }
-            }
-        }
-
-        private static readonly Dictionary<string, string> CurrencyConversionSet = new Dictionary<string, string>()
-        {
-            {"USD", "$"},
-            {"&#36", "$"},
-            {"EUR", "€"},
-            {"&EURO", "€"},
-            {"&POUND", "£"},
-            {"&YEN", "¥"},
-        };
-
-
-        /// <summary>
-        /// Method return currency string by recognizing
-        /// the first character in the price string
-        /// consider adding more currency strings
-        /// in the cases
-        /// </summary>
-        /// <param name="priceString"></param>
-        /// <returns>List of sizes</returns>
-        public static Price ParsePrice (string priceString, string decimalDelimiter = ".", string tousandsDelimiter = ",")
-        {
-
-            priceString = priceString.Trim().Replace(" ", "");
-            if (!string.IsNullOrEmpty(tousandsDelimiter)) priceString = priceString.Replace(tousandsDelimiter, "");
-            priceString = HtmlEntity.DeEntitize(priceString);
-            priceString = priceString.Replace(decimalDelimiter, ".");
-
-            string number = Regex.Match(priceString, $@"[\d\.]+").Value;
-            var parsed = double.Parse(number, CultureInfo.InvariantCulture);
-            var c = priceString.Replace(number, "").ToUpper();
-
-            if (CurrencyConversionSet.ContainsKey(c)) c = CurrencyConversionSet[c];
-
-#if DEBUG
-            if(c.Any(char.IsNumber)) Logger.Instance.WriteErrorLog($"Couldn't parse string to price. str = {priceString}");
-#endif
-
-            return new Price(parsed, c);
+            return !(Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) is DescriptionAttribute attribute
+                )
+                ? value.ToString()
+                : attribute.Description;
         }
 
         /// <summary>
@@ -336,6 +262,10 @@ namespace StoreScraper.Helpers
             return str;
         }
 
+        #endregion
+
+        #region JsonUtils
+
         public static JObject GetFirstJson(string str)
         {
             int firstCrlBraInd = str.IndexOf("{", StringComparison.Ordinal);
@@ -354,6 +284,7 @@ namespace StoreScraper.Helpers
                     return JObject.Parse(str.Substr(firstCrlBraInd, i));
                 }
             }
+
             return JObject.Parse("{}");
         }
 
@@ -366,6 +297,116 @@ namespace StoreScraper.Helpers
                     NullValueHandling = NullValueHandling.Ignore
                 });
         }
+
+        #endregion
+
+        #region Scraping
+
+        public static bool SatisfiesCriteria(Product product, SearchSettingsBase settingsBase)
+        {
+            var negKeyWords = settingsBase.NegKeyWords.ToLower().Split(' ').ToList();
+            var lName = product.Name.ToLower();
+
+            if (settingsBase.Mode == SearchMode.NewArrivalsPage &&
+                !settingsBase.parsedKeywords.Any(kGroup => kGroup.All(keyword => product.Name.Contains(keyword))))
+            {
+                return false;
+            }
+
+            if (negKeyWords[0] != "" && negKeyWords.Find(word => lName.Contains(word)) != null) return false;
+
+            if (Math.Abs(settingsBase.MaxPrice) < 0.000001) return true;
+            return product.Price <= settingsBase.MaxPrice && product.Price >= settingsBase.MinPrice;
+        }
+
+        private static readonly Dictionary<string, string> CurrencyConversionSet = new Dictionary<string, string>()
+        {
+            {"USD", "$"},
+            {"&#36", "$"},
+            {"EUR", "€"},
+            {"&EURO", "€"},
+            {"&POUND", "£"},
+            {"&YEN", "¥"},
+        };
+
+
+        /// <summary>
+        /// Method return currency string by recognizing
+        /// the first character in the price string
+        /// consider adding more currency strings
+        /// in the cases
+        /// </summary>
+        /// <param name="priceString"></param>
+        /// <param name="decimalDelimiter"></param>
+        /// <param name="thousandsDelimiter"></param>
+        /// <returns>List of sizes</returns>
+        public static Price ParsePrice(string priceString, string decimalDelimiter = ".",
+            string thousandsDelimiter = ",")
+        {
+            priceString = priceString.Trim().Replace(" ", "");
+            if (!string.IsNullOrEmpty(thousandsDelimiter)) priceString = priceString.Replace(thousandsDelimiter, "");
+            priceString = HtmlEntity.DeEntitize(priceString);
+            priceString = priceString.Replace(decimalDelimiter, ".");
+
+            string number = Regex.Match(priceString, $@"[\d\.]+").Value;
+            var parsed = double.Parse(number, CultureInfo.InvariantCulture);
+            var c = priceString.Replace(number, "").ToUpper();
+
+            if (CurrencyConversionSet.ContainsKey(c)) c = CurrencyConversionSet[c];
+
+#if DEBUG
+            if (c.Any(char.IsNumber))
+                Logger.Instance.WriteErrorLog($"Couldn't parse string to price. str = {priceString}");
+#endif
+
+            return new Price(parsed, c);
+        }
+
+        #endregion
+
+        #region BrowserSimulation
+
+        public static void ClickAtRandomPoint(this IWebDriver driver, IWebElement elem)
+        {
+            Actions actions = new Actions(driver);
+            actions.MoveToElement(elem, R.Next(0, elem.Size.Width), R.Next(0, elem.Size.Height));
+            actions.Click();
+            actions.Build().Perform();
+        }
+
+        public static void SimulateTyping(this IWebDriver driver, string keysToType)
+        {
+            Actions actions = new Actions(driver);
+            actions.SendKeys(keysToType).Build().Perform();
+        }
+
+        #endregion
+
+
+        
+
+        public static T GetRandomValue<T>(this IList<T> list)
+        {
+            int index = R.Next(0, list.Count);
+            return list[index];
+        }
+
+
+        public static IEnumerable<T> GetAllSubClassInstances<T>()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+
+            foreach (var type in assembly.GetTypes())
+            {
+                if (!type.IsSubclassOf(typeof(T))) continue;
+                bool disabled = type.CustomAttributes.Any(attr => attr.AttributeType == typeof(DisableInGUI));
+                if (!disabled)
+                {
+                    yield return (T) Activator.CreateInstance(type);
+                }
+            }
+        }
+
 
         public static void TrySeveralTimes(Action action, int attemptCount)
         {
@@ -400,7 +441,8 @@ namespace StoreScraper.Helpers
         }
 
 
-        public static void WaitToBecomeTrue(this Func<bool> predicate, CancellationToken token, int checkIntervalMilliSeconds = 100)
+        public static void WaitToBecomeTrue(this Func<bool> predicate, CancellationToken token,
+            int checkIntervalMilliSeconds = 100)
         {
             while (true)
             {
@@ -409,12 +451,5 @@ namespace StoreScraper.Helpers
                 Task.Delay(checkIntervalMilliSeconds, token).Wait(token);
             }
         }
-
-        public static void SimulateTyping(this IWebDriver driver, string keysToType)
-        {
-            Actions actions = new Actions(driver);
-            actions.SendKeys(keysToType).Build().Perform();
-        }
-
     }
 }
