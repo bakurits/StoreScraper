@@ -73,7 +73,13 @@ namespace StoreScraper.Helpers
                 {
                     string v = await response.Content.ReadAsStringAsync();
                     var result = v;
-                    var doc = new HtmlDocument();
+                    var doc = new HtmlDocument()
+                    {
+                        OptionAutoCloseOnEnd = true,
+                        OptionCheckSyntax = true,
+                        OptionFixNestedTags = true,
+                        OptionWriteEmptyNodes = true,
+                    };
                     doc.LoadHtml(result);
                     return doc;
                 }
@@ -92,7 +98,13 @@ namespace StoreScraper.Helpers
                 using (var response = client.GetAsync(url, token).Result)
                 {
                     var result = response.Content.ReadAsStringAsync().Result;
-                    var doc = new HtmlDocument();
+                    var doc = new HtmlDocument()
+                    {
+                        OptionAutoCloseOnEnd = true,
+                        OptionCheckSyntax = true,
+                        OptionFixNestedTags = true,
+                        OptionWriteEmptyNodes = true,
+                    };
                     doc.LoadHtml(result);
                     return doc;
                 }

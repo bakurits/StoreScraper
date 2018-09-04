@@ -47,8 +47,8 @@ namespace StoreScraper.Models
         [Category(FilterCatName), DisplayName("Min. Price")]
         public double MinPrice { get; set; } = 0;
 
-        [Browsable(false)]
-        public SearchMode Mode { get; set; } = SearchMode.SearchLink;
+        [Category(CommonCatName), DisplayName("Search Mode")]
+        public SearchMode Mode { get; set; } = SearchMode.SearchAPI;
 
 
 
