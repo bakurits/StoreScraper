@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
@@ -57,6 +59,36 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze.Nakedcph
 
         }
 
+        private const string NewArrivalsPageUrl = "https://www.nakedcph.com/new-arrivals/s/6";
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        {
+            listOfProducts = new List<Product>();
+            HttpClient client = ClientFactory.GetProxiedFirefoxClient();
+            var doc = client.GetDoc(
+                "https://www.nakedcph.com/new-arrivals/s/6/2?orderBy=Published&skip_layout=true&view_override=_ajax-filter",
+                token);
+
+            var root = doc.DocumentNode;
+            var productNodes = root.SelectNodes("//a[@class='card']");
+
+
+            IEnumerable<Product> products = GetProducts(productNodes);
+
+        }
+
+
+        private IEnumerable<Product> GetProducts(HtmlNodeCollection productNodes)
+        {
+            return from node in productNodes 
+                let imageUrlPath = node.SelectSingleNode(".//noscript/img").GetAttributeValue("src", null) 
+                let image = imageUrlPath == null ? null : Path.Combine(NewArrivalsPageUrl, imageUrlPath) 
+                let name = node.SelectSingleNode(".//h4").InnerText.Trim() let urlPath = node.GetAttributeValue("href", null) 
+                let url = urlPath == null? null : Path.Combine(NewArrivalsPageUrl, urlPath) 
+                let priceText = node.SelectSingleNode(".//del").InnerText.Trim() 
+                let price = Utils.ParsePrice(priceText) 
+                select new Product(this, name, url, price.Value, image, url, price.Currency);
+        }
+      
         /// <summary>
         /// This method is simple wrapper on LoadSingleProduct
         /// To catch all Exceptions during release

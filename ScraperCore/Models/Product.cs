@@ -7,6 +7,7 @@ using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
 using HtmlAgilityPack;
 using ScraperCore.Interfaces;
+using StoreScraper.Core;
 
 namespace StoreScraper.Models
 {
@@ -14,6 +15,8 @@ namespace StoreScraper.Models
     {
         [DisplayName("Store")]
         public string StoreName { get; set; } = "";
+
+        public string BrandName { get; set; } = "";
 
 
         [Browsable(false)]
@@ -50,11 +53,11 @@ namespace StoreScraper.Models
         public DateTime? ReleaseTime { get; set; }
 
 
-        public Product(IWebsiteScraper scrapedBy, string name, string url, double price, string imageUrl, 
+        public Product(IWebsiteScraper scrapedBy, string name, string url, double price, string imageUrl,
             string id, string currency = "$", DateTime? releaseTime = null)
         {
-            this.Name = HtmlEntity.DeEntitize(name.Trim());
-            this.Url = url;
+            this.Name = name != null ? HtmlEntity.DeEntitize(name.Trim()) : "<unknown name>";
+            this.Url = url ?? "<unknown url>";
             this.Price = price;
             this.Id = id;
             this.ScrapedBy = scrapedBy;
@@ -66,6 +69,18 @@ namespace StoreScraper.Models
 
         public Product()
         {
+        }
+
+
+        /// <summary>
+        /// Validates current objects. removes null in any value and logs error in that case.
+        /// </summary>
+        public void Validate()
+        {
+            Name = ValidateString(Name, nameof(Name));
+            Url = ValidateString(Url, nameof(Url));
+            Currency = ValidateString(Currency, nameof(Currency));
+            Price = ValidatePrice(Price, nameof(Price));
         }
 
 
@@ -89,5 +104,27 @@ namespace StoreScraper.Models
         }
 
         public override string ToString() => this.Name;
+
+
+        
+        private string ValidateString(string value, string variableName)
+        {
+            if (value == null)
+            {
+                Logger.Instance.WriteErrorLog($"{StoreName}: Product {variableName} is not scrapped correctly");
+                return $"<Unknown {variableName}>";
+            }
+            else return value;
+        }
+
+        private double ValidatePrice(double value, string variableName)
+        {
+            if (value <= 0 || double.IsNaN(value) || double.IsPositiveInfinity(value))
+            {
+                Logger.Instance.WriteErrorLog($"{StoreName}: Product {variableName} is not scrapped correctly");
+                return 0;
+            }
+            else return value;
+        }
     }
 }
