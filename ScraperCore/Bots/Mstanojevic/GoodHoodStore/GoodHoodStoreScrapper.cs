@@ -107,7 +107,9 @@ namespace StoreScraper.Bots.Mstanojevic.GoodHoodStore
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/search?n=all&q=" + settings.KeyWords;
+            //string url = WebsiteBaseUrl + "/search?n=all&q=" + settings.KeyWords;
+            string url = WebsiteBaseUrl + "/mens/all-mens-footwear";
+            //women link /womens/footwear
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;

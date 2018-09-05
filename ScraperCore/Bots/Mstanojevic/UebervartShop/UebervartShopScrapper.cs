@@ -108,7 +108,8 @@ namespace StoreScraper.Bots.Mstanojevic.UebervartShop
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/?s=" + settings.KeyWords.Replace(" ", "+") + "&post_type=product";
+            //string url = WebsiteBaseUrl + "/?s=" + settings.KeyWords.Replace(" ", "+") + "&post_type=product";
+            string url = WebsiteBaseUrl + "/new";
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;

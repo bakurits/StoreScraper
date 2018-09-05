@@ -131,7 +131,8 @@ namespace StoreScraper.Bots.Mstanojevic.Ntrstore
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/catalogsearch/result/index/?dir=asc&limit=36&order=entity_id&q=" + settings.KeyWords;
+            //string url = WebsiteBaseUrl + "/catalogsearch/result/index/?dir=asc&limit=36&order=entity_id&q=" + settings.KeyWords;
+            string url = WebsiteBaseUrl + "/sneakers";
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;
