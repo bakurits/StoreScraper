@@ -32,15 +32,18 @@ namespace StoreScraper.Bots.Mstanojevic.Excelsiormilano
 #endif
             }
 
-            itemCollection = GetProductCollection(settings, "woman", token);
-            foreach (var item in itemCollection)
+            if (settings.Mode == ScraperCore.Models.SearchMode.NewArrivalsPage)
             {
-                token.ThrowIfCancellationRequested();
+                itemCollection = GetProductCollection(settings, "woman", token);
+                foreach (var item in itemCollection)
+                {
+                    token.ThrowIfCancellationRequested();
 #if DEBUG
-                LoadSingleProduct(listOfProducts, settings, item);
+                    LoadSingleProduct(listOfProducts, settings, item);
 #else
                 LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
 #endif
+                }
             }
 
         }
@@ -106,16 +109,25 @@ namespace StoreScraper.Bots.Mstanojevic.Excelsiormilano
             //string url = string.Format(SearchFormat, settings.KeyWords);
             //string url = WebsiteBaseUrl + "/cerca?controller=search&orderby=position&orderway=desc&search_query="+settings.KeyWords.Replace(" ", "+")+"&submit_search=";
 
-            string url = WebsiteBaseUrl + "/833-what-s-new";
+            string url = "";
 
-            if (gender == "men")
+            if (settings.Mode == ScraperCore.Models.SearchMode.NewArrivalsPage)
             {
                 url = WebsiteBaseUrl + "/833-what-s-new";
 
+                if (gender == "men")
+                {
+                    url = WebsiteBaseUrl + "/833-what-s-new";
+
+                }
+                else if (gender == "women")
+                {
+                    url = WebsiteBaseUrl + "/815-what-s-new";
+                }
             }
-            else if (gender == "women")
+            else
             {
-                url = WebsiteBaseUrl + "/815-what-s-new";
+                url = WebsiteBaseUrl + "/cerca?controller=search&orderby=position&orderway=desc&search_query="+settings.KeyWords.Replace(" ", "+")+"&submit_search=";
             }
 
             var document = GetWebpage(url, token);

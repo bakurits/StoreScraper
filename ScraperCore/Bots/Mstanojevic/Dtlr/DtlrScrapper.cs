@@ -37,17 +37,20 @@ namespace StoreScraper.Bots.Mstanojevic.Dtlr
 #endif
             }
 
-
-            itemCollection = GetProductCollection(settings, "woman", token);
-            Console.WriteLine(itemCollection.Count);
-            foreach (var item in itemCollection)
+            if (settings.Mode == ScraperCore.Models.SearchMode.NewArrivalsPage)
             {
-                token.ThrowIfCancellationRequested();
+
+                itemCollection = GetProductCollection(settings, "woman", token);
+                Console.WriteLine(itemCollection.Count);
+                foreach (var item in itemCollection)
+                {
+                    token.ThrowIfCancellationRequested();
 #if DEBUG
-                LoadSingleProduct(listOfProducts, settings, item);
+                    LoadSingleProduct(listOfProducts, settings, item);
 #else
                 LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
 #endif
+                }
             }
 
         }
@@ -145,23 +148,33 @@ namespace StoreScraper.Bots.Mstanojevic.Dtlr
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, string gender, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            //string url = WebsiteBaseUrl + "/catalogsearch/result/?q="+settings.KeyWords.Replace(" ", "+");
-            string url = WebsiteBaseUrl + "/men/footwear/new.html";
+            string url = "";
 
-            if (gender == "man")
+            //string url = WebsiteBaseUrl + "/catalogsearch/result/?q="+settings.KeyWords.Replace(" ", "+");
+            if (settings.Mode == ScraperCore.Models.SearchMode.NewArrivalsPage)
             {
                 url = WebsiteBaseUrl + "/men/footwear/new.html";
+
+                if (gender == "man")
+                {
+                    url = WebsiteBaseUrl + "/men/footwear/new.html";
+                }
+                if (gender == "woman")
+                {
+                    url = WebsiteBaseUrl + "/women/footwear/new.html";
+                }
             }
-            if (gender == "woman")
+            else
             {
-                url = WebsiteBaseUrl + "/women/footwear/new.html";
+                url = WebsiteBaseUrl + "/catalogsearch/result/?q=" + settings.KeyWords.Replace(" ", "+");
+                if (gender != null)
+                {
+                    url += "&gender=" + gender;
+                }
             }
 
 
-            if (gender != null)
-            {
-                url += "&gender=" + gender;
-            }
+            
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;
