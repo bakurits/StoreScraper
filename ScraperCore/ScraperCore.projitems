@@ -87,6 +87,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\Price.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Product.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ProductDetails.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\SearchMode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\SearchSettingsBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\StringPair.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UrlString.cs" />

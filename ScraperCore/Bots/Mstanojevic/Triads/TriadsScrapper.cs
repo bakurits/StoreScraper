@@ -129,7 +129,7 @@ namespace StoreScraper.Bots.Mstanojevic.Triads
         {
             string title = item.SelectSingleNode("./div/a").GetAttributeValue("title","").ToLower();
             var validKeywords = settings.KeyWords.ToLower().Split(' ');
-            var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
+            var invalidKeywords = settings.NegKeyWords.ToLower().Split(' ');
             foreach (var keyword in validKeywords)
             {
                 if (!title.Contains(keyword))

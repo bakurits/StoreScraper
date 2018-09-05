@@ -150,7 +150,7 @@ namespace StoreScraper.Bots.Mstanojevic.Footish
         {
             string title = item.SelectSingleNode("./div[3]/div/h3/a").GetAttributeValue("title", "").ToLower();
             var validKeywords = settings.KeyWords.ToLower().Split(' ');
-            var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
+            var invalidKeywords = settings.NegKeyWords.ToLower().Split(' ');
             foreach (var keyword in validKeywords)
             {
                 if (!title.Contains(keyword))

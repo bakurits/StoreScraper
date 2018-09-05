@@ -90,7 +90,7 @@ namespace StoreScraper.Bots.Mstanojevic.ShopNordstrom
         {
             string title = item.SelectSingleNode("./h3/a/span/span").InnerHtml.ToLower();
             var validKeywords = settings.KeyWords.ToLower().Split(' ');
-            var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
+            var invalidKeywords = settings.NegKeyWords.ToLower().Split(' ');
             foreach (var keyword in validKeywords)
             {
                 if (!title.Contains(keyword))

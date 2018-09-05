@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ScraperCore.Interfaces;
+using ScraperCore.Models;
 using StoreScraper.Core;
+using StoreScraper.Helpers;
 using StoreScraper.Models;
 
 namespace StoreScraper
@@ -28,31 +30,42 @@ namespace StoreScraper
 
 
         /// <summary>
-        /// Determinates bot state. Bot is Active when user have at least 1 product in monitoring list.
+        /// Determines bot state. Bot is Active when user have at least 1 product in monitoring list.
         /// </summary>
         public abstract bool Active { get; set; }
 
 
         /// <summary>
-        /// Searches Produts by searchCriteria.
+        /// Searches Products by searchCriteria.
         /// </summary>
         /// <param name="listOfProducts">List in which to add scraped products</param>
         /// <param name="settings">Search settings and buying options.
         /// each bot may implement and use custom type of settings depending on store</param>
-        /// <param name="token">Canselation token to terminate process when cancel requested</param>
+        /// <param name="token">Cancellation token to terminate process when cancel requested</param>
         public abstract void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token);
+
+
+        /// <summary>
+        /// Scrapes All products from new arrivals page
+        /// </summary>
+        /// <param name="listOfProducts">All products that exist on new arrivals page</param>
+        /// <param name="token">Cancellation token for canceling task. </param>
+        public virtual void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// This method finds products avaliable sizes
         /// </summary>
-        /// <param name="product"></param>
+        /// <param name="productUrl">Url of product to scrape</param>
         /// <param name="token"></param>
         /// <returns>List of sizes</returns>
         public abstract ProductDetails GetProductDetails(string productUrl, CancellationToken token);
 
 
         /// <summary>
-        /// Wrapper for FinItems Methods. It does some search settings refractoring before executing FindItems
+        /// Wrapper for FinItems Methods. It does some search settings refactoring before executing FindItems
         /// </summary>
         /// <param name="listOfProducts"></param>
         /// <param name="settings"></param>
@@ -62,31 +75,63 @@ namespace StoreScraper
             listOfProducts = new List<Product>();
             List<Product> products = new List<Product>();
             List<Exception> exceptions = new List<Exception>();
-            settings.KeyWords.Split(',').AsParallel().ForAll(k =>
+           
+
+            if (settings.Mode == SearchMode.SearchAPI)
             {
-                k = k.Trim();
-                var s = (SearchSettingsBase)settings.Clone();
-                s.KeyWords = k;
+                settings.KeyWords.Split(' ', ',').AsParallel().ForAll(k =>
+                   {
+                       k = k.Trim();
+                       var s = (SearchSettingsBase)settings.Clone();
+                       s.KeyWords = k;
+                       for (int i = 0; i < AppSettings.Default.ProxyRotationRetryCount; i++)
+                       {
+                           try
+                           {
+                               FindItems(out var list, s, token);
+                               lock (products)
+                               {
+                                   products.AddRange(list);
+                               }
+                               break;
+                           }
+                           catch (Exception e)
+                           {
+                               if (i == AppSettings.Default.ProxyRotationRetryCount - 1)
+                               {
+                                   Logger.Instance.WriteErrorLog($"Error while search {WebsiteName} with keyword {k}");
+                                   exceptions.Add(e);
+                               }
+                           }
+                       }
+
+                       if (exceptions.Count > 0) throw new AggregateException(exceptions);
+                   });
+            }
+            else if(settings.Mode == SearchMode.NewArrivalsPage)
+            {
                 for (int i = 0; i < AppSettings.Default.ProxyRotationRetryCount; i++)
                 {
                     try
                     {
-                        FindItems(out var list, s, token);
-                        products.AddRange(list);
+                        ScrapeNewArrivalsPage(out var allNewProducts, token);
+                        var filteredProducts = allNewProducts.FindAll(p => Utils.SatisfiesCriteria(p, settings));
+                        lock (products)
+                        {
+                            products.AddRange(filteredProducts);
+                        }
                         break;
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         if (i == AppSettings.Default.ProxyRotationRetryCount - 1)
                         {
-                            Logger.Instance.WriteErrorLog($"Error while search {WebsiteName} with keyword {k}");
+                            Logger.Instance.WriteErrorLog($"Error while new arrivals page search {WebsiteName} with keyword {settings.KeyWords}");
                             exceptions.Add(e);
                         }
                     }
                 }
-
-                if(exceptions.Count > 0) throw new AggregateException(exceptions);
-            });
+            }
 
             listOfProducts.AddRange(products);
         }

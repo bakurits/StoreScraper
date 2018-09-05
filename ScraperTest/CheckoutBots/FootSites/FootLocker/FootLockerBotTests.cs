@@ -8,13 +8,12 @@ namespace ScraperTest.CheckoutBots.FootSites.FootLocker
     [TestClass()]
     public class FootLockerBotTests
     {
-        private readonly FootLockerBot _bot;
+        private readonly FootLockerBot _bot = new FootLockerBot();
 
         [TestMethod()]
         public void LoginTest()
         {
-            FootLockerBot bot = new FootLockerBot();
-            bot.Login("bakuricucxashvili@gmail.com", "Yrf7B2RHW", CancellationToken.None);
+            _bot.Login("bakuricucxashvili@gmail.com", "Yrf7B2RHW", CancellationToken.None);
         }
 
         [TestMethod()]

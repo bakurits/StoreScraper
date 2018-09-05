@@ -22,7 +22,7 @@ namespace ScraperTest.MinorTests
 
             foreach (var price in prices2)
             {
-                var parsed = Utils.ParsePrice(price, decimalDelimiter:",", tousandsDelimiter:"");
+                var parsed = Utils.ParsePrice(price, decimalDelimiter:",", thousandsDelimiter:"");
                 Console.WriteLine(parsed);
             }
         }

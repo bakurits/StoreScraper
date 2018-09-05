@@ -27,8 +27,8 @@ namespace FootLocker_FootAction
 
         public FootAPIBase(string websiteName, string websiteBaseUrl)
         {
-            this.WebsiteName = websiteName;
-            this.WebsiteBaseUrl = websiteBaseUrl;
+            WebsiteName = websiteName;
+            WebsiteBaseUrl = websiteBaseUrl;
         }
 
 
@@ -36,7 +36,7 @@ namespace FootLocker_FootAction
             CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            FootApiSearchSettings.GenderEnum gender = ((FootApiSearchSettings) settings).Gender;
+            FootApiSearchSettings.GenderEnum gender;
             try
             {
                 gender = ((FootApiSearchSettings)settings).Gender;
@@ -49,9 +49,7 @@ namespace FootLocker_FootAction
             if (gender != FootApiSearchSettings.GenderEnum.Any)
             searchUrl += $"3Agender%{gender.GetDescription()}";
             var client = ClientFactory.GetProxiedFirefoxClient();
-            var message = new HttpRequestMessage();
-            message.Method = HttpMethod.Get;
-            message.RequestUri = new Uri(searchUrl);
+            var message = new HttpRequestMessage {Method = HttpMethod.Get, RequestUri = new Uri(searchUrl)};
             message.Headers.Add("Accept", ClientFactory.JsonXmlAcceptHeader.Value);
             var responseText = client.SendAsync(message, token).Result.Content.ReadAsStringAsync().Result;
             var xmlDocument = new XmlDocument();
@@ -59,8 +57,8 @@ namespace FootLocker_FootAction
             var products = xmlDocument.SelectNodes("productCategorySearchPage/products");
             if (products == null)
             {
-                Logger.Instance.WriteVerboseLog("[Error] Uncexpected XML!!");
-                throw new WebException("Undexpected XML");
+                Logger.Instance.WriteVerboseLog("[Error] Unexpected XML!!");
+                throw new WebException("Unexpected XML");
             }
 
             int sum = 0;
@@ -85,8 +83,7 @@ namespace FootLocker_FootAction
         /// <param name="settings"></param>
         /// <param name="singleContact"></param>
         /// <param name="sum"></param>
-        /// <param name="info"></param>
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings,
+        private void LoadSingleProductTryCatchWrapper(List<Product> listOfProducts, SearchSettingsBase settings,
             XmlNode singleContact, ref int sum)
         {
             try
@@ -171,22 +168,24 @@ namespace FootLocker_FootAction
             return price.GetValue("formattedOriginalPrice").ToString();
         }
 
-        private void addSizes(JObject main, ProductDetails productDetails)
+        private void AddSizes(JObject main, ProductDetails productDetails, string subName)
         {
-            Console.WriteLine("abaababa");
             JArray sellableUnit = JArray.Parse(main.GetValue("sellableUnits").ToString());
-            for (int i = 0; i < sellableUnit.Count; i++)
+            foreach (var item in sellableUnit)
             {
                 try
                 {
-                    Console.WriteLine(sellableUnit[i]);
-                    string size = sellableUnit[i]["attributes"][0]["value"].ToString();
-                    string description = sellableUnit[i]["attributes"][1]["value"].ToString();
-
-                    productDetails.AddSize(size, description);
+                    string size = item["attributes"][0]["value"].ToString();
+                    string description = item["attributes"][1]["value"].ToString();
+                    string indicator = item["stockLevelStatus"].ToString();
+                    if (indicator == "inStock" && description == subName)
+                    {
+                        productDetails.AddSize(size, description);
+                    }
                 }
                 catch (Exception e)
                 {
+                    Console.WriteLine(e);
                     return;
                 }
             }
@@ -201,6 +200,8 @@ namespace FootLocker_FootAction
             string id = GetIdFromUrl(productUrl);
             string url = productUrl;
             string img = GetImageUrlFromJson(mainObj);
+            string subName = document.SelectSingleNode("//*[@class=\"label\"]").InnerText;
+            Console.WriteLine(subName);
             string name = mainObj.GetValue("name").ToString();
             Price productPrice = Utils.ParsePrice(GetPriceFromJson(mainObj));
             ProductDetails productDetails = new ProductDetails()
@@ -214,8 +215,7 @@ namespace FootLocker_FootAction
                 ScrapedBy = this
             };
 
-            addSizes(mainObj, productDetails);
-            Console.WriteLine(productDetails);
+            AddSizes(mainObj, productDetails, subName);
 
             return productDetails;
         }

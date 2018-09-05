@@ -151,7 +151,7 @@ namespace StoreScraper.Bots.Mstanojevic.FootShop
         {
             string title = item.SelectSingleNode("./div[@class='product__name']/h3").InnerText.ToLower();
             var validKeywords = settings.KeyWords.ToLower().Split(' ');
-            var invalidKeywords = settings.NegKeyWrods.ToLower().Split(' ');
+            var invalidKeywords = settings.NegKeyWords.ToLower().Split(' ');
             foreach (var keyword in validKeywords)
             {
                 if (!title.Contains(keyword))
