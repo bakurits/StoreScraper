@@ -129,7 +129,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootAction
 
         private void SelectAddressType(AddressTypes type, WebDriverWait wait, CancellationToken token)
         {
-            if (type.Equals(AddressTypes.HomeBussines))
+            if (type.Equals(AddressTypes.HomeBusiness))
             {
                 GetClickableElementByXPath("//span[contains(text(),'Home/Business')]", wait, token).Click();
             }

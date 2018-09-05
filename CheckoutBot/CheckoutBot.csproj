@@ -65,8 +65,9 @@
     <Reference Include="Brotli.NET, Version=1.0.11.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Brotli.NET.1.0.19\lib\net40\Brotli.NET.dll</HintPath>
     </Reference>
-    <Reference Include="EO.Base">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Essential Objects\EO.Total 2018\EO.Base.dll</HintPath>
+    <Reference Include="EO.Base, Version=18.2.74.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc">
+      <HintPath>..\packages\EO.WebBrowser.18.2.74\lib\EO.Base.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="EO.Web">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Essential Objects\EO.Total 2018\EO.Web.dll</HintPath>
@@ -74,11 +75,13 @@
     <Reference Include="EO.Web.Design">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Essential Objects\EO.Total 2018\EO.Web.Design.dll</HintPath>
     </Reference>
-    <Reference Include="EO.WebBrowser">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Essential Objects\EO.Total 2018\EO.WebBrowser.dll</HintPath>
+    <Reference Include="EO.WebBrowser, Version=18.2.74.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc">
+      <HintPath>..\packages\EO.WebBrowser.18.2.74\lib\EO.WebBrowser.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="EO.WebEngine">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Essential Objects\EO.Total 2018\EO.WebEngine.dll</HintPath>
+    <Reference Include="EO.WebEngine, Version=18.2.74.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc">
+      <HintPath>..\packages\EO.WebBrowser.18.2.74\lib\EO.WebEngine.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.8.7.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.8.7\lib\Net45\HtmlAgilityPack.dll</HintPath>

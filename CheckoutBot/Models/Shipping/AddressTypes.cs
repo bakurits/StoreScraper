@@ -2,7 +2,7 @@
 {
     public enum AddressTypes
     {
-        HomeBussines,
+        HomeBusiness,
         ApoFpo
     }
 }
