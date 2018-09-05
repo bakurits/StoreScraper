@@ -38,6 +38,8 @@ namespace StoreScraper.Core
 
         protected void DoFinalActions(ProductDetails productDetails, CancellationToken token)
         {
+            productDetails.Validate();
+
             foreach (var action in FinalActions)
             {
                 switch (action)

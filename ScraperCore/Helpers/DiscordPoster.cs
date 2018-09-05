@@ -186,7 +186,7 @@ namespace StoreScraper.Helpers
         public async Task<HttpResponseMessage> PostMessage(string webhookUrl, ProductDetails productDetails, CancellationToken token)
         {
             string currency = productDetails.Currency.HtmlDeEntitize();
-            string name = productDetails.Name.EscapeNewLines().HtmlDeEntitize();
+            string name = productDetails.Name?.EscapeNewLines().HtmlDeEntitize();
             string sizes = string.Join("\n",
                 productDetails.SizesList.Select(sizInfo => $"{sizInfo.Key}[{sizInfo.Value}]".HtmlDeEntitize()));
             string textMessage = $"*Price*:\n{productDetails.Price + currency}\n" +
