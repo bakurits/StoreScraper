@@ -33,7 +33,7 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
                     ZipCode = "4600"
                 },
                 BuyOptions = new ProductBuyOptions(),
-                Cart = new Card()
+                Card = new Card()
                 {
                     CardHolderName = "Bakuri Tsutskhashvili",
                     CSC = "111",

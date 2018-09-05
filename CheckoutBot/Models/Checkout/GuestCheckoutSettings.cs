@@ -7,7 +7,7 @@ namespace CheckoutBot.Models.Checkout
     public class GuestCheckoutSettings : ICheckoutSettings
     {
         public ShippinInfo Shipping;
-        public Card Cart;
+        public Card Card;
 
         public Product ProductToBuy{get; set; }
         public ProductBuyOptions BuyOptions{get; set;}

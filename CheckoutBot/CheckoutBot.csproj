@@ -171,6 +171,7 @@
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\Shipping\AddressTypes.cs" />
     <Compile Include="Test.cs" />
   </ItemGroup>
   <ItemGroup>
