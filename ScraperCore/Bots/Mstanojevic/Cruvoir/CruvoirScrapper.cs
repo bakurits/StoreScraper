@@ -21,7 +21,8 @@ namespace StoreScraper.Bots.Mstanojevic.Cruvoir
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
+
+            HtmlNodeCollection itemCollection = GetProductCollection(settings, "man" ,token);
             foreach (var item in itemCollection)
             {
                 token.ThrowIfCancellationRequested();
@@ -31,6 +32,19 @@ namespace StoreScraper.Bots.Mstanojevic.Cruvoir
                 LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
 #endif
             }
+
+
+            itemCollection = GetProductCollection(settings, "woman", token);
+            foreach (var item in itemCollection)
+            {
+                token.ThrowIfCancellationRequested();
+#if DEBUG
+                LoadSingleProduct(listOfProducts, settings, item);
+#else
+                LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
+#endif
+            }
+
 
         }
 
@@ -100,10 +114,18 @@ namespace StoreScraper.Bots.Mstanojevic.Cruvoir
             return document;
         }
 
-        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
+        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, string gender, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/collections/sneakers";
+            string url = WebsiteBaseUrl + "/collections/mens-shoes";
+            if (gender == "man")
+            {
+                url = WebsiteBaseUrl + "/collections/mens-shoes";
+            }
+            if (gender == "woman")
+            {
+                url = WebsiteBaseUrl + "/collections/womens-shoes";
+            }
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;

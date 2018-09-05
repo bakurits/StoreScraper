@@ -23,10 +23,22 @@ namespace StoreScraper.Bots.Mstanojevic.Dtlr
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
 
-            string gender = null;
 
             listOfProducts = new List<Product>();
-            HtmlNodeCollection itemCollection = GetProductCollection(settings, gender, token);
+            HtmlNodeCollection itemCollection = GetProductCollection(settings, "man", token);
+            Console.WriteLine(itemCollection.Count);
+            foreach (var item in itemCollection)
+            {
+                token.ThrowIfCancellationRequested();
+#if DEBUG
+                LoadSingleProduct(listOfProducts, settings, item);
+#else
+                LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
+#endif
+            }
+
+
+            itemCollection = GetProductCollection(settings, "woman", token);
             Console.WriteLine(itemCollection.Count);
             foreach (var item in itemCollection)
             {
@@ -133,7 +145,18 @@ namespace StoreScraper.Bots.Mstanojevic.Dtlr
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, string gender, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/catalogsearch/result/?q="+settings.KeyWords.Replace(" ", "+");
+            //string url = WebsiteBaseUrl + "/catalogsearch/result/?q="+settings.KeyWords.Replace(" ", "+");
+            string url = WebsiteBaseUrl + "/men/footwear/new.html";
+
+            if (gender == "man")
+            {
+                url = WebsiteBaseUrl + "/men/footwear/new.html";
+            }
+            if (gender == "woman")
+            {
+                url = WebsiteBaseUrl + "/women/footwear/new.html";
+            }
+
 
             if (gender != null)
             {
