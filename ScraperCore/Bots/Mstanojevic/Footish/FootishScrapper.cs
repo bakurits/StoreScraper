@@ -75,15 +75,16 @@ namespace StoreScraper.Bots.Mstanojevic.Footish
 
 
                 string url = WebsiteBaseUrl + "/en/search";
-
-                var document = GetPostWebPage(url, postParams, token);
+                //todo higuhigu there is compilation error
+                
+                //var document = GetPostWebPage(url, postParams, token);
 
 
             }
         }
 
 
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
+        private void LoadSingleProductTryCatchWrapper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
             {

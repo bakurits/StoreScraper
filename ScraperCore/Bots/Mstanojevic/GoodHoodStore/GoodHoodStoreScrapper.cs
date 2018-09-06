@@ -22,7 +22,8 @@ namespace StoreScraper.Bots.Mstanojevic.GoodHoodStore
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
+            //todo mstanojevic compilation error 
+            HtmlNodeCollection itemCollection = GetProductCollection(settings, "", token);
             Console.Write(itemCollection.Count);
             foreach (var item in itemCollection)
             {
@@ -36,7 +37,7 @@ namespace StoreScraper.Bots.Mstanojevic.GoodHoodStore
 
         }
 
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
+        private void LoadSingleProductTryCatchWrapper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
             {
