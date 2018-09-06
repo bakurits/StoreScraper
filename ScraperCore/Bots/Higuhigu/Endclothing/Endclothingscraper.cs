@@ -18,7 +18,8 @@ namespace StoreScraper.Bots.Higuhigu.Endclothing
         public override string WebsiteBaseUrl { get; set; } = "http://www.endclothing.com";
         public override bool Active { get; set; }
 
-        private const string SearchFormat = @"http://www.endclothing.com/us/catalogsearch/result/?q={0}";
+        //private const string SearchFormat = @"http://www.endclothing.com/us/catalogsearch/result/?q={0}";
+        private const string SearchFormat = @"https://www.endclothing.com/gb/latest-products/new-this-week";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
