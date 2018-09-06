@@ -95,10 +95,9 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze.Nakedcph
         /// </summary>
         /// <param name="listOfProducts"></param>
         /// <param name="child"></param>
-        /// <param name="info"></param>
         /// <param name="settings"></param>
   
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, HtmlNode child, SearchSettingsBase settings)
+        private void LoadSingleProductTryCatchWrapper(List<Product> listOfProducts, HtmlNode child, SearchSettingsBase settings)
         {
             try
             {
@@ -169,7 +168,7 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze.Nakedcph
             name = regex.Replace(name, " ");
             var priceNode = root.SelectSingleNode("//span[contains(@class, 'price')]/span[2]");
             var price = Utils.ParsePrice(priceNode.InnerText);
-            var imageUrl = this.WebsiteBaseUrl + root.SelectSingleNode("//img[@srcset]").GetAttributeValue("src", "Not Found");
+            var imageUrl = WebsiteBaseUrl + root.SelectSingleNode("//img[@srcset]").GetAttributeValue("src", "Not Found");
 
             var details = new ProductDetails()
             {
