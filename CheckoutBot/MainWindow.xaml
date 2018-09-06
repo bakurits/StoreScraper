@@ -254,8 +254,8 @@
                             <Label Content="ACCOUNT" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
                             <StackPanel Orientation="Horizontal">
 
-                                <RadioButton Name="userRadioBtn" IsChecked="True" Margin="10 0" VerticalAlignment="Center"   Content="User" Grid.ColumnSpan="2"  Click="handleAccountType"/>
-                                <RadioButton Name="guestRadioBtn" VerticalAlignment="Center"  Content="Guest" Grid.ColumnSpan="2" Click="handleAccountType"/>
+                                <RadioButton Name="userRadioBtn" IsChecked="True" Margin="10 0" VerticalAlignment="Center"   Content="User" Grid.ColumnSpan="2"  Click="HandleAccountType"/>
+                                <RadioButton Name="guestRadioBtn" VerticalAlignment="Center"  Content="Guest" Grid.ColumnSpan="2" Click="HandleAccountType"/>
 
 
                             </StackPanel>
@@ -533,7 +533,7 @@
 
                                         <StackPanel Grid.Row="4" Grid.ColumnSpan="2">
                                             <Label Content="Country" Foreground="#576379" FontWeight="SemiBold" />
-                                            <ComboBox SelectionChanged="handleShippingCountrySelect" Name="shippingAddress_country" Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}">
+                                            <ComboBox SelectionChanged="HandleShippingCountrySelect" Name="shippingAddress_country" Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}">
 
                                             </ComboBox>
                                         </StackPanel>
@@ -656,7 +656,7 @@
 
                                         <StackPanel Grid.Row="4" Grid.ColumnSpan="1">
                                             <Label Content="Country" Foreground="#576379" FontWeight="SemiBold" />
-                                            <ComboBox SelectionChanged="handleBillingCountrySelect" Name="billingAddress_country" Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}">
+                                            <ComboBox SelectionChanged="HandleBillingCountrySelect" Name="billingAddress_country" Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}">
 
                                             </ComboBox>
                                         </StackPanel>
@@ -703,7 +703,7 @@
 
                                             <DockPanel HorizontalAlignment="Left">
 
-                                                <ToggleButton Foreground="Black" Width="50" Margin="5" Name="visaCheckBox" Click="handleVisaSelect">
+                                                <ToggleButton Foreground="Black" Width="50" Margin="5" Name="visaCheckBox" Click="HandleVisaSelect">
                                                     <ToggleButton.Template>
                                                         <ControlTemplate TargetType="{x:Type ToggleButton}">
                                                                 <Image>
@@ -730,7 +730,7 @@
                                                     </ToggleButton.Template>
                                                 </ToggleButton>
 
-                                                <ToggleButton Foreground="Black" Width="50"  Margin="5"  Name="mastercardCheckBox" Click="handleMastercardSelect">
+                                                <ToggleButton Foreground="Black" Width="50"  Margin="5"  Name="mastercardCheckBox" Click="HandleMastercardSelect">
                                                     <ToggleButton.Template>
                                                         <ControlTemplate TargetType="{x:Type ToggleButton}">
                                                             <Image>
@@ -757,7 +757,7 @@
                                                     </ToggleButton.Template>
                                                 </ToggleButton>
 
-                                                <ToggleButton Foreground="Black" Width="50"  Margin="5"  Name="americanexpressCheckBox" Click="handleAmericanexpressSelect">
+                                                <ToggleButton Foreground="Black" Width="50"  Margin="5"  Name="americanexpressCheckBox" Click="HandleAmericanExpressSelect">
                                                     <ToggleButton.Template>
                                                         <ControlTemplate TargetType="{x:Type ToggleButton}">
                                                             <Image>
@@ -901,7 +901,7 @@
 
 
 
-                                <Button Margin="6,20" Width="100" HorizontalAlignment="Left" Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0" Click="addProfile">
+                                <Button Margin="6,20" Width="100" HorizontalAlignment="Left" Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0" Click="AddProfile">
                                     <Button.Resources>
                                         <Style TargetType="{x:Type Border}">
                                             <Setter Property="CornerRadius" Value="5"/>
@@ -974,7 +974,7 @@
                                 <DockPanel HorizontalAlignment="Right">
 
 
-                                    <Button Click="importProfiles" Margin="6,20" HorizontalAlignment="Right"   Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0">
+                                    <Button Click="ImportProfiles" Margin="6,20" HorizontalAlignment="Right"   Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0">
                                         <Button.Resources>
                                             <Style TargetType="{x:Type Border}">
                                                 <Setter Property="CornerRadius" Value="5"/>
@@ -985,7 +985,7 @@
                                     </Button>
 
 
-                                    <Button Click="exportProfiles" Margin="6,20"  HorizontalAlignment="Right" Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0">
+                                    <Button Click="ExportProfiles" Margin="6,20"  HorizontalAlignment="Right" Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0">
                                         <Button.Resources>
                                             <Style TargetType="{x:Type Border}">
                                                 <Setter Property="CornerRadius" Value="5"/>

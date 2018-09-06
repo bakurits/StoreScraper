@@ -31,9 +31,9 @@ namespace CheckoutBot
         {
             InitializeComponent();
             ThreadRunner runner = new ThreadRunner();
-            var webview = runner.CreateWebView(new BrowserOptions());
+            var webView = runner.CreateWebView(new BrowserOptions());
 
-            webview.Engine.Options.BypassUserGestureCheck = true;
+            webView.Engine.Options.BypassUserGestureCheck = true;
             
 
             List<TaskItem> items = new List<TaskItem>();
@@ -43,21 +43,46 @@ namespace CheckoutBot
             tasksList.ItemsSource = items;
 
 
-            List<TaskItem> successfulItems = new List<TaskItem>();
-            successfulItems.Add(new TaskItem() { Keywords = "nike air", Size = 12, Retries = "1", Status = "Done", ListImage = "/images/list_done.png" });
-            successfulItems.Add(new TaskItem() { Keywords = "adidas", Size = 7, Retries = "3", Status = "Done", ListImage = "/images/list_done.png" });
-            successfulItems.Add(new TaskItem() { Keywords = "puma", Size = 8, Retries = "0", Status = "Done", ListImage = "/images/list_done.png" });
+            List<TaskItem> successfulItems = new List<TaskItem>
+            {
+                new TaskItem()
+                {
+                    Keywords = "nike air",
+                    Size = 12,
+                    Retries = "1",
+                    Status = "Done",
+                    ListImage = "/images/list_done.png"
+                },
+                new TaskItem()
+                {
+                    Keywords = "adidas",
+                    Size = 7,
+                    Retries = "3",
+                    Status = "Done",
+                    ListImage = "/images/list_done.png"
+                },
+                new TaskItem()
+                {
+                    Keywords = "puma",
+                    Size = 8,
+                    Retries = "0",
+                    Status = "Done",
+                    ListImage = "/images/list_done.png"
+                }
+            };
             successfulTaks.ItemsSource = successfulItems;
-            List<TokenItem> tokenItems = new List<TokenItem>();
-            tokenItems.Add(new TokenItem() { Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
-            tokenItems.Add(new TokenItem() { Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
-            tokenItems.Add(new TokenItem() { Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
-            tokenItems.Add(new TokenItem() { Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
-            tokenItems.Add(new TokenItem() { Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
-            tokenItems.Add(new TokenItem() { Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
-            tokenItems.Add(new TokenItem() { Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
-            tokenItems.Add(new TokenItem() { Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
-            tokenItems.Add(new TokenItem() { Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub" });
+            List<TokenItem> tokenItems = new List<TokenItem>
+            {
+                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"},
+                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"},
+                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"},
+                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"},
+                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"},
+                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"},
+                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"},
+                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"},
+                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"}
+            };
             tokens.ItemsSource = tokenItems;
 
             foreach (var item in Enum.GetValues(typeof(Countries)))
@@ -82,30 +107,30 @@ namespace CheckoutBot
         }
 
 
-        private void handleAccountType(object sender, RoutedEventArgs e)
+        private void HandleAccountType(object sender, RoutedEventArgs e)
         {
             accComboBox.Visibility = userRadioBtn.IsChecked == true ? Visibility.Visible : Visibility.Hidden;
         }
 
-        private void handleVisaSelect(object sender, RoutedEventArgs e)
+        private void HandleVisaSelect(object sender, RoutedEventArgs e)
         {
             mastercardCheckBox.IsChecked = false;
             americanexpressCheckBox.IsChecked = false;
         }
 
-        private void handleMastercardSelect(object sender, RoutedEventArgs e)
+        private void HandleMastercardSelect(object sender, RoutedEventArgs e)
         {
             visaCheckBox.IsChecked = false;
             americanexpressCheckBox.IsChecked = false;
         }
 
-        private void handleAmericanexpressSelect(object sender, RoutedEventArgs e)
+        private void HandleAmericanExpressSelect(object sender, RoutedEventArgs e)
         {
             mastercardCheckBox.IsChecked = false;
             visaCheckBox.IsChecked = false;
         }
 
-        private void handleShippingCountrySelect(object sender, RoutedEventArgs e)
+        private void HandleShippingCountrySelect(object sender, RoutedEventArgs e)
         {
             if (shippingAddress_country.SelectedValue == null)
             {
@@ -114,17 +139,10 @@ namespace CheckoutBot
 
             Enum.TryParse<Countries>(shippingAddress_country.SelectedValue.ToString(), out var shippingCountry);
             
-            if (shippingCountry != Countries.UnitedStated)
-            {
-                shippingState.Visibility = Visibility.Hidden;
-            }
-            else
-            {
-                shippingState.Visibility = Visibility.Visible;
-            }
+            shippingState.Visibility = shippingCountry != Countries.UnitedStated ? Visibility.Hidden : Visibility.Visible;
         }
 
-        private void handleBillingCountrySelect(object sender, RoutedEventArgs e)
+        private void HandleBillingCountrySelect(object sender, RoutedEventArgs e)
         {
             if (billingAddress_country.SelectedValue == null)
             {
@@ -133,60 +151,55 @@ namespace CheckoutBot
 
             Enum.TryParse<Countries>(billingAddress_country.SelectedValue.ToString(), out var shippingCountry);
 
-            if (shippingCountry != Countries.UnitedStated)
-            {
-                billingState.Visibility = Visibility.Hidden;
-            }
-            else
-            {
-                billingState.Visibility = Visibility.Visible;
-            }
+            billingState.Visibility = shippingCountry != Countries.UnitedStated ? Visibility.Hidden : Visibility.Visible;
         }
 
 
-        private void exportProfiles(object sender, RoutedEventArgs e)
+        private void ExportProfiles(object sender, RoutedEventArgs e)
         {
             string output = JsonConvert.SerializeObject(profileList.Items);
             Console.WriteLine(output);
 
-            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-            dlg.FileName = "profiles"; // Default file name
-            dlg.DefaultExt = ".json"; // Default file extension
-            dlg.Filter = "JSON (.json)|*.json"; // Filter files by extension
+            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog
+            {
+                FileName = "profiles", DefaultExt = ".json", Filter = "JSON (.json)|*.json"
+            };
+            // Default file name
+            // Default file extension
+            // Filter files by extension
 
             // Show save file dialog box
             bool? result = dlg.ShowDialog();
 
             // Process save file dialog box results
-            if (result == true)
-            {
-                // Save document
-                string filename = dlg.FileName;
-                System.IO.File.WriteAllText(filename, output);
-            }
+            if (result != true) return;
+            // Save document
+            string filename = dlg.FileName;
+            System.IO.File.WriteAllText(filename, output);
 
         }
 
-        private void importProfiles(object sender, RoutedEventArgs e)
+        private void ImportProfiles(object sender, RoutedEventArgs e)
         {
-            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
-            dlg.FileName = "profiles"; // Default file name
-            dlg.DefaultExt = ".json"; // Default file extension
-            dlg.Filter = "JSON (.json)|*.json"; // Filter files by extension
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog
+            {
+                FileName = "profiles", DefaultExt = ".json", Filter = "JSON (.json)|*.json"
+            };
+            // Default file name
+            // Default file extension
+            // Filter files by extension
 
             // Show save file dialog box
             bool? result = dlg.ShowDialog();
 
             // Process save file dialog box results
-            if (result == true)
-            {
-                // Save document
-                string filename = dlg.FileName;
-                string json = System.IO.File.ReadAllText(filename);
+            if (result != true) return;
+            // Save document
+            string filename = dlg.FileName;
+            string json = System.IO.File.ReadAllText(filename);
 
-                var profiles = JsonConvert.DeserializeObject<Profile[]>(json);
-                profileList.ItemsSource = profiles;
-            }
+            var profiles = JsonConvert.DeserializeObject<Profile[]>(json);
+            profileList.ItemsSource = profiles;
 
 
         }
@@ -194,7 +207,7 @@ namespace CheckoutBot
 
 
 
-        private void addProfile(object sender, RoutedEventArgs e)
+        private void AddProfile(object sender, RoutedEventArgs e)
         {
             Enum.TryParse<Countries>(shippingAddress_country.SelectedValue.ToString(), out var shippingCountry);
             Enum.TryParse<Countries>(billingAddress_country.SelectedValue.ToString(), out var billingCountry);
@@ -227,8 +240,8 @@ namespace CheckoutBot
 
             if (shippingState.Visibility != Visibility.Hidden)
             {
-                Enum.TryParse<States>(shippingAddress_state.SelectedValue.ToString(), out var shipping_state);
-                shippingAddress.State = shipping_state;
+                Enum.TryParse<States>(shippingAddress_state.SelectedValue.ToString(), out var shippingState);
+                shippingAddress.State = shippingState;
             }
 
             if (billingState.Visibility != Visibility.Hidden)

@@ -394,9 +394,6 @@ namespace StoreScraper.Helpers
 
         #endregion
 
-
-        
-
         public static T GetRandomValue<T>(this IList<T> list)
         {
             int index = R.Next(0, list.Count);

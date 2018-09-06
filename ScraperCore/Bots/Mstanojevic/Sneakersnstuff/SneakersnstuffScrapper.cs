@@ -107,7 +107,7 @@ namespace StoreScraper.Bots.Mstanojevic.Sneakersnstuff
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, string gender, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/en/search/searchbytext/"+settings.KeyWords;
+            string url = WebsiteBaseUrl + "/en/858/new-arrivals";
 
             if (gender != null)
             {

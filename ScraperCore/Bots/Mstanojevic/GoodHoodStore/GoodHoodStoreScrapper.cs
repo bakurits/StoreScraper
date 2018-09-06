@@ -104,10 +104,28 @@ namespace StoreScraper.Bots.Mstanojevic.GoodHoodStore
             return document;
         }
 
-        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
+        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, string gender, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/search?n=all&q=" + settings.KeyWords;
+            //string url = WebsiteBaseUrl + "/search?n=all&q=" + settings.KeyWords;
+            string url = "";
+
+            if (settings.Mode == ScraperCore.Models.SearchMode.NewArrivalsPage)
+            {
+                if (gender == "man")
+                {
+                    url = WebsiteBaseUrl + "/mens/latest?n=all";
+                }else if (gender == "woman")
+                {
+                    url = WebsiteBaseUrl + "/womens/latest?n=all";
+
+                }
+            }
+            else
+            {
+                url = WebsiteBaseUrl + "/search?n=all&q=" + settings.KeyWords;
+            }
+            //women link /womens/footwear
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;

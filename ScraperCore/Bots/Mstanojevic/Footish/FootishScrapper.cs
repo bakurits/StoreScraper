@@ -8,6 +8,7 @@ using StoreScraper.Helpers;
 using StoreScraper.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Net.Http;
 
 namespace StoreScraper.Bots.Mstanojevic.Footish
 {
@@ -24,33 +25,59 @@ namespace StoreScraper.Bots.Mstanojevic.Footish
         {
             listOfProducts = new List<Product>();
 
-  
-            string restApiUrl = "http://www.footish.se/Services/Rest/v2/json/en-GB/EUR/search/full/" + settings.KeyWords + "/200/1";
-            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
-            var response = Utils.GetParsedJson(client, restApiUrl, token);
-            Console.WriteLine(response["TotalProducts"]);
-
-            foreach (var item in response["ProductItems"])
+            if (settings.Mode == ScraperCore.Models.SearchMode.SearchAPI)
             {
-                double price = 0;
-                try
+                string restApiUrl = "http://www.footish.se/Services/Rest/v2/json/en-GB/EUR/search/full/" + settings.KeyWords + "/200/1";
+                var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+                var response = Utils.GetParsedJson(client, restApiUrl, token);
+                Console.WriteLine(response["TotalProducts"]);
+
+                foreach (var item in response["ProductItems"])
                 {
-                    string str = item["DiscountedPrice"].ToString();
-                    if (str == "-1")
+                    double price = 0;
+                    try
                     {
-                        str = item["Price"].ToString();
+                        string str = item["DiscountedPrice"].ToString();
+                        if (str == "-1")
+                        {
+                            str = item["Price"].ToString();
+                        }
+                        str = str.Substring(str.Length - 2);
+                        price = double.Parse(str);
                     }
-                    str = str.Substring(str.Length - 2);
-                    price = double.Parse(str);
-                }catch
-                {
+                    catch
+                    {
+
+                    }
+                    var product = new Product(this, item["Name"].ToString(), item["ProductUrl"].ToString(), price, item["Images"][0]["Url"].ToString(), item["Id"].ToString(), "EUR");
+                    if (Utils.SatisfiesCriteria(product, settings))
+                    {
+                        listOfProducts.Add(product);
+                    }
 
                 }
-                var product = new Product(this, item["Name"].ToString(), item["ProductUrl"].ToString(), price, item["Images"][0]["Url"].ToString(), item["Id"].ToString(), "EUR");
-                if (Utils.SatisfiesCriteria(product, settings))
-                {
-                    listOfProducts.Add(product);
-                }
+
+            }
+            else
+            {
+
+                var values = new Dictionary<string, string>
+            {
+                {"controller", "search" },
+                {"orderby", "position"},
+                {"orderway", "desc"},
+                {"search_query", settings.KeyWords},
+
+            };
+
+                var postParams = new FormUrlEncodedContent(values);
+
+
+
+                string url = WebsiteBaseUrl + "/en/search";
+
+                var document = GetPostWebPage(url, postParams, token);
+
 
             }
         }
