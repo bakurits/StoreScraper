@@ -111,12 +111,14 @@ namespace StoreScraper.Bots.Mstanojevic.Triads
             //string url = string.Format(SearchFormat, settings.KeyWords);
             //string url = WebsiteBaseUrl + "/new-products/triads-mens-c1/footwear-c24";
 
-            string url = WebsiteBaseUrl + "/ajax/getProductListings?base_url=search%2F"+settings.KeyWords.Replace(" ", "-")+"&page_type=productlistings&page_variant=show&all_upcoming_flag[]=78&keywords="+settings.KeyWords+"&show=&sort=&page=1&transport=html";
+            //string url = WebsiteBaseUrl + "/ajax/getProductListings?base_url=search%2F"+settings.KeyWords.Replace(" ", "-")+"&page_type=productlistings&page_variant=show&all_upcoming_flag[]=78&keywords="+settings.KeyWords+"&show=&sort=&page=1&transport=html";
 
-            if (settings.MaxPrice > 0)
+            string url = WebsiteBaseUrl + "/new-products";
+
+            /*if (settings.MaxPrice > 0)
             {
                 url += "&min_price=" + settings.MinPrice.ToString() + "&max_price=" + settings.MaxPrice.ToString();
-            }
+            }*/
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;

@@ -130,7 +130,8 @@ namespace StoreScraper.Bots.Mstanojevic.Sneakers76
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/en/search?search_query="+settings.KeyWords.Replace(" ", "+")+"&search_query="+settings.KeyWords.Replace(" ", "+")+"&orderby=position&orderway=desc&submit_search=&n=336";
+            //string url = WebsiteBaseUrl + "/en/search?search_query="+settings.KeyWords.Replace(" ", "+")+"&search_query="+settings.KeyWords.Replace(" ", "+")+"&orderby=position&orderway=desc&submit_search=&n=336";
+            string url = WebsiteBaseUrl + "/en/new-products";
             Console.WriteLine(url);
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;

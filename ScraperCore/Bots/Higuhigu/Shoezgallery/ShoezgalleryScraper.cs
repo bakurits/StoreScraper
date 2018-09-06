@@ -17,8 +17,9 @@ namespace StoreScraper.Bots.Higuhigu.Shoezgallery
         public override string WebsiteBaseUrl { get; set; } = "http://www.shoezgallery.com";
         public override bool Active { get; set; }
 
-        private const string SearchFormat = @"http://www.shoezgallery.com/en/recherche?orderby=date&orderway=desc&r=true&search_query=sneaker&submit_search={0}";
-      
+        //private const string SearchFormat = @"http://www.shoezgallery.com/en/recherche?orderby=date&orderway=desc&r=true&search_query=sneaker&submit_search={0}";
+        private conststring SearchFormat = @"https://www.shoezgallery.com/en/32-latest";
+
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();

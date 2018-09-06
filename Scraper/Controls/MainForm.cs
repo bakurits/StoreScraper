@@ -91,7 +91,9 @@ namespace StoreScraper.Controls
             {
                 products.AsParallel().ForAll( product =>
                 {
-                    PostProduct(product.GetDetails(_findTokenSource.Token));
+                    var pDetails = product.GetDetails(_findTokenSource.Token);
+                    pDetails.Validate();
+                    PostProduct(pDetails);
                 });
             }
 

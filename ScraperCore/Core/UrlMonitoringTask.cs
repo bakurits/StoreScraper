@@ -8,7 +8,7 @@ using StoreScraper.Models;
 
 namespace StoreScraper.Core
 {
-    class UrlMonitoringTask : MonitoringTaskBase
+    public class UrlMonitoringTask : MonitoringTaskBase
     {
         private readonly ScraperBase _scraper;
         private ProductDetails _oldDetails;

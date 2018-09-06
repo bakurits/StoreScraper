@@ -40,5 +40,11 @@ namespace ScraperTest.ScraperTests.GiorgiChkhikvadze
 
             Debug.WriteLine(details);
         }
+
+        [TestMethod]
+        public void TestScrapeNewArrivalsPage()
+        {
+            scrapper.ScrapeNewArrivalsPage(out var product, CancellationToken.None);
+        }
     }
 }

@@ -18,7 +18,8 @@ namespace StoreScraper.Bots.Higuhigu._43Einhalb
 
         public override bool Active { get; set; }
 
-        private const string SearchFormat = @"http://www.43einhalb.com/en/search/{0}/page/1/sort/date_new/perpage/72";
+        //private const string SearchFormat = @"http://www.43einhalb.com/en/search/{0}/page/1/sort/date_new/perpage/72";
+        private const string SearchFormat = @"https://www.43einhalb.com/new-arrivals";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
