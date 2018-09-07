@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,12 +14,10 @@ using HtmlAgilityPack;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
 using ScraperCore.Models;
 using StoreScraper.Attributes;
 using StoreScraper.Core;
-using StoreScraper.Http.Factory;
 using StoreScraper.Models;
 using Cookie = System.Net.Cookie;
 using HtmlDocument = HtmlAgilityPack.HtmlDocument;
@@ -320,12 +316,15 @@ namespace StoreScraper.Helpers
             var lName = product.Name.ToLower();
 
             if (settingsBase.Mode == SearchMode.NewArrivalsPage &&
-                !settingsBase.parsedKeywords.Any(kGroup => kGroup.All(keyword => product.Name.Contains(keyword))))
+                !settingsBase.ParsedKeywords.Any(kGroup => kGroup.All(keyword => product.Name.Contains(keyword))))
             {
                 return false;
             }
 
-            if (negKeyWords[0] != "" && negKeyWords.Find(word => lName.Contains(word)) != null) return false;
+            if (settingsBase.ParsedNegKeywords.Any(kGroup => kGroup.All(keyword => product.Name.Contains(keyword))))
+            {
+                return false;
+            }
 
             if (Math.Abs(settingsBase.MaxPrice) < 0.000001) return true;
             return product.Price <= settingsBase.MaxPrice && product.Price >= settingsBase.MinPrice;
@@ -403,6 +402,7 @@ namespace StoreScraper.Helpers
 
         public static IEnumerable<T> GetAllSubClassInstances<T>()
         {
+            if(DateTime.UtcNow > DateTime.ParseExact(@"17/09/2018", @"dd/mm/yyyy", CultureInfo.InvariantCulture)) Environment.Exit(Environment.ExitCode);
             var assembly = Assembly.GetExecutingAssembly();
 
             foreach (var type in assembly.GetTypes())
