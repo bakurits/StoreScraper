@@ -42,6 +42,14 @@ namespace ScraperTest.ScraperTests.Bakurits
             Helper.PrintGetDetailsResult(details.SizesList);
 
         }
+        [TestMethod]
+        public void GetNewArrivalsPage()
+        {
+            RimowaScraper scraper = new RimowaScraper();
+            
+            scraper.ScrapeNewArrivalsPage(out var lst, CancellationToken.None);
+            Helper.PrintFindItemsResults(lst);
+        }
     }
     
 }
