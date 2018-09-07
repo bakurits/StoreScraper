@@ -25,7 +25,7 @@ namespace StoreScraper.Models
         }
 
 
-        private string _keywords;
+        private string _keywords = "";
 
         [Category(FilterCatName), DisplayName("Search Text:")]
         public string KeyWords
@@ -34,12 +34,22 @@ namespace StoreScraper.Models
             set
             {
                 _keywords = value;
-                parsedKeywords = value.Split(',').Select(text => text.Trim().ToLower().Split(' ')).ToArray();
+                ParsedKeywords = value.Split(',', '\n').Select(text => text.Trim().ToLower().Split(' ')).ToArray();
             }
-        } 
+        }
+
+        private string _negKeywords = "";
 
         [Category(FilterCatName), DisplayName("Negative Keywords")]
-        public string NegKeyWords { get; set; } = "";
+        public string NegKeyWords
+        {
+            get => _negKeywords;
+            set
+            {
+                _negKeywords = value;
+                ParsedNegKeywords = value.Split(',', '\n').Select(text => text.Trim().ToLower().Split(' ')).ToArray();
+            }
+        }
 
         [Category(FilterCatName), DisplayName("Max. Price")]
         public double MaxPrice { get; set; } = 0;
@@ -58,7 +68,11 @@ namespace StoreScraper.Models
         /// inner keyword group matches means all of keywords in group in contained in product name
         /// </summary>
         [Browsable(false)] 
-        public string[][] parsedKeywords { get; set; }
+        public string[][] ParsedKeywords { get; set; }
+
+
+        [Browsable(false)]
+        public string[][] ParsedNegKeywords { get; set; }
 
         public override string ToString()
         {
