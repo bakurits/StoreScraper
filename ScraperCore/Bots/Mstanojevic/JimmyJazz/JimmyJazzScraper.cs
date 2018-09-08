@@ -28,13 +28,12 @@ namespace StoreScraper.Bots.Mstanojevic.JimmyJazz
             string gender = null;
 
             listOfProducts = new List<Product>();
-         
-            HtmlNodeCollection itemCollection = GetProductCollection(settings, gender, token);
-            Console.WriteLine(itemCollection.Count);
-            //GetProductCollection(settings, token);
 
-            //foreach (var itemCollection in cb)
-            //{
+            if (settings.Mode == ScraperCore.Models.SearchMode.SearchAPI)
+            {
+
+                HtmlNodeCollection itemCollection = GetProductCollection(settings, gender, token);
+                Console.WriteLine(itemCollection.Count);
                 foreach (var item in itemCollection)
                 {
                     token.ThrowIfCancellationRequested();
@@ -44,8 +43,37 @@ namespace StoreScraper.Bots.Mstanojevic.JimmyJazz
                 LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
 #endif
                 }
-            //}
 
+            }
+            else
+            {
+
+                HtmlNodeCollection itemCollection = GetProductCollection(settings, "man", token);
+                Console.WriteLine(itemCollection.Count);
+                foreach (var item in itemCollection)
+                {
+                    token.ThrowIfCancellationRequested();
+#if DEBUG
+                    LoadSingleProduct(listOfProducts, settings, item);
+#else
+                LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
+#endif
+                }
+
+
+                itemCollection = GetProductCollection(settings, "woman", token);
+                Console.WriteLine(itemCollection.Count);
+                foreach (var item in itemCollection)
+                {
+                    token.ThrowIfCancellationRequested();
+#if DEBUG
+                    LoadSingleProduct(listOfProducts, settings, item);
+#else
+                LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
+#endif
+                }
+
+            }
         }
 
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
@@ -116,49 +144,52 @@ namespace StoreScraper.Bots.Mstanojevic.JimmyJazz
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, string gender, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = "http://search.jimmyjazz.com/search/keywords-"+settings.KeyWords.Replace(" ", "_") + "--res_per_page-100";
+            string url = "";
 
-            if (settings.MaxPrice > 0)
-            {   
-                url += "--Price-" + settings.MinPrice.ToString() + "%7C%7C" + settings.MaxPrice.ToString();
-            }
 
-            if (gender != null)
+            if (settings.Mode == ScraperCore.Models.SearchMode.SearchAPI)
             {
-                url += "--Gender-" + gender;
+
+                url = "http://search.jimmyjazz.com/search/keywords-" + settings.KeyWords.Replace(" ", "_") + "--res_per_page-100";
+
+                if (settings.MaxPrice > 0)
+                {
+                    url += "--Price-" + settings.MinPrice.ToString() + "%7C%7C" + settings.MaxPrice.ToString();
+                }
+
+                if (gender != null)
+                {
+                    url += "--Gender-" + gender;
+                }
+
+            }
+            else
+            {
+                if (gender == "man")
+                {
+                    url = WebsiteBaseUrl + "/mens/specials/new-arrivals";
+                }
+                else
+                {
+                    url = WebsiteBaseUrl + "/womens/specials/new-arrivals";
+                }
             }
 
             Console.WriteLine(url);
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;
 
-            /*string[] pagesText = document.SelectSingleNode("//*[@class='pagination_info']").InnerText.Trim().Split(' ');
-            int numOfPages = int.Parse(pagesText[pagesText.Length-1]);
-            if (numOfPages > pageDepth)
-            {
-                numOfPages = pageDepth;
-            }
-
-            List<Task> tasks = new List<Task>();
-
-            for (int i = 1; i <= numOfPages; i++)
+            if (settings.Mode == ScraperCore.Models.SearchMode.SearchAPI)
             {
 
-                object arg = i;
-                tasks.Add(new TaskFactory().StartNew(new Action<object>((test) =>
-               {
-                   scrapePage((int)test, token);
-               }), arg)
+                return document.SelectNodes("//div[contains(@class,'product_grid_item')]");
+            }
+            else
+            {
+                return document.SelectNodes("//li[contains(@class,'product_grid_item')]");
 
-                );
             }
 
-            Task.WaitAll(tasks.ToArray());
-
-    */
-
-            return document.SelectNodes("//div[contains(@class,'product_grid_item')]");
-            
         }
 
         /*private void scrapePage(int pg, CancellationToken token)

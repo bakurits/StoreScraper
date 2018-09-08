@@ -48,6 +48,55 @@ namespace StoreScraper.Bots.Mstanojevic.Cruvoir
 
         }
 
+
+
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        {
+            listOfProducts = new List<Product>();
+
+            string searchUrl = WebsiteBaseUrl + "/collections/mens-shoes";
+
+
+
+            searchUrl = WebsiteBaseUrl + "/collections/womens-shoes";
+            
+
+            var document = GetWebpage(searchUrl, token);
+            if (document.InnerHtml.Contains(noResults)) return;
+
+            HtmlNodeCollection itemCollection = document.SelectNodes("//article[@class='product']");
+            foreach (var item in itemCollection)
+            {
+                token.ThrowIfCancellationRequested();
+#if DEBUG
+                string name = GetName(item).TrimEnd();
+                string url = GetUrl(item);
+                var price = GetPrice(item);
+                string imageUrl = GetImageUrl(item);
+                var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
+                Console.WriteLine(product);
+                listOfProducts.Add(product);
+
+#else
+                try {
+                string name = GetName(item).TrimEnd();
+                string url = GetUrl(item);
+                var price = GetPrice(item);
+                string imageUrl = GetImageUrl(item);
+                var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
+                
+                listOfProducts.Add(product);
+                }catch (Exception e)
+                {
+                    Logger.Instance.WriteErrorLog(e.Message);
+                }
+#endif
+            }
+                
+        }
+
+
+
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
@@ -197,8 +246,8 @@ namespace StoreScraper.Bots.Mstanojevic.Cruvoir
             {
                 return 0;
             }*/
-
-            return Utils.ParsePrice(item.SelectSingleNode("./div/p[3]/span").InnerHtml.Replace(",","."));
+            Console.WriteLine(Utils.ParsePrice(item.SelectSingleNode("./div/p[3]/span").InnerText/*.Replace(",",".")*/));
+            return Utils.ParsePrice(item.SelectSingleNode("./div/p[3]/span").InnerText/*.Replace(",",".")*/);
 
 
         }
