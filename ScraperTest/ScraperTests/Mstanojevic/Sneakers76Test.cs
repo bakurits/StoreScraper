@@ -23,6 +23,17 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         }
 
         [TestMethod()]
+        public void NewArrivalTest()
+        {
+            Sneakers76Scrapper scraper = new Sneakers76Scrapper();
+            SearchSettingsBase settings = new SearchSettingsBase();
+            settings.KeyWords = "nike air";
+            scraper.ScrapeNewArrivalsPage(out var lst, CancellationToken.None);
+            Helpers.Helper.PrintFindItemsResults(lst);
+
+        }
+
+        [TestMethod()]
         public void GetProductDetailsTest()
         {
             Product curProduct = new Product(new Sneakers76Scrapper(), "Unknown",

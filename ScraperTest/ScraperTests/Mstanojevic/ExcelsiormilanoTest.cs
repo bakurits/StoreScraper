@@ -23,6 +23,17 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         }
 
         [TestMethod()]
+        public void NewArrivalTest()
+        {
+            ExcelsiormilanoScrapper scraper = new ExcelsiormilanoScrapper();
+            SearchSettingsBase settings = new SearchSettingsBase();
+            settings.KeyWords = "red canvas";
+            scraper.ScrapeNewArrivalsPage(out var lst, CancellationToken.None);
+            Helpers.Helper.PrintFindItemsResults(lst);
+
+        }
+
+        [TestMethod()]
         public void GetProductDetailsTest()
         {
             Product curProduct = new Product(new ExcelsiormilanoScrapper(), "Unknown",

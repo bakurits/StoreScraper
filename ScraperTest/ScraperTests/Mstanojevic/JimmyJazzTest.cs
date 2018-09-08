@@ -23,6 +23,20 @@ namespace ScraperTest.ScraperTests.Mstanojevic
 
         }
 
+        [TestMethod]
+        public void NewArrivalTest()
+        {
+            JimmyJazzScraper scraper = new JimmyJazzScraper();
+            SearchSettingsBase settings = new SearchSettingsBase()
+            {
+                KeyWords = "nike"
+            };
+
+            scraper.ScrapeNewArrivalsPage(out var lst, CancellationToken.None);
+            Helpers.Helper.PrintFindItemsResults(lst);
+
+        }
+
         [TestMethod()]
         public void GetProductDetailsTest()
         {
