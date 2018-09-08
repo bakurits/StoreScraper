@@ -128,6 +128,11 @@ namespace StoreScraper.Bots.Mstanojevic.JimmyJazz
             string name = document.SelectSingleNode("//span[@class='name']").InnerText.Trim();
             string image = document.SelectSingleNode("//img[@id='main-image']").GetAttributeValue("src", "");
 
+            string brand = null;
+            if (document.SelectSingleNode("//span[@class='brand']") != null)
+            {
+                brand = document.SelectSingleNode("//span[@class='brand']").InnerText;
+            }
 
 
             ProductDetails details = new ProductDetails()
@@ -138,7 +143,8 @@ namespace StoreScraper.Bots.Mstanojevic.JimmyJazz
                 ImageUrl = image,
                 Url = productUrl,
                 Id = productUrl,
-                ScrapedBy = this
+                ScrapedBy = this,
+                BrandName = brand
             };
 
             var sizeCollection = document.SelectNodes("//div[@class='psizeoptioncontainer']/div/a");

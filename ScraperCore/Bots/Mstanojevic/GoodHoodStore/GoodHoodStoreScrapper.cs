@@ -122,6 +122,11 @@ namespace StoreScraper.Bots.Mstanojevic.GoodHoodStore
 
             name = Regex.Replace(name, @"\s+", " ");
 
+            string brand = null;
+            if (document.SelectSingleNode("//span[@id='Brand-Title']") != null)
+            {
+                brand = document.SelectSingleNode("//span[@class='Brand-Title']").InnerText;
+            }
 
             ProductDetails details = new ProductDetails()
             {
@@ -131,7 +136,8 @@ namespace StoreScraper.Bots.Mstanojevic.GoodHoodStore
                 ImageUrl = image,
                 Url = productUrl,
                 Id = productUrl,
-                ScrapedBy = this
+                ScrapedBy = this,
+                BrandName = brand
             };
 
 

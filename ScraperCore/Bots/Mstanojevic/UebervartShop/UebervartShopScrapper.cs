@@ -128,6 +128,11 @@ namespace StoreScraper.Bots.Mstanojevic.UebervartShop
             string image = document.SelectSingleNode("//div[@class='swiper-slide']/img").GetAttributeValue("src", "");
 
 
+            string brand = null;
+            if (document.SelectSingleNode("//meta[@property='og:brand']") != null)
+            {
+                brand = document.SelectSingleNode("//meta[@property='og:brand']").GetAttributeValue("content", null);
+            }
 
             ProductDetails details = new ProductDetails()
             {
