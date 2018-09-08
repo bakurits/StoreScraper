@@ -37,6 +37,67 @@ namespace StoreScraper.Bots.Mstanojevic.GoodHoodStore
 
         }
 
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        {
+            listOfProducts = new List<Product>();
+
+            HtmlNodeCollection itemCollection = GetNewArriavalItems(WebsiteBaseUrl + "/mens/latest", token);
+            foreach (var item in itemCollection)
+            {
+                token.ThrowIfCancellationRequested();
+#if DEBUG
+                LoadSingleNewArrivalProduct(listOfProducts, item);
+#else
+                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, null, item);
+#endif
+            }
+
+            itemCollection = GetNewArriavalItems(WebsiteBaseUrl + "/womens/latest", token);
+            foreach (var item in itemCollection)
+            {
+                token.ThrowIfCancellationRequested();
+#if DEBUG
+                LoadSingleNewArrivalProduct(listOfProducts, item);
+#else
+                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, null, item);
+#endif
+            }
+
+        }
+
+
+        private HtmlNodeCollection GetNewArriavalItems(string url, CancellationToken token)
+        {
+            var document = GetWebpage(url, token);
+            if (document.InnerHtml.Contains(noResults)) return null;
+
+            return document.SelectNodes("//div[@class='overview']");
+
+        }
+
+        private void LoadSingleNewArrivalProduct(List<Product> listOfProducts, HtmlNode item)
+        {
+            string name = GetName(item).TrimEnd();
+            string url = GetUrl(item);
+            var price = GetPrice(item);
+            string imageUrl = GetImageUrl(item);
+            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
+            listOfProducts.Add(product);
+
+        }
+
+        private void LoadSingleNewArrivalProductTryCatchWraper(List<Product> listOfProducts, HtmlNode item)
+        {
+            try
+            {
+                LoadSingleNewArrivalProduct(listOfProducts, item);
+            }
+            catch (Exception e)
+            {
+                Logger.Instance.WriteErrorLog(e.Message);
+            }
+        }
+
         private void LoadSingleProductTryCatchWrapper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try

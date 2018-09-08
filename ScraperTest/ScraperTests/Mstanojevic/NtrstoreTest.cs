@@ -24,6 +24,19 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         }
 
         [TestMethod()]
+        public void NewArrivalTest()
+        {
+            NtrstoreScraper scraper = new NtrstoreScraper();
+            SearchSettingsBase settings = new SearchSettingsBase();
+            settings.KeyWords = "nike air";
+
+
+            scraper.ScrapeNewArrivalsPage(out var lst, CancellationToken.None);
+            Helpers.Helper.PrintFindItemsResults(lst);
+
+        }
+
+        [TestMethod()]
         public void GetProductDetailsTest()
         {
         /*Product curProduct = new Product(new NtrstoreScraper(), "Unknown",
