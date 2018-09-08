@@ -21,7 +21,7 @@ namespace StoreScraper.Bots.Mstanojevic.Excelsiormilano
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            HtmlNodeCollection itemCollection = GetProductCollection(settings, "man", token);
+            HtmlNodeCollection itemCollection = GetProductCollection(settings, null, token);
             foreach (var item in itemCollection)
             {
                 token.ThrowIfCancellationRequested();
@@ -32,19 +32,7 @@ namespace StoreScraper.Bots.Mstanojevic.Excelsiormilano
 #endif
             }
 
-            if (settings.Mode == ScraperCore.Models.SearchMode.NewArrivalsPage)
-            {
-                itemCollection = GetProductCollection(settings, "woman", token);
-                foreach (var item in itemCollection)
-                {
-                    token.ThrowIfCancellationRequested();
-#if DEBUG
-                    LoadSingleProduct(listOfProducts, settings, item);
-#else
-                LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
-#endif
-                }
-            }
+
 
         }
 
@@ -173,24 +161,9 @@ namespace StoreScraper.Bots.Mstanojevic.Excelsiormilano
 
             string url = "";
 
-            if (settings.Mode == ScraperCore.Models.SearchMode.NewArrivalsPage)
-            {
-                url = WebsiteBaseUrl + "/833-what-s-new";
-
-                if (gender == "men")
-                {
-                    url = WebsiteBaseUrl + "/833-what-s-new";
-
-                }
-                else if (gender == "women")
-                {
-                    url = WebsiteBaseUrl + "/815-what-s-new";
-                }
-            }
-            else
-            {
-                url = WebsiteBaseUrl + "/cerca?controller=search&orderby=position&orderway=desc&search_query="+settings.KeyWords.Replace(" ", "+")+"&submit_search=";
-            }
+          
+            url = WebsiteBaseUrl + "/cerca?controller=search&orderby=position&orderway=desc&search_query="+settings.KeyWords.Replace(" ", "+")+"&submit_search=";
+            
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;

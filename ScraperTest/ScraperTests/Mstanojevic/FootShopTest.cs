@@ -23,6 +23,20 @@ namespace ScraperTest.ScraperTests.Mstanojevic
 
         }
 
+
+        [TestMethod()]
+        public void NewArrivalTest()
+        {
+            FootShopScrapper scraper = new FootShopScrapper();
+            SearchSettingsBase settings = new SearchSettingsBase();
+            settings.KeyWords = "nike air";
+
+
+            scraper.ScrapeNewArrivalsPage(out var lst, CancellationToken.None);
+            Helpers.Helper.PrintFindItemsResults(lst);
+
+        }
+
         [TestMethod()]
         public void GetProductDetailsTest()
         {

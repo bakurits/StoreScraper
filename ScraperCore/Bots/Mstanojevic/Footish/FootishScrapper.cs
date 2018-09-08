@@ -25,8 +25,7 @@ namespace StoreScraper.Bots.Mstanojevic.Footish
         {
             listOfProducts = new List<Product>();
 
-            if (settings.Mode == ScraperCore.Models.SearchMode.SearchAPI)
-            {
+         
                 string restApiUrl = "http://www.footish.se/Services/Rest/v2/json/en-GB/EUR/search/full/" + settings.KeyWords + "/200/1";
                 var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
                 var response = Utils.GetParsedJson(client, restApiUrl, token);
@@ -57,44 +56,65 @@ namespace StoreScraper.Bots.Mstanojevic.Footish
 
                 }
 
-            }
-            else
-            {
-
-                var values = new Dictionary<string, string>
-            {
-                {"controller", "search" },
-                {"orderby", "position"},
-                {"orderway", "desc"},
-                {"search_query", settings.KeyWords},
-
-            };
-
-                var postParams = new FormUrlEncodedContent(values);
-
-
-
-                string url = WebsiteBaseUrl + "/en/search";
-                //todo higuhigu there is compilation error
-                
-                //var document = GetPostWebPage(url, postParams, token);
-
-
-            }
+            
+           
         }
 
 
-        private void LoadSingleProductTryCatchWrapper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        {
+            listOfProducts = new List<Product>();
+
+            HtmlNodeCollection itemCollection = GetNewArriavalItems(WebsiteBaseUrl + "/sneakers", token);
+            foreach (var item in itemCollection)
+            {
+                token.ThrowIfCancellationRequested();
+#if DEBUG
+                LoadSingleNewArrivalProduct(listOfProducts, item);
+#else
+                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, null, item);
+#endif
+            }
+
+          
+
+        }
+
+
+        private HtmlNodeCollection GetNewArriavalItems(string url, CancellationToken token)
+        {
+            var document = GetWebpage(url, token);
+            if (document.InnerHtml.Contains(noResults)) return null;
+
+            return document.SelectNodes("//article[@class='product-wrapper']");
+
+        }
+
+        private void LoadSingleNewArrivalProduct(List<Product> listOfProducts, HtmlNode item)
+        {
+            string name = GetName(item).TrimEnd();
+            string url = GetUrl(item);
+            var price = GetPrice(item);
+            string imageUrl = GetImageUrl(item);
+            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
+            listOfProducts.Add(product);
+
+        }
+
+        private void LoadSingleNewArrivalProductTryCatchWraper(List<Product> listOfProducts, HtmlNode item)
         {
             try
             {
-                LoadSingleProduct(listOfProducts, settings, item);
+                LoadSingleNewArrivalProduct(listOfProducts, item);
             }
             catch (Exception e)
             {
                 Logger.Instance.WriteErrorLog(e.Message);
             }
         }
+
+
+       
 
 
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
@@ -162,73 +182,21 @@ namespace StoreScraper.Bots.Mstanojevic.Footish
             return document;
         }
 
-        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
-        {
-            //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/en/sneakers";
-
-            var document = GetWebpage(url, token);
-            if (document.InnerHtml.Contains(noResults)) return null;
-
-            return document.SelectNodes("//article[@class='product-wrapper']");
-
-        }
-
-        private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
-        {
-            string title = item.SelectSingleNode("./div[3]/div/h3/a").GetAttributeValue("title", "").ToLower();
-            var validKeywords = settings.KeyWords.ToLower().Split(' ');
-            var invalidKeywords = settings.NegKeyWords.ToLower().Split(' ');
-            foreach (var keyword in validKeywords)
-            {
-                if (!title.Contains(keyword))
-                    return false;
-            }
-
-
-            foreach (var keyword in invalidKeywords)
-            {
-                if (keyword == "")
-                    continue;
-                if (title.Contains(keyword))
-                    return false;
-            }
-
-
-            return true;
-
-        }
-
-        private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
-        {
-            //if (!CheckForValidProduct(item, settings)) return;
-            string name = GetName(item).TrimEnd();
-            string url = GetUrl(item);
-            var price = GetPrice(item);
-            string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
-            if (Utils.SatisfiesCriteria(product, settings))
-            {
-                listOfProducts.Add(product);
-            }
-        }
-
-        private bool GetStatus(HtmlNode item)
-        {
-            return true;
-        }
+       
+   
+        
+       
+    
 
         private string GetName(HtmlNode item)
         {
-            //Console.WriteLine("GetName");
-            //Console.WriteLine(item.SelectSingleNode("./a").GetAttributeValue("title", ""));
-
-            return item.SelectSingleNode("./div[3]/div/h3/a").GetAttributeValue("title", "");
+           
+            return item.SelectSingleNode("./div[@class='product-info']/div/h3/a").GetAttributeValue("title", "");
         }
 
         private string GetUrl(HtmlNode item)
         {
-            return WebsiteBaseUrl + item.SelectSingleNode("./div[3]/div/h3/a").GetAttributeValue("href", null);
+            return WebsiteBaseUrl + item.SelectSingleNode("./div[@class='product-info']/div/h3/a").GetAttributeValue("href", null);
         }
 
         private Price GetPrice(HtmlNode item)

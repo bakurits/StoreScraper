@@ -25,7 +25,7 @@ namespace StoreScraper.Bots.Mstanojevic.Dtlr
 
 
             listOfProducts = new List<Product>();
-            HtmlNodeCollection itemCollection = GetProductCollection(settings, "man", token);
+            HtmlNodeCollection itemCollection = GetProductCollection(settings, null, token);
             Console.WriteLine(itemCollection.Count);
             foreach (var item in itemCollection)
             {
@@ -37,21 +37,7 @@ namespace StoreScraper.Bots.Mstanojevic.Dtlr
 #endif
             }
 
-            if (settings.Mode == ScraperCore.Models.SearchMode.NewArrivalsPage)
-            {
-
-                itemCollection = GetProductCollection(settings, "woman", token);
-                Console.WriteLine(itemCollection.Count);
-                foreach (var item in itemCollection)
-                {
-                    token.ThrowIfCancellationRequested();
-#if DEBUG
-                    LoadSingleProduct(listOfProducts, settings, item);
-#else
-                LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
-#endif
-                }
-            }
+            
 
         }
 
@@ -213,27 +199,13 @@ namespace StoreScraper.Bots.Mstanojevic.Dtlr
             string url = "";
 
             //string url = WebsiteBaseUrl + "/catalogsearch/result/?q="+settings.KeyWords.Replace(" ", "+");
-            if (settings.Mode == ScraperCore.Models.SearchMode.NewArrivalsPage)
+            
+            url = WebsiteBaseUrl + "/catalogsearch/result/?q=" + settings.KeyWords.Replace(" ", "+");
+            if (gender != null)
             {
-                url = WebsiteBaseUrl + "/men/footwear/new.html";
-
-                if (gender == "man")
-                {
-                    url = WebsiteBaseUrl + "/men/footwear/new.html";
-                }
-                if (gender == "woman")
-                {
-                    url = WebsiteBaseUrl + "/women/footwear/new.html";
-                }
+                url += "&gender=" + gender;
             }
-            else
-            {
-                url = WebsiteBaseUrl + "/catalogsearch/result/?q=" + settings.KeyWords.Replace(" ", "+");
-                if (gender != null)
-                {
-                    url += "&gender=" + gender;
-                }
-            }
+            
 
 
             

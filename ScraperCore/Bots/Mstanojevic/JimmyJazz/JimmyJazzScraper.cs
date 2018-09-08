@@ -29,9 +29,7 @@ namespace StoreScraper.Bots.Mstanojevic.JimmyJazz
 
             listOfProducts = new List<Product>();
 
-            if (settings.Mode == ScraperCore.Models.SearchMode.SearchAPI)
-            {
-
+            
                 HtmlNodeCollection itemCollection = GetProductCollection(settings, gender, token);
                 Console.WriteLine(itemCollection.Count);
                 foreach (var item in itemCollection)
@@ -44,36 +42,7 @@ namespace StoreScraper.Bots.Mstanojevic.JimmyJazz
 #endif
                 }
 
-            }
-            else
-            {
-
-                HtmlNodeCollection itemCollection = GetProductCollection(settings, "man", token);
-                Console.WriteLine(itemCollection.Count);
-                foreach (var item in itemCollection)
-                {
-                    token.ThrowIfCancellationRequested();
-#if DEBUG
-                    LoadSingleProduct(listOfProducts, settings, item);
-#else
-                LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
-#endif
-                }
-
-
-                itemCollection = GetProductCollection(settings, "woman", token);
-                Console.WriteLine(itemCollection.Count);
-                foreach (var item in itemCollection)
-                {
-                    token.ThrowIfCancellationRequested();
-#if DEBUG
-                    LoadSingleProduct(listOfProducts, settings, item);
-#else
-                LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
-#endif
-                }
-
-            }
+        
         }
 
         public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
@@ -208,9 +177,7 @@ namespace StoreScraper.Bots.Mstanojevic.JimmyJazz
             string url = "";
 
 
-            if (settings.Mode == ScraperCore.Models.SearchMode.SearchAPI)
-            {
-
+       
                 url = "http://search.jimmyjazz.com/search/keywords-" + settings.KeyWords.Replace(" ", "_") + "--res_per_page-100";
 
                 if (settings.MaxPrice > 0)
@@ -223,33 +190,16 @@ namespace StoreScraper.Bots.Mstanojevic.JimmyJazz
                     url += "--Gender-" + gender;
                 }
 
-            }
-            else
-            {
-                if (gender == "man")
-                {
-                    url = WebsiteBaseUrl + "/mens/specials/new-arrivals";
-                }
-                else
-                {
-                    url = WebsiteBaseUrl + "/womens/specials/new-arrivals";
-                }
-            }
+            
 
             Console.WriteLine(url);
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;
 
-            if (settings.Mode == ScraperCore.Models.SearchMode.SearchAPI)
-            {
+          
 
                 return document.SelectNodes("//div[contains(@class,'product_grid_item')]");
-            }
-            else
-            {
-                return document.SelectNodes("//li[contains(@class,'product_grid_item')]");
-
-            }
+           
 
         }
 
