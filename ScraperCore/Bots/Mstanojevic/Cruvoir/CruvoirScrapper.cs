@@ -13,7 +13,7 @@ namespace StoreScraper.Bots.Mstanojevic.Cruvoir
     public class CruvoirScrapper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Cruvoir";
-        public override string WebsiteBaseUrl { get; set; } = "http://www.Cruvoir.com";
+        public override string WebsiteBaseUrl { get; set; } = "http://www.cruvoir.com";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";
@@ -54,25 +54,25 @@ namespace StoreScraper.Bots.Mstanojevic.Cruvoir
         {
             listOfProducts = new List<Product>();
 
-            HtmlNodeCollection itemCollection = GetNewArriavalItems("/collections/mens-shoes", token);
+            HtmlNodeCollection itemCollection = GetNewArriavalItems(WebsiteBaseUrl + "/collections/mens-shoes", token);
             foreach (var item in itemCollection)
             {
                 token.ThrowIfCancellationRequested();
 #if DEBUG
-                LoadSingleProduct(listOfProducts, null, item);
+                LoadSingleNewArrivalProduct(listOfProducts, item);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, null, item);
+                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, null, item);
 #endif
             }
 
-            itemCollection = GetNewArriavalItems("/collections/womens-shoes", token);
+            itemCollection = GetNewArriavalItems(WebsiteBaseUrl + "/collections/womens-shoes", token);
             foreach (var item in itemCollection)
             {
                 token.ThrowIfCancellationRequested();
 #if DEBUG
-                LoadSingleProduct(listOfProducts, null, item);
+                LoadSingleNewArrivalProduct(listOfProducts, item);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, null, item);
+                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, null, item);
 #endif
             }
 
@@ -87,6 +87,30 @@ namespace StoreScraper.Bots.Mstanojevic.Cruvoir
             return document.SelectNodes("//article[@class='product']");
         
         }
+
+        private void LoadSingleNewArrivalProduct(List<Product> listOfProducts, HtmlNode item)
+        { 
+            string name =  GetName(item).TrimEnd();
+            string url = GetUrl(item);
+            var price = GetPrice(item);
+            string imageUrl = GetImageUrl(item);
+            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
+            listOfProducts.Add(product);
+           
+        }
+
+        private void LoadSingleNewArrivalProductTryCatchWraper(List<Product> listOfProducts, HtmlNode item)
+        {
+            try
+            {
+                LoadSingleNewArrivalProduct(listOfProducts, item);
+            }
+            catch (Exception e)
+            {
+                Logger.Instance.WriteErrorLog(e.Message);
+            }
+        }
+
 
 
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
@@ -196,6 +220,8 @@ namespace StoreScraper.Bots.Mstanojevic.Cruvoir
 
         }
 
+
+
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             if (!CheckForValidProduct(item, settings)) return;
@@ -240,7 +266,6 @@ namespace StoreScraper.Bots.Mstanojevic.Cruvoir
             {
                 return 0;
             }*/
-            Console.WriteLine(Utils.ParsePrice(item.SelectSingleNode("./div/p[3]/span").InnerText/*.Replace(",",".")*/));
             return Utils.ParsePrice(item.SelectSingleNode("./div/p[3]/span").InnerText/*.Replace(",",".")*/);
 
 

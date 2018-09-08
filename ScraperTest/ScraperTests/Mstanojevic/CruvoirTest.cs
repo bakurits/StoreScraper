@@ -18,9 +18,12 @@ namespace ScraperTest.ScraperTests.Mstanojevic
             settings.KeyWords = "adidas";
 
 
-            scraper.FindItems(out var lst, settings, CancellationToken.None);
-            Helpers.Helper.PrintFindItemsResults(lst);
+            //scraper.FindItems(out var lst, settings, CancellationToken.None);
+            
+            //Helpers.Helper.PrintFindItemsResults(lst);
 
+            scraper.ScrapeNewArrivalsPage(out var lst, CancellationToken.None);
+            Helpers.Helper.PrintFindItemsResults(lst);
         }
 
         [TestMethod()]
