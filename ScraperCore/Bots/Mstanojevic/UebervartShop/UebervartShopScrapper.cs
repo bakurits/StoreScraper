@@ -12,7 +12,7 @@ namespace StoreScraper.Bots.Mstanojevic.UebervartShop
     public class UebervartShopScrapper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "UebervartShop";
-        public override string WebsiteBaseUrl { get; set; } = "http://www.uebervart-shop.de";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.uebervart-shop.de";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";
@@ -33,6 +33,63 @@ namespace StoreScraper.Bots.Mstanojevic.UebervartShop
             }
 
         }
+
+
+
+
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        {
+            listOfProducts = new List<Product>();
+
+            HtmlNodeCollection itemCollection = GetNewArriavalItems(WebsiteBaseUrl + "/new", token);
+            foreach (var item in itemCollection)
+            {
+                token.ThrowIfCancellationRequested();
+#if DEBUG
+                LoadSingleNewArrivalProduct(listOfProducts, item);
+#else
+                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, null, item);
+#endif
+            }
+
+        
+
+        }
+
+
+        private HtmlNodeCollection GetNewArriavalItems(string url, CancellationToken token)
+        {
+            var document = GetWebpage(url, token);
+            if (document.InnerHtml.Contains(noResults)) return null;
+
+            return document.SelectNodes("//article");
+
+        }
+
+        private void LoadSingleNewArrivalProduct(List<Product> listOfProducts, HtmlNode item)
+        {
+            string name = GetName(item).TrimEnd();
+            string url = GetUrl(item);
+            var price = GetPrice(item);
+            string imageUrl = GetImageUrl(item);
+            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
+            listOfProducts.Add(product);
+
+        }
+
+        private void LoadSingleNewArrivalProductTryCatchWraper(List<Product> listOfProducts, HtmlNode item)
+        {
+            try
+            {
+                LoadSingleNewArrivalProduct(listOfProducts, item);
+            }
+            catch (Exception e)
+            {
+                Logger.Instance.WriteErrorLog(e.Message);
+            }
+        }
+
+
 
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
@@ -108,8 +165,8 @@ namespace StoreScraper.Bots.Mstanojevic.UebervartShop
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            //string url = WebsiteBaseUrl + "/?s=" + settings.KeyWords.Replace(" ", "+") + "&post_type=product";
-            string url = WebsiteBaseUrl + "/new";
+            string url = WebsiteBaseUrl + "/?s=" + settings.KeyWords.Replace(" ", "+") + "&post_type=product";
+            //string url = WebsiteBaseUrl + "/new";
 
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;
@@ -171,23 +228,30 @@ namespace StoreScraper.Bots.Mstanojevic.UebervartShop
 
         private Price GetPrice(HtmlNode item)
         {
-            
+            try
+            {
                 if (item.SelectSingleNode("./a/span/ins/span") != null)
                 {
-                /*string priceDiv = item.SelectSingleNode("./a/span/ins/span").InnerText.Replace("€", "").Replace("&euro;", "").Replace("&nbsp;", "").Replace("$", "").Replace(",", ".");
-
-                return double.Parse(priceDiv);*/
-                return Utils.ParsePrice(item.SelectSingleNode("./a/span/ins/span").InnerText.Replace(",", "."));
+                Console.WriteLine(item.SelectSingleNode("./a/span/ins/span").InnerText.Replace("&nbsp;", "").Replace("\"", ""));
+                    return Utils.ParsePrice(item.SelectSingleNode("./a/span/ins/span").InnerText.Replace("&nbsp;", "").Replace("\"",""), ",", ".");
                 }
                 else
                 {
+                Console.WriteLine(item.SelectSingleNode("./a/span/span").InnerText.Replace("&nbsp;", "").Replace("\"", ""));
 
-                /*string priceDiv = item.SelectSingleNode("./a/span/span").InnerText.Replace("€", "").Replace("&euro;", "").Replace("&nbsp;", "").Replace("$", "").Replace(",", ".");
-
-                return double.Parse(priceDiv);*/
-                return Utils.ParsePrice(item.SelectSingleNode("./a/span/span").InnerText.Replace(",", "."));
-
+                return Utils.ParsePrice(item.SelectSingleNode("./a/span/span").InnerText.Replace("&nbsp;", "").Replace("\"", ""), ",", ".");
                 }
+            }
+            catch
+            {
+               
+                    return new Price()
+                    {
+                        Value = 0,
+                        Currency = "UNKNOWN"
+                    };
+                
+            }
             
         }
 

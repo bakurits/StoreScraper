@@ -13,7 +13,7 @@ namespace StoreScraper.Bots.Mstanojevic.Sneakersnstuff
     public class SneakersnstuffScrapper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Sneakersnstuff";
-        public override string WebsiteBaseUrl { get; set; } = "http://www.sneakersnstuff.com";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.sneakersnstuff.com";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";
@@ -23,6 +23,7 @@ namespace StoreScraper.Bots.Mstanojevic.Sneakersnstuff
             string gender = null;
             listOfProducts = new List<Product>();
             HtmlNodeCollection itemCollection = GetProductCollection(settings, gender, token);
+            Console.WriteLine(itemCollection);
             foreach (var item in itemCollection)
             {
                 token.ThrowIfCancellationRequested();
@@ -33,6 +34,58 @@ namespace StoreScraper.Bots.Mstanojevic.Sneakersnstuff
 #endif
             }
 
+        }
+
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        {
+            listOfProducts = new List<Product>();
+
+            HtmlNodeCollection itemCollection = GetNewArriavalItems(WebsiteBaseUrl + "/en/858/new-arrivals", token);
+            foreach (var item in itemCollection)
+            {
+                token.ThrowIfCancellationRequested();
+#if DEBUG
+                LoadSingleNewArrivalProduct(listOfProducts, item);
+#else
+                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, null, item);
+#endif
+            }
+
+          
+
+        }
+
+
+        private HtmlNodeCollection GetNewArriavalItems(string url, CancellationToken token)
+        {
+            var document = GetWebpage(url, token);
+            if (document.InnerHtml.Contains(noResults)) return null;
+
+            return document.SelectNodes("//li[@class='product c-3']");
+
+        }
+
+        private void LoadSingleNewArrivalProduct(List<Product> listOfProducts, HtmlNode item)
+        {
+            string name = GetName(item).TrimEnd();
+            string url = GetUrl(item);
+            var price = GetPrice(item);
+            string imageUrl = GetImageUrl(item);
+            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
+            listOfProducts.Add(product);
+
+        }
+
+        private void LoadSingleNewArrivalProductTryCatchWraper(List<Product> listOfProducts, HtmlNode item)
+        {
+            try
+            {
+                LoadSingleNewArrivalProduct(listOfProducts, item);
+            }
+            catch (Exception e)
+            {
+                Logger.Instance.WriteErrorLog(e.Message);
+            }
         }
 
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
@@ -107,7 +160,8 @@ namespace StoreScraper.Bots.Mstanojevic.Sneakersnstuff
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, string gender, CancellationToken token)
         {
             //string url = string.Format(SearchFormat, settings.KeyWords);
-            string url = WebsiteBaseUrl + "/en/858/new-arrivals";
+            //string url = WebsiteBaseUrl + "/en/858/new-arrivals";
+            string url = WebsiteBaseUrl + "/en/search/searchbytext?key=" + settings.KeyWords;
 
             if (gender != null)
             {
@@ -126,8 +180,9 @@ namespace StoreScraper.Bots.Mstanojevic.Sneakersnstuff
             }
 
             var document = GetWebpage(url, token);
+            //Console.WriteLine(document);
             if (document.InnerHtml.Contains(noResults)) return null;
-
+            
             return document.SelectNodes("//li[@class='product c-3']");
 
         }

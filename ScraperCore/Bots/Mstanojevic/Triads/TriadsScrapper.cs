@@ -35,6 +35,57 @@ namespace StoreScraper.Bots.Mstanojevic.Triads
 
         }
 
+
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        {
+            listOfProducts = new List<Product>();
+
+            HtmlNodeCollection itemCollection = GetNewArriavalItems(WebsiteBaseUrl + "/new-products", token);
+            foreach (var item in itemCollection)
+            {
+                token.ThrowIfCancellationRequested();
+#if DEBUG
+                LoadSingleNewArrivalProduct(listOfProducts, item);
+#else
+                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, null, item);
+#endif
+            }
+
+        }
+
+
+        private HtmlNodeCollection GetNewArriavalItems(string url, CancellationToken token)
+        {
+            var document = GetWebpage(url, token);
+            if (document.InnerHtml.Contains(noResults)) return null;
+
+            return document.SelectNodes("//div[contains(@class,'product product--')]");
+
+        }
+
+        private void LoadSingleNewArrivalProduct(List<Product> listOfProducts, HtmlNode item)
+        {
+            string name = GetName(item).TrimEnd();
+            string url = GetUrl(item);
+            var price = GetPrice(item);
+            string imageUrl = GetImageUrl(item);
+            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
+            listOfProducts.Add(product);
+
+        }
+
+        private void LoadSingleNewArrivalProductTryCatchWraper(List<Product> listOfProducts, HtmlNode item)
+        {
+            try
+            {
+                LoadSingleNewArrivalProduct(listOfProducts, item);
+            }
+            catch (Exception e)
+            {
+                Logger.Instance.WriteErrorLog(e.Message);
+            }
+        }
+
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
@@ -111,9 +162,9 @@ namespace StoreScraper.Bots.Mstanojevic.Triads
             //string url = string.Format(SearchFormat, settings.KeyWords);
             //string url = WebsiteBaseUrl + "/new-products/triads-mens-c1/footwear-c24";
 
-            //string url = WebsiteBaseUrl + "/ajax/getProductListings?base_url=search%2F"+settings.KeyWords.Replace(" ", "-")+"&page_type=productlistings&page_variant=show&all_upcoming_flag[]=78&keywords="+settings.KeyWords+"&show=&sort=&page=1&transport=html";
+            string url = WebsiteBaseUrl + "/ajax/getProductListings?base_url=search%2F"+settings.KeyWords.Replace(" ", "-")+"&page_type=productlistings&page_variant=show&all_upcoming_flag[]=78&keywords="+settings.KeyWords+"&show=&sort=&page=1&transport=html";
 
-            string url = WebsiteBaseUrl + "/new-products";
+            //string url = WebsiteBaseUrl + "/new-products";
 
             /*if (settings.MaxPrice > 0)
             {

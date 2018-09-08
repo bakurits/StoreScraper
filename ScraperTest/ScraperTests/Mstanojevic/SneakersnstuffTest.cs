@@ -14,10 +14,23 @@ namespace ScraperTest.ScraperTests.Mstanojevic
         {
             SneakersnstuffScrapper scraper = new SneakersnstuffScrapper();
             SearchSettingsBase settings = new SearchSettingsBase();
-            settings.KeyWords = "nike";
+            //settings.KeyWords = "nike";
 
 
             scraper.FindItems(out var lst, settings, CancellationToken.None);
+            Helpers.Helper.PrintFindItemsResults(lst);
+
+        }
+
+        [TestMethod()]
+        public void NewArrivalTest()
+        {
+            SneakersnstuffScrapper scraper = new SneakersnstuffScrapper();
+            SearchSettingsBase settings = new SearchSettingsBase();
+            settings.KeyWords = "nike";
+
+
+            scraper.ScrapeNewArrivalsPage(out var lst, CancellationToken.None);
             Helpers.Helper.PrintFindItemsResults(lst);
 
         }
