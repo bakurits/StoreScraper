@@ -110,6 +110,11 @@ namespace StoreScraper.Bots.Mstanojevic.Triads
             string name = document.SelectSingleNode("//span[@id='js-product-title']").InnerText.Trim();
             string image = WebsiteBaseUrl + document.SelectSingleNode("//img[@id='js-product-main-image']").GetAttributeValue("data-src", "");
 
+            string brand = null;
+            if (document.SelectSingleNode("//span[@class='product-content__title--brand']") != null)
+            {
+                brand = document.SelectSingleNode("//span[@class='product-content__title--brand']").InnerText;
+            }
 
 
             ProductDetails details = new ProductDetails()

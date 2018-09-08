@@ -120,6 +120,11 @@ namespace StoreScraper.Bots.Mstanojevic.Ntrstore
 
             string name = document.SelectSingleNode("//h1").InnerText.Trim();
             string image = document.SelectSingleNode("//div[@class='product-image-gallery']/img[1]").GetAttributeValue("src", "");
+            string brand = null;
+            if (document.SelectSingleNode("//p[@class='brand-name']") != null)
+            {
+                brand = document.SelectSingleNode("//p[@class='brand-name']").InnerText;
+            }
 
 
 
@@ -131,7 +136,8 @@ namespace StoreScraper.Bots.Mstanojevic.Ntrstore
                 ImageUrl = image,
                 Url = productUrl,
                 Id = productUrl,
-                ScrapedBy = this
+                ScrapedBy = this,
+                BrandName = brand
             };
 
             if (strDoc.Contains("var spConfig = new Product.Config({"))

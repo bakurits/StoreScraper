@@ -140,6 +140,12 @@ namespace StoreScraper.Bots.Mstanojevic.FootShop
             string name = document.SelectSingleNode("//h1").InnerText;
             string image = document.SelectSingleNode("//div[@class='owl-carousel']/div/img").GetAttributeValue("data-src", "");
 
+            string brand = null;
+            if (document.SelectSingleNode("//a[contains(@class,'product__manufacturer')]") != null)
+            {
+                brand = document.SelectSingleNode("//a[contains(@class,'product__manufacturer')]").GetAttributeValue("title", null);
+            }
+
             ProductDetails details = new ProductDetails()
             {
                 Price = price.Value,
@@ -148,7 +154,8 @@ namespace StoreScraper.Bots.Mstanojevic.FootShop
                 ImageUrl = image,
                 Url = productUrl,
                 Id = productUrl,
-                ScrapedBy = this
+                ScrapedBy = this,
+                BrandName = brand
             };
 
 

@@ -124,6 +124,11 @@ namespace StoreScraper.Bots.Mstanojevic.Shinzo
             string name = document.SelectSingleNode("//h1[@class='product-name']").InnerText.Trim();
             string image = document.SelectSingleNode("//a[@class='touchzoom']/img[@itemprop='image']").GetAttributeValue("src", "");
 
+            string brand = null;
+            if (document.SelectSingleNode("//div[@class='brand']/h2") != null)
+            {
+                brand = document.SelectSingleNode("//div[@class='brand']/h2").InnerText;
+            }
 
 
             ProductDetails details = new ProductDetails()
@@ -134,7 +139,8 @@ namespace StoreScraper.Bots.Mstanojevic.Shinzo
                 ImageUrl = image,
                 Url = productUrl,
                 Id = productUrl,
-                ScrapedBy = this
+                ScrapedBy = this,
+                BrandName = brand
             };
 
             

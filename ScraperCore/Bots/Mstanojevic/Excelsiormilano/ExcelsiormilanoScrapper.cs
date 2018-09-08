@@ -119,7 +119,11 @@ namespace StoreScraper.Bots.Mstanojevic.Excelsiormilano
             
             string name = document.SelectSingleNode("//h3[@itemprop='name']").InnerText;
             string image = document.SelectSingleNode("//li[@class='homeslider-container'][1]/img").GetAttributeValue("src", "");
-
+            string brand = null;
+            if (document.SelectSingleNode("//div/h2/a") != null)
+            {
+                brand = document.SelectSingleNode("//div/h2/a").InnerText;
+            }
             ProductDetails details = new ProductDetails()
             {
                 Price = price.Value,
@@ -128,7 +132,8 @@ namespace StoreScraper.Bots.Mstanojevic.Excelsiormilano
                 ImageUrl = image,
                 Url = productUrl,
                 Id = productUrl,
-                ScrapedBy = this
+                ScrapedBy = this,
+                BrandName = brand
             };
             var sizeCollection = document.SelectNodes("//select[@name='group_1']/option");
             if (sizeCollection != null)

@@ -126,6 +126,12 @@ namespace StoreScraper.Bots.Mstanojevic.Footish
             string name = document.SelectSingleNode("//span[@itemprop='name']").InnerText;
             string image = WebsiteBaseUrl + document.SelectSingleNode("//div[@class='product-images']/div/div/img").GetAttributeValue("src", "");
 
+            string brand = null;
+            if (document.SelectSingleNode("//div[@class='product-title']/a") != null)
+            {
+                brand = document.SelectSingleNode("//div[@class='product-title']/a").InnerText;
+            }
+
             ProductDetails details = new ProductDetails()
             {
                 Price = price.Value,
@@ -134,7 +140,8 @@ namespace StoreScraper.Bots.Mstanojevic.Footish
                 ImageUrl = image,
                 Url = productUrl,
                 Id = productUrl,
-                ScrapedBy = this
+                ScrapedBy = this,
+                BrandName = brand
             };
             var strDoc = document.InnerHtml;
 
