@@ -54,47 +54,39 @@ namespace StoreScraper.Bots.Mstanojevic.Cruvoir
         {
             listOfProducts = new List<Product>();
 
-            string searchUrl = WebsiteBaseUrl + "/collections/mens-shoes";
-
-
-
-            searchUrl = WebsiteBaseUrl + "/collections/womens-shoes";
-            
-
-            var document = GetWebpage(searchUrl, token);
-            if (document.InnerHtml.Contains(noResults)) return;
-
-            HtmlNodeCollection itemCollection = document.SelectNodes("//article[@class='product']");
+            HtmlNodeCollection itemCollection = GetNewArriavalItems("/collections/mens-shoes", token);
             foreach (var item in itemCollection)
             {
                 token.ThrowIfCancellationRequested();
 #if DEBUG
-                string name = GetName(item).TrimEnd();
-                string url = GetUrl(item);
-                var price = GetPrice(item);
-                string imageUrl = GetImageUrl(item);
-                var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
-                Console.WriteLine(product);
-                listOfProducts.Add(product);
-
+                LoadSingleProduct(listOfProducts, null, item);
 #else
-                try {
-                string name = GetName(item).TrimEnd();
-                string url = GetUrl(item);
-                var price = GetPrice(item);
-                string imageUrl = GetImageUrl(item);
-                var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
-                
-                listOfProducts.Add(product);
-                }catch (Exception e)
-                {
-                    Logger.Instance.WriteErrorLog(e.Message);
-                }
+                LoadSingleProductTryCatchWraper(listOfProducts, null, item);
 #endif
             }
-                
+
+            itemCollection = GetNewArriavalItems("/collections/womens-shoes", token);
+            foreach (var item in itemCollection)
+            {
+                token.ThrowIfCancellationRequested();
+#if DEBUG
+                LoadSingleProduct(listOfProducts, null, item);
+#else
+                LoadSingleProductTryCatchWraper(listOfProducts, null, item);
+#endif
+            }
+
         }
 
+
+        private HtmlNodeCollection GetNewArriavalItems(string url, CancellationToken token)
+        {
+            var document = GetWebpage(url, token);
+            if (document.InnerHtml.Contains(noResults)) return null;
+
+            return document.SelectNodes("//article[@class='product']");
+        
+        }
 
 
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
@@ -185,6 +177,8 @@ namespace StoreScraper.Bots.Mstanojevic.Cruvoir
 
         private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
         {
+            if (settings == null)
+                return true;
             string title = item.SelectSingleNode("./div/p[2]").InnerHtml.ToLower();
             var validKeywords = settings.KeyWords.ToLower().Split(' ');
             foreach (var keyword in validKeywords)
