@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper.Helpers;
+using StoreScraper.Models;
 
 namespace ScraperTest.MinorTests
 {
@@ -25,6 +26,30 @@ namespace ScraperTest.MinorTests
                 var parsed = Utils.ParsePrice(price, decimalDelimiter:",", thousandsDelimiter:"");
                 Console.WriteLine(parsed);
             }
+        }
+
+        [TestMethod]
+        public void SatisfiesCriteriaTest()
+        {
+            Product product = new Product()
+            {
+                Name = "Adidas white sneaker"
+            };
+
+            SearchSettingsBase filter = new SearchSettingsBase()
+            {
+                KeyWords = "Adidas chudo, sneaker",
+                NegKeyWords = "sneaker chudo, white chudo"
+            };
+
+
+            SearchSettingsBase filter2 = new SearchSettingsBase()
+            {
+                KeyWords = "Adidas chudo, sneaker",
+                NegKeyWords = "sneaker, white chudo"
+            };
+
+            Assert.IsFalse(Utils.SatisfiesCriteria(product, filter2));
         }
     }
 }

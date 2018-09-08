@@ -11,7 +11,6 @@ using StoreScraper.Models;
 
 namespace StoreScraper.Bots.Bakurits.Rimowa
 {
-
     public class RimowaScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Rimowa";
@@ -22,22 +21,38 @@ namespace StoreScraper.Bots.Bakurits.Rimowa
         public override Type SearchSettingsType { get; set; } = typeof(SearchSettingsBase);
 
 
-        private const string SearchFormat = @"http://www.rimowa.com/search?q={0}&srule=newest&sz=12&start={1}&format=page-element";
-        
+        private const string SearchFormat =
+            @"http://www.rimowa.com/search?q={0}&srule=newest&sz=12&start={1}&format=page-element";
 
-        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
-        { 
+
+        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,
+            CancellationToken token)
+        {
             listOfProducts = new List<Product>();
+            GetProducts(listOfProducts, settings, token, SearchFormat);
+        }
+
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        {
+            listOfProducts = new List<Product>();
+            GetProducts(listOfProducts, null, token,
+                "https://www.rimowa.com/luggage/all-luggage/?srule=newest&sz=12&start={0}");
+        }
+
+        private void GetProducts(List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token,
+            string urlFormat)
+        {
             List<String> urls = new List<string>();
             int seenProducts = 0;
             for (int i = 0; seenProducts < MaxItemCount; i++)
             {
-                string url = string.Format(SearchFormat, settings.KeyWords, i * 12);
+                string url = settings != null
+                    ? string.Format(urlFormat, settings.KeyWords, i * 12)
+                    : string.Format(urlFormat, i * 12);
                 urls.Add(url);
                 seenProducts += 12;
             }
 
-            List<Product> res = new List<Product>();
             List<HtmlNode> pages = GetPageTask(urls, token).Result;
             foreach (var page in pages)
             {
@@ -46,7 +61,7 @@ namespace StoreScraper.Bots.Bakurits.Rimowa
                 foreach (var item in items)
                 {
                     Product product = GetProduct(item);
-                    if (product != null && Utils.SatisfiesCriteria(product, settings))
+                    if (product != null && (settings == null || Utils.SatisfiesCriteria(product, settings)))
                     {
                         listOfProducts.Add(product);
                     }
@@ -62,14 +77,16 @@ namespace StoreScraper.Bots.Bakurits.Rimowa
             var page = doc.DocumentNode;
             var infoContainer = page.SelectSingleNode("//div[@id = 'pchange-target']/div");
 
-            var collectionName = infoContainer.SelectSingleNode("./span[@itemprop = 'name']").InnerHtml.EscapeNewLines();
+            var collectionName =
+                infoContainer.SelectSingleNode("./span[@itemprop = 'name']").InnerHtml.EscapeNewLines();
             var productName = infoContainer.SelectSingleNode("./h1[@itemprop = 'name']").InnerHtml.EscapeNewLines();
             var name = $"{collectionName} - {productName}";
             var priceNode = infoContainer.SelectSingleNode("./div[contains(@class, 'product-price')]/span");
             Price price = Utils.ParsePrice(priceNode.InnerHtml);
 
-            var image = WebsiteBaseUrl + page.SelectSingleNode("//img[contains(@class, 'primary-image')]").GetAttributeValue("src", "").Substring(1);
-           
+            var image = WebsiteBaseUrl + page.SelectSingleNode("//img[contains(@class, 'primary-image')]")
+                            .GetAttributeValue("src", "").Substring(1);
+
             ProductDetails details = new ProductDetails()
             {
                 Price = price.Value,
@@ -95,6 +112,7 @@ namespace StoreScraper.Bots.Bakurits.Rimowa
             {
                 res.Add(document.DocumentNode);
             }
+
             return res;
         }
 
@@ -119,17 +137,22 @@ namespace StoreScraper.Bots.Bakurits.Rimowa
         {
             string type = item.SelectSingleNode("./div/div[contains(@class, 'product-cat')]/a").InnerHtml;
             type = Regex.Replace(type, @"\t|\n|\r", "");
-            string name =  item.SelectSingleNode("./div").GetAttributeValue("data-itemname", "");
+            string name = item.SelectSingleNode("./div").GetAttributeValue("data-itemname", "");
             return $"{type} - {name}";
         }
+
         private string GetUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./div/div[contains(@class, 'product-image')]/a").GetAttributeValue("href", "");
+            return item.SelectSingleNode("./div/div[contains(@class, 'product-image')]/a")
+                .GetAttributeValue("href", "");
         }
+
         private string GetImageUrl(HtmlNode item)
         {
-            return WebsiteBaseUrl + item.SelectSingleNode("./div/div[contains(@class, 'product-image')]/a/img").GetAttributeValue("src", "");
+            return WebsiteBaseUrl + item.SelectSingleNode("./div/div[contains(@class, 'product-image')]/a/img")
+                       .GetAttributeValue("src", "");
         }
+
         private double GetPrice(HtmlNode item)
         {
             string priceContainer = item.SelectSingleNode("./div").GetAttributeValue("data-itemprice", "");
@@ -140,6 +163,7 @@ namespace StoreScraper.Bots.Bakurits.Rimowa
 
             return res;
         }
+
         private string GetCurrency(HtmlNode item)
         {
             return "EUR";

@@ -75,6 +75,13 @@ namespace StoreScraper.Bots.Bakurits.Baitme
             return details;
         }
 
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        {
+            listOfProducts = new List<Product>();
+            
+            
+        }
+
         private HtmlNode GetWebpage(string url, CancellationToken token)
         {
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);

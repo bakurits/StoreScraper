@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
@@ -60,6 +62,44 @@ namespace StoreScraper.Bots.Bakurits.Shelflife
             return details;
         }
 
+        private static int MaxPageCount = 3;
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        {
+            listOfProducts = new List<Product>();
+            const string searchFormat = "https://www.shelflife.co.za/New-arrivals?page={0}";
+            List<String> urls = new List<string>();
+            for (int i = 1; i <= MaxPageCount; i++)
+            {
+                string url = string.Format(searchFormat, i);
+                urls.Add(url);
+            }
+
+            List<HtmlNode> pages = GetPageTask(urls, token).Result;
+            foreach (var page in pages)
+            {
+                HtmlNodeCollection items = page.SelectNodes("//body/div/div/div[contains(@class, 'col-xs-6 col-sm-3')]");
+                if (items == null) break;
+                foreach (var item in items)
+                {
+                    token.ThrowIfCancellationRequested();
+                    LoadSingleProduct(listOfProducts, null, item);
+                }
+            }
+        }
+        
+        private static async Task<List<HtmlNode>> GetPageTask(List<String> urls, CancellationToken token)
+        {
+            List<HtmlNode> res = new List<HtmlNode>();
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+
+            var documents = await Task.WhenAll(urls.Select(i => client.GetDocTask(i, token)));
+            foreach (var document in documents)
+            {
+                res.Add(document.DocumentNode);
+            }
+            return res;
+        }
+
         private HtmlNode GetWebpage(string url, CancellationToken token)
         {
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
@@ -81,7 +121,7 @@ namespace StoreScraper.Bots.Bakurits.Shelflife
             var price = GetPrice(item);
             var imageUrl = GetImageUrl(item);
             Product product = new Product(this, name, url, price, imageUrl, url, "R");
-            if (Utils.SatisfiesCriteria(product, settings))
+            if (settings == null || Utils.SatisfiesCriteria(product, settings))
                 listOfProducts.Add(product);
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -45,7 +46,7 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
             }
         }
 
-        public int NumberOfPages { get; set; } = 3;
+        private int NumberOfPages { get; set; } = 3;
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,
             CancellationToken token)
         {
@@ -113,6 +114,13 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
             }
 
             return details;
+        }
+
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        {
+            var node = GetPage("https://www.mrporter.com/mens/whats-new", token);
+            listOfProducts = new List<Product>();
+            Worker(listOfProducts, null, node, token);
         }
 
         private void GenerateRealSize(ProductDetails resultDetails, string html, string caster)
@@ -235,6 +243,11 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
 
             var curProduct = new Product(this, name, url, price, imgUrl, url, "GBR");
 
+            if (settings == null)
+            {
+                listOfProducts.Add(curProduct);
+                return;
+            }
             if (Utils.SatisfiesCriteria(curProduct, settings))
             {
                 var keyWordSplit = settings.KeyWords.Split(' ');

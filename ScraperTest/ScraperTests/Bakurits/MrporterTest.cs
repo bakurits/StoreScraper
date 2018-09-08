@@ -52,5 +52,14 @@ namespace ScraperTest.ScraperTests.Bakurits
 
             Helper.PrintGetDetailsResult(scraper.GetProductDetails(curProduct.Url, CancellationToken.None).SizesList);
         }
+        
+        [TestMethod]
+        public void GetNewArrivalsPage()
+        {
+            MrporterScraper scraper = new MrporterScraper();
+            
+            scraper.ScrapeNewArrivalsPage(out var lst, CancellationToken.None);
+            Helper.PrintFindItemsResults(lst);
+        }
     }
 }

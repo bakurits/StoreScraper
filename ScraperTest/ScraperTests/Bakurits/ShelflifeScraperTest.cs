@@ -40,5 +40,15 @@ namespace ScraperTest.ScraperTests.Bakurits
             Helper.PrintGetDetailsResult(details.SizesList);
             
         }
+        
+        
+        [TestMethod]
+        public void GetNewArrivalsPage()
+        {
+            ShelflifeScraper scraper = new ShelflifeScraper();
+            
+            scraper.ScrapeNewArrivalsPage(out var lst, CancellationToken.None);
+            Helper.PrintFindItemsResults(lst);
+        }
     }
 }

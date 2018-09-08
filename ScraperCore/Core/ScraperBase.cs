@@ -56,7 +56,7 @@ namespace StoreScraper
         }
 
         /// <summary>
-        /// This method finds products avaliable sizes
+        /// This method finds products available sizes
         /// </summary>
         /// <param name="productUrl">Url of product to scrape</param>
         /// <param name="token"></param>

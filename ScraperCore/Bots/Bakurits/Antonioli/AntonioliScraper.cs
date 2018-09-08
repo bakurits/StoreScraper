@@ -20,7 +20,7 @@ namespace StoreScraper.Bots.Bakurits.Antonioli
         public override Type SearchSettingsType { get; set; } = typeof(AntonioliSearchSettings);
 
 
-        private readonly string _searchFormat = @"http://www.antonioli.eu/en/search?utf8=✓&q={0}&gender={1}";
+        private const string SearchFormat = @"http://www.antonioli.eu/en/search?utf8=✓&q={0}&gender={1}";
         private static readonly string[] Gender = { "men", "women" };
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
@@ -87,17 +87,34 @@ namespace StoreScraper.Bots.Bakurits.Antonioli
             return details;
         }
 
+        private const string NewArrivalPageUrl = "https://www.antonioli.eu/en/section/new-arrivals";
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        {
+            var document = GetWebpage(NewArrivalPageUrl, token);
+            HtmlNodeCollection itemCollection = document.SelectNodes("//*[@id='content']/section/article");
+            listOfProducts = new List<Product>();
+            foreach (HtmlNode item in itemCollection)
+            {
+                token.ThrowIfCancellationRequested();
+                Product product = GetProduct(item);
+                if (product != null)
+                {
+                    listOfProducts.Add(product);
+                }
+            }
+        }
+
         private HtmlNode GetWebpage(string url, CancellationToken token)
         {
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = client.GetDoc(url, token).DocumentNode;
             return document;
         }
-
+        
         private void FindItemsForGender(List<Product> listOfProducts, SearchSettingsBase settings,
             CancellationToken token, string gender)
         {
-            string url = string.Format(_searchFormat, settings.KeyWords, gender);
+            string url = string.Format(SearchFormat, settings.KeyWords, gender);
             var document = GetWebpage(url, token);
             HtmlNodeCollection itemCollection = document.SelectNodes("//*[@id='content']/section/article");
 
@@ -131,12 +148,11 @@ namespace StoreScraper.Bots.Bakurits.Antonioli
 
         private string GetName(HtmlNode item)
         {
-            string brand = item.SelectSingleNode("./a/figure/figcaption/div[contains(@class, 'brand-name')]").InnerHtml;
+            string brand = item.SelectSingleNode("./a/figure/figcaption/div[contains(@class, 'brand-name')]").InnerHtml.EscapeNewLines();
             string category = 
                 item.SelectSingleNode("./a/figure/figcaption/div[contains(@class, 'category-and-season')]/span[contains(@class, 'category')]").InnerHtml;
             string season =
                 item.SelectSingleNode("./a/figure/figcaption/div[contains(@class, 'category-and-season')]/span[contains(@class, 'season')]").InnerHtml;
-            brand = Regex.Replace(brand, @"\t|\n|\r", "");
             return $"{brand} - {category} {season}";
         }
         private string GetUrl(HtmlNode item)

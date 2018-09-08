@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
@@ -41,6 +42,15 @@ namespace ScraperTest.ScraperTests.Bakurits
 
             Helper.PrintGetDetailsResult(details.SizesList);
             Debug.WriteLine(curProduct.Name);
+        }
+
+        [TestMethod]
+        public void GetNewArrivalsPage()
+        {
+            AntonioliScraper scraper = new AntonioliScraper();
+            
+            scraper.ScrapeNewArrivalsPage(out var lst, CancellationToken.None);
+            Helper.PrintFindItemsResults(lst);
         }
     }
 }
