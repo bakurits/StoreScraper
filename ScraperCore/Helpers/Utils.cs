@@ -312,8 +312,9 @@ namespace StoreScraper.Helpers
 
         public static bool SatisfiesCriteria(Product product, SearchSettingsBase settingsBase)
         {
-            var negKeyWords = settingsBase.NegKeyWords.ToLower().Split(' ').ToList();
-            var lName = product.Name.ToLower();
+            if (settingsBase == null) return true;
+
+            var fullNameLower = product.Name.ToLower() + " " + product.BrandName?.ToLower() ?? "";
 
             if (settingsBase.Mode == SearchMode.NewArrivalsPage &&
                 !settingsBase.ParsedKeywords.Any(kGroup => kGroup.All(keyword => product.Name.Contains(keyword))))

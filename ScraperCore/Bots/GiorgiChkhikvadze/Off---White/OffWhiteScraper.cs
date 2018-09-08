@@ -58,7 +58,13 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze
             listOfProducts = new List<Product>();
 
             var searchUrl = string.Format(SearchUrlFormat, settings.KeyWords);
+            FinditemsInternal(listOfProducts, settings, token, searchUrl);         
+        }
 
+
+
+        private void FinditemsInternal(List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token,  string url)
+        {
             HttpClient client = null;
 
 
@@ -86,7 +92,7 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze
                 }
             }
 
-            var document = client.GetDoc(searchUrl, token);
+            var document = client.GetDoc(url, token);
 
 
             if (document == null)
@@ -224,6 +230,11 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze
             return result;
         }
 
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        {
+            listOfProducts = new List<Product>();
+            FinditemsInternal(listOfProducts, null, token, "https://www.off---white.com/en/US/section/new-arrivals");
+        }
 
         static void CollectCookies(HttpClient client, CancellationToken token)
         {
@@ -255,8 +266,6 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze
                 }
 
                
-                //client.DefaultRequestHeaders.Remove("Accept");
-                //client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", ClientFactory.ChromeAcceptHeader.Value);
                 var pass = Regex.Match(aa, "name=\"pass\" value=\"(.*?)\"/>").Groups[1].Value;
                 var answer = Regex.Match(aa, "name=\"jschl_vc\" value=\"(.*?)\"/>").Groups[1].Value;
 
