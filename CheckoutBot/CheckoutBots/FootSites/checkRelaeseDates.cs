@@ -33,7 +33,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
         public void checkPost(Product product, CancellationToken token)
         {
             Console.Write(product.Url);
-            var request = ClientFactory.CreateProxiedHttpClient().AddHeaders(ClientFactory.ChromeHeaders);
+            var request = ClientFactory.CreateProxiedHttpClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
             var document = request.GetDoc(product.Url, token);
             Console.WriteLine(document.DocumentNode.InnerHtml);
         }

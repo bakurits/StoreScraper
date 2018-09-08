@@ -20,6 +20,14 @@ namespace ScraperTest.ScraperTests.GiorgiBaghdavadze
            Helper.PrintFindItemsResults(lst);
         }
 
+        [TestMethod()]
+        public void testArrivals()
+        {
+            scraper.ScrapeNewArrivalsPage(out var lst, CancellationToken.None);
+            
+            Helper.PrintFindItemsResults(lst);
+        }
+
         [TestMethod]
         public void TestGetProductDetails()
         {

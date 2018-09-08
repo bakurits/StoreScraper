@@ -20,11 +20,26 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.TitoloShop
         public override string WebsiteBaseUrl { get; set; } = "http://en.titoloshop.com";
         public override bool Active { get; set; }
 
+
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        {
+            var searchUrl = "https://en.titolo.ch/brands";
+            listOfProducts = new List<Product>();
+            scrap(listOfProducts, searchUrl, token, null);
+        }
+
+
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
             var searchUrl =
                 $"http://en.titoloshop.com/catalogsearch/result/index/?dir=desc&order=created_at&q={settings.KeyWords}";
+            scrap(listOfProducts, searchUrl, token, settings);
+        }
+
+
+        private void scrap(List<Product> listOfProducts, String searchUrl, CancellationToken token, SearchSettingsBase settings)
+        {
             var request = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = request.GetDoc(searchUrl, token);
             Logger.Instance.WriteErrorLog("Unexpected html!");
@@ -45,11 +60,10 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.TitoloShop
 #if DEBUG
                 LoadSingleProduct(listOfProducts, child,settings);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts,child,settings);
+                LoadSingleProductTryCatchWraper(listOfProducts, child, settings);
 #endif
             }
         }
-
 
         /// <summary>
         /// This method is simple wrapper on LoadSingleProduct
@@ -83,10 +97,13 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.TitoloShop
             }
             double price = getPrice(priceIntoString);
             var product = new Product(this, productName, productURL, price, imageURL, productURL);
-            if (Utils.SatisfiesCriteria(product, settings))
-            {
+            if (settings == null)
                 listOfProducts.Add(product);
-            }
+            else
+                if (Utils.SatisfiesCriteria(product, settings))
+                {
+                    listOfProducts.Add(product);
+                }
 
         }
 

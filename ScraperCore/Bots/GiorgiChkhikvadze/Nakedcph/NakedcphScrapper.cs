@@ -53,7 +53,7 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze.Nakedcph
 #if DEBUG
                 LoadSingleProduct(listOfProducts, child, settings);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts,child,settings);
+                LoadSingleProductTryCatchWrapper(listOfProducts,child,settings);
 #endif
             }
 
