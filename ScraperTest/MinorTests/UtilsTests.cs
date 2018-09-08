@@ -49,6 +49,7 @@ namespace ScraperTest.MinorTests
                 NegKeyWords = "sneaker, white chudo"
             };
 
+            Assert.IsTrue(Utils.SatisfiesCriteria(product, filter));
             Assert.IsFalse(Utils.SatisfiesCriteria(product, filter2));
         }
     }
