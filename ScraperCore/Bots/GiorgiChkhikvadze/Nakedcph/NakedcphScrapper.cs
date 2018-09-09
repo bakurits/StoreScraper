@@ -69,21 +69,24 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze.Nakedcph
                 token);
 
             var root = doc.DocumentNode;
-            var productNodes = root.SelectNodes("//a[@class='card']");
+            var productNodes = root.SelectNodes("//a[contains(@class, 'card')]");
 
 
             IEnumerable<Product> products = GetProducts(productNodes);
+            
+            listOfProducts.AddRange(products.ToList());
 
         }
 
 
         private IEnumerable<Product> GetProducts(HtmlNodeCollection productNodes)
         {
-            return from node in productNodes 
-                let imageUrlPath = node.SelectSingleNode(".//noscript/img").GetAttributeValue("src", null) 
-                let image = imageUrlPath == null ? null : Path.Combine(NewArrivalsPageUrl, imageUrlPath) 
-                let name = node.SelectSingleNode(".//h4").InnerText.Trim() let urlPath = node.GetAttributeValue("href", null) 
-                let url = urlPath == null? null : Path.Combine(NewArrivalsPageUrl, urlPath) 
+            return from node in productNodes
+                let imageUrlPath = node.SelectSingleNode(".//noscript/img").GetAttributeValue("src", null)
+                let image = imageUrlPath?.ConvertToFullUrl(NewArrivalsPageUrl)
+                let name = node.SelectSingleNode(".//h4").InnerText.Trim()
+                let urlPath = node.GetAttributeValue("href", null) 
+                let url = urlPath.ConvertToFullUrl(NewArrivalsPageUrl)
                 let priceText = node.SelectSingleNode(".//del").InnerText.Trim() 
                 let price = Utils.ParsePrice(priceText) 
                 select new Product(this, name, url, price.Value, image, url, price.Currency);

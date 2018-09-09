@@ -52,7 +52,7 @@ namespace StoreScraper.Bots.Mstanojevic.Dtlr
 #if DEBUG
                 LoadSingleNewArrivalProduct(listOfProducts, item);
 #else
-                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, null, item);
+                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, item);
 #endif
             }
 
@@ -63,7 +63,7 @@ namespace StoreScraper.Bots.Mstanojevic.Dtlr
 #if DEBUG
                 LoadSingleNewArrivalProduct(listOfProducts, item);
 #else
-                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, null, item);
+                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, item);
 #endif
             }
 

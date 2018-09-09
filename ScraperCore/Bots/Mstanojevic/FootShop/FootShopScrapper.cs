@@ -76,7 +76,7 @@ namespace StoreScraper.Bots.Mstanojevic.FootShop
 #if DEBUG
                 LoadSingleNewArrivalProduct(listOfProducts, item);
 #else
-                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, null, item);
+                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, item);
 #endif
             }
 

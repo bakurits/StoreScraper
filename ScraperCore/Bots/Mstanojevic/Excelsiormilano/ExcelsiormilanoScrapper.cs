@@ -47,7 +47,7 @@ namespace StoreScraper.Bots.Mstanojevic.Excelsiormilano
 #if DEBUG
                 LoadSingleNewArrivalProduct(listOfProducts, item);
 #else
-                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, null, item);
+                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, item);
 #endif
             }
 
@@ -58,7 +58,7 @@ namespace StoreScraper.Bots.Mstanojevic.Excelsiormilano
 #if DEBUG
                 LoadSingleNewArrivalProduct(listOfProducts, item);
 #else
-                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, null, item);
+                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, item);
 #endif
             }
 

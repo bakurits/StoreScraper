@@ -47,7 +47,7 @@ namespace StoreScraper.Bots.Mstanojevic.Ntrstore
 #if DEBUG
                 LoadSingleNewArrivalProduct(listOfProducts, item);
 #else
-                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, null, item);
+                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, item);
 #endif
             }
 

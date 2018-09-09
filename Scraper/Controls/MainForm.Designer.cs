@@ -146,7 +146,7 @@
             // 
             // Btn_UrlMon
             // 
-            this.Btn_UrlMon.Location = new System.Drawing.Point(914, 274);
+            this.Btn_UrlMon.Location = new System.Drawing.Point(929, 271);
             this.Btn_UrlMon.Name = "Btn_UrlMon";
             this.Btn_UrlMon.Size = new System.Drawing.Size(106, 23);
             this.Btn_UrlMon.TabIndex = 25;
@@ -156,9 +156,9 @@
             // 
             // Tbx_Url
             // 
-            this.Tbx_Url.Location = new System.Drawing.Point(526, 277);
+            this.Tbx_Url.Location = new System.Drawing.Point(542, 273);
             this.Tbx_Url.Name = "Tbx_Url";
-            this.Tbx_Url.Size = new System.Drawing.Size(382, 20);
+            this.Tbx_Url.Size = new System.Drawing.Size(381, 20);
             this.Tbx_Url.TabIndex = 24;
             // 
             // Clbx_Websites
@@ -175,7 +175,7 @@
             // Btn_RemoveMon
             // 
             this.Btn_RemoveMon.ForeColor = System.Drawing.Color.Crimson;
-            this.Btn_RemoveMon.Location = new System.Drawing.Point(784, 547);
+            this.Btn_RemoveMon.Location = new System.Drawing.Point(799, 550);
             this.Btn_RemoveMon.Name = "Btn_RemoveMon";
             this.Btn_RemoveMon.Size = new System.Drawing.Size(236, 23);
             this.Btn_RemoveMon.TabIndex = 22;
@@ -196,9 +196,9 @@
             // CLbx_Monitor
             // 
             this.CLbx_Monitor.FormattingEnabled = true;
-            this.CLbx_Monitor.Location = new System.Drawing.Point(526, 345);
+            this.CLbx_Monitor.Location = new System.Drawing.Point(542, 345);
             this.CLbx_Monitor.Name = "CLbx_Monitor";
-            this.CLbx_Monitor.Size = new System.Drawing.Size(494, 199);
+            this.CLbx_Monitor.Size = new System.Drawing.Size(493, 199);
             this.CLbx_Monitor.TabIndex = 17;
             // 
             // Btn_AddCriteriaToMonitor
@@ -251,15 +251,16 @@
             this.DGrid_FoundProducts.AllowUserToAddRows = false;
             this.DGrid_FoundProducts.AllowUserToResizeColumns = false;
             this.DGrid_FoundProducts.AllowUserToResizeRows = false;
-            this.DGrid_FoundProducts.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.DGrid_FoundProducts.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.DGrid_FoundProducts.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.DGrid_FoundProducts.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.DGrid_FoundProducts.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.DGrid_FoundProducts.BackgroundColor = System.Drawing.SystemColors.Control;
             this.DGrid_FoundProducts.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.DGrid_FoundProducts.Location = new System.Drawing.Point(20, 226);
             this.DGrid_FoundProducts.Name = "DGrid_FoundProducts";
             this.DGrid_FoundProducts.ReadOnly = true;
             this.DGrid_FoundProducts.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.DGrid_FoundProducts.Size = new System.Drawing.Size(500, 349);
+            this.DGrid_FoundProducts.Size = new System.Drawing.Size(516, 349);
             this.DGrid_FoundProducts.TabIndex = 5;
             this.DGrid_FoundProducts.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ProductGrids_OnDoubleClick);
             this.DGrid_FoundProducts.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.Grids_CellFormatting);

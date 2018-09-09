@@ -125,12 +125,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\ActionChooser.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Controls\ActionChooser.Designer.cs">
-      <DependentUpon>ActionChooser.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\LoadingForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -147,9 +141,6 @@
     <Compile Include="GuiHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Controls\ActionChooser.resx">
-      <DependentUpon>ActionChooser.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Controls\LoadingForm.resx">
       <DependentUpon>LoadingForm.cs</DependentUpon>
     </EmbeddedResource>

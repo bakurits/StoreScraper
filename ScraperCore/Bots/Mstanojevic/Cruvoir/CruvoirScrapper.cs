@@ -61,7 +61,7 @@ namespace StoreScraper.Bots.Mstanojevic.Cruvoir
 #if DEBUG
                 LoadSingleNewArrivalProduct(listOfProducts, item);
 #else
-                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, null, item);
+                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, item);
 #endif
             }
 
@@ -72,7 +72,7 @@ namespace StoreScraper.Bots.Mstanojevic.Cruvoir
 #if DEBUG
                 LoadSingleNewArrivalProduct(listOfProducts, item);
 #else
-                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, null, item);
+                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, item);
 #endif
             }
 

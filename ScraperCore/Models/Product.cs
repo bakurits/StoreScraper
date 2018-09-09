@@ -16,6 +16,7 @@ namespace StoreScraper.Models
         [DisplayName("Store")]
         public string StoreName { get; set; } = "";
 
+        [Browsable(false)]
         public string BrandName { get; set; } = "";
 
 
@@ -24,12 +25,17 @@ namespace StoreScraper.Models
 
         public string Name { get; set; } = "";
 
+        [DisplayName("Price")]
+        public string PriceStr => Price + Currency;
+
+        [Browsable(false)]
         public double Price { get; set; }
 
         /// <summary>
         /// Short name of currecy.
         /// For example: USD, EUR etc..
         /// </summary>
+        [Browsable(false)]
         public string Currency { get; set; }
 
 
@@ -56,7 +62,7 @@ namespace StoreScraper.Models
         public Product(IWebsiteScraper scrapedBy, string name, string url, double price, string imageUrl,
             string id, string currency = "$", DateTime? releaseTime = null)
         {
-            this.Name = name != null ? HtmlEntity.DeEntitize(name.Trim()) : "<unknown name>";
+            this.Name = name != null ? HtmlEntity.DeEntitize(name.Trim()).Replace("\n", "").Replace("\r", "").Replace("\t", "") : "<unknown name>";
             this.Url = url ?? "<unknown url>";
             this.Price = price;
             this.Id = id;

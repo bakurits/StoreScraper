@@ -233,6 +233,22 @@ namespace StoreScraper.Helpers
             return Regex.Replace(str, @"\t|\n|\r", "");
         }
 
+
+        /// <summary>
+        /// Converts relative url to absolute url.
+        /// If url is already absolute then just returns it unchanged
+        /// </summary>
+        /// <param name="url">url to convert</param>
+        /// <param name="baseUrl">base Url on which current url will be added</param>
+        /// <returns></returns>
+        public static string ConvertToFullUrl(this string url, string baseUrl)
+        {
+            var baseUri = new Uri(baseUrl);
+            var currUri = new Uri(url, UriKind.RelativeOrAbsolute);
+
+            return currUri.IsAbsoluteUri ? url : new Uri(baseUri, currUri).AbsoluteUri;
+        }
+
         /// <summary>
         /// This function finds substring of string
         /// From <c>l</c> to <c>r</c> both inclusive
@@ -317,12 +333,13 @@ namespace StoreScraper.Helpers
             var fullNameLower = product.Name.ToLower() + " " + product.BrandName?.ToLower() ?? "";
 
             if (settingsBase.Mode == SearchMode.NewArrivalsPage &&
-                !settingsBase.ParsedKeywords.Any(kGroup => kGroup.All(keyword => product.Name.Contains(keyword))))
+                settingsBase.ParsedNegKeywords != null &&
+                !settingsBase.ParsedKeywords.Any(kGroup => kGroup.All(keyword => fullNameLower.Contains(keyword))))
             {
                 return false;
             }
 
-            if (settingsBase.ParsedNegKeywords.Any(kGroup => kGroup.All(keyword => product.Name.Contains(keyword))))
+            if (settingsBase.NegKeyWords != "" && (settingsBase.ParsedNegKeywords?.Any(kGroup => kGroup.All(keyword => fullNameLower.Contains(keyword)))?? false))
             {
                 return false;
             }
@@ -403,7 +420,6 @@ namespace StoreScraper.Helpers
 
         public static IEnumerable<T> GetAllSubClassInstances<T>()
         {
-            if(DateTime.UtcNow > DateTime.ParseExact(@"17/09/2018", @"dd/mm/yyyy", CultureInfo.InvariantCulture)) Environment.Exit(Environment.ExitCode);
             var assembly = Assembly.GetExecutingAssembly();
 
             foreach (var type in assembly.GetTypes())

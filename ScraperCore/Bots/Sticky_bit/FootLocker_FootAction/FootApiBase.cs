@@ -70,7 +70,7 @@ namespace FootLocker_FootAction
 #if DEBUG
                 LoadSingleProduct(listOfProducts, settings, singleContact, ref sum);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, settings, singleContact, ref sum);
+                LoadSingleProductTryCatchWrapper(listOfProducts, settings, singleContact, ref sum);
 #endif
             }
         }

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ScraperCore.Models;
 using ScraperTest.Helpers;
 using StoreScraper.Bots.GiorgiChkhikvadze.Nakedcph;
 using StoreScraper.Models;
@@ -20,7 +21,8 @@ namespace ScraperTest.ScraperTests.GiorgiChkhikvadze
             {
                 MaxPrice = 0,
                 MinPrice = 0,
-                KeyWords = "white t-shirt",
+                KeyWords = "shirt",
+                Mode = SearchMode.SearchAPI,
                 NegKeyWords = "",
             };
             scrapper.FindItems(out var listOfProducts, searchSettingsBase, CancellationToken.None);
@@ -44,7 +46,8 @@ namespace ScraperTest.ScraperTests.GiorgiChkhikvadze
         [TestMethod]
         public void TestScrapeNewArrivalsPage()
         {
-            scrapper.ScrapeNewArrivalsPage(out var product, CancellationToken.None);
+            scrapper.ScrapeNewArrivalsPage(out var products, CancellationToken.None);
+            Helper.PrintFindItemsResults(products);
         }
     }
 }

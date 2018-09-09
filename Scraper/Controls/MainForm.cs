@@ -317,6 +317,12 @@ namespace StoreScraper.Controls
             Rtbx_DebugLog.Clear();
         }
 
+        private bool IsSameOrSubclass(Type @base, Type descendant)
+        {
+            return descendant.IsSubclassOf(@base)
+                   || descendant == @base;
+        }
+
         private void Clbx_Websites_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             Task.Run(() =>
@@ -327,7 +333,11 @@ namespace StoreScraper.Controls
                 
                     if (Clbx_Websites.CheckedIndices.Count == 1)
                     {
-                        PGrid_Bot.SelectedObject = Activator.CreateInstance((Clbx_Websites.CheckedItems[0] as ScraperBase).SearchSettingsType);
+                        var scraper = (Clbx_Websites.CheckedItems[0] as ScraperBase);
+                        if (!IsSameOrSubclass(scraper.GetType(), PGrid_Bot.SelectedObject.GetType()))
+                        {
+                            PGrid_Bot.SelectedObject = SearchSettingsBase.ConvertToChild((SearchSettingsBase)PGrid_Bot.SelectedObject, scraper.SearchSettingsType);
+                        }
                     }
                 });
             });
