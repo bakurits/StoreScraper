@@ -22,7 +22,7 @@ namespace ScraperTest.ScraperTests.Bakurits
             scraper.FindItems(out var lst, settings, CancellationToken.None);
             Helper.PrintFindItemsResults(lst);
         }
-        [TestMethod()]
+        [TestMethod]
         public void GetProductDetailsTest()
         {
             Product curProduct = new Product(new BaitmeScraper(), "Unknown",
@@ -39,6 +39,15 @@ namespace ScraperTest.ScraperTests.Bakurits
             Helper.PrintGetDetailsResult(details.SizesList);
             Debug.WriteLine(curProduct.ImageUrl);
 
+        }
+        
+        [TestMethod]
+        public void GetNewArrivalsPage()
+        {
+            BaitmeScraper scraper = new BaitmeScraper();
+            
+            scraper.ScrapeNewArrivalsPage(out var lst, CancellationToken.None);
+            Helper.PrintFindItemsResults(lst);
         }
     }
 }

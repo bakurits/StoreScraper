@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 using StoreScraper.Http.Factory;
@@ -20,22 +23,10 @@ namespace StoreScraper.Bots.Bakurits.Baitme
         private readonly string _urlFormat = @"http://www.baitme.com/catalogsearch/result/?q={0}";
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
-            listOfProducts = new List<Product>();
-            var page = GetWebpage(string.Format(_urlFormat, settings.KeyWords), token);
-            
-            HtmlNodeCollection collection = page.SelectNodes("//ul[contains(@class, 'products-grid')]/li[contains(@class, 'item last')]");
+            ConcurrentDictionary<Product, byte> data = new ConcurrentDictionary<Product, byte>();
+            GetProductsForPage(_urlFormat, data, settings, token);
 
-            foreach (var item in collection)
-            {
-                token.ThrowIfCancellationRequested();
-                Product product = GetProduct(item);
-                if (product != null && Utils.SatisfiesCriteria(product, settings))
-                {
-                    listOfProducts.Add(product);
-                }
-            }
-
-
+            listOfProducts = new List<Product>(data.Keys);
         }
         
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
@@ -75,11 +66,42 @@ namespace StoreScraper.Bots.Bakurits.Baitme
             return details;
         }
 
+        private readonly List<String> newArrivalPageUrls = new List<string>
+        {
+            "http://www.baitme.com/bait-products",
+            "http://www.baitme.com/nike",
+            "http://www.baitme.com/footwear",
+            "http://www.baitme.com/headwear",
+            "http://www.baitme.com/apparel",
+            "http://www.baitme.com/accessories",
+            "http://www.baitme.com/collectibles",
+            "http://www.baitme.com/skateboard-snowboard"
+        };
+        
         public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
         {
-            listOfProducts = new List<Product>();
-            
-            
+            ConcurrentDictionary<Product, byte> data = new ConcurrentDictionary<Product, byte>();   
+            Task.WhenAll(newArrivalPageUrls.Select(url => GetProductsForPage(url, data, null, token))).Wait(token);
+            listOfProducts = new List<Product>(data.Keys);
+        }
+
+        private async Task GetProductsForPage(string url, ConcurrentDictionary<Product, byte> data,
+            SearchSettingsBase settings, CancellationToken token)
+        {
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var page = (await client.GetDocTask(url, token)).DocumentNode;
+            HtmlNodeCollection collection = page.SelectNodes("//ul[contains(@class, 'products-grid')]/li[contains(@class, 'item last')]");
+
+            foreach (var item in collection)
+            {
+                token.ThrowIfCancellationRequested();
+                Product product = GetProduct(item);
+                if (product != null && (settings == null || Utils.SatisfiesCriteria(product, settings)))
+                {
+                    data.TryAdd(product, 0);
+                }
+            }
+
         }
 
         private HtmlNode GetWebpage(string url, CancellationToken token)

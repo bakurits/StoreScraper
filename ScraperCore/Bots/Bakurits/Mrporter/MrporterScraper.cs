@@ -47,6 +47,7 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
         }
 
         private int NumberOfPages { get; set; } = 3;
+
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,
             CancellationToken token)
         {
@@ -61,7 +62,7 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
             }
 
             var searchUrl = string.Format(SearchUrlFormat, "", "");
-            
+
             List<Product> products = new List<Product>();
             Task.WhenAll(urls.Select(url => GetItemsForSinglePage(client, url, products, settings, token))).Wait(token);
             listOfProducts = products;
@@ -69,14 +70,16 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
 
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            
             var doc = GetPage(productUrl, token);
             var nameContainer = doc.SelectSingleNode("//section[contains(@class, 'product-details')]/h1");
             var designer = nameContainer.SelectSingleNode("./a/span/span").InnerHtml.EscapeNewLines();
             var productName = nameContainer.SelectSingleNode("./span/span").InnerHtml.EscapeNewLines();
             var name = designer + "-" + productName;
-            var image = WebsiteBaseUrl + doc.SelectSingleNode("//div[contains(@class, 'product-image')]/img").GetAttributeValue("src", "");
-            var priceNode = doc.SelectSingleNode("//span[contains(@class, 'product-details-price')]/span/span[@itemprop = 'price']").InnerHtml;
+            var image = WebsiteBaseUrl + doc.SelectSingleNode("//div[contains(@class, 'product-image')]/img")
+                            .GetAttributeValue("src", "");
+            var priceNode = doc
+                .SelectSingleNode("//span[contains(@class, 'product-details-price')]/span/span[@itemprop = 'price']")
+                .InnerHtml;
             Price price = Utils.ParsePrice(priceNode);
             ProductDetails details = new ProductDetails()
             {
@@ -101,7 +104,6 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
             {
                 // ignored
             }
-
 
 
             var optionList = node.SelectNodes("./option");
@@ -138,15 +140,18 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
                     resultDetails.AddSize(before, after);
                     return;
                 }
+
                 var indOfEqualitySign = caster.IndexOf("=", indx, StringComparison.Ordinal);
                 var indOfTokenFinish = caster.IndexOf(",", indOfEqualitySign, StringComparison.Ordinal);
                 if (indOfTokenFinish == -1) indOfTokenFinish = caster.Length;
                 result = caster.Substring(indOfEqualitySign + 1, indOfTokenFinish - indOfEqualitySign - 1).Trim();
             }
+
             resultDetails.AddSize(result, after);
         }
 
-        private async Task GetItemsForSinglePage(HttpClient client, string url, List<Product> listOfProducts, SearchSettingsBase settings,
+        private async Task GetItemsForSinglePage(HttpClient client, string url, List<Product> listOfProducts,
+            SearchSettingsBase settings,
             CancellationToken token)
         {
             var doc = await client.GetDocTask(url, token);
@@ -192,7 +197,7 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
         /// <param name="ind"></param>
         /// <param name="infoCollection"></param>
         /// <param name="imageCollection"></param>
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings,
+        private void LoadSingleProductTryCatchWrapper(List<Product> listOfProducts, SearchSettingsBase settings,
             HtmlNodeCollection infoCollection, HtmlNodeCollection imageCollection, int ind)
         {
             try
@@ -248,6 +253,7 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
                 listOfProducts.Add(curProduct);
                 return;
             }
+
             if (Utils.SatisfiesCriteria(curProduct, settings))
             {
                 var keyWordSplit = settings.KeyWords.Split(' ');
