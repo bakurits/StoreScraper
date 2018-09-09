@@ -53,6 +53,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
             Debug.WriteLine(details.ImageUrl);
             Debug.WriteLine(details.StoreName);
             Debug.WriteLine(details.Url);
+            Debug.WriteLine(details.BrandName);
 
             Helper.PrintGetDetailsResult(details.SizesList);
 

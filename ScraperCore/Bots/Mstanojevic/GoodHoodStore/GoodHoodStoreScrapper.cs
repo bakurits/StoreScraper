@@ -23,6 +23,8 @@ namespace StoreScraper.Bots.Mstanojevic.GoodHoodStore
         {
             listOfProducts = new List<Product>();
             HtmlNodeCollection itemCollection = GetProductCollection(settings, "", token);
+            if (itemCollection == null)
+                return;
             Console.Write(itemCollection.Count);
             foreach (var item in itemCollection)
             {
@@ -76,6 +78,8 @@ namespace StoreScraper.Bots.Mstanojevic.GoodHoodStore
 
         private void LoadSingleNewArrivalProduct(List<Product> listOfProducts, HtmlNode item)
         {
+            if (item.SelectSingleNode("./p/span[@class='Price']/span") == null)
+                return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             var price = GetPrice(item);
@@ -192,6 +196,8 @@ namespace StoreScraper.Bots.Mstanojevic.GoodHoodStore
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             //if (!CheckForValidProduct(item, settings)) return;
+            if (item.SelectSingleNode("./p/span[@class='Price']/span") == null)
+                return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             var price = GetPrice(item);

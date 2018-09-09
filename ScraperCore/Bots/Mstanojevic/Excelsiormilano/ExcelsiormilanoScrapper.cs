@@ -22,6 +22,12 @@ namespace StoreScraper.Bots.Mstanojevic.Excelsiormilano
         {
             listOfProducts = new List<Product>();
             HtmlNodeCollection itemCollection = GetProductCollection(settings, null, token);
+
+            if (itemCollection == null)
+            {
+                return;
+            }
+
             foreach (var item in itemCollection)
             {
                 token.ThrowIfCancellationRequested();
@@ -76,6 +82,9 @@ namespace StoreScraper.Bots.Mstanojevic.Excelsiormilano
 
         private void LoadSingleNewArrivalProduct(List<Product> listOfProducts, HtmlNode item)
         {
+            if (item.SelectSingleNode("./div[2]/div/span") == null)
+                return;
+
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             var price = GetPrice(item);
@@ -189,6 +198,10 @@ namespace StoreScraper.Bots.Mstanojevic.Excelsiormilano
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             if (!CheckForValidProduct(item, settings)) return;
+
+            if (item.SelectSingleNode("./div[2]/div/span") == null)
+                return;
+
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             var price = GetPrice(item);
