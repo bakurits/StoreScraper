@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 using StoreScraper.Core;
@@ -18,14 +21,25 @@ namespace StoreScraper.Bots.DavitBezhanishvili.AwLab
         public override string WebsiteBaseUrl { get; set; } = "http://en.aw-lab.com";
         public override bool Active { get; set; }
 
-        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
+        private readonly List<String> NewArrivalPageUrls = new List<string>
         {
-            listOfProducts = new List<Product>();
-            var searchUrl =
-                $"http://en.aw-lab.com/shop/catalogsearch/result/index/q/{settings.KeyWords}";
-            var request = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
-            var document = request.GetDoc(searchUrl, token);
-          //  Logger.Instance.WriteErrorLog("Unexpected html!");
+           "https://en.aw-lab.com/shop/men/new-now/#%2Fshop%2Fmen%2Fnew-now%3Fdir%3Ddesc%26order%3Daw_created_at",
+           "https://en.aw-lab.com/shop/women/new-now/#%2Fshop%2Fwomen%2Fnew-now%3Fdir%3Ddesc%26order%3Daw_created_at",
+           "https://en.aw-lab.com/shop/shoes-kids/new-now#%2Fshop%2Fshoes-kids%2Fnew-now%3Fdir%3Ddesc%26is_ajax%3D1%26order%3Daw_created_at"
+        };
+
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        {
+            ConcurrentDictionary<Product, byte> data = new ConcurrentDictionary<Product, byte>();
+            Task.WhenAll(NewArrivalPageUrls.Select(url => Scrap(url, data, null, token))).Wait(token);
+            listOfProducts = new List<Product>(data.Keys);
+        }
+
+        private async Task Scrap(string url, ConcurrentDictionary<Product, byte> data, SearchSettingsBase settings, CancellationToken token)
+        {
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var document = (await client.GetDocTask(url, token));
+            //  Logger.Instance.WriteErrorLog("Unexpected html!");
             var nodes = document.DocumentNode.SelectSingleNode("//div[contains(@class, 'products-grid row')]");
             if (nodes == null)
             {
@@ -43,11 +57,22 @@ namespace StoreScraper.Bots.DavitBezhanishvili.AwLab
             {
                 token.ThrowIfCancellationRequested();
 #if DEBUG
-                LoadSingleProduct(listOfProducts, child, settings);
+                LoadSingleProduct(data, child, settings);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, child, settings);
+                LoadSingleProductTryCatchWraper(data, child, settings);
 #endif
             }
+            
+        }
+
+        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
+        {
+            var searchUrl =
+                $"http://en.aw-lab.com/shop/catalogsearch/result/index/q/{settings.KeyWords}";
+            ConcurrentDictionary<Product, byte> data = new ConcurrentDictionary<Product, byte>();
+            Scrap(searchUrl, data, settings, token).Wait(token);
+
+            listOfProducts = new List<Product>(data.Keys);
         }
 
 
@@ -58,11 +83,11 @@ namespace StoreScraper.Bots.DavitBezhanishvili.AwLab
         /// <param name="listOfProducts"></param>
         /// <param name="child"></param>
         /// <param name="settings"></param>
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, HtmlNode child, SearchSettingsBase settings)
+        private void LoadSingleProductTryCatchWraper(ConcurrentDictionary<Product, byte> data, HtmlNode child, SearchSettingsBase settings)
         {
             try
             {
-                LoadSingleProduct(listOfProducts, child, settings);
+                LoadSingleProduct(data, child, settings);
             }
             catch (Exception e)
             {
@@ -87,7 +112,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.AwLab
         }
 
 
-        private void LoadSingleProduct(List<Product> listOfProducts, HtmlNode child, SearchSettingsBase settings)
+        private void LoadSingleProduct(ConcurrentDictionary<Product, byte> data, HtmlNode child, SearchSettingsBase settings)
         {
 
             var imageUrl = getImageUrl(child);
@@ -102,7 +127,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.AwLab
             var product = new Product(this, productName, productUrl, p.Value, imageUrl, productUrl, p.Currency);
             if (Utils.SatisfiesCriteria(product, settings))
             {
-                listOfProducts.Add(product);
+                data.TryAdd(product,0);
             }
         }
 

@@ -10,7 +10,7 @@ using StoreScraper.Models;
 namespace ScraperTest.ScraperTests.DavitBezhanishvili
 {
     [TestClass]
-    public class SneakerSturioScraperTests
+    public class SneakerStudioScraperTests
     {
         [TestMethod]
         public void FindItemsTest()
@@ -18,10 +18,10 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
             var scraper = new SneakerStudioScraper();
             var settings = new SearchSettingsBase()
             {
-                KeyWords = "shirt"
+                KeyWords = "adidas"
             };
 
-            scraper.FindItems(out var list, settings, CancellationToken.None);
+            scraper.FindItems(out var list,settings, CancellationToken.None);
             Helper.PrintFindItemsResults(list);
         }
         [TestMethod]

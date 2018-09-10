@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -23,21 +24,15 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
         public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            var searchUrl =
-                new Uri("http://sneakerstudio.com/settings.php?sort_order=date-d&curr=USD");
-
-            var referer = new Uri($"https://sneakerstudio.com/New-snewproducts-eng.html");
-
+            var searchUrl = "http://sneakerstudio.com/settings.php?sort_order=date-d&curr=USD";
             var client = ClientFactory.GetProxiedFirefoxClient();
-            HttpRequestMessage message = new HttpRequestMessage();
-            message.Method = HttpMethod.Get;
-            message.RequestUri = searchUrl;
-            message.Headers.Referrer = referer;
-
-            var document = client.GetDoc(message, token);
-            scrape(document, listOfProducts, null, token);
+           
+            var document = client.GetDoc(searchUrl, token);
+            Scrap(document, listOfProducts, null, token);
 
         }
+
+        private ConcurrentDictionary<HttpClient, DateTime> activeClients = new ConcurrentDictionary<HttpClient, DateTime>();
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
@@ -52,14 +47,21 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
             message.Method = HttpMethod.Get;
             message.RequestUri = searchUrl;
             message.Headers.Referrer = referer;
+            activeClients.TryGetValue(client, out var value);
 
-            var resp = client.SendAsync(message, token).Result;
-            resp.EnsureSuccessStatusCode();
-            resp.Dispose();
+            if (DateTime.Now.Subtract(value).TotalMinutes > 10)
+            {
+                var resp = client.SendAsync(message, token).Result;
+                resp.EnsureSuccessStatusCode();
+                resp.Dispose();
+                activeClients.AddOrUpdate(client, DateTime.Now, (httpClient, time) => DateTime.Now);
+            }
+            
+
             var document = client.GetDoc(referer.AbsoluteUri, token);
-            scrape(document, listOfProducts, settings, token);
+            Scrap(document, listOfProducts, settings, token);
         }
-        private void scrape( HtmlDocument document, List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
+        private void Scrap( HtmlDocument document, List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             
             var nodes = document.DocumentNode.SelectSingleNode("//div[@class = 'row']");
