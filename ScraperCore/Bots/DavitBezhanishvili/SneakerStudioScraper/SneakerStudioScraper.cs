@@ -20,6 +20,17 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
         public override string WebsiteBaseUrl { get; set; } = "http://sneakerstudio.com";
         public override bool Active { get; set; }
 
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        {
+            listOfProducts = new List<Product>();
+            var searchUrl = "http://sneakerstudio.com/settings.php?sort_order=date-d&curr=USD";
+            var client = ClientFactory.GetProxiedFirefoxClient();
+
+            var document = client.GetDoc(searchUrl, token);
+            scrape(document, listOfProducts, null, token);
+
+        }
+
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
@@ -35,6 +46,11 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
             message.Headers.Referrer = referer;
            
             var document = client.GetDoc(message, token);
+            scrape(document, listOfProducts, settings, token);
+        }
+        private void scrape( HtmlDocument document, List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
+        {
+            
             var nodes = document.DocumentNode.SelectSingleNode("//div[@class = 'row']");
             if (nodes == null)
             {
@@ -49,7 +65,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
             }
 
             foreach (var child in children)
-                if(child.SelectSingleNode("./a[@class = 'product-icon']/div[@class ='comingsoon']") == null)
+                if (child.SelectSingleNode("./a[@class = 'product-icon']/div[@class ='comingsoon']") == null)
                 {
                     token.ThrowIfCancellationRequested();
 #if DEBUG

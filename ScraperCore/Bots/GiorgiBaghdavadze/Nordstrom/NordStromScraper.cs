@@ -18,15 +18,26 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.Nordstrom
         public override string WebsiteName { get; set; } = "Nordstrom";
         public override string WebsiteBaseUrl { get; set; } = "http://shop.nordstrom.com";
         public override bool Active { get; set; }
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        {
+            var searchUrl = "https://shop.nordstrom.com/c/mens-sneakers?origin=topnav&cm_sp=Top%20Navigation-_-Men-_-Sneakers%20&%20Athletic";
+            listOfProducts = new List<Product>();
+            scrap(listOfProducts, searchUrl, token, null);
+        }
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
             var searchUrl =
                 $"http://shop.nordstrom.com/sr?origin=keywordsearch&keyword={settings.KeyWords}&top=72&offset=0&page=1&sort=Newest";
+            scrap(listOfProducts, searchUrl, token, settings);
+        }
+
+        private  void scrap(List<Product> listOfProducts, String searchUrl, CancellationToken token, SearchSettingsBase settings)
+        {
             var request = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = request.GetDoc(searchUrl, token);
             var ds = document.DocumentNode;
-            var nodes = ds.SelectSingleNode("//div[contains(@class, 'resultSet_ZST5Lg')]/div");
+            var nodes = ds.SelectSingleNode("//div[contains(@class, 'resultSet_RiuQj')]/div");
             if (nodes == null)
             {
                 return;
@@ -47,8 +58,6 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.Nordstrom
 #endif
             }
         }
-
-
         /// <summary>
         /// This method is simple wrapper on LoadSingleProduct
         /// To catch all Exceptions during release
@@ -80,28 +89,33 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.Nordstrom
 
         private string getImageUrl(HtmlNode child)
         {
-            return child.SelectSingleNode(".//img[contains(@class, 'image_12eiRp')]").GetAttributeValue("src", null);
+            return child.SelectSingleNode(".//img[contains(@class, 'image_12eiRp')]")?.GetAttributeValue("src", null);
         }
 
         private string getProductUrl(HtmlNode child)
         {
-            string url = child.SelectSingleNode(".//a[contains(@class,link_22Nhi)]").GetAttributeValue("href", null);
+            string url = child.SelectSingleNode(".//a[contains(@class,link_22Nhi)]")?.GetAttributeValue("href", null);
             url = this.WebsiteBaseUrl + url;
             return url;
         }
 
         private string getProductName(HtmlNode child)
         {
-            return child.SelectSingleNode(".//span[contains(@class,navigationLink_Z18Gs4y) and contains(@class, 'light_ZztMQb')]").InnerText;
+            return child.SelectSingleNode(".//span[contains(@class,navigationLink_Z18Gs4y) and contains(@class, 'light_ZztMQb')]")?.InnerText;
         }
 
         private void LoadSingleProduct(List<Product> listOfProducts, HtmlNode child, SearchSettingsBase settings)
         {
+            var r = child.InnerText;
             string imageURL = getImageUrl(child);
             string productURL = getProductUrl(child);
             string productName = getProductName(child);
+            if (imageURL == null || productName == null || productURL == null) return;
             double price = getPrice(child);
             var product = new Product(this, productName, productURL, price, imageURL, productURL);
+            if (settings == null)
+                listOfProducts.Add(product);
+            else 
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
