@@ -24,7 +24,7 @@ namespace StoreScraper.Bots.Bakurits.Baitme
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             ConcurrentDictionary<Product, byte> data = new ConcurrentDictionary<Product, byte>();
-            GetProductsForPage(_urlFormat, data, settings, token);
+            GetProductsForPage(_urlFormat, data, settings, token).Wait(token);
 
             listOfProducts = new List<Product>(data.Keys);
         }
@@ -66,7 +66,7 @@ namespace StoreScraper.Bots.Bakurits.Baitme
             return details;
         }
 
-        private readonly List<String> newArrivalPageUrls = new List<string>
+        private readonly List<string> _newArrivalPageUrls = new List<string>
         {
             "http://www.baitme.com/bait-products",
             "http://www.baitme.com/nike",
@@ -81,7 +81,7 @@ namespace StoreScraper.Bots.Bakurits.Baitme
         public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
         {
             ConcurrentDictionary<Product, byte> data = new ConcurrentDictionary<Product, byte>();   
-            Task.WhenAll(newArrivalPageUrls.Select(url => GetProductsForPage(url, data, null, token))).Wait(token);
+            Task.WhenAll(_newArrivalPageUrls.Select(url => GetProductsForPage(url, data, null, token))).Wait(token);
             listOfProducts = new List<Product>(data.Keys);
         }
 
