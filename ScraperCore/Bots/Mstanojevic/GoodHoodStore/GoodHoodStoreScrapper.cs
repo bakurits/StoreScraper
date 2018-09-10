@@ -98,44 +98,6 @@ namespace StoreScraper.Bots.Mstanojevic.GoodHoodStore
             }
         }
 
-
-
-        
-
-        private HtmlNodeCollection GetNewArriavalItems(string url, CancellationToken token)
-        {
-            var document = GetWebpage(url, token);
-            if (document.InnerHtml.Contains(noResults)) return null;
-
-            return document.SelectNodes("//div[@class='overview']");
-
-        }
-
-        private void LoadSingleNewArrivalProduct(List<Product> listOfProducts, HtmlNode item)
-        {
-            if (item.SelectSingleNode("./p/span[@class='Price']/span") == null)
-                return;
-            string name = GetName(item).TrimEnd();
-            string url = GetUrl(item);
-            var price = GetPrice(item);
-            string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
-            listOfProducts.Add(product);
-
-        }
-
-        private void LoadSingleNewArrivalProductTryCatchWraper(List<Product> listOfProducts, HtmlNode item)
-        {
-            try
-            {
-                LoadSingleNewArrivalProduct(listOfProducts, item);
-            }
-            catch (Exception e)
-            {
-                Logger.Instance.WriteErrorLog(e.Message);
-            }
-        }
-
         private void LoadSingleProductTryCatchWrapper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
