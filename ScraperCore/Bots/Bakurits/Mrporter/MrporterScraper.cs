@@ -183,7 +183,7 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
 #if DEBUG
                 LoadSingleProduct(listOfProducts, settings, infoCollection, imageCollection, i);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, settings, infoCollection, imageCollection, i);
+                LoadSingleProductTryCatchWrapper(listOfProducts, settings, infoCollection, imageCollection, i);
 #endif
             }
         }
