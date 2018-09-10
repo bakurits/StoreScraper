@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using StoreScraper.Core;
-using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Http;
+using StoreScraper.Http.Factory;
 using StoreScraper.Models;
 
 #pragma warning disable 4014
@@ -46,24 +45,19 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
             }
         }
 
-        private int NumberOfPages { get; set; } = 3;
+        private int NumberOfPages { get; } = 3;
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,
             CancellationToken token)
         {
-            HttpClient client = _active
+            var client = _active
                 ? CookieCollector.Default.GetClient()
                 : ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             listOfProducts = new List<Product>();
-            List<string> urls = new List<string>();
-            for (int i = 1; i <= NumberOfPages; i++)
-            {
-                urls.Add(string.Format(SearchUrlFormat, settings.KeyWords, i));
-            }
+            var urls = new List<string>();
+            for (var i = 1; i <= NumberOfPages; i++) urls.Add(string.Format(SearchUrlFormat, settings.KeyWords, i));
 
-            var searchUrl = string.Format(SearchUrlFormat, "", "");
-
-            List<Product> products = new List<Product>();
+            var products = new List<Product>();
             Task.WhenAll(urls.Select(url => GetItemsForSinglePage(client, url, products, settings, token))).Wait(token);
             listOfProducts = products;
         }
@@ -80,8 +74,8 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
             var priceNode = doc
                 .SelectSingleNode("//span[contains(@class, 'product-details-price')]/span/span[@itemprop = 'price']")
                 .InnerHtml;
-            Price price = Utils.ParsePrice(priceNode);
-            ProductDetails details = new ProductDetails()
+            var price = Utils.ParsePrice(priceNode);
+            var details = new ProductDetails
             {
                 Price = price.Value,
                 Name = name,
@@ -134,14 +128,14 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
             var result = before;
             if (int.TryParse(before, out var val))
             {
-                var indx = caster.IndexOf(val.ToString(), StringComparison.Ordinal);
-                if (indx == -1)
+                var index = caster.IndexOf(val.ToString(), StringComparison.Ordinal);
+                if (index == -1)
                 {
                     resultDetails.AddSize(before, after);
                     return;
                 }
 
-                var indOfEqualitySign = caster.IndexOf("=", indx, StringComparison.Ordinal);
+                var indOfEqualitySign = caster.IndexOf("=", index, StringComparison.Ordinal);
                 var indOfTokenFinish = caster.IndexOf(",", indOfEqualitySign, StringComparison.Ordinal);
                 if (indOfTokenFinish == -1) indOfTokenFinish = caster.Length;
                 result = caster.Substring(indOfEqualitySign + 1, indOfTokenFinish - indOfEqualitySign - 1).Trim();
@@ -254,15 +248,13 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
                 return;
             }
 
-            if (Utils.SatisfiesCriteria(curProduct, settings))
-            {
-                var keyWordSplit = settings.KeyWords.Split(' ');
-                if (keyWordSplit.All(keyWord => curProduct.Name.ToLower().Contains(keyWord.ToLower())))
-                    listOfProducts.Add(curProduct);
-            }
+            if (!Utils.SatisfiesCriteria(curProduct, settings)) return;
+            var keyWordSplit = settings.KeyWords.Split(' ');
+            if (keyWordSplit.All(keyWord => curProduct.Name.ToLower().Contains(keyWord.ToLower())))
+                listOfProducts.Add(curProduct);
         }
 
-        private double GetPrice(string html)
+        private static double GetPrice(string html)
         {
             var ind = html.LastIndexOf("&pound;", StringComparison.Ordinal);
             if (ind > -1)

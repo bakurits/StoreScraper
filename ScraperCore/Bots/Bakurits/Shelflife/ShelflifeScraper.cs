@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
-using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
+using StoreScraper.Http.Factory;
 using StoreScraper.Models;
 
 namespace StoreScraper.Bots.Bakurits.Shelflife
@@ -13,6 +13,8 @@ namespace StoreScraper.Bots.Bakurits.Shelflife
     public class ShelflifeScraper : ScraperBase
     {
         private const string SearchFormat = "http://www.shelflife.co.za/Search?search={0}";
+
+        private const int MaxPageCount = 3;
         public override string WebsiteName { get; set; } = "Shelflife";
         public override string WebsiteBaseUrl { get; set; } = "http://www.shelflife.co.za/";
         public override bool Active { get; set; }
@@ -35,10 +37,11 @@ namespace StoreScraper.Bots.Bakurits.Shelflife
             var document = GetWebpage(productUrl, token);
 
             var name = document.SelectSingleNode("//div[contains(@class, 'product_info')]/h1").InnerHtml;
-            var image = WebsiteBaseUrl + document.SelectSingleNode("//div[@id='large_img']/img").GetAttributeValue("src", "");
+            var image = WebsiteBaseUrl +
+                        document.SelectSingleNode("//div[@id='large_img']/img").GetAttributeValue("src", "");
             var priceNode = document.SelectSingleNode("//div[contains(@class, 'price')]").InnerHtml;
-            Price price = Utils.ParsePrice(priceNode);
-            ProductDetails details = new ProductDetails()
+            var price = Utils.ParsePrice(priceNode);
+            var details = new ProductDetails
             {
                 Price = price.Value,
                 Name = name,
@@ -56,28 +59,27 @@ namespace StoreScraper.Bots.Bakurits.Shelflife
             foreach (var size in sizeCollection)
             {
                 var sz = size.GetAttributeValue("value", "");
-                if (sz.Length > 0) details.AddSize(sz,"Unknown");
+                if (sz.Length > 0) details.AddSize(sz, "Unknown");
             }
 
             return details;
         }
 
-        private static int MaxPageCount = 3;
         public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
         {
             listOfProducts = new List<Product>();
             const string searchFormat = "https://www.shelflife.co.za/New-arrivals?page={0}";
-            List<String> urls = new List<string>();
-            for (int i = 1; i <= MaxPageCount; i++)
+            var urls = new List<string>();
+            for (var i = 1; i <= MaxPageCount; i++)
             {
-                string url = string.Format(searchFormat, i);
+                var url = string.Format(searchFormat, i);
                 urls.Add(url);
             }
 
-            List<HtmlNode> pages = GetPageTask(urls, token).Result;
+            var pages = GetPageTask(urls, token).Result;
             foreach (var page in pages)
             {
-                HtmlNodeCollection items = page.SelectNodes("//body/div/div/div[contains(@class, 'col-xs-6 col-sm-3')]");
+                var items = page.SelectNodes("//body/div/div/div[contains(@class, 'col-xs-6 col-sm-3')]");
                 if (items == null) break;
                 foreach (var item in items)
                 {
@@ -86,28 +88,23 @@ namespace StoreScraper.Bots.Bakurits.Shelflife
                 }
             }
         }
-        
-        private static async Task<List<HtmlNode>> GetPageTask(List<String> urls, CancellationToken token)
+
+        private static async Task<List<HtmlNode>> GetPageTask(List<string> urls, CancellationToken token)
         {
-            List<HtmlNode> res = new List<HtmlNode>();
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
 
             var documents = await Task.WhenAll(urls.Select(i => client.GetDocTask(i, token)));
-            foreach (var document in documents)
-            {
-                res.Add(document.DocumentNode);
-            }
-            return res;
+            return documents.Select(document => document.DocumentNode).ToList();
         }
 
-        private HtmlNode GetWebpage(string url, CancellationToken token)
+        private static HtmlNode GetWebpage(string url, CancellationToken token)
         {
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = client.GetDoc(url, token).DocumentNode;
             return document;
         }
 
-        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
+        private static HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
             var url = string.Format(SearchFormat, settings.KeyWords);
             var document = GetWebpage(url, token);
@@ -120,12 +117,12 @@ namespace StoreScraper.Bots.Bakurits.Shelflife
             var url = GetUrl(item);
             var price = GetPrice(item);
             var imageUrl = GetImageUrl(item);
-            Product product = new Product(this, name, url, price, imageUrl, url, "R");
+            var product = new Product(this, name, url, price, imageUrl, url, "R");
             if (settings == null || Utils.SatisfiesCriteria(product, settings))
                 listOfProducts.Add(product);
         }
 
-        private string GetName(HtmlNode item)
+        private static string GetName(HtmlNode item)
         {
             return item.SelectSingleNode("./a/div/div/div[contains(@class, 'title')]").InnerHtml;
         }
@@ -136,7 +133,7 @@ namespace StoreScraper.Bots.Bakurits.Shelflife
             return WebsiteBaseUrl + url;
         }
 
-        private double GetPrice(HtmlNode item)
+        private static double GetPrice(HtmlNode item)
         {
             var priceContainer = item.SelectSingleNode("./a/div/div/div[contains(@class, 'price')]").InnerHtml
                 .Substring(1);

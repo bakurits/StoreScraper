@@ -5,24 +5,23 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
-using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
+using StoreScraper.Http.Factory;
 using StoreScraper.Models;
 
 namespace StoreScraper.Bots.Bakurits.Rimowa
 {
     public class RimowaScraper : ScraperBase
     {
+        private const string SearchFormat =
+            @"http://www.rimowa.com/search?q={0}&srule=newest&sz=12&start={1}&format=page-element";
+
         public override string WebsiteName { get; set; } = "Rimowa";
         public override string WebsiteBaseUrl { get; set; } = "http://www.rimowa.com/";
-        public int MaxItemCount { get; set; } = 48;
+        private int MaxItemCount { get; set; } = 48;
         public override bool Active { get; set; }
 
         public override Type SearchSettingsType { get; set; } = typeof(SearchSettingsBase);
-
-
-        private const string SearchFormat =
-            @"http://www.rimowa.com/search?q={0}&srule=newest&sz=12&start={1}&format=page-element";
 
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,
@@ -42,30 +41,24 @@ namespace StoreScraper.Bots.Bakurits.Rimowa
         private void GetProducts(List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token,
             string urlFormat)
         {
-            List<String> urls = new List<string>();
-            int seenProducts = 0;
-            for (int i = 0; seenProducts < MaxItemCount; i++)
+            var urls = new List<string>();
+            var seenProducts = 0;
+            for (var i = 0; seenProducts < MaxItemCount; i++)
             {
-                string url = settings != null
+                var url = settings != null
                     ? string.Format(urlFormat, settings.KeyWords, i * 12)
                     : string.Format(urlFormat, i * 12);
                 urls.Add(url);
                 seenProducts += 12;
             }
 
-            List<HtmlNode> pages = GetPageTask(urls, token).Result;
+            var pages = GetPageTask(urls, token).Result;
             foreach (var page in pages)
             {
-                HtmlNodeCollection items = page.SelectNodes("//li[contains(@class, 'grid-tile')]");
+                var items = page.SelectNodes("//li[contains(@class, 'grid-tile')]");
                 if (items == null) break;
-                foreach (var item in items)
-                {
-                    Product product = GetProduct(item);
-                    if (product != null && (settings == null || Utils.SatisfiesCriteria(product, settings)))
-                    {
-                        listOfProducts.Add(product);
-                    }
-                }
+                listOfProducts.AddRange(items.Select(GetProduct).Where(product =>
+                    product != null && (settings == null || Utils.SatisfiesCriteria(product, settings))));
             }
         }
 
@@ -82,12 +75,12 @@ namespace StoreScraper.Bots.Bakurits.Rimowa
             var productName = infoContainer.SelectSingleNode("./h1[@itemprop = 'name']").InnerHtml.EscapeNewLines();
             var name = $"{collectionName} - {productName}";
             var priceNode = infoContainer.SelectSingleNode("./div[contains(@class, 'product-price')]/span");
-            Price price = Utils.ParsePrice(priceNode.InnerHtml);
+            var price = Utils.ParsePrice(priceNode.InnerHtml);
 
             var image = WebsiteBaseUrl + page.SelectSingleNode("//img[contains(@class, 'primary-image')]")
                             .GetAttributeValue("src", "").Substring(1);
 
-            ProductDetails details = new ProductDetails()
+            var details = new ProductDetails
             {
                 Price = price.Value,
                 Name = name,
@@ -102,16 +95,13 @@ namespace StoreScraper.Bots.Bakurits.Rimowa
             return details;
         }
 
-        private static async Task<List<HtmlNode>> GetPageTask(List<String> urls, CancellationToken token)
+        private static async Task<List<HtmlNode>> GetPageTask(List<string> urls, CancellationToken token)
         {
-            List<HtmlNode> res = new List<HtmlNode>();
+            var res = new List<HtmlNode>();
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
 
-            HtmlDocument[] documents = await Task.WhenAll(urls.Select(i => client.GetDocTask(i, token)));
-            foreach (var document in documents)
-            {
-                res.Add(document.DocumentNode);
-            }
+            var documents = await Task.WhenAll(urls.Select(i => client.GetDocTask(i, token)));
+            foreach (var document in documents) res.Add(document.DocumentNode);
 
             return res;
         }
@@ -133,15 +123,15 @@ namespace StoreScraper.Bots.Bakurits.Rimowa
             }
         }
 
-        private string GetName(HtmlNode item)
+        private static string GetName(HtmlNode item)
         {
-            string type = item.SelectSingleNode("./div/div[contains(@class, 'product-cat')]/a").InnerHtml;
+            var type = item.SelectSingleNode("./div/div[contains(@class, 'product-cat')]/a").InnerHtml;
             type = Regex.Replace(type, @"\t|\n|\r", "");
-            string name = item.SelectSingleNode("./div").GetAttributeValue("data-itemname", "");
+            var name = item.SelectSingleNode("./div").GetAttributeValue("data-itemname", "");
             return $"{type} - {name}";
         }
 
-        private string GetUrl(HtmlNode item)
+        private static string GetUrl(HtmlNode item)
         {
             return item.SelectSingleNode("./div/div[contains(@class, 'product-image')]/a")
                 .GetAttributeValue("href", "");
@@ -153,20 +143,17 @@ namespace StoreScraper.Bots.Bakurits.Rimowa
                        .GetAttributeValue("src", "");
         }
 
-        private double GetPrice(HtmlNode item)
+        private static double GetPrice(HtmlNode item)
         {
-            string priceContainer = item.SelectSingleNode("./div").GetAttributeValue("data-itemprice", "");
-            if (!double.TryParse(priceContainer, out var res))
-            {
-                throw new Exception();
-            }
+            var priceContainer = item.SelectSingleNode("./div").GetAttributeValue("data-itemprice", "");
+            if (!double.TryParse(priceContainer, out var res)) throw new Exception();
 
             return res;
         }
 
-        private string GetCurrency(HtmlNode item)
+        private static string GetCurrency(HtmlNode item)
         {
-            return "EUR";
+            return "€";
         }
     }
 }
