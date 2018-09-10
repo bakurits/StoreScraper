@@ -18,7 +18,7 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
             var scraper = new SneakerStudioScraper();
             var settings = new SearchSettingsBase()
             {
-                KeyWords = "adidas"
+                KeyWords = "shirt"
             };
 
             scraper.FindItems(out var list, settings, CancellationToken.None);
