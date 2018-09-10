@@ -21,26 +21,29 @@ namespace StoreScraper.Bots.Bakurits.Baitme
         public override bool Active { get; set; }
 
         private readonly string _urlFormat = @"http://www.baitme.com/catalogsearch/result/?q={0}";
-        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
+
+        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,
+            CancellationToken token)
         {
             ConcurrentDictionary<Product, byte> data = new ConcurrentDictionary<Product, byte>();
             GetProductsForPage(_urlFormat, data, settings, token).Wait(token);
 
             listOfProducts = new List<Product>(data.Keys);
         }
-        
+
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var page = GetWebpage(productUrl, token);
             var nameContainer = page.SelectSingleNode("//div[contains(@class, 'product-name')]/span");
             var name = nameContainer.InnerHtml.EscapeNewLines();
-            var image = page.SelectSingleNode("//div[contains(@class, 'product-image')]/img").GetAttributeValue("src", "");
+            var image = page.SelectSingleNode("//div[contains(@class, 'product-image')]/img")
+                .GetAttributeValue("src", "");
             var priceNode = page.SelectSingleNode("//div[contains(@class, 'product-shop')]");
             ProductDetails details = new ProductDetails()
             {
                 Price = GetPrice(priceNode),
                 Name = name,
-                Currency = "USD",
+                Currency = "$",
                 ImageUrl = image,
                 Url = productUrl,
                 Id = productUrl,
@@ -51,18 +54,19 @@ namespace StoreScraper.Bots.Bakurits.Baitme
 
             var jsonStr = Regex.Match(page.InnerHtml, @"var spConfig = new Product.Config\((.*)\)").Groups[1].Value;
             JObject parsed = JObject.Parse(jsonStr);
-            
+
             var sizes = GetSizesToken(parsed);
             sizes = sizes.SelectToken("options");
-            
-               
+
+
             foreach (JToken sz in sizes.Children())
             {
                 var sizeName = (string) sz.SelectToken("label");
-                var productCount = (JArray)sz.SelectToken("products");
+                var productCount = (JArray) sz.SelectToken("products");
                 if (productCount.Count > 0)
                     details.AddSize(sizeName, "Unknown");
             }
+
             return details;
         }
 
@@ -77,10 +81,10 @@ namespace StoreScraper.Bots.Bakurits.Baitme
             "http://www.baitme.com/collectibles",
             "http://www.baitme.com/skateboard-snowboard"
         };
-        
+
         public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
         {
-            ConcurrentDictionary<Product, byte> data = new ConcurrentDictionary<Product, byte>();   
+            ConcurrentDictionary<Product, byte> data = new ConcurrentDictionary<Product, byte>();
             Task.WhenAll(_newArrivalPageUrls.Select(url => GetProductsForPage(url, data, null, token))).Wait(token);
             listOfProducts = new List<Product>(data.Keys);
         }
@@ -90,7 +94,8 @@ namespace StoreScraper.Bots.Bakurits.Baitme
         {
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var page = (await client.GetDocTask(url, token)).DocumentNode;
-            HtmlNodeCollection collection = page.SelectNodes("//ul[contains(@class, 'products-grid')]/li[contains(@class, 'item last')]");
+            HtmlNodeCollection collection =
+                page.SelectNodes("//ul[contains(@class, 'products-grid')]/li[contains(@class, 'item last')]");
 
             foreach (var item in collection)
             {
@@ -101,10 +106,9 @@ namespace StoreScraper.Bots.Bakurits.Baitme
                     data.TryAdd(product, 0);
                 }
             }
-
         }
 
-        private HtmlNode GetWebpage(string url, CancellationToken token)
+        private static HtmlNode GetWebpage(string url, CancellationToken token)
         {
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = client.GetDoc(url, token).DocumentNode;
@@ -128,38 +132,34 @@ namespace StoreScraper.Bots.Bakurits.Baitme
             }
         }
 
-        private string GetName(HtmlNode item)
+        private static string GetName(HtmlNode item)
         {
             var name = item.SelectSingleNode("./a").GetAttributeValue("title", null).EscapeNewLines();
             return name;
         }
-        private string GetUrl(HtmlNode item)
+
+        private static string GetUrl(HtmlNode item)
         {
             return item.SelectSingleNode("./a").GetAttributeValue("href", null).Substring(0);
         }
-        private string GetImageUrl(HtmlNode item)
+
+        private static string GetImageUrl(HtmlNode item)
         {
             return item.SelectSingleNode("./a/img").GetAttributeValue("src", null).Substring(0);
         }
-        private double GetPrice(HtmlNode item)
+
+        private static double GetPrice(HtmlNode item)
         {
             var priceBox = item.SelectSingleNode("./div/div[contains(@class, 'price-box')]");
             var specialPrices = priceBox.SelectNodes("./p[contains(@class, 'special-price')]");
             double result = 0;
             if (specialPrices != null)
             {
-                foreach (var price in specialPrices)
+                if (specialPrices.Select(GetInsidePrice).Select(curPrice => Regex.Replace(curPrice, "[^0-9.]", "")).Any(
+                    curPrice =>
+                        curPrice.Length > 0 && double.TryParse(curPrice, out result)))
                 {
-                    string curPrice = GetInsidePrice(price);
-                   
-                    curPrice = Regex.Replace(curPrice, "[^0-9.]", "");
-
-                    if (curPrice.Length > 0 && double.TryParse(curPrice, out result))
-                    {
-                        return result;
-                    }
-                        
-                   
+                    return result;
                 }
             }
             else
@@ -169,26 +169,28 @@ namespace StoreScraper.Bots.Bakurits.Baitme
                 curPrice = Regex.Replace(curPrice, "[^0-9.]", "");
                 double.TryParse(curPrice, out result);
             }
+
             return result;
         }
 
-        private string GetInsidePrice(HtmlNode item)
+        private static string GetInsidePrice(HtmlNode item)
         {
             return item.SelectSingleNode("./span[@class = 'price']").InnerHtml;
         }
-        private string GetCurrency(HtmlNode item)
-        { 
-            return "USD";
+
+        private static string GetCurrency(HtmlNode item)
+        {
+            return "$";
         }
 
-        private JToken GetSizesToken(JObject token)
+        private static JToken GetSizesToken(JToken token)
         {
             var sizes = token.SelectToken("attributes");
             foreach (var item in sizes)
             {
                 var attPath = item.Path;
                 attPath = attPath.Substring(attPath.LastIndexOf(".", StringComparison.Ordinal) + 1);
-                if (int.TryParse(attPath, out var res))
+                if (int.TryParse(attPath, out _))
                 {
                     return item.First;
                 }
