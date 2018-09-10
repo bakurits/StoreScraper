@@ -1,21 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using CheckoutBot.Factory;
-using CheckoutBot.Interfaces;
-using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
 using CheckoutBot.Models.Shipping;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
-using StoreScraper.Helpers;
-using StoreScraper.Http.Factory;
-using StoreScraper.Models;
 using ExpectedConditions = SeleniumExtras.WaitHelpers.ExpectedConditions;
-using static OpenQA.Selenium.Support.UI.ExpectedConditions;
 
 namespace CheckoutBot.CheckoutBots.FootSites.FootAction
 {
@@ -60,7 +52,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootAction
             }
             catch (Exception e)
             {
-                Console.WriteLine("couldn't select expiration dates");
+                Debug.WriteLine(@"couldn't select expiration dates");
                 throw;
             }
 
@@ -122,7 +114,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootAction
             }
             catch (Exception e)
             {
-                Console.WriteLine("error while selecting country");
+                Console.WriteLine(@"error while selecting country");
                 throw;
             }
         }

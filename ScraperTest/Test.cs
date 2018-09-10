@@ -18,7 +18,7 @@ namespace TestConsole
         {
             anticaptcha ac = new anticaptcha(key);
 
-            Console.WriteLine("getting the CAPTCHA...");
+            Console.WriteLine(@"getting the CAPTCHA...");
 
             String res = "";
             res = ac.GetBalance();
@@ -34,7 +34,7 @@ namespace TestConsole
                 int tries = 0;
 
                 res = anticaptcha.NOT_READY;
-                Console.WriteLine("waiting for answer...");
+                Console.WriteLine(@"waiting for answer...");
                 while (tries < 30 && (res == anticaptcha.NOT_READY))
                 {
                     res = ac.GetResult(id);

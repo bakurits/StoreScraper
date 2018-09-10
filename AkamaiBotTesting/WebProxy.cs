@@ -59,7 +59,7 @@ namespace AkamaiBypasser
         public new void Start()
         {
             base.Start();
-            Console.WriteLine($"Proxy listening on port ${Port}");
+            Console.WriteLine($@"Proxy listening on port ${Port}");
         }
 
         public async Task OnResponse(object sender, SessionEventArgs args)

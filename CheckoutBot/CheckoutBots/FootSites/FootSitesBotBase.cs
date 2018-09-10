@@ -28,7 +28,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
     {
         public string WebsiteName { get; set; }
         public string WebsiteBaseUrl { get; set; }
-        public string ReleasePageApiEndpoint { get; set; }
+        private string ReleasePageApiEndpoint { get; set; }
 
         protected FootSitesBotBase(string websiteName, string webSiteBaseUrl, string releasePageEndpoint)
         {
@@ -122,24 +122,22 @@ namespace CheckoutBot.CheckoutBots.FootSites
 
         private DateTime GetDate(JToken productData)
         {
-            if (productData["launchDateTimeUTC"].Type != JTokenType.Null)
-            {
-                var dateInJson = (string) productData["launchDateTimeUTC"];
-                var date = DateTime.Parse(dateInJson);
-                return date;
-            }
+            if (productData["launchDateTimeUTC"].Type == JTokenType.Null) return DateTime.MaxValue;
+            var dateInJson = (string) productData["launchDateTimeUTC"];
+            var date = DateTime.Parse(dateInJson);
+            return date;
 
-            return DateTime.MaxValue;
         }
 
 
-        public static IWebElement GetVisibleElementByXPath(string xPath, WebDriverWait wait, CancellationToken token)
+        protected static IWebElement GetVisibleElementByXPath(string xPath, WebDriverWait wait, CancellationToken token)
         {
             var element = wait.Until(ElementIsVisible(By.XPath(xPath)));
             token.ThrowIfCancellationRequested();
             return element;
         }
-        public static IWebElement GetClickableElementByXPath(string xPath, WebDriverWait wait, CancellationToken token)
+
+        protected static IWebElement GetClickableElementByXPath(string xPath, WebDriverWait wait, CancellationToken token)
         {
             var element = wait.Until(ElementToBeClickable(By.XPath(xPath)));
             token.ThrowIfCancellationRequested();
