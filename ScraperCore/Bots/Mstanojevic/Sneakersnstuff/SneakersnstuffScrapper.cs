@@ -45,6 +45,8 @@ namespace StoreScraper.Bots.Mstanojevic.Sneakersnstuff
             "https://www.sneakersnstuff.com/en/904/mens-sneakers",
             "https://www.sneakersnstuff.com/en/858/new-arrivals",
             "https://www.sneakersnstuff.com/en/873/new-mens-clothes",
+            "https://www.sneakersnstuff.com/en/54/clothes",
+            "https://www.sneakersnstuff.com/en/605/stuff",
         };
 
 
