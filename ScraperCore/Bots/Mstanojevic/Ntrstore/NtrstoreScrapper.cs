@@ -81,7 +81,7 @@ namespace StoreScraper.Bots.Mstanojevic.Ntrstore
             try
             {
                 string name = GetName(item).TrimEnd();
-                string url = WebsiteBaseUrl + GetUrl(item);
+                string url =  GetUrl(item);
                 var price = GetPrice(item);
                 string imageUrl = GetImageUrl(item);
                 return new Product(this, name, url, price.Value, imageUrl, url, price.Currency);

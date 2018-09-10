@@ -225,7 +225,7 @@ namespace StoreScraper.Bots.Mstanojevic.Excelsiormilano
 
         private string GetUrl(HtmlNode item)
         {
-            return WebsiteBaseUrl + item.SelectSingleNode("./div/div/a").GetAttributeValue("href", null);
+            return  item.SelectSingleNode("./div/div/a").GetAttributeValue("href", null);
         }
 
         private Price GetPrice(HtmlNode item)

@@ -231,7 +231,7 @@ namespace StoreScraper.Bots.Mstanojevic.Cruvoir
 
         private string GetUrl(HtmlNode item)
         {
-            return WebsiteBaseUrl + item.SelectSingleNode("./a").GetAttributeValue("href", null);
+            return  item.SelectSingleNode("./a").GetAttributeValue("href", null);
         }
 
         private Price GetPrice(HtmlNode item)
