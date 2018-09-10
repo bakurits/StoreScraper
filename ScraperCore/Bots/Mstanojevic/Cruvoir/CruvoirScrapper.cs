@@ -30,11 +30,11 @@ namespace StoreScraper.Bots.Mstanojevic.Cruvoir
             "https://www.cruvoir.com/collections/mens-jewelry",
             "https://www.cruvoir.com/collections/mens-perfume",
 
-            "https://www.cruvoir.com/collections/womens-clothing",
+            /*"https://www.cruvoir.com/collections/womens-clothing",
             "https://www.cruvoir.com/collections/womens-shoes",
             "https://www.cruvoir.com/collections/womens-accessories",
             "https://www.cruvoir.com/collections/womens-jewelry",
-            "https://www.cruvoir.com/collections/womens-perfume",
+            "https://www.cruvoir.com/collections/womens-perfume",*/
         };
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
