@@ -59,7 +59,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.AwLab
 #if DEBUG
                 LoadSingleProduct(data, child, settings);
 #else
-                LoadSingleProductTryCatchWraper(data, child, settings);
+                LoadSingleProductTryCatchWrapper(data, child, settings);
 #endif
             }
             
