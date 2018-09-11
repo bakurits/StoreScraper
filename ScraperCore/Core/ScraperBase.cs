@@ -79,7 +79,7 @@ namespace StoreScraper
 
             if (settings.Mode == SearchMode.SearchAPI)
             {
-                settings.KeyWords.Split(' ', ',').AsParallel().ForAll(k =>
+                settings.KeyWords.Split('\n', ',').AsParallel().ForAll(k =>
                    {
                        k = k.Trim();
                        var s = (SearchSettingsBase)settings.Clone();

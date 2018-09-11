@@ -113,7 +113,7 @@
     <Compile Include="ScraperTests\Sticky_bit\FootSites\FootActonTest.cs" />
     <Compile Include="ScraperTests\Sticky_bit\FootSites\FootLockerTest.cs" />
     <Compile Include="ScraperTests\Sticky_bit\YOOXTest.cs" />
-    <Compile Include="ScraperTests\Sticky_bit\BSTNTest.cs" />
+    <Compile Include="ScraperTests\DavitBezhanishvili\BSTNTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\DtlrTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\ExcelsiormilanoTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\GoodHoodStoreTest.cs" />

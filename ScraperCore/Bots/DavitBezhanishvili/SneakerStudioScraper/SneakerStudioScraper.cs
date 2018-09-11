@@ -22,6 +22,8 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
         public override string WebsiteBaseUrl { get; set; } = "http://sneakerstudio.com";
         public override bool Active { get; set; }
 
+        private ConcurrentDictionary<HttpClient, DateTime> activeClients = new ConcurrentDictionary<HttpClient, DateTime>();
+
         public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
         {
             listOfProducts = new List<Product>();
@@ -33,7 +35,6 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
 
         }
 
-        private ConcurrentDictionary<HttpClient, DateTime> activeClients = new ConcurrentDictionary<HttpClient, DateTime>();
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
