@@ -10,6 +10,10 @@ using StoreScraper.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using System.Threading.Tasks;
+using System.Collections.Concurrent;
+using System.Linq;
+
 namespace StoreScraper.Bots.Mstanojevic.Shinzo
 {
     public class ShinzoScrapper : ScraperBase
@@ -37,66 +41,67 @@ namespace StoreScraper.Bots.Mstanojevic.Shinzo
 
         }
 
+
+        private readonly List<String> newArrivalPageUrls = new List<string>
+        {
+            "https://www.shinzo.paris/en/63-new-releases",
+            "https://www.shinzo.paris/en/70-sportswear-new-releases",
+            "https://www.shinzo.paris/en/71-basketball-new-releases",
+            "https://www.shinzo.paris/en/73-running-new-releases",
+            "https://www.shinzo.paris/en/24-skateboarding-new-releases"
+
+        };
+
+
+
         public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
         {
-            listOfProducts = new List<Product>();
+            ConcurrentDictionary<Product, byte> data = new ConcurrentDictionary<Product, byte>();
+            Task.WhenAll(newArrivalPageUrls.Select(url => GetProductsForPage(url, data, null, token))).Wait(token);
+            listOfProducts = new List<Product>(data.Keys);
+        }
 
-            HtmlNodeCollection itemCollection = GetNewArriavalItems(WebsiteBaseUrl + "/en/63-new-releases#/gender-men", token);
-            foreach (var item in itemCollection)
+
+        private async Task GetProductsForPage(string url, ConcurrentDictionary<Product, byte> data,
+            SearchSettingsBase settings, CancellationToken token)
+        {
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var page = (await client.GetDocTask(url, token)).DocumentNode;
+            HtmlNodeCollection collection = page.SelectNodes("//div[@class='product-inner']");
+
+            foreach (var item in collection)
             {
                 token.ThrowIfCancellationRequested();
-#if DEBUG
-                LoadSingleNewArrivalProduct(listOfProducts, item);
-#else
-                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, item);
-#endif
-            }
-
-            itemCollection = GetNewArriavalItems(WebsiteBaseUrl + "/en/63-new-releases#/gender-women", token);
-            foreach (var item in itemCollection)
-            {
-                token.ThrowIfCancellationRequested();
-#if DEBUG
-                LoadSingleNewArrivalProduct(listOfProducts, item);
-#else
-                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, item);
-#endif
+                Product product = GetProduct(item);
+                if (product != null && (settings == null || Utils.SatisfiesCriteria(product, settings)))
+                {
+                    data.TryAdd(product, 0);
+                }
             }
 
         }
 
 
-        private HtmlNodeCollection GetNewArriavalItems(string url, CancellationToken token)
-        {
-            var document = GetWebpage(url, token);
-            if (document.InnerHtml.Contains(noResults)) return null;
-
-            return document.SelectNodes("//div[@class='product-inner']");
-
-        }
-
-        private void LoadSingleNewArrivalProduct(List<Product> listOfProducts, HtmlNode item)
-        {
-            string name = GetName(item).TrimEnd();
-            string url = GetUrl(item);
-            var price = GetPrice(item);
-            string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
-            listOfProducts.Add(product);
-
-        }
-
-        private void LoadSingleNewArrivalProductTryCatchWraper(List<Product> listOfProducts, HtmlNode item)
+        private Product GetProduct(HtmlNode item)
         {
             try
             {
-                LoadSingleNewArrivalProduct(listOfProducts, item);
+                string name = GetName(item).TrimEnd();
+                string url = GetUrl(item);
+                var price = GetPrice(item);
+                string imageUrl = GetImageUrl(item);
+                return new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
             }
-            catch (Exception e)
+            catch
             {
-                Logger.Instance.WriteErrorLog(e.Message);
+                return null;
             }
         }
+
+
+
+
+       
 
         private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {

@@ -8,6 +8,11 @@ using StoreScraper.Helpers;
 using StoreScraper.Models;
 using System.Text.RegularExpressions;
 
+
+using System.Threading.Tasks;
+using System.Collections.Concurrent;
+using System.Linq;
+
 namespace StoreScraper.Bots.Mstanojevic.GoodHoodStore
 {
 
@@ -38,66 +43,58 @@ namespace StoreScraper.Bots.Mstanojevic.GoodHoodStore
 
         }
 
+
+        private readonly List<String> newArrivalPageUrls = new List<string>
+        {
+            "https://goodhoodstore.com/mens/latest?n=all",
+            "https://goodhoodstore.com/mens/all-mens-clothing?n=all",
+            "https://goodhoodstore.com/mens/all-mens-footwear?n=all",
+            "https://goodhoodstore.com/mens/all-mens-accessories?n=all",
+        };
+
+
+
         public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
         {
-            listOfProducts = new List<Product>();
+            ConcurrentDictionary<Product, byte> data = new ConcurrentDictionary<Product, byte>();
+            Task.WhenAll(newArrivalPageUrls.Select(url => GetProductsForPage(url, data, null, token))).Wait(token);
+            listOfProducts = new List<Product>(data.Keys);
+        }
 
-            HtmlNodeCollection itemCollection = GetNewArriavalItems(WebsiteBaseUrl + "/mens/latest", token);
-            foreach (var item in itemCollection)
+
+        private async Task GetProductsForPage(string url, ConcurrentDictionary<Product, byte> data,
+            SearchSettingsBase settings, CancellationToken token)
+        {
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var page = (await client.GetDocTask(url, token)).DocumentNode;
+            HtmlNodeCollection collection = page.SelectNodes("//div[@class='overview']");
+
+            foreach (var item in collection)
             {
                 token.ThrowIfCancellationRequested();
-#if DEBUG
-                LoadSingleNewArrivalProduct(listOfProducts, item);
-#else
-                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, item);
-#endif
-            }
-
-            itemCollection = GetNewArriavalItems(WebsiteBaseUrl + "/womens/latest", token);
-            foreach (var item in itemCollection)
-            {
-                token.ThrowIfCancellationRequested();
-#if DEBUG
-                LoadSingleNewArrivalProduct(listOfProducts, item);
-#else
-                LoadSingleNewArrivalProductTryCatchWraper(listOfProducts, item);
-#endif
+                Product product = GetProduct(item);
+                if (product != null && (settings == null || Utils.SatisfiesCriteria(product, settings)))
+                {
+                    data.TryAdd(product, 0);
+                }
             }
 
         }
 
 
-        private HtmlNodeCollection GetNewArriavalItems(string url, CancellationToken token)
-        {
-            var document = GetWebpage(url, token);
-            if (document.InnerHtml.Contains(noResults)) return null;
-
-            return document.SelectNodes("//div[@class='overview']");
-
-        }
-
-        private void LoadSingleNewArrivalProduct(List<Product> listOfProducts, HtmlNode item)
-        {
-            if (item.SelectSingleNode("./p/span[@class='Price']/span") == null)
-                return;
-            string name = GetName(item).TrimEnd();
-            string url = GetUrl(item);
-            var price = GetPrice(item);
-            string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
-            listOfProducts.Add(product);
-
-        }
-
-        private void LoadSingleNewArrivalProductTryCatchWraper(List<Product> listOfProducts, HtmlNode item)
+        private Product GetProduct(HtmlNode item)
         {
             try
             {
-                LoadSingleNewArrivalProduct(listOfProducts, item);
+                string name = GetName(item).TrimEnd();
+                string url = GetUrl(item);
+                var price = GetPrice(item);
+                string imageUrl = GetImageUrl(item);
+                return new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
             }
-            catch (Exception e)
+            catch
             {
-                Logger.Instance.WriteErrorLog(e.Message);
+                return null;
             }
         }
 
