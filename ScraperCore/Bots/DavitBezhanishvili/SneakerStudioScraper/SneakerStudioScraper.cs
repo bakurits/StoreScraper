@@ -32,7 +32,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
 
         }
 
-        private ConcurrentDictionary<HttpClient, DateTime> activeClients = new ConcurrentDictionary<HttpClient, DateTime>();
+        private readonly ConcurrentDictionary<HttpClient, DateTime> _activeClients = new ConcurrentDictionary<HttpClient, DateTime>();
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
@@ -43,18 +43,16 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
             var referer = new Uri($"http://sneakerstudio.com/search.php?text={settings.KeyWords}");
 
             var client = ClientFactory.GetProxiedFirefoxClient();
-            HttpRequestMessage message = new HttpRequestMessage();
-            message.Method = HttpMethod.Get;
-            message.RequestUri = searchUrl;
+            HttpRequestMessage message = new HttpRequestMessage {Method = HttpMethod.Get, RequestUri = searchUrl};
             message.Headers.Referrer = referer;
-            activeClients.TryGetValue(client, out var value);
+            _activeClients.TryGetValue(client, out var value);
 
             if (DateTime.Now.Subtract(value).TotalMinutes > 10)
             {
                 var resp = client.SendAsync(message, token).Result;
                 resp.EnsureSuccessStatusCode();
                 resp.Dispose();
-                activeClients.AddOrUpdate(client, DateTime.Now, (httpClient, time) => DateTime.Now);
+                _activeClients.AddOrUpdate(client, DateTime.Now, (httpClient, time) => DateTime.Now);
             }
             
 
@@ -67,9 +65,9 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
             var nodes = document.DocumentNode.SelectSingleNode("//div[@class = 'row']");
             if (nodes == null)
             {
-                Logger.Instance.WriteErrorLog("Unexcepted Html");
+                Logger.Instance.WriteErrorLog("Unexpected Html");
                 Logger.Instance.SaveHtmlSnapshop(document);
-                throw new WebException("Unexcepted Html");
+                throw new WebException("Unexpected Html");
             }
             var children = nodes.SelectNodes("./div[@class = 'product_wrapper col-md-4 col-xs-6']");
             if (children == null)
@@ -97,7 +95,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
         /// <param name="listOfProducts"></param>
         /// <param name="child"></param>
         /// <param name="settings"></param>
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, HtmlNode child, SearchSettingsBase settings)
+        private void LoadSingleProductTryCatchWrapper(List<Product> listOfProducts, HtmlNode child, SearchSettingsBase settings)
         {
             try
             {
@@ -109,19 +107,19 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
             }
         }
 
-        private string getImageUrl(HtmlNode child)
+        private string GetImageUrl(HtmlNode child)
         {
             var picNode = child.SelectSingleNode("./a[@class = 'product-icon']");
             return WebsiteBaseUrl + picNode.SelectSingleNode("./img").GetAttributeValue("data-src",null);
         }
 
-        private string getProductUrl(HtmlNode child)
+        private string GetProductUrl(HtmlNode child)
         {
             return WebsiteBaseUrl + child.SelectSingleNode("./a[@class = 'product-icon']").GetAttributeValue("href", null);
         }
 
 
-        private string getProductName(HtmlNode child)
+        private string GetProductName(HtmlNode child)
         {
             return child.SelectSingleNode("./h3/a").InnerText;
         }
@@ -129,10 +127,10 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
 
         private void LoadSingleProduct(List<Product> listOfProducts, HtmlNode child, SearchSettingsBase settings)
         {
-            Price p = getProductPrice(child);
-            var imageUrl = getImageUrl(child);
-            var productUrl = getProductUrl(child);
-            var productName = getProductName(child);
+            Price p = GetProductPrice(child);
+            var imageUrl = GetImageUrl(child);
+            var productUrl = GetProductUrl(child);
+            var productName = GetProductName(child);
 
             var product = new Product(this, productName, productUrl, p.Value, imageUrl, productUrl, p.Currency);
             if (Utils.SatisfiesCriteria(product, settings))
@@ -141,7 +139,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
             }
         }
 
-        private Price getProductPrice(HtmlNode child)
+        private Price GetProductPrice(HtmlNode child)
         {
             var priceNode = child.SelectSingleNode("./div[@class = 'product_prices']/span[@class = 'price']");
             string priceStr = priceNode.SelectSingleNode("./text()").InnerText;
@@ -172,7 +170,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
             var webPage = GetWebpage(productUrl,token);
             ProductDetails details = ConstructProduct(webPage, productUrl);
 
-            var jsonStr = getJson(webPage.InnerHtml);
+            var jsonStr = GetJson(webPage.InnerHtml);
             JObject parsed = JObject.Parse(jsonStr);
 
 
@@ -188,11 +186,11 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
             return details;
         }
 
-        private string getJson(string webPageInnerHtml)
+        private string GetJson(string webPageInnerHtml)
         {
             string json = "{";
             var str = "var product_data = {";
-            var ind = webPageInnerHtml.IndexOf(str);
+            var ind = webPageInnerHtml.IndexOf(str, StringComparison.Ordinal);
             ind += str.Length;
             int parCount = 1;
             while (parCount > 0)
@@ -223,7 +221,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
                 Price = price.Value,
                 Name = name,
                 Currency = price.Currency,
-                ImageUrl = image.ToString(),
+                ImageUrl = image,
                 Url = productUrl,
                 Id = productUrl,
                 ScrapedBy = this
