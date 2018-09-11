@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -26,9 +27,9 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
             listOfProducts = new List<Product>();
             var searchUrl = "http://sneakerstudio.com/settings.php?sort_order=date-d&curr=USD";
             var client = ClientFactory.GetProxiedFirefoxClient();
-           
+
             var document = client.GetDoc(searchUrl, token);
-            Scrap(document, listOfProducts, null, token);
+            Scrap(document, ref listOfProducts, null, token);
 
         }
 
@@ -56,14 +57,16 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
                 resp.Dispose();
                 activeClients.AddOrUpdate(client, DateTime.Now, (httpClient, time) => DateTime.Now);
             }
-            
+
 
             var document = client.GetDoc(referer.AbsoluteUri, token);
-            Scrap(document, listOfProducts, settings, token);
+            Scrap(document, ref listOfProducts, settings, token);
         }
-        private void Scrap( HtmlDocument document, List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
+
+        private void Scrap(HtmlDocument document, ref List<Product> listOfProducts, SearchSettingsBase settings,
+            CancellationToken token)
         {
-            
+
             var nodes = document.DocumentNode.SelectSingleNode("//div[@class = 'row']");
             if (nodes == null)
             {
@@ -71,6 +74,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
                 Logger.Instance.SaveHtmlSnapshop(document);
                 throw new WebException("Unexcepted Html");
             }
+
             var children = nodes.SelectNodes("./div[@class = 'product_wrapper col-md-4 col-xs-6']");
             if (children == null)
             {
@@ -85,8 +89,11 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
                     LoadSingleProduct(listOfProducts, child, settings);
 #else
                     LoadSingleProductTryCatchWraper(listOfProducts, child, settings);
-#endif 
+#endif
                 }
+
+            listOfProducts = (from prod in listOfProducts.AsParallel()
+                              select string.IsNullOrWhiteSpace(prod.Name) ? (Product)GetProductDetails(prod.Url, token) : prod).ToList();
         }
 
 
@@ -112,7 +119,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
         private string getImageUrl(HtmlNode child)
         {
             var picNode = child.SelectSingleNode("./a[@class = 'product-icon']");
-            return WebsiteBaseUrl + picNode.SelectSingleNode("./img").GetAttributeValue("data-src",null);
+            return WebsiteBaseUrl + picNode.SelectSingleNode("./img").GetAttributeValue("data-src", null);
         }
 
         private string getProductUrl(HtmlNode child)
@@ -124,6 +131,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
         private string getProductName(HtmlNode child)
         {
             return child.SelectSingleNode("./h3/a").InnerText;
+
         }
 
 
@@ -169,7 +177,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
 
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            var webPage = GetWebpage(productUrl,token);
+            var webPage = GetWebpage(productUrl, token);
             ProductDetails details = ConstructProduct(webPage, productUrl);
 
             var jsonStr = getJson(webPage.InnerHtml);
@@ -177,13 +185,13 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
 
 
             var sizes = parsed.SelectTokens("sizes");
-            foreach(JToken szToken in sizes.Children())
+            foreach (JToken szToken in sizes.Children())
             {
                 var sz = szToken.First;
-                var size =(string) sz.SelectToken("name");
-                var amount = (string) sz.SelectToken("amount");
-                if(amount != "0")
-                    details.AddSize(size,amount);
+                var size = (string)sz.SelectToken("name");
+                var amount = (string)sz.SelectToken("amount");
+                if (amount != "0")
+                    details.AddSize(size, amount);
             }
             return details;
         }
@@ -211,19 +219,21 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
         private ProductDetails ConstructProduct(HtmlNode webPage, string productUrl)
         {
             var name = webPage.SelectSingleNode("//div[@class='projector_navigation']/h1").InnerText.Trim();
-            
-            var image =WebsiteBaseUrl + webPage.SelectSingleNode(
+
+            var image = WebsiteBaseUrl + webPage.SelectSingleNode(
                             "//div[contains(@class,'photos col-md-7 col-xs-12')]/a[@id ='projector_image_1']/img").GetAttributeValue("src", null);
             var priceNode = webPage.SelectSingleNode("//strong[@class='projector_price_value']");
             var txt = priceNode.InnerText.Trim();
             var price = Utils.ParsePrice(txt);
+            var keyWords = webPage.SelectSingleNode("//meta[@name = 'keywords']").GetAttributeValue("content", null);
 
             ProductDetails details = new ProductDetails()
             {
                 Price = price.Value,
                 Name = name,
                 Currency = price.Currency,
-                ImageUrl = image.ToString(),
+                ImageUrl = image,
+                KeyWords = keyWords,
                 Url = productUrl,
                 Id = productUrl,
                 ScrapedBy = this

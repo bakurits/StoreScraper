@@ -29,7 +29,7 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
         {
             var scraper = new SneakerStudioScraper();
 
-            var testUrl = "https://sneakerstudio.com/product-eng-16341-.html";
+            var testUrl = "https://sneakerstudio.com/product-eng-16806-.html";
 
             var details = scraper.GetProductDetails(testUrl, CancellationToken.None);
             Helper.PrintGetDetailsResult(details.SizesList);

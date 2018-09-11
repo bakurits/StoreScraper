@@ -330,7 +330,7 @@ namespace StoreScraper.Helpers
         {
             if (settingsBase == null) return true;
 
-            var fullNameLower = product.Name.ToLower() + " " + product.BrandName?.ToLower() ?? "";
+            var fullNameLower = product.Name.ToLower() + " " + (product.BrandName?.ToLower() ?? " ") + (product.KeyWords?.ToLower() ?? "");
 
             if (settingsBase.Mode == SearchMode.NewArrivalsPage &&
                 settingsBase.ParsedNegKeywords != null &&

@@ -19,6 +19,8 @@ namespace StoreScraper.Models
         [Browsable(false)]
         public string BrandName { get; set; } = "";
 
+        [Browsable(false)]
+        public string KeyWords { get; set; } = "";
 
         [Browsable(false)]
         public IWebsiteScraper ScrapedBy { get; set; }
