@@ -240,14 +240,14 @@ namespace CheckoutBot
 
             if (shippingState.Visibility != Visibility.Hidden)
             {
-                Enum.TryParse<States>(shippingAddress_state.SelectedValue.ToString(), out var shippingState);
-                shippingAddress.State = shippingState;
+                Enum.TryParse<States>(shippingAddress_state.SelectedValue.ToString(), out var state);
+                shippingAddress.State = state;
             }
 
             if (billingState.Visibility != Visibility.Hidden)
             {
-                Enum.TryParse<States>(billingAddress_state.SelectedValue.ToString(), out var billing_state);
-                billingAddress.State = billing_state;
+                Enum.TryParse<States>(billingAddress_state.SelectedValue.ToString(), out var state);
+                billingAddress.State = state;
             }
 
 

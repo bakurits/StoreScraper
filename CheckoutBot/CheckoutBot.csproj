@@ -181,6 +181,7 @@
     <Compile Include="CheckoutBots\FootSites\FootSitesBotBase.cs" />
     <Compile Include="Core\Helper.cs" />
     <Compile Include="Core\ProductMonitoringTask.cs" />
+    <Compile Include="Core\ReleasedProductsMonitor.cs" />
     <Compile Include="Env.cs" />
     <Compile Include="Factory\DriverFactory.cs" />
     <Compile Include="Interfaces\IAccountCheckouter.cs" />

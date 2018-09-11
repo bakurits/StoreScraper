@@ -41,7 +41,7 @@ namespace CheckoutBot.Core
             {
                 case GuestCheckoutSettings guestCheckout:
                 {
-                    if (!(guestCheckout.ProductToBuy.ScrapedBy is IGuestCheckouter checkouter))
+                    if (!(guestCheckout.ProductToBuy.ScrapedBy is IGuestCheckouter))
                     {
                         throw new InvalidOperationException();
                     }
@@ -54,7 +54,7 @@ namespace CheckoutBot.Core
                 }
                 case AccountCheckoutSettings accountCheckout:
                 {
-                    if (!(accountCheckout.ProductToBuy.ScrapedBy is IAccountCheckouter checkouter))
+                    if (!(accountCheckout.ProductToBuy.ScrapedBy is IAccountCheckouter))
                     {
                         throw new InvalidOperationException();
                     }
