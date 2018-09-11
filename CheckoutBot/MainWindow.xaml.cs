@@ -18,7 +18,6 @@ using CheckoutBot.Models;
 using Newtonsoft.Json;
 using EO;
 using EO.WebBrowser;
-using EO.WebEngine;
 
 namespace CheckoutBot
 {
@@ -30,11 +29,6 @@ namespace CheckoutBot
         public MainWindow()
         {
             InitializeComponent();
-            ThreadRunner runner = new ThreadRunner();
-            var webView = runner.CreateWebView(new BrowserOptions());
-
-            webView.Engine.Options.BypassUserGestureCheck = true;
-            
 
             List<TaskItem> items = new List<TaskItem>();
             items.Add(new TaskItem() { Keywords = "nike air", Size = 12, Retries = "1", Status="Checking out", ListImage="/images/list_progress.png" });
