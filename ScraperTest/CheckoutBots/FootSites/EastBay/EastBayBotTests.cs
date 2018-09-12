@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using CheckoutBot.CheckoutBots.FootSites;
 using CheckoutBot.CheckoutBots.FootSites.EastBay;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
 using CheckoutBot.Models.Payment;
 using CheckoutBot.Models.Shipping;
+using EO.WebBrowser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
+using ScraperTest.MinorTests;
 using StoreScraper.Models;
 
 namespace ScraperTest.CheckoutBots.FootSites.EastBay
@@ -55,7 +58,14 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
         [TestMethod]
         public void AccountCheckoutTest()
         {
-            throw new NotImplementedException();
+            EOBrowserHelper.BotTester(new EastBayBot(), AccountCheckoutTester);
+            
+        }
+
+        private void AccountCheckoutTester(EastBayBot bot)
+        {
+            bot.AccountCheckout(null, CancellationToken.None);
+            Thread.Sleep(100000);
         }
 
         [TestMethod]

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading;
 using CheckoutBot.Interfaces;
 using CheckoutBot.Models.Checkout;
+using EO.WebBrowser;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OpenQA.Selenium;
@@ -24,6 +25,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
         public string WebsiteName { get; set; }
         public string WebsiteBaseUrl { get; set; }
         private string ReleasePageApiEndpoint { get; set; }
+        public WebView Driver { get; set; }
 
         protected FootSitesBotBase(string websiteName, string webSiteBaseUrl, string releasePageEndpoint)
         {
