@@ -1,6 +1,8 @@
-﻿using System.Threading;
+﻿using System.Diagnostics;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
+using StoreScraper.Bots.Sticky_bit.BSTN;
 
 namespace ScraperTest.ScraperTests.DavitBezhanishvili
 {
@@ -8,11 +10,22 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
     public class BSTNTest
     {
         [TestMethod]
-        public void BSTN()
+        public void FindItemsTest()
         {
-            /*BSTNScraper scraper = new BSTNScraper();
+            BSTNScraper scraper = new BSTNScraper();
             scraper.FindItems(out var lst, Helper.SearchSettings, CancellationToken.None);
-            Helper.PrintFindItemsResults(lst);*/
+            Helper.PrintFindItemsResults(lst);
+        }
+        [TestMethod]
+        public void GetProductDetailsTest()
+        {
+            var scraper = new BSTNScraper();
+
+            var testUrl = "https://www.bstn.com/en/p/adidas-continental-80-b41675-76624";
+
+            var details = scraper.GetProductDetails(testUrl, CancellationToken.None);
+        //    Debug.WriteLine(details.Currency);
+            Helper.PrintGetDetailsResult(details.SizesList);
         }
     }
 }

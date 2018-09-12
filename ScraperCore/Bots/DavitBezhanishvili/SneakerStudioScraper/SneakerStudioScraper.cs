@@ -22,7 +22,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
         public override string WebsiteBaseUrl { get; set; } = "http://sneakerstudio.com";
         public override bool Active { get; set; }
 
-        private ConcurrentDictionary<HttpClient, DateTime> activeClients = new ConcurrentDictionary<HttpClient, DateTime>();
+        private ConcurrentDictionary<HttpClient, DateTime> _activeClients = new ConcurrentDictionary<HttpClient, DateTime>();
 
         public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
         {
@@ -32,7 +32,6 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
 
             var document = client.GetDoc(searchUrl, token);
             Scrap(document, ref listOfProducts, null, token);
-
         }
 
 
@@ -49,14 +48,14 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
             message.Method = HttpMethod.Get;
             message.RequestUri = searchUrl;
             message.Headers.Referrer = referer;
-            activeClients.TryGetValue(client, out var value);
+            _activeClients.TryGetValue(client, out var value);
 
             if (DateTime.Now.Subtract(value).TotalMinutes > 10)
             {
                 var resp = client.SendAsync(message, token).Result;
                 resp.EnsureSuccessStatusCode();
                 resp.Dispose();
-                activeClients.AddOrUpdate(client, DateTime.Now, (httpClient, time) => DateTime.Now);
+                _activeClients.AddOrUpdate(client, DateTime.Now, (httpClient, time) => DateTime.Now);
             }
 
 
@@ -117,19 +116,19 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
             }
         }
 
-        private string getImageUrl(HtmlNode child)
+        private string GetImageUrl(HtmlNode child)
         {
             var picNode = child.SelectSingleNode("./a[@class = 'product-icon']");
             return WebsiteBaseUrl + picNode.SelectSingleNode("./img").GetAttributeValue("data-src", null);
         }
 
-        private string getProductUrl(HtmlNode child)
+        private string GetProductUrl(HtmlNode child)
         {
             return WebsiteBaseUrl + child.SelectSingleNode("./a[@class = 'product-icon']").GetAttributeValue("href", null);
         }
 
 
-        private string getProductName(HtmlNode child)
+        private string GetProductName(HtmlNode child)
         {
             return child.SelectSingleNode("./h3/a").InnerText;
 
@@ -138,10 +137,10 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
 
         private void LoadSingleProduct(List<Product> listOfProducts, HtmlNode child, SearchSettingsBase settings)
         {
-            Price p = getProductPrice(child);
-            var imageUrl = getImageUrl(child);
-            var productUrl = getProductUrl(child);
-            var productName = getProductName(child);
+            Price p = GetProductPrice(child);
+            var imageUrl = GetImageUrl(child);
+            var productUrl = GetProductUrl(child);
+            var productName = GetProductName(child);
 
             var product = new Product(this, productName, productUrl, p.Value, imageUrl, productUrl, p.Currency);
             if (Utils.SatisfiesCriteria(product, settings))
@@ -150,7 +149,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
             }
         }
 
-        private Price getProductPrice(HtmlNode child)
+        private Price GetProductPrice(HtmlNode child)
         {
             var priceNode = child.SelectSingleNode("./div[@class = 'product_prices']/span[@class = 'price']");
             string priceStr = priceNode.SelectSingleNode("./text()").InnerText;
@@ -181,10 +180,10 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
             var webPage = GetWebpage(productUrl, token);
             ProductDetails details = ConstructProduct(webPage, productUrl);
 
-            var jsonStr = getJson(webPage.InnerHtml);
+            var jsonStr = GetJson(webPage.InnerHtml);
+            if (jsonStr == "") return details;
+
             JObject parsed = JObject.Parse(jsonStr);
-
-
             var sizes = parsed.SelectTokens("sizes");
             foreach (JToken szToken in sizes.Children())
             {
@@ -197,7 +196,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
             return details;
         }
 
-        private string getJson(string webPageInnerHtml)
+        private string GetJson(string webPageInnerHtml)
         {
             string json = "{";
             var str = "var product_data = {";

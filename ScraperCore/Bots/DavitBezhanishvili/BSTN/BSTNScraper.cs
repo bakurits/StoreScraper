@@ -20,12 +20,6 @@ namespace StoreScraper.Bots.Sticky_bit.BSTN
         public sealed override string WebsiteBaseUrl { get; set; }
         public override bool Active { get; set; }
 
-        private string SearchPrefix = @"/en/search/";
-        private const string Keywords = @"{0}";
-        private string SearchSuffix = @"/page/1/sort/date_new";
-
-        private const string UlXpath = @"//*[@class=""block-grid four-up mobile-two-up productlist""]";
-
 
         public BSTNScraper()
         {
@@ -46,7 +40,7 @@ namespace StoreScraper.Bots.Sticky_bit.BSTN
         public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            var url = "";
+            var url = "https://www.bstn.com/en/new-arrivals/page/1/sort/date_new";
             Scrap(url, ref listOfProducts, null, token);
         }
 
@@ -54,7 +48,7 @@ namespace StoreScraper.Bots.Sticky_bit.BSTN
             CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            var searchUrl = WebsiteBaseUrl + SearchPrefix + string.Format(Keywords, settings.KeyWords) + SearchSuffix;
+            var searchUrl = $"http://www.bstn.com/en/search/{settings.KeyWords}/page/1/sort/date_new";
             Scrap(searchUrl, ref listOfProducts, settings, token);
         }
 
@@ -114,16 +108,69 @@ namespace StoreScraper.Bots.Sticky_bit.BSTN
 
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            var client = ClientFactory.GetProxiedFirefoxClient();
-            var node = client.GetDoc(productUrl, token)
-                .DocumentNode;
-            HtmlNodeCollection sizes = node.SelectNodes("//*[@class=\"product_sizes\"]//*[@class=\"button\"]");
-            ProductDetails details = new ProductDetails();
-            foreach (var s in sizes.Select(size => size.InnerText.Trim()))
-            {
-                details.AddSize(s, "Unknown");
-            }
+            var webPage = GetWebPage(productUrl, token).DocumentNode;
+            ProductDetails details = ConstructProduct(webPage, productUrl);
 
+            var sizesNode = webPage.SelectSingleNode("//div[contains(@class,'selectVariants')]/ul");
+            if (sizesNode != null) return OnScreenSizesList(sizesNode, details);
+            sizesNode = webPage.SelectSingleNode("//select[@class='customSelectBox']");
+            return DropDownSizesList(sizesNode, details);
+
+        }
+
+        private ProductDetails DropDownSizesList(HtmlNode sizesNode, ProductDetails details)
+        {
+            var sizes = sizesNode.SelectNodes("./option");
+            foreach (var size in sizes)
+                if (size.GetAttributeValue("class",null) != null && size.GetAttributeValue("class",null)!="disabled")
+                {
+                    details.AddSize(ExtractEuroSize(size.InnerText.Trim()), "Unknown");
+                }
+            return details;
+        }
+
+        private string ExtractEuroSize(string sizeStr)
+        {
+            var startInd = sizeStr.IndexOf("EU", StringComparison.Ordinal) + 2;
+            var endInd = sizeStr.IndexOf('-');
+            return sizeStr.Substring(startInd, endInd - startInd).Trim();
+        }
+
+        private ProductDetails OnScreenSizesList(HtmlNode sizesNode, ProductDetails details)
+        {
+            var sizes = sizesNode.SelectNodes("./li");
+            foreach (var size in sizes)
+                if (size.SelectSingleNode("./a[contains(@class,'disabled')]") == null)
+                {
+                    details.AddSize(size.InnerText.Trim(), "Unknown");
+                }
+
+            return details;
+        }
+
+        private ProductDetails ConstructProduct(HtmlNode webPage, string productUrl)
+        {
+            var name = webPage.SelectSingleNode("//h1[@itemprop='name']/span[@class='productname']").InnerText.Trim();
+            var brand = webPage.SelectSingleNode("//h1[@itemprop='name']/a/span[@class='producer']").InnerText.Trim();
+            var image = WebsiteBaseUrl + webPage.SelectSingleNode(
+                            "//div[contains(@class,'productSlider')]/ul[@class='slides']/li/a/img").GetAttributeValue("src", null);
+            var priceNode = webPage.SelectSingleNode("//div[@class='price']");
+            var priceTxt = (priceNode.SelectSingleNode("./span[@class='price']") ?? priceNode.SelectSingleNode("./span[@class='newprice']")).InnerText.Trim() ;
+            var price = Utils.ParsePrice(priceTxt);
+            var keyWords = webPage.SelectSingleNode("//meta[@name = 'keywords']").GetAttributeValue("content", null);
+
+            ProductDetails details = new ProductDetails()
+            {
+                BrandName = brand,
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                KeyWords = keyWords,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
             return details;
         }
     }

@@ -142,11 +142,12 @@ namespace StoreScraper.Bots.DavitBezhanishvili.AwLab
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var webPage = GetWebpage(productUrl, token);
-            var jsonStr = Regex.Match(webPage.InnerHtml, @"var spConfig = new Product.Config\((.*)\)").Groups[1].Value;
-            JObject parsed = JObject.Parse(jsonStr);
-
             ProductDetails details = ConstructProduct(webPage, productUrl);
+   
+            var jsonStr = Regex.Match(webPage.InnerHtml, @"var spConfig = new Product.Config\((.*)\)").Groups[1].Value;
+            if (jsonStr == "") return details;
 
+            JObject parsed = JObject.Parse(jsonStr);
             var sizes = parsed.SelectToken("attributes").SelectToken("959").SelectToken("options");
             foreach (JToken sz in sizes.Children())
             {

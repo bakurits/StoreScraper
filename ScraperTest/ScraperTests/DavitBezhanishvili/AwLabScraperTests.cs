@@ -34,7 +34,6 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
             var testUrl = "https://en.aw-lab.com/shop/women/sales/diadora-game-l-low-5041641";
 
             var details = scraper.GetProductDetails(testUrl, CancellationToken.None);
-            Debug.WriteLine(details.Currency);
             Helper.PrintGetDetailsResult(details.SizesList);
         }
     }
