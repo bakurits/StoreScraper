@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading;
 using CheckoutBot.Factory;
 using CheckoutBot.Models.Checkout;
+using EO.WebBrowser;
 using OpenQA.Selenium.Support.UI;
 using StoreScraper.Core;
 
@@ -19,6 +21,12 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 
         public override HttpClient Login(string username, string password, CancellationToken token)
         {
+
+            WebView webView = new WebView {Url = WebsiteBaseUrl};
+            webView.EvalScript(@"
+                                document.evaluate(""//div[@id='header_account_button']/a/span"", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.click();
+                                ");
+
             var driver = DriverFactory.CreateFirefoxDriver();
             driver.Navigate().GoToUrl(WebsiteBaseUrl);
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
