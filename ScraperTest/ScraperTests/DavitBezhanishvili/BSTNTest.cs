@@ -10,9 +10,9 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
         [TestMethod]
         public void BSTN()
         {
-            BSTNScraper scraper = new BSTNScraper();
+            /*BSTNScraper scraper = new BSTNScraper();
             scraper.FindItems(out var lst, Helper.SearchSettings, CancellationToken.None);
-            Helper.PrintFindItemsResults(lst);
+            Helper.PrintFindItemsResults(lst);*/
         }
     }
 }
