@@ -122,11 +122,9 @@ namespace StoreScraper
                         }
                         catch (Exception e)
                         {
-                            if (i == AppSettings.Default.ProxyRotationRetryCount - 1)
-                            {
-                                Logger.Instance.WriteErrorLog($"Error while new arrivals page search {WebsiteName} with keyword {settings.KeyWords}");
-                                exceptions.Add(e);
-                            }
+                            if (i != AppSettings.Default.ProxyRotationRetryCount - 1) continue;
+                            Logger.Instance.WriteErrorLog($"Error while new arrivals page search {WebsiteName} with keyword {settings.KeyWords}");
+                            exceptions.Add(e);
                         }
                     }
 
