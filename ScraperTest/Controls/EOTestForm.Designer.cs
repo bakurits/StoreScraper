@@ -57,6 +57,7 @@
             this.Controls.Add(this.webControl1);
             this.Name = "EOTestForm";
             this.Text = "EOTestForm";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.ResumeLayout(false);
 
         }

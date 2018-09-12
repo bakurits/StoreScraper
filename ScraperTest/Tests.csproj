@@ -140,7 +140,7 @@
       <DependentUpon>EOTestForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Factory\DriverFactoryTests.cs" />
-    <Compile Include="MinorTests\EOBrowserHelper.cs" />
+    <Compile Include="Helpers\EOBrowserHelper.cs" />
     <Compile Include="MinorTests\SeleniumTests.cs" />
     <Compile Include="MinorTests\UtilsTests.cs" />
     <Compile Include="MinorTests\SlackWebHookTests.cs" />

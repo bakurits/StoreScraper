@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Net.Http;
 using System.Threading;
+using System.Threading.Tasks;
 using CheckoutBot.Factory;
 using CheckoutBot.Models.Checkout;
 using EO.WebBrowser;
@@ -14,7 +15,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
     {
         private const string ApiUrl = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/1";
 
-        public EastBayBot() : base("EastBay", "http://www.eastbay.com", ApiUrl)
+        public EastBayBot() : base("EastBay", "https://www.eastbay.com", ApiUrl)
         {
         }
 
@@ -71,6 +72,8 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 
         public override void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token)
         {
+            Driver.Url = this.WebsiteBaseUrl;
+            Task.Delay(5000).Wait();
             throw new NotImplementedException();
         }
 

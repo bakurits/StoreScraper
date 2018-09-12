@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using CheckoutBot.CheckoutBots.FootSites;
 using CheckoutBot.CheckoutBots.FootSites.EastBay;
 using CheckoutBot.Models;
@@ -58,15 +59,9 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
         [TestMethod]
         public void AccountCheckoutTest()
         {
-            EOBrowserHelper.BotTester(new EastBayBot(), AccountCheckoutTester);
-            
+            EOBrowserHelper.BotTester(new EastBayBot(), bot => bot.AccountCheckout(null, CancellationToken.None));
         }
 
-        private void AccountCheckoutTester(EastBayBot bot)
-        {
-            bot.AccountCheckout(null, CancellationToken.None);
-            Thread.Sleep(100000);
-        }
 
         [TestMethod]
         public void LoginTest()
