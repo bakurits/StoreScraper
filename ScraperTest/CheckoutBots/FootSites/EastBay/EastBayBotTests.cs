@@ -62,13 +62,23 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
             EOBrowserHelper.BotTester(new EastBayBot(), bot => bot.AccountCheckout(null, CancellationToken.None));
         }
 
+        private void AccountCheckoutTester(EastBayBot bot)
+        {
+            bot.AccountCheckout(null, CancellationToken.None);
+            Thread.Sleep(100000);
+        }
 
         [TestMethod]
         public void LoginTest()
         {
-            EastBayBot bot = new EastBayBot();
+            EOBrowserHelper.BotTester(new EastBayBot(), Login);
+        }
+
+        private static void Login(EastBayBot bot)
+        {
             bot.Login("bakuricucxashvili@gmail.com", "Yrf7B2RHW", CancellationToken.None);
-        } 
+            Thread.Sleep(100000);
+        }
 
         [TestMethod]
         public void ScrapeReleasePageTest()
