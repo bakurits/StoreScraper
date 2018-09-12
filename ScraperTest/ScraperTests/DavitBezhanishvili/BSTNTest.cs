@@ -21,7 +21,7 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
         {
             var scraper = new BSTNScraper();
 
-            var testUrl = "https://www.bstn.com/en/p/adidas-continental-80-b41675-76624";
+            const string testUrl = "https://www.bstn.com/en/p/adidas-continental-80-b41675-76624";
 
             var details = scraper.GetProductDetails(testUrl, CancellationToken.None);
         //    Debug.WriteLine(details.Currency);

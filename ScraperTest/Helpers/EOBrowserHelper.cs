@@ -14,6 +14,7 @@ using ScraperTest.Controls;
 
 namespace ScraperTest.Helpers
 {
+    // ReSharper disable once InconsistentNaming
     public static class EOBrowserHelper
     {
      

@@ -13,6 +13,9 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 {
     public class EastBayBot : FootSitesBotBase
     {
+
+        public int DelayInSecond { private get; set; } = 5;
+        
         private const string ApiUrl = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/1";
 
         public EastBayBot() : base("EastBay", "https://www.eastbay.com", ApiUrl)
@@ -21,31 +24,19 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 
         public override HttpClient Login(string username, string password, CancellationToken token)
         {
-
-            Driver.Url = WebsiteBaseUrl;
-            Driver.EvalScript(@"
-                                document.evaluate(""//div[@id='header_account_button']/a/span"", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.click();
-                                ");
-
             
-            var driver = DriverFactory.CreateFirefoxDriver();
-            driver.Navigate().GoToUrl(WebsiteBaseUrl);
-            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
+            Driver.Url = WebsiteBaseUrl;
+            Task.Delay(DelayInSecond * 1000, token).Wait(token);
+            Driver.EvalScript(GetScriptByXpath("//div[@id='header_account_button']/a/span") + ".click();");
 
-            var loginPopupButton = GetClickableElementByXPath("//div[@id='header_account_button']/a/span", wait, token);
-            loginPopupButton.Click();
+            Task.Delay(DelayInSecond * 1000, token).Wait(token);
+            
+            Driver.EvalScript($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");
+            Driver.EvalScript($"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{password}\"");
+            Driver.EvalScript($"{GetScriptByXpath("//input[@id='login_submit']")}.click()");
+            Task.Delay(DelayInSecond * 1000, token).Wait(token);
 
-            var emailTextBox = GetVisibleElementByXPath("//input[@id='login_email']", wait, token);
-            emailTextBox.SendKeys(username);
-
-
-            var passwordTextBox = GetVisibleElementByXPath("//input[@id='login_password']", wait, token);
-            passwordTextBox.SendKeys(password);
-
-            var signinButton = GetClickableElementByXPath("//input[@id='login_submit']", wait, token);
-            signinButton.Click();
-
-            throw new NotImplementedException();
+            throw new NotImplementedException(); 
         }
 
         public override void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
@@ -74,8 +65,14 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         public override void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token)
         {
             Driver.Url = this.WebsiteBaseUrl;
-            Task.Delay(5000).Wait();
+            Task.Delay(DelayInSecond * 1000, token).Wait(token);
             throw new NotImplementedException();
+        }
+
+        public static string GetScriptByXpath(string xPath)
+        {
+            return
+                $@"document.evaluate(""{xPath}"", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue";
         }
 
 
