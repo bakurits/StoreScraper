@@ -1,9 +1,8 @@
 ﻿using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
-using StoreScraper.Bots.Sticky_bit.BSTN;
 
-namespace ScraperTest.ScraperTests.Sticky_bit
+namespace ScraperTest.ScraperTests.DavitBezhanishvili
 {
     [TestClass]
     public class BSTNTest
