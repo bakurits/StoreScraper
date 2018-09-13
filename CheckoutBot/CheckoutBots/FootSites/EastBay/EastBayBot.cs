@@ -51,6 +51,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
                 }
             };
 
+
             Driver.ScriptCallDone += callHandler;
             
             Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");

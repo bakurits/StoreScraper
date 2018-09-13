@@ -59,6 +59,7 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
         [TestMethod]
         public void AccountCheckoutTest()
         {
+
             EOBrowserHelper.BotTester(new EastBayBot(), bot => bot.AccountCheckout(null, CancellationToken.None));
         }
 

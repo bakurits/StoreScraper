@@ -37,7 +37,7 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.Nordstrom
             var request = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = request.GetDoc(searchUrl, token);
             var ds = document.DocumentNode;
-            var nodes = ds.SelectSingleNode("//div[contains(@class, 'resultSet_RiuQj')]/div");
+            var nodes = ds.SelectSingleNode("//section[contains(@data-element, 'product-gallery')]/div/div");
             if (nodes == null)
             {
                 return;
