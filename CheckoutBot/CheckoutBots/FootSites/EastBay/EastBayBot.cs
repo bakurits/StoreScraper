@@ -56,11 +56,11 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");
             Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{password}\"");
             Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_submit']")}.click()");
-            Console.WriteLine("Before delay");
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
-            Driver.Reload();
-            Task.Delay(DelayInSecond * 1000, token).Wait(token);
- 
+            
+
+            return null;
+
         }
 
         public override void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
