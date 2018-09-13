@@ -232,6 +232,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
 
             ProductDetails details = new ProductDetails()
             {
+                StoreName = WebsiteName,
                 Price = price.Value,
                 Name = name,
                 Currency = price.Currency,
