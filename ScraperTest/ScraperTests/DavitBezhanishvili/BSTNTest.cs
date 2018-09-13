@@ -26,5 +26,15 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
             var details = scraper.GetProductDetails(testUrl, CancellationToken.None);
             Helper.PrintGetDetailsResult(details.SizesList);
         }
+
+        [TestMethod]
+        public void NewArrivalsTest()
+        {
+            var scraper = new BSTNScraper();
+
+            scraper.ScrapeNewArrivalsPage(out var lst, CancellationToken.None);
+            Helper.PrintFindItemsResults(lst);
+        }
+
     }
 }

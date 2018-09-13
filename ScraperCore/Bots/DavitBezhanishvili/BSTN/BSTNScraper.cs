@@ -56,10 +56,12 @@ namespace StoreScraper.Bots.Sticky_bit.BSTN
             CancellationToken token)
         {
             var node = GetWebPage(url, token).DocumentNode;
-            var children = node.SelectNodes("//li[@class='item']");
+            var children = node.SelectNodes("//div[@class='itemWrapper pOverlay']");
 
             foreach (var child in children)
-                if (child.SelectSingleNode(".//div[@class='pLabel comingsoon']") == null && child.GetAttributeValue("style", null) == null)
+                if (child.SelectSingleNode(".//div[@class='pLabel comingsoon']") == null &&
+                    (child.ParentNode.GetAttributeValue("style", null) == null ||
+                     !child.ParentNode.GetAttributeValue("style", null).Equals("visibility:hidden")))
                 {
                     token.ThrowIfCancellationRequested();
 #if DEBUG
@@ -114,7 +116,7 @@ namespace StoreScraper.Bots.Sticky_bit.BSTN
             var sizesNode = webPage.SelectSingleNode("//div[contains(@class,'selectVariants')]/ul");
             if (sizesNode != null) return OnScreenSizesList(sizesNode, details);
             sizesNode = webPage.SelectSingleNode("//select[@class='customSelectBox']");
-            if(sizesNode!= null)  return DropDownSizesList(sizesNode, details);
+            if (sizesNode != null) return DropDownSizesList(sizesNode, details);
             return details;
         }
 
@@ -122,7 +124,7 @@ namespace StoreScraper.Bots.Sticky_bit.BSTN
         {
             var sizes = sizesNode.SelectNodes("./option");
             foreach (var size in sizes)
-                if (size.GetAttributeValue("class",null) != null && size.GetAttributeValue("class",null)!="disabled")
+                if (size.GetAttributeValue("class", null) != null && size.GetAttributeValue("class", null) != "disabled")
                 {
                     details.AddSize(ExtractEuroSize(size.InnerText.Trim()), "Unknown");
                 }
@@ -155,7 +157,7 @@ namespace StoreScraper.Bots.Sticky_bit.BSTN
             var image = WebsiteBaseUrl + webPage.SelectSingleNode(
                             "//div[contains(@class,'productSlider')]/ul[@class='slides']/li/a/img").GetAttributeValue("src", null);
             var priceNode = webPage.SelectSingleNode("//div[@class='price']");
-            var priceTxt = (priceNode.SelectSingleNode("./span[@class='price']") ?? priceNode.SelectSingleNode("./span[@class='newprice']")).InnerText.Trim() ;
+            var priceTxt = (priceNode.SelectSingleNode("./span[@class='price']") ?? priceNode.SelectSingleNode("./span[@class='newprice']")).InnerText.Trim();
             var price = Utils.ParsePrice(priceTxt);
             var keyWords = webPage.SelectSingleNode("//meta[@name = 'keywords']").GetAttributeValue("content", null);
 
