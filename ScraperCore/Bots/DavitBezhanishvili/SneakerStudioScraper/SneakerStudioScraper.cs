@@ -220,8 +220,11 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
         {
             var name = webPage.SelectSingleNode("//div[@class='projector_navigation']/h1").InnerText.Trim();
 
-            var image = WebsiteBaseUrl + webPage.SelectSingleNode(
-                            "//div[contains(@class,'photos col-md-7 col-xs-12')]/a[@id ='projector_image_1']/img").GetAttributeValue("src", null);
+            var picNode = webPage.SelectSingleNode(
+                "//div[contains(@class,'photos col-md-7 col-xs-12')]/a[@id ='projector_image_1']/img");
+            string image = null;
+            if(picNode!=null)
+                image = WebsiteBaseUrl + picNode.GetAttributeValue("src", null);
             var priceNode = webPage.SelectSingleNode("//strong[@class='projector_price_value']");
             var txt = priceNode.InnerText.Trim();
             var price = Utils.ParsePrice(txt);

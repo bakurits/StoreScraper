@@ -25,6 +25,14 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
             Helper.PrintFindItemsResults(list);
         }
         [TestMethod]
+        public void NewArrivalsTest()
+        {
+            var scraper = new SneakerStudioScraper();
+
+            scraper.ScrapeNewArrivalsPage(out var list, CancellationToken.None);
+            Helper.PrintFindItemsResults(list);
+        }
+        [TestMethod]
         public void GetProductDetailsTest1()
         {
             var scraper = new SneakerStudioScraper();
