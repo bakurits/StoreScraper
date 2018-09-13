@@ -16,8 +16,8 @@ namespace ScraperTest.Helpers
 {
     // ReSharper disable once InconsistentNaming
     public static class EOBrowserHelper
-    {
-     
+    {   
+        public static EOTestForm MainForm;
         public static void BotTester<T>(T bot, Action<T> action) where T : FootSitesBotBase
         {
             Application.EnableVisualStyles();
@@ -31,10 +31,13 @@ namespace ScraperTest.Helpers
             Task.Delay(5000).ContinueWith(delay =>
             {  
                 action(bot);
+                Application.Exit();
+                Environment.Exit(Environment.ExitCode);
             });
             
             form.Visible = true;
             form.Focus();
+            MainForm = form;
             Application.Run(form);
         }
 

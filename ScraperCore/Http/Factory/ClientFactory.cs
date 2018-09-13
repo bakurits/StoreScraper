@@ -155,10 +155,10 @@ namespace StoreScraper.Http.Factory
         public static HttpClient CreateProxiedHttpClient(WebProxy proxy = null, bool autoCookies = false)
         {
             proxy = proxy ?? GetRandomProxy();
-            return CreateHttpCLient(proxy, autoCookies);
+            return CreateHttpClient(proxy, autoCookies);
         }
 
-        public static HttpClient CreateHttpCLient(WebProxy proxy = null, bool autoCookies = false)
+        public static HttpClient CreateHttpClient(WebProxy proxy = null, bool autoCookies = false)
         {
             HttpClientHandler handler = new ExtendedClientHandler()
             {
