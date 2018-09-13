@@ -148,9 +148,20 @@ namespace StoreScraper.Bots.DavitBezhanishvili.AwLab
             if (jsonStr == "") return details;
 
             JObject parsed = JObject.Parse(jsonStr);
+            var str = Regex.Match(webPage.InnerHtml, @"var spConfigDisabledProducts = \[([^()]*)\]").Groups[1].Value;
+            var disabledSizes = JArray.Parse("[" + str + "]");
+            var disabledList = new List<string>();
+            foreach (var sz in disabledSizes)
+            {
+                disabledList.Add((string)sz.ToString());
+            }
+
             var sizes = parsed.SelectToken("attributes").SelectToken("959").SelectToken("options");
             foreach (JToken sz in sizes.Children())
             {
+                var productId = sz.SelectToken("products")[0].ToString();
+                if(disabledList.Contains(productId)) continue;
+
                 var sizeName = (string)sz.SelectToken("label");
                 var size = ParseSize(sizeName);
                 details.AddSize(size, "Unknown");
