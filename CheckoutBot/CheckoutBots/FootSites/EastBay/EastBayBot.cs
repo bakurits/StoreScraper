@@ -51,7 +51,6 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
                 }
             };
 
-
             Driver.ScriptCallDone += callHandler;
             
             Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");
@@ -59,29 +58,9 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_submit']")}.click()");
             Console.WriteLine("Before delay");
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
-            
-            Console.WriteLine("ylep");
-            
-            
-            var cookieContainer = new CookieContainer();
-            cookieContainer.Add(cookieCollector);
-
-            var handler  = new ExtendedClientHandler()
-            {
-                UseCookies = true,
-                MaxAutomaticRedirections = 3,
-                AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
-                AllowAutoRedirect = true,
-                CookieContainer = cookieContainer
-            };
-
-            var client = new HttpClient(handler).AddHeaders(ClientFactory.ChromeHeaders);
-            client.Timeout = TimeSpan.FromSeconds(5);
-
-            var doc = client.GetDoc("https://www.eastbay.com", CancellationToken.None);
-            Driver.LoadHtml(doc.DocumentNode.InnerHtml);
-            
-            return client;
+            Driver.Reload();
+            Task.Delay(DelayInSecond * 1000, token).Wait(token);
+ 
         }
 
         public override void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)

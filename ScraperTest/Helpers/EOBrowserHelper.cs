@@ -27,7 +27,7 @@ namespace ScraperTest.Helpers
             bot.Driver = form.Driver;
             form.Driver.CertificateError += (sender, args) => args.Continue();
             form.Driver.CustomUserAgent =
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36";
             Task.Delay(5000).ContinueWith(delay =>
             {  
                 action(bot);
