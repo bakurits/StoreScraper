@@ -114,8 +114,8 @@ namespace StoreScraper.Bots.Sticky_bit.BSTN
             var sizesNode = webPage.SelectSingleNode("//div[contains(@class,'selectVariants')]/ul");
             if (sizesNode != null) return OnScreenSizesList(sizesNode, details);
             sizesNode = webPage.SelectSingleNode("//select[@class='customSelectBox']");
-            return DropDownSizesList(sizesNode, details);
-
+            if(sizesNode!= null)  return DropDownSizesList(sizesNode, details);
+            return details;
         }
 
         private ProductDetails DropDownSizesList(HtmlNode sizesNode, ProductDetails details)

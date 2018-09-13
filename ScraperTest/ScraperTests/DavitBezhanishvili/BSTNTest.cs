@@ -21,10 +21,9 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
         {
             var scraper = new BSTNScraper();
 
-            const string testUrl = "https://www.bstn.com/en/p/adidas-continental-80-b41675-76624";
+            const string testUrl = "https://www.bstn.com/en/p/jordan-air-jordan-xxxii-low-basketball-aa1256-700-78736";
 
             var details = scraper.GetProductDetails(testUrl, CancellationToken.None);
-        //    Debug.WriteLine(details.Currency);
             Helper.PrintGetDetailsResult(details.SizesList);
         }
     }

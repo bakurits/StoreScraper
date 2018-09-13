@@ -49,7 +49,7 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
         {
             var scraper = new SneakerStudioScraper();
 
-            var testUrl = "https://sneakerstudio.com/product-eng-16256-Mens-shorts-Alpha-Industries-Kerosene-Short-Camo-176205-125.html";
+            var testUrl = "https://sneakerstudio.com/product-eng-15474-Womens-shoes-sneakers-New-Balance-WL574ESS.html";
 
             var details = scraper.GetProductDetails(testUrl, CancellationToken.None);
             Helper.PrintGetDetailsResult(details.SizesList);
