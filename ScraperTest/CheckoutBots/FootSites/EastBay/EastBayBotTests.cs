@@ -12,6 +12,7 @@ using EO.WebBrowser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
 using ScraperTest.MinorTests;
+using StoreScraper.Bots.Sticky_bit.ChampsSports_EastBay;
 using StoreScraper.Models;
 
 namespace ScraperTest.CheckoutBots.FootSites.EastBay
@@ -59,14 +60,24 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
         [TestMethod]
         public void AccountCheckoutTest()
         {
-
-            EOBrowserHelper.BotTester(new EastBayBot(), bot => bot.AccountCheckout(null, CancellationToken.None));
+            AccountCheckoutSettings settings =
+                new AccountCheckoutSettings("bakuricucxashvili@gmail.com", "Yrf7B2RHW", "123")
+                {
+                    ProductToBuy = new Product(new FootSimpleBase.EastBayScraper(), "yle",
+                        "https://www.eastbay.com/product/model:283446/sku:A7097514/nike-nba-swingman-jersey-mens/lebron-james/los-angeles-lakers/purple/",
+                        0, "", "A7097514"),
+                    BuyOptions = new ProductBuyOptions()
+                    {
+                        Size = "S"
+                    }
+                };
+            EOBrowserHelper.BotTester(new EastBayBot(){DelayInSecond = 7}, bot => bot.AccountCheckout(settings, CancellationToken.None));
         }
 
         [TestMethod]
         public void LoginTest()
         {
-            EOBrowserHelper.BotTester(new EastBayBot(){DelayInSecond = 7}, bot => bot.Login("bakuricucxashvili@gmail.com", "Yrf7B2RHW", CancellationToken.None));
+            EOBrowserHelper.BotTester(new EastBayBot(){DelayInSecond = 10}, bot => bot.Login("bakuricucxashvili@gmail.com", "Yrf7B2RHW", CancellationToken.None));
         }
 
         [TestMethod]

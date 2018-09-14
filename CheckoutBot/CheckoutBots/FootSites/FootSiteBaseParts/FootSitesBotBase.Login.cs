@@ -23,6 +23,6 @@ namespace CheckoutBot.CheckoutBots.FootSites
         /// <param name="password"></param>
         /// <param name="token"></param>
         /// <returns>HttpClient which contains session cookies of logged user</returns>
-        public abstract HttpClient Login(string username, string password, CancellationToken token);
+        public abstract void Login(string username, string password, CancellationToken token);
     }
 }
