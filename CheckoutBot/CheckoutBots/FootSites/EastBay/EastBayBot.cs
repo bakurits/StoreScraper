@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using CheckoutBot.Factory;
@@ -82,7 +84,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             var doc = client.GetDoc("https://www.eastbay.com", CancellationToken.None);
             Driver.LoadHtml(doc.DocumentNode.InnerHtml);
             
-            return client;
+            return;
         }
 
         public override void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
