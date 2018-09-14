@@ -140,5 +140,18 @@ namespace CheckoutBot.CheckoutBots.FootSites
             token.ThrowIfCancellationRequested();
             return element;
         }
+
+        protected static string GetScriptByXpath(string xPath)
+        {
+            return
+                $@"document.evaluate(""{xPath}"", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue";
+        }
+
+
+        protected static string GetAjaxRequest(JObject data, string url, string method)
+        {
+            return "";
+        }
+        
     }
 }

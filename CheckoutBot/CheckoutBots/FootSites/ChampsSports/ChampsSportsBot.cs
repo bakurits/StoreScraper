@@ -32,7 +32,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
             throw new NotImplementedException();
         }
 
-        public override HttpClient Login(string username, string password, CancellationToken token)
+        public override void Login(string username, string password, CancellationToken token)
         {
             Driver.Url = WebsiteBaseUrl;
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
@@ -44,13 +44,6 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             throw new NotImplementedException();
         }
-
-        public static string GetScriptByXpath(string xPath)
-        {
-            return
-                $@"document.evaluate(""{xPath}"", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue";
-        }
-
 
         private IWebElement GetVisibleElementByXPath(WebDriverWait wait, string xPath, CancellationToken token)
         {
