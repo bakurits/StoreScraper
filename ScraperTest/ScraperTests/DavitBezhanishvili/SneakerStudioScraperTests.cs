@@ -28,9 +28,11 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
         public void NewArrivalsTest()
         {
             var scraper = new SneakerStudioScraper();
-
+            scraper.Active = true;
+            var stopwatch = Stopwatch.StartNew();
             scraper.ScrapeNewArrivalsPage(out var list, CancellationToken.None);
             Helper.PrintFindItemsResults(list);
+            Console.WriteLine(stopwatch.Elapsed.ToString("g"));
         }
         [TestMethod]
         public void GetProductDetailsTest1()

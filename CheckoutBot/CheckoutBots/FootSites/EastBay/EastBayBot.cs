@@ -3,15 +3,22 @@ using System.Threading;
 using System.Threading.Tasks;
 using CheckoutBot.Factory;
 using CheckoutBot.Models.Checkout;
+using EO.Internal;
+using EO.WebBrowser;
+using EO.WebEngine;
 using OpenQA.Selenium.Support.UI;
+using ScraperCore.Http;
 using StoreScraper.Core;
+using StoreScraper.Helpers;
+using StoreScraper.Http.Factory;
+using Cookie = EO.WebEngine.Cookie;
+using CookieCollection = System.Net.CookieCollection;
 
 namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 {
     public class EastBayBot : FootSitesBotBase
     {
         private const string ApiUrl = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/1";
-        private static readonly object lock1 = new object();
 
         public EastBayBot() : base("EastBay", "https://www.eastbay.com", ApiUrl)
         {
@@ -30,11 +37,52 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             Driver.Url = WebsiteBaseUrl;
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             Driver.EvalScript(GetScriptByXpath("//div[@id='header_account_button']/a/span") + ".click();");
+
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
+            
+            var engine = Driver.Engine;
+            var cookieCollector = new CookieCollection();
+
+            void CallHandler(object sender, ScriptCallDoneEventArgs args)
+            {
+                var cookies = engine.CookieManager.GetCookies();
+                cookieCollector = new CookieCollection();
+                for (int i = 0; i < cookies.Count; i++)
+                {
+                    var cookie = cookies[i];
+                    cookieCollector.Add(new Cookie(cookie.Name, cookie.Value));
+                }
+            }
+
+            Driver.ScriptCallDone += CallHandler;
+            
             Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");
             Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{password}\"");
             Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_submit']")}.click()");
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
+            
+            Console.WriteLine("ylep");
+            
+            
+            var cookieContainer = new CookieContainer();
+            cookieContainer.Add(cookieCollector);
+
+            var handler  = new ExtendedClientHandler()
+            {
+                UseCookies = true,
+                MaxAutomaticRedirections = 3,
+                AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
+                AllowAutoRedirect = true,
+                CookieContainer = cookieContainer
+            };
+
+            var client = new HttpClient(handler).AddHeaders(ClientFactory.ChromeHeaders);
+            client.Timeout = TimeSpan.FromSeconds(5);
+
+            var doc = client.GetDoc("https://www.eastbay.com", CancellationToken.None);
+            Driver.LoadHtml(doc.DocumentNode.InnerHtml);
+            
+            return client;
         }
 
         public override void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
