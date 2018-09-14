@@ -23,6 +23,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
 
         public override void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token)
         {
+
             throw new NotImplementedException();
         }
 
@@ -35,11 +36,12 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
         {
             Driver.Url = WebsiteBaseUrl;
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
-            Driver.EvalScript(GetScriptByXpath("//div[@id='header_login']/a") + ".click();");
+            Driver.EvalScript(GetScriptByXpath("//div[@id='header_login']") + ".click();");
+            Task.Delay(DelayInSecond * 1000, token).Wait(token);
             Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");
             Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{password}\"");
             Driver.QueueScriptCall($"{GetScriptByXpath("//div[@id='header_login']/a//input[@id='login_submit']")}.click()");
-
+            Task.Delay(DelayInSecond * 1000, token).Wait(token);
             throw new NotImplementedException();
         }
 

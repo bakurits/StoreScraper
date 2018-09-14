@@ -12,6 +12,7 @@ using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 using System.Net.Http;
+using System.Threading.Tasks;
 using StoreScraper.Attributes;
 
 namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
@@ -92,10 +93,23 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
 #endif
                 }
 
-            listOfProducts = (from prod in listOfProducts.AsParallel()
-                              select string.IsNullOrWhiteSpace(prod.Name) ? (Product)GetProductDetails(prod.Url, token) : prod).ToList();
+
         }
 
+        private Product FillProduct(Product p, CancellationToken token)
+        {
+            if (!string.IsNullOrWhiteSpace(p.Name)) return p;
+            try
+            {
+                p = GetProductDetails(p.Url, token);
+            }
+            catch
+            {
+                //ignored
+            }
+
+            return p;
+        }
 
         /// <summary>
         /// This method is simple wrapper on LoadSingleProduct

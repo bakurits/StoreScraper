@@ -26,8 +26,7 @@ namespace ScraperTest.CheckoutBots.FootSites.ChampsSports
         [TestMethod()]
         public void LoginTest()
         {
-            //EOBrowserHelper.BotTester(new ChampsSportsBot() { DelayInSecond = 1 }, bot => bot.Login("gbagh16@freeuni.edu.ge", "giorgi121", CancellationToken.None));
-
+            EOBrowserHelper.BotTester(new ChampsSportsBot() { DelayInSecond = 7 }, bot => bot.Login("gbagh16@freeuni.edu.ge", "giorgi121", CancellationToken.None));
         }
 
         [TestMethod()]
