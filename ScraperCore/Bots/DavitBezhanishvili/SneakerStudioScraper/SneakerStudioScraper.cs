@@ -12,7 +12,9 @@ using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 using System.Net.Http;
+using System.Threading.Tasks;
 using StoreScraper.Attributes;
+using StoreScraper.Http;
 
 namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
 {
@@ -20,40 +22,94 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
     {
         public override string WebsiteName { get; set; } = "SneakerStudio";
         public override string WebsiteBaseUrl { get; set; } = "https://sneakerstudio.com";
-        public override bool Active { get; set; }
+
+
+        private bool _active;
+        public override bool Active
+        {
+            get => _active;
+            set
+            {
+                if (value)
+                {
+
+                    Task.WaitAll
+                    (
+                        Task.Run(() =>
+                        {
+                            Parallel.ForEach(ClientFactory.Storage.ProxiedClients.Values, client =>
+                            {
+                                try
+                                {
+                                    client.GetAsync(NewArrivalsUrl).Result.EnsureSuccessStatusCode();
+                                    HttpRequestMessage message = new HttpRequestMessage();
+                                    message.Method = HttpMethod.Get;
+                                    message.RequestUri = SettingsUrl;
+                                    message.Headers.Referrer = NewArrivalsUrl;
+                                    client.SendAsync(message).Result.EnsureSuccessStatusCode();
+                                }
+                                catch
+                                {
+                                    //ignored
+                                }
+                            });
+                        }),
+
+                        Task.Run(() =>
+                        {
+                            try
+                            {
+                                HttpRequestMessage message = new HttpRequestMessage();
+                                message.Method = HttpMethod.Get;
+                                message.RequestUri = SettingsUrl;
+                                message.Headers.Referrer = NewArrivalsUrl;
+                                ClientFactory.Storage.ProxilessClient.SendAsync(message).Result.EnsureSuccessStatusCode();
+                            }
+                            catch
+                            {
+                                //ignored
+                            }
+                        })
+
+                    );
+                    _active = true;
+                }
+                else _active = false;
+            }
+        }
 
 
         private readonly Uri NewArrivalsUrl = new Uri("https://sneakerstudio.com/New-snewproducts-eng.html?newproducts=y&");
         private readonly Uri SettingsUrl = new Uri("https://sneakerstudio.com/settings.php?sort_order=date-d&curr=USD");
-
-        private ConcurrentDictionary<HttpClient, DateTime> _activeClients = new ConcurrentDictionary<HttpClient, DateTime>();
+        private readonly Uri SettingsUrl2 = new Uri(@"https://sneakerstudio.com/settings.php?curr=USD");
+      
 
         public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
         {
             listOfProducts = new List<Product>();
             var client = ClientFactory.GetProxiedFirefoxClient();
 
-            _activeClients.TryGetValue(client, out var value);
-
             HtmlDocument doc = null;
 
-            if (DateTime.Now.Subtract(value).TotalMinutes > 10)
+            if (!Active)
             {
-                HttpRequestMessage message = new HttpRequestMessage();
-                message.Method = HttpMethod.Get;
-                message.RequestUri = SettingsUrl;
+                HttpRequestMessage message = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = SettingsUrl
+                };
                 message.Headers.Referrer = NewArrivalsUrl;
                 doc = client.GetDoc(message, token);
-                _activeClients[client] = DateTime.Now;
             }
             else
             {
                 doc = client.GetDoc(NewArrivalsUrl.AbsoluteUri, token);
             }
 
-             
+
 
             Scrap(doc, ref listOfProducts, null, token);
+            FillProductNames(ref listOfProducts, token);
         }
 
 
@@ -64,17 +120,15 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
             var referer = new Uri($"https://sneakerstudio.com/search.php?text={settings.KeyWords}");
 
             var client = ClientFactory.GetProxiedFirefoxClient();
-            _activeClients.TryGetValue(client, out var value);
             HtmlDocument doc = null;
 
-            if (DateTime.Now.Subtract(value).TotalMinutes > 10)
+            if (!Active)
             {
                 HttpRequestMessage message = new HttpRequestMessage();
                 message.Method = HttpMethod.Get;
                 message.RequestUri = SettingsUrl;
                 message.Headers.Referrer = referer;
                 doc = client.GetDoc(message, token);
-                _activeClients.AddOrUpdate(client, DateTime.Now, (httpClient, time) => DateTime.Now);
             }
             else
             {
@@ -113,9 +167,14 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
 #endif
                 }
 
+        }
+
+
+        private void FillProductNames(ref List<Product> listOfProducts, CancellationToken token)
+        {
             CancellationTokenSource tokenSource = CancellationTokenSource.CreateLinkedTokenSource(token);
 
-            listOfProducts = listOfProducts.AsParallel().WithExecutionMode(ParallelExecutionMode.ForceParallelism).Select
+            listOfProducts = listOfProducts.AsParallel().WithExecutionMode(ParallelExecutionMode.ForceParallelism).WithDegreeOfParallelism(500).Select
             (
                 prod =>
                 {
@@ -204,16 +263,14 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
             var client = ClientFactory.GetProxiedFirefoxClient();
 
             HtmlDocument doc = null;
-            _activeClients.TryGetValue(client, out var value);
 
-            if (DateTime.Now.Subtract(value).TotalMinutes > 10)
+            if (!Active)
             {
                 HttpRequestMessage message = new HttpRequestMessage();
                 message.Method = HttpMethod.Get;
-                message.RequestUri = new Uri(@"https://sneakerstudio.com/settings.php?curr=USD");
+                message.RequestUri = SettingsUrl2;
                 message.Headers.Referrer = new Uri(productUrl);
                 doc = client.GetDoc(message, token);
-                _activeClients.AddOrUpdate(client, DateTime.Now, (httpClient, time) => DateTime.Now);
             }
             else
             {
