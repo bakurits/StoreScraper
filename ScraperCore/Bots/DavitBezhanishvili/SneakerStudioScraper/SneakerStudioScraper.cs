@@ -210,7 +210,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
             {
                 HttpRequestMessage message = new HttpRequestMessage();
                 message.Method = HttpMethod.Get;
-                message.RequestUri = SettingsUrl;
+                message.RequestUri = new Uri(@"https://sneakerstudio.com/settings.php?curr=USD");
                 message.Headers.Referrer = new Uri(productUrl);
                 doc = client.GetDoc(message, token);
                 _activeClients.AddOrUpdate(client, DateTime.Now, (httpClient, time) => DateTime.Now);
