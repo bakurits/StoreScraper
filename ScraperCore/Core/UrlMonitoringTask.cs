@@ -15,19 +15,24 @@ namespace StoreScraper.Core
         public string Url { get; set; }
         
 
-        public override void MonitorOnce(CancellationToken token)
+        public override void StartMonitoring(CancellationToken token)
         {
-            var details = _scraper.GetProductDetails(Url, token);
+            while (!token.IsCancellationRequested)
+            {
+                var details = _scraper.GetProductDetails(Url, token);
 
-            if (details.SizesList.Count > _oldDetails.SizesList.Count)
-            {
-                Logger.Instance.WriteVerboseLog("New Size was found in stock");
-                _oldDetails = details;
-               DoFinalActions(details, token);
-            }
-            else
-            {
-                Logger.Instance.WriteVerboseLog("Url monitoring epoch completed. No new sizes in stock");
+                if (details.SizesList.Count > _oldDetails.SizesList.Count)
+                {
+                    Logger.Instance.WriteVerboseLog("New Size was found in stock");
+                    _oldDetails = details;
+                    DoFinalActions(details, token);
+                }
+                else
+                {
+                    Logger.Instance.WriteVerboseLog("Url monitoring epoch completed. No new sizes in stock");
+                }
+
+                Task.Delay(AppSettings.Default.MonitoringDelay, token).Wait(token);
             }
         }
 

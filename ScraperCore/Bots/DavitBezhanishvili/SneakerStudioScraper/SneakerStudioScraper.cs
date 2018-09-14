@@ -314,7 +314,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
         {
             string json = "{";
             var str = "var product_data = {";
-            var ind = webPageInnerHtml.IndexOf(str);
+            var ind = webPageInnerHtml.IndexOf(str, StringComparison.Ordinal);
             ind += str.Length;
             int parCount = 1;
             while (parCount > 0)
