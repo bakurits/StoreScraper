@@ -40,8 +40,9 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             
             var engine = Driver.Engine;
             var cookieCollector = new CookieCollection();
-            ScriptCallDoneHandler callHandler = (sender, args) =>
-            {    
+
+            void CallHandler(object sender, ScriptCallDoneEventArgs args)
+            {
                 var cookies = engine.CookieManager.GetCookies();
                 cookieCollector = new CookieCollection();
                 for (int i = 0; i < cookies.Count; i++)
@@ -49,9 +50,9 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
                     var cookie = cookies[i];
                     cookieCollector.Add(new Cookie(cookie.Name, cookie.Value));
                 }
-            };
+            }
 
-            Driver.ScriptCallDone += callHandler;
+            Driver.ScriptCallDone += CallHandler;
             
             Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");
             Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{password}\"");
