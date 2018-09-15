@@ -23,6 +23,7 @@ using CheckoutBot.Models.Checkout;
 using Newtonsoft.Json;
 using EO;
 using EO.WebBrowser;
+using StoreScraper.Helpers;
 
 namespace CheckoutBot
 {
@@ -338,9 +339,10 @@ namespace CheckoutBot
                 {
                     bot.GetProductSizes(product, CancellationToken.None);
                     product.Sizes.ForEach(size => cbx_Size.Items.Add(size));
+                    //var image = AppData.CommonFirefoxClient.GetImage(product.ImageUrl, 300, 200);
+                    BitmapImage bImage = new BitmapImage(new Uri(product.ImageUrl));
+                    img_Product.Source = bImage;
                 }
-                
-
             }
         }
     }

@@ -9,6 +9,7 @@ using CheckoutBot.CheckoutBots.FootSites.ChampsSports;
 using CheckoutBot.CheckoutBots.FootSites.EastBay;
 using CheckoutBot.CheckoutBots.FootSites.FootAction;
 using CheckoutBot.CheckoutBots.FootSites.FootLocker;
+using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 
 namespace CheckoutBot
@@ -22,6 +23,9 @@ namespace CheckoutBot
             //new ChampsSportsBot(),
             new EastBayBot(), 
         };
+
+        public static HttpClient CommonFirefoxClient =
+            ClientFactory.CreateHttpClient(autoCookies: false).AddHeaders(ClientFactory.FireFoxHeaders);
 
     }
 }
