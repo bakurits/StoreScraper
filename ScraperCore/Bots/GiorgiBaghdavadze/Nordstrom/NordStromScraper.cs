@@ -16,7 +16,7 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.Nordstrom
     public class NordstromScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Nordstrom";
-        public override string WebsiteBaseUrl { get; set; } = "http://shop.nordstrom.com";
+        public override string WebsiteBaseUrl { get; set; } = "https://shop.nordstrom.com";
         public override bool Active { get; set; }
         public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
         {
@@ -28,7 +28,7 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.Nordstrom
         {
             listOfProducts = new List<Product>();
             var searchUrl =
-                $"http://shop.nordstrom.com/sr?origin=keywordsearch&keyword={settings.KeyWords}&top=72&offset=0&page=1&sort=Newest";
+                $"https://shop.nordstrom.com/sr?origin=keywordsearch&keyword={settings.KeyWords}&top=72&offset=0&page=1&sort=Newest";
             scrap(listOfProducts, searchUrl, token, settings);
         }
 

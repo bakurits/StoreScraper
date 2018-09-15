@@ -7,21 +7,24 @@ using CheckoutBot.CheckoutBots.FootSites;
 using EO.Internal;
 using EO.WebBrowser;
 using StoreScraper.Models;
+using Timer = System.Timers.Timer;
 
 namespace CheckoutBot.Core
 {
     public class ReleasedProductsMonitor
     {
-        private static readonly ConcurrentDictionary<FootSitesBotBase, List<Product>> UpComingReleaseData =
+        public static ReleasedProductsMonitor Default { get; set; }
+
+        private readonly ConcurrentDictionary<FootSitesBotBase, List<Product>> UpComingReleaseData =
             new ConcurrentDictionary<FootSitesBotBase, List<Product>>();
 
-        public static List<Product> GetUpcomingReleases(FootSitesBotBase bot) => UpComingReleaseData.ContainsKey(bot) ? new List<Product>() : UpComingReleaseData[bot];
+        public List<Product> GetUpcomingReleases(FootSitesBotBase bot) => UpComingReleaseData.ContainsKey(bot) ? new List<Product>() : UpComingReleaseData[bot];
         public CancellationToken Token { private get; set; } = CancellationToken.None;
         public int MinutesToMonitor { private get; set; } = 10;
+        private readonly Timer timer = new Timer();
         
-        public void ProductsMonitoringTask()
+        public ReleasedProductsMonitor()
         {
-            var timer = new System.Timers.Timer(TimeSpan.FromMinutes(MinutesToMonitor).Milliseconds);
             timer.Elapsed += UpdateUpcomingProductList;
             timer.Start();
         }

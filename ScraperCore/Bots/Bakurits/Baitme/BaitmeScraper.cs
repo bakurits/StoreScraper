@@ -17,10 +17,10 @@ namespace StoreScraper.Bots.Bakurits.Baitme
     public class BaitmeScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Bait";
-        public override string WebsiteBaseUrl { get; set; } = "http://www.baitme.com/";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.baitme.com/";
         public override bool Active { get; set; }
 
-        private readonly string _urlFormat = @"http://www.baitme.com/catalogsearch/result/?q={0}";
+        private readonly string _urlFormat = @"https://www.baitme.com/catalogsearch/result/?q={0}";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,
             CancellationToken token)
@@ -72,14 +72,14 @@ namespace StoreScraper.Bots.Bakurits.Baitme
 
         private readonly List<string> _newArrivalPageUrls = new List<string>
         {
-            "http://www.baitme.com/bait-products",
-            "http://www.baitme.com/nike",
-            "http://www.baitme.com/footwear",
-            "http://www.baitme.com/headwear",
-            "http://www.baitme.com/apparel",
-            "http://www.baitme.com/accessories",
-            "http://www.baitme.com/collectibles",
-            "http://www.baitme.com/skateboard-snowboard"
+            "https://www.baitme.com/bait-products",
+            "https://www.baitme.com/nike",
+            "https://www.baitme.com/footwear",
+            "https://www.baitme.com/headwear",
+            "https://www.baitme.com/apparel",
+            "https://www.baitme.com/accessories",
+            "https://www.baitme.com/collectibles",
+            "https://www.baitme.com/skateboard-snowboard"
         };
 
         public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
