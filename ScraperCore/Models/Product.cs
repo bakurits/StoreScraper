@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Threading;
+using EO.Internal;
 using StoreScraper.Models;
 using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
@@ -34,7 +35,7 @@ namespace StoreScraper.Models
         public double Price { get; set; }
 
         /// <summary>
-        /// Short name of currecy.
+        /// Short name of currency.
         /// For example: USD, EUR etc..
         /// </summary>
         [Browsable(false)]

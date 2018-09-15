@@ -14,7 +14,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
     public class ChampsSportsBot : FootSitesBotBase
     {
         private const string ApiUrl = "";
-        public int DelayInSecond { private get; set; } = 2;
+        public int DelayInSecond { private get; set; } = 5;
 
         public ChampsSportsBot() : base("ChampsSports", "https://www.champssports.com/", ApiUrl)
         {
@@ -35,14 +35,14 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
         public override void Login(string username, string password, CancellationToken token)
         {
             Driver.Url = WebsiteBaseUrl;
-            Task.Delay(DelayInSecond * 1000, token).Wait(token);
+            Task.Delay(10 * 1000, token).Wait(token);
             Driver.EvalScript(GetScriptByXpath("//div[@id='header_login']") + ".click();");
-            Task.Delay(DelayInSecond * 1000, token).Wait(token);
+            Task.Delay(10 * 1000, token).Wait(token);
+            username = "ggg";
             Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");
             Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{password}\"");
-            Driver.QueueScriptCall($"{GetScriptByXpath("//div[@id='header_login']/a//input[@id='login_submit']")}.click()");
+            //Driver.QueueScriptCall($"{GetScriptByXpath("//div[@id='header_login']/a//input[@id='login_submit']")}.click()");
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
-            throw new NotImplementedException();
         }
 
         private IWebElement GetVisibleElementByXPath(WebDriverWait wait, string xPath, CancellationToken token)

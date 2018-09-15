@@ -1,18 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
 using CheckoutBot.Factory;
+using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
 using EO.Internal;
 using EO.WebBrowser;
 using EO.WebEngine;
+using Newtonsoft.Json.Linq;
 using OpenQA.Selenium.Support.UI;
 using ScraperCore.Http;
 using StoreScraper.Core;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
+using StoreScraper.Models;
 using Cookie = EO.WebEngine.Cookie;
 using CookieCollection = System.Net.CookieCollection;
 
@@ -42,7 +47,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             
-            var engine = Driver.Engine;
+            /*var engine = Driver.Engine;
             var cookieCollector = new CookieCollection();
 
             void CallHandler(object sender, ScriptCallDoneEventArgs args)
@@ -57,13 +62,14 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             }
 
             Driver.ScriptCallDone += CallHandler;
-            
+            */
+
             Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");
             Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{password}\"");
             Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_submit']")}.click()");
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             
-            Console.WriteLine("ylep");
+            /*Console.WriteLine("ylep");
             
             
             var cookieContainer = new CookieContainer();
@@ -83,7 +89,8 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 
             var doc = client.GetDoc("https://www.eastbay.com", CancellationToken.None);
             Driver.LoadHtml(doc.DocumentNode.InnerHtml);
-            
+            */
+
             return;
         }
 
@@ -112,16 +119,11 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 
         public override void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token)
         {
+            Login(settings.UserLogin, settings.UserPassword, token);
+            Task.Delay(DelayInSecond * 1000, token).Wait(token);
             Driver.Url = settings.ProductToBuy.Url;
-            Task.Delay(DelayInSecond * 1000, token).Wait(token);
-            Driver.EvalScript(GetScriptByXpath("//div[@id='header_account_button']/a/span") + ".click();");
-            Task.Delay(DelayInSecond * 1000, token).Wait(token);
-            Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{settings.UserLogin}\"");
-            Driver.QueueScriptCall(
-                $"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{settings.UserPassword}\"");
-            Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_submit']")}.click()");
-            Task.Delay(DelayInSecond * 1000, token).Wait(token);
-            string getReq = $@"
+            Task.Delay(DelayInSecond * 1000, token).Wait(token);            
+            Driver.EvalScript($@"
 var xhr = new XMLHttpRequest();
 var date = Date.now();
 xhr.open('GET',
@@ -136,11 +138,27 @@ xhr.onload = function() {{
         alert('Request failed.  Returned status of ' + xhr.status);
     }}
 }};
-xhr.send();";
-            // Console.WriteLine(getReq);
-            Driver.EvalScript(getReq);
+xhr.send();");
 
+        }
 
+        public void GetProductSizes(FootsitesProduct product, CancellationToken token)
+        {
+            List<string> infos = new List<string>();
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var document = client.GetDoc(product.Url, token).DocumentNode;
+            int ind = document.InnerHtml.IndexOf("var styles = ", StringComparison.Ordinal);
+            var sizeData = Utils.GetFirstJson(document.InnerHtml.Substring(ind));
+            var sizesForCurProd = (JArray)sizeData[product.Sku][7];
+
+            foreach (var item in sizesForCurProd)
+            {
+                var t = (JArray) item;
+                var s = (string)t[0];
+                infos.Add(s.Trim());
+            }
+
+            product.Sizes = infos;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using CheckoutBot.CheckoutBots.FootSites;
@@ -63,7 +64,7 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
             AccountCheckoutSettings settings =
                 new AccountCheckoutSettings("bakuricucxashvili@gmail.com", "Yrf7B2RHW", "123")
                 {
-                    ProductToBuy = new Product(new FootSimpleBase.EastBayScraper(), "yle",
+                    ProductToBuy = new FootsitesProduct(new FootSimpleBase.EastBayScraper(), "yle",
                         "https://www.eastbay.com/product/model:283446/sku:A7097514/nike-nba-swingman-jersey-mens/lebron-james/los-angeles-lakers/purple/",
                         0, "", "A7097514"),
                     BuyOptions = new ProductBuyOptions()
@@ -86,6 +87,22 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
             EastBayBot bot = new EastBayBot();
             List<Product> res = bot.ScrapeReleasePage(CancellationToken.None);
             Helper.PrintFindItemsResults(res);
+        }
+
+        [TestMethod]
+        public void TestSizes()
+        {
+            EastBayBot bot = new EastBayBot();
+            FootsitesProduct product = new FootsitesProduct(new FootSimpleBase.EastBayScraper(), "JORDAN RETRO 13",
+                "https://www.eastbay.com/product/model:150074/sku:84129035/",
+                0, "", "")
+            {
+                Sku = "84129035",
+                Model = "150074"
+            };
+            
+            bot.GetProductSizes(product, CancellationToken.None);
+            Debug.WriteLine(string.Join("\n", product.Sizes));
         }
     }
 }
