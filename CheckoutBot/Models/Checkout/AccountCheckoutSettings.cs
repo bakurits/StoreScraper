@@ -8,7 +8,7 @@ namespace CheckoutBot.Models.Checkout
         public string UserPassword { get; set; }
         public string UserCcv2 { get; set; }
 
-        public Product ProductToBuy { get; set; }
+        public FootsitesProduct ProductToBuy { get; set; }
         public ProductBuyOptions BuyOptions { get; set; }
     }
 }

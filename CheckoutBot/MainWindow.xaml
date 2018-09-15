@@ -242,8 +242,7 @@
 
                             <Label Content="CHOOSE SITE" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
 
-                            <ComboBox Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Visibility="Visible" Style="{StaticResource ComboBoxTest2}">
-                                <ComboBoxItem>http://footlocker.com</ComboBoxItem>
+                            <ComboBox x:Name="cbx_Websites" Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Visibility="Visible" Style="{StaticResource ComboBoxTest2}" SelectionChanged="cbx_Websites_SelectionChanged">
                             </ComboBox>
 
                             <Image Source="http://images-na.ssl-images-amazon.com/images/I/61qEF4YYrEL._UX500_.jpg" Width="200">
@@ -253,7 +252,7 @@
                             <Label Content="PRODUCT" Foreground="#576379" FontWeight="SemiBold" />
 
 
-                            <ComboBox Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch"  VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}">
+                            <ComboBox x:Name="cbx_Products" Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch"  VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}">
 
                             </ComboBox>
 

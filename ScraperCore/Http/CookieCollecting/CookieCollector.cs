@@ -74,7 +74,6 @@ namespace StoreScraper.Http
             while (true)
             {
                 MonitorEpoch();
-                Task.Delay(MonitorInterval).Wait(_cancellationTokenSource.Token);
                 _cancellationTokenSource.Token.ThrowIfCancellationRequested();
             }
         }

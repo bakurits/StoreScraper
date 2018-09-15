@@ -9,7 +9,7 @@ namespace CheckoutBot.Models.Checkout
         public ShippinInfo Shipping;
         public Card Card;
 
-        public Product ProductToBuy{get; set; }
+        public FootsitesProduct ProductToBuy{get; set; }
         public ProductBuyOptions BuyOptions{get; set;}
     }
 

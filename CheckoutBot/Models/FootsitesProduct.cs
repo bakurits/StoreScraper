@@ -35,5 +35,10 @@ namespace CheckoutBot.Models
             
         }
 
+
+        public override string ToString()
+        {
+            return $"{this.Name}- [{this.Color}]";
+        }
     }
 }

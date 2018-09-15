@@ -50,7 +50,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
       
         public List<FootsitesProduct> ScrapeReleasePage(CancellationToken token)
         {
-            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var client = ClientFactory.CreateHttpClient(autoCookies: true).AddHeaders(("Accept","application/json")).AddHeaders(ClientFactory.FirefoxUserAgentHeader);
             var task = client.GetStringAsync(ReleasePageApiEndpoint);
             task.Wait(token);
 
@@ -173,6 +173,10 @@ namespace CheckoutBot.CheckoutBots.FootSites
         {
             return "";
         }
-        
+
+        public override string ToString()
+        {
+            return this.WebsiteName;
+        }
     }
 }

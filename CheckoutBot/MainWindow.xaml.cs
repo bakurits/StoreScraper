@@ -12,6 +12,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using CheckoutBot.CheckoutBots.FootSites;
+using CheckoutBot.Core;
 using CheckoutBot.Models.Shipping;
 using CheckoutBot.Models.Payment;
 using CheckoutBot.Models;
@@ -30,6 +32,11 @@ namespace CheckoutBot
         public MainWindow()
         {
             InitializeComponent();
+
+            foreach (var bot in AppData.AvailableBots)
+            {
+                cbx_Websites.Items.Add(bot);
+            }
 
             List<TaskItem> items = new List<TaskItem>();
             items.Add(new TaskItem() { Keywords = "nike air", Size = 12, Retries = "1", Status="Checking out", ListImage="/images/list_progress.png" });
@@ -299,6 +306,16 @@ namespace CheckoutBot
                     Quantity = quantity,
                 }
             };
+        }
+
+        private void cbx_Websites_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var curStore = (FootSitesBotBase)cbx_Websites.SelectedValue;
+            var lst = ReleasedProductsMonitor.Default.GetProductsList(curStore);
+            foreach (var product in lst)
+            {
+                cbx_Products.Items.Add(product);
+            }
         }
     }
 
