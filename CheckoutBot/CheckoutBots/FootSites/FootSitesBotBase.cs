@@ -71,28 +71,31 @@ namespace CheckoutBot.CheckoutBots.FootSites
                     try
                     {
                         var date = GetDate(productData);
-                        if (date < DateTime.UtcNow) continue;
                         var name = GetPropertyAsString(productData, "name");
                         var price = GetPrice(productData);
                         var url = GetUrl(productData);
-                        var image = GetPropertyAsString(productData, "image");
+                        var image = GetPropertyAsString(productData, "primaryImageURL");
                         var sku = GetPropertyAsString(productData, "sku");
                         var model = GetPropertyAsString(productData, "model");
                         var color = GetPropertyAsString(productData, "color");
+                        var showLaunchCountdown = GetCountDownEnabled(productData);
+                        var gender = GetGender(productData);
                         
 
                         var product = new FootsitesProduct(this, name, url, price, image, url, "USD", date)
                         {
                             Sku = sku,
                             Model = model,
-                            Color = color
+                            Color = color,
+                            Gender = gender,
+                            LaunchCountdownEnabled = (showLaunchCountdown != 0)
                         };
 
                         products.Add(product);
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        Debug.WriteLine(productData);
+                        Debug.WriteLine(e.Message);
                     }
             }
 
@@ -126,6 +129,21 @@ namespace CheckoutBot.CheckoutBots.FootSites
         {
             if (productData[property].Type != JTokenType.Null)
                 return (string) productData[property];
+            return "Not Available";
+        }
+        
+        private int GetCountDownEnabled(JToken productData)
+        {
+            if (productData["showLaunchCountdown"].Type != JTokenType.Null)
+                return (int) productData["showLaunchCountdown"];
+            return 1;
+        }
+
+        private string GetGender(JToken productData)
+        {
+            if (productData["availableSizes"].Type == JTokenType.Null) return "Not Available";
+            if (((JArray)productData["availableSizes"])[0]["gender"].Type != JTokenType.Null)
+                return (string) ((JArray)productData["availableSizes"])[0]["gender"];
             return "Not Available";
         }
 

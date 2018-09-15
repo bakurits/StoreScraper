@@ -23,7 +23,10 @@ namespace CheckoutBot.Models
         public string Color { get; set; }
         
         [Browsable(false)]
-        public string LaunchCountdownEnabled { get; set; }
+        public bool LaunchCountdownEnabled { get; set; }
+        
+        [Browsable(false)]
+        public string Gender { get; set; }
 
         public FootsitesProduct(IWebsiteScraper scrapedBy, string name, string url, double price, string imageUrl,
             string id, string currency = "$", DateTime? releaseTime = null)

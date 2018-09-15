@@ -64,7 +64,7 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
             AccountCheckoutSettings settings =
                 new AccountCheckoutSettings()
                 {
-                    UserPassword = "Yrf7B2RHW",
+                    UserPassword = "tqWg3WXkg4",
                     UserLogin = "bakuricucxashvili@gmail.com",
                     UserCcv2 = "123",
                     ProductToBuy = new FootsitesProduct(new FootSimpleBase.EastBayScraper(), "yle",
@@ -81,7 +81,7 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
         [TestMethod]
         public void LoginTest()
         {
-            EOBrowserHelper.BotTester(new EastBayBot(){DelayInSecond = 10}, bot => bot.Login("bakuricucxashvili@gmail.com", "Yrf7B2RHW", CancellationToken.None));
+            EOBrowserHelper.BotTester(new EastBayBot(){DelayInSecond = 10}, bot => bot.Login("bakuricucxashvili@gmail.com", "tqWg3WXkg4", CancellationToken.None));
         }
 
         [TestMethod]
