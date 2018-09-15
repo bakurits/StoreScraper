@@ -117,7 +117,6 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
                 Logger.Instance.WriteErrorLog("This country isn't available");
             }
 
-
             throw new NotImplementedException();
         }
 
@@ -174,7 +173,7 @@ xhr.send();");
         public void GetProductSizes(FootsitesProduct product, CancellationToken token)
         {
             List<string> infos = new List<string>();
-            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var client = ClientFactory.CreateHttpClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
             var document = client.GetDoc(product.Url, token).DocumentNode;
             int ind = document.InnerHtml.IndexOf("var styles = ", StringComparison.Ordinal);
             var sizeData = Utils.GetFirstJson(document.InnerHtml.Substring(ind));

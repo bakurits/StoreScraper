@@ -13,7 +13,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
 {
     public class ChampsSportsBot : FootSitesBotBase
     {
-        private const string ApiUrl = "";
+        private const string ApiUrl = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/20";
         public int DelayInSecond { private get; set; } = 5;
 
         public ChampsSportsBot() : base("ChampsSports", "https://www.champssports.com/", ApiUrl)

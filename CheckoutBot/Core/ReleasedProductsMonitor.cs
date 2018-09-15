@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Timers;
 using CheckoutBot.CheckoutBots.FootSites;
@@ -14,7 +15,7 @@ namespace CheckoutBot.Core
 {
     public class ReleasedProductsMonitor
     {
-        public static ReleasedProductsMonitor Default { get; set; } = new ReleasedProductsMonitor();
+        public static ReleasedProductsMonitor Default { get; set; }
 
         private readonly ConcurrentDictionary<FootSitesBotBase, List<FootsitesProduct>> _upComingReleaseData =
             new ConcurrentDictionary<FootSitesBotBase, List<FootsitesProduct>>();
@@ -34,10 +35,12 @@ namespace CheckoutBot.Core
 
         private void UpdateUpcomingProductList(object sender, ElapsedEventArgs e)
         {
-            foreach (var bot in AppData.AvailableBots)
+            AppData.AvailableBots.AsParallel().ForAll(bot =>
             {
-                _upComingReleaseData[bot] = bot.ScrapeReleasePage(Token);
-            }
+                var prods = bot.ScrapeReleasePage(Token);
+                prods.Sort((p1, p2) => string.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+                _upComingReleaseData[bot] = prods;
+            });
         }
 
 

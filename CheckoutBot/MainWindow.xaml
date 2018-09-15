@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:CheckoutBot"
         mc:Ignorable="d"
         
-        Title="MainWindow" Height="732" Width="860">
+        Title="MainWindow" Height="836" Width="860">
     <Window.Background>
         <LinearGradientBrush EndPoint="1.5,1.5" StartPoint="0.504,0.03">
             <GradientStop Color="#2976C1" Offset="0"/>
@@ -239,11 +239,10 @@
                     <GroupBox Margin="20 20 10 20" Background="#ffffff" BorderThickness="0">
                         <StackPanel Margin="0 10">
 
-
+                            <Image x:Name="img_Product" HorizontalAlignment="Left" Width="300" Height="200" Margin="3 3"></Image>
                             <Label Content="CHOOSE SITE" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
 
-                            <ComboBox x:Name="cbx_Websites" Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Visibility="Visible" Style="{StaticResource ComboBoxTest2}" SelectionChanged="cbx_Websites_SelectionChanged">
-                            </ComboBox>
+                            <ComboBox x:Name="cbx_Websites" Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Visibility="Visible" Style="{StaticResource ComboBoxTest2}" SelectionChanged="cbx_Websites_SelectionChanged"/>
 
                             <Image Source="http://images-na.ssl-images-amazon.com/images/I/61qEF4YYrEL._UX500_.jpg" Width="200">
 
@@ -252,36 +251,18 @@
                             <Label Content="PRODUCT" Foreground="#576379" FontWeight="SemiBold" />
 
 
-                            <ComboBox x:Name="cbx_Products" Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch"  VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}">
+                            <ComboBox x:Name="cbx_Products" Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch"  VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}" SelectionChanged="cbx_Products_SelectionChanged" IsEnabled="False">
 
                             </ComboBox>
 
                             <Label Content="SIZE" Foreground="#576379" FontWeight="SemiBold" Margin="0 5" />
 
-                            <ComboBox Name="cbx_Name" Grid.Column="0" Margin="6,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="201" Style="{StaticResource ComboBoxTest2}" Grid.ColumnSpan="2">
-                                <ComboBoxItem>US 7</ComboBoxItem>
-                                <ComboBoxItem>US 7.5</ComboBoxItem>
-                                <ComboBoxItem>US 23</ComboBoxItem>
-
+                            <ComboBox x:Name="cbx_Size" Grid.Column="0" Margin="6,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="201" Style="{StaticResource ComboBoxTest2}" Grid.ColumnSpan="2" IsEnabled="False">
                             </ComboBox>
 
                             <Label Content="QUANTITY" Foreground="#576379" FontWeight="SemiBold" Margin="0 5" />
 
                             <TextBox Name="tbx_Quantity" Grid.Column="0" Margin="6,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="201" Grid.ColumnSpan="2"/>
-
-
-                                <Label Content="NUMER OF RETRIES" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
-
-                            <ComboBox Grid.Column="0" Margin="6,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Style="{StaticResource ComboBoxTest2}">
-                                <ComboBoxItem>0</ComboBoxItem>
-                                <ComboBoxItem IsSelected="True">1</ComboBoxItem>
-                                <ComboBoxItem>2</ComboBoxItem>
-                                <ComboBoxItem>3</ComboBoxItem>
-                                <ComboBoxItem>4</ComboBoxItem>
-                                <ComboBoxItem>5</ComboBoxItem>
-                                <ComboBoxItem>6</ComboBoxItem>
-
-                            </ComboBox>
 
 
                             <Label Content="ACCOUNT" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>

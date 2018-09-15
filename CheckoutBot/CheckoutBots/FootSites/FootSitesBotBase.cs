@@ -50,7 +50,8 @@ namespace CheckoutBot.CheckoutBots.FootSites
       
         public List<FootsitesProduct> ScrapeReleasePage(CancellationToken token)
         {
-            var client = ClientFactory.CreateHttpClient(autoCookies: true).AddHeaders(("Accept","application/json")).AddHeaders(ClientFactory.FirefoxUserAgentHeader);
+            var client = ClientFactory.CreateHttpClient(autoCookies: true).AddHeaders(("Accept","application/json")).AddHeaders(ClientFactory.FirefoxUserAgentHeader)
+                .AddHeaders(("Accept-Language", "en-US,en; q=0.5"));
             var task = client.GetStringAsync(ReleasePageApiEndpoint);
             task.Wait(token);
 
@@ -112,14 +113,19 @@ namespace CheckoutBot.CheckoutBots.FootSites
         private string GetUrl(JToken productData)
         {
             if (productData["buyNowURL"].Type != JTokenType.Null)
-                return ((string) productData["buyNowURL"]).StringBefore("/?sid=");
+            {   
+                string s = ((string) productData["buyNowURL"]).StringBefore("/?sid=");
+                Uri uri = new Uri(s);
+                string correctedUri = this.WebsiteBaseUrl + "/" + uri.PathAndQuery;
+                return correctedUri;
+            } 
             return "Not Available";
         }
 
         private DateTime GetDate(JToken productData)
         {
             if (productData["launchDateTimeUTC"].Type == JTokenType.Null) return DateTime.MaxValue;
-            var dateInJson = (string) productData["launchDateTimeUTC"];
+            var dateInJson = productData["launchDateTimeUTC"].ToString();
             var date = DateTime.Parse(dateInJson);
             return date;
 

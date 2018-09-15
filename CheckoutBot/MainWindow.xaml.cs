@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using CheckoutBot.CheckoutBots.FootSites;
+using CheckoutBot.CheckoutBots.FootSites.EastBay;
 using CheckoutBot.Core;
 using CheckoutBot.Models.Shipping;
 using CheckoutBot.Models.Payment;
@@ -38,6 +40,7 @@ namespace CheckoutBot
                 cbx_Websites.Items.Add(bot);
             }
 
+            ReleasedProductsMonitor.Default = new ReleasedProductsMonitor();
             List<TaskItem> items = new List<TaskItem>();
             items.Add(new TaskItem() { Keywords = "nike air", Size = 12, Retries = "1", Status="Checking out", ListImage="/images/list_progress.png" });
             items.Add(new TaskItem() { Keywords = "adidas", Size = 7, Retries = "3", Status = "Error", ListImage = "/images/list_error.png" });
@@ -310,11 +313,34 @@ namespace CheckoutBot
 
         private void cbx_Websites_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            cbx_Products.IsEnabled = cbx_Websites.SelectedValue != null;
+            if(cbx_Websites.SelectedValue == null) return;
+
+            cbx_Products.Items.Clear();
+
             var curStore = (FootSitesBotBase)cbx_Websites.SelectedValue;
             var lst = ReleasedProductsMonitor.Default.GetProductsList(curStore);
             foreach (var product in lst)
             {
                 cbx_Products.Items.Add(product);
+            }
+        }
+
+        private void cbx_Products_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            cbx_Size.IsEnabled = cbx_Products.SelectedValue != null;
+            if(cbx_Products.SelectedValue == null) return;
+            cbx_Size.Items.Clear();
+
+            if (cbx_Websites.SelectedValue is EastBayBot bot)
+            {
+                if (cbx_Products.SelectedValue is FootsitesProduct product)
+                {
+                    bot.GetProductSizes(product, CancellationToken.None);
+                    product.Sizes.ForEach(size => cbx_Size.Items.Add(size));
+                }
+                
+
             }
         }
     }
