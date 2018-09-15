@@ -79,9 +79,19 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
         }
 
         [TestMethod]
-        public void LoginTest()
+        public void LoginTestSuc()
         {
-            EOBrowserHelper.BotTester(new EastBayBot(){DelayInSecond = 10}, bot => bot.Login("bakuricucxashvili@gmail.com", "tqWg3WXkg4", CancellationToken.None));
+            bool v = EOBrowserHelper.BotTester(new EastBayBot() {DelayInSecond = 10},
+                bot => bot.Login("bakuricucxashvili@gmail.com", "VgnYiiY3t6", CancellationToken.None));
+            Assert.IsTrue(v);
+        }
+        
+        [TestMethod]
+        public void LoginTestErr()
+        {
+            bool v = EOBrowserHelper.BotTester(new EastBayBot() {DelayInSecond = 10},
+                bot => bot.Login("bakuricucxashvili@gmail.com", "tqWg3WXkg1234", CancellationToken.None));
+            Assert.IsFalse(v);
         }
 
         [TestMethod]

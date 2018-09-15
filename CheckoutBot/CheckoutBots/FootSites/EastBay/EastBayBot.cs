@@ -40,7 +40,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 
         public int DelayInSecond { private get; set; } = 2;
 
-        public override void Login(string username, string password, CancellationToken token)
+        public override bool Login(string username, string password, CancellationToken token)
         {
             Driver.Url = WebsiteBaseUrl;
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
@@ -70,6 +70,10 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_submit']")}.click()");
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             
+            string isWrong = (string) Driver.EvalScript(@"document.getElementById(""login_password_error"").innerHTML");
+            //Console.WriteLine(isWrong);
+            return isWrong.Length == 0;
+
             /*Console.WriteLine("ylep");
             
             
@@ -92,7 +96,6 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             Driver.LoadHtml(doc.DocumentNode.InnerHtml);
             */
 
-            return;
         }
 
         public override void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)

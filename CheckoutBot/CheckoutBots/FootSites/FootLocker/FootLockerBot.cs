@@ -9,7 +9,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootLocker
 {
     public class FootLockerBot : FootSitesBotBase
     {
-        public override void Login(string username, string password, CancellationToken token)
+        public override bool Login(string username, string password, CancellationToken token)
         {
             var driver = DriverFactory.CreateFirefoxDriver();
             driver.Navigate().GoToUrl(WebsiteBaseUrl);
