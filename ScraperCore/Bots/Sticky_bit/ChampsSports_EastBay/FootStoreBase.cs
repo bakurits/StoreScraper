@@ -353,14 +353,14 @@ namespace StoreScraper.Bots.Sticky_bit.ChampsSports_EastBay
 
         public class ChampsSportsScraper : FootSimpleBase
         {
-            public ChampsSportsScraper() : base("ChampsSports", "http://www.champssports.com")
+            public ChampsSportsScraper() : base("ChampsSports", "https://www.champssports.com")
             {
             }
         }
 
         public class EastBayScraper : FootSimpleBase
         {
-            public EastBayScraper() : base("EastBay", "http://www.eastbay.com")
+            public EastBayScraper() : base("EastBay", "https://www.eastbay.com")
             {
             }
         }

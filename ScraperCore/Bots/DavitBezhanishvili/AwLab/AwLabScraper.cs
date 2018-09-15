@@ -18,7 +18,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.AwLab
     public class AwLabScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Aw-lab";
-        public override string WebsiteBaseUrl { get; set; } = "http://en.aw-lab.com";
+        public override string WebsiteBaseUrl { get; set; } = "https://en.aw-lab.com";
         public override bool Active { get; set; }
 
         private readonly List<string> NewArrivalPageUrls = new List<string>
@@ -68,7 +68,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.AwLab
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             var searchUrl =
-                $"http://en.aw-lab.com/shop/catalogsearch/result/index/q/{settings.KeyWords}";
+                $"https://en.aw-lab.com/shop/catalogsearch/result/index/q/{settings.KeyWords}";
             ConcurrentDictionary<Product, byte> data = new ConcurrentDictionary<Product, byte>();
             Scrap(searchUrl, data, settings, token).Wait(token);
 

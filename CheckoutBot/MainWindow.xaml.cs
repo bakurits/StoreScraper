@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using CheckoutBot.Models.Shipping;
 using CheckoutBot.Models.Payment;
 using CheckoutBot.Models;
+using CheckoutBot.Models.Checkout;
 using Newtonsoft.Json;
 using EO;
 using EO.WebBrowser;
@@ -275,12 +276,30 @@ namespace CheckoutBot
                 BillingAddress = billingAddress,
                 CreditCard = creditCard,
                 DateCreated =  DateTime.Now
-     
         };
 
             profileList.Items.Add(profile);
         }
 
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            int.TryParse(tbx_Quantity.Text, out int quantity);
+            if (quantity == default(int))
+            {
+                MessageBox.Show("Incorrect Quntity typed","Error", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+                return;
+            }
+
+            AccountCheckoutSettings settings = new AccountCheckoutSettings()
+            {
+                UserLogin = tbx_UserName.Text,
+                UserPassword = tbx_Password.Text,
+                BuyOptions = new ProductBuyOptions()
+                {
+                    Quantity = quantity,
+                }
+            };
+        }
     }
 
 
@@ -302,9 +321,6 @@ namespace CheckoutBot
     {
         public string Site { get; set; }
         public string Token { get; set; }
-
-
-
     }
 
 

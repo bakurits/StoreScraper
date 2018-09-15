@@ -17,7 +17,7 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.TitoloShop
     public  class TitoloScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Titoloshop";
-        public override string WebsiteBaseUrl { get; set; } = "http://en.titoloshop.com";
+        public override string WebsiteBaseUrl { get; set; } = "https://en.titoloshop.com";
         public override bool Active { get; set; }
 
 
@@ -33,7 +33,7 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.TitoloShop
         {
             listOfProducts = new List<Product>();
             var searchUrl =
-                $"http://en.titoloshop.com/catalogsearch/result/index/?dir=desc&order=created_at&q={settings.KeyWords}";
+                $"https://en.titoloshop.com/catalogsearch/result/index/?dir=desc&order=created_at&q={settings.KeyWords}";
             scrap(listOfProducts, searchUrl, token, settings);
         }
 

@@ -19,15 +19,15 @@ namespace StoreScraper.Bots.Jordan.Ruvilla
     public class RuvillaScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Ruvilla";
-        public override string WebsiteBaseUrl { get; set; } = "http://ruvilla.com/";
+        public override string WebsiteBaseUrl { get; set; } = "https://ruvilla.com/";
         public override bool Active { get; set; }
 
-        private const string SearchUrl = "http://www.ruvilla.com/catalogsearch/result/?q={0}";
+        private const string SearchUrl = "https://www.ruvilla.com/catalogsearch/result/?q={0}";
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            GetProductDetails("http://www.ruvilla.com/new-balance-m530-st-jude-m530sjy.html", token);
+            GetProductDetails("https://www.ruvilla.com/new-balance-m530-st-jude-m530sjy.html", token);
 
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             GetWebpage(client, WebsiteBaseUrl, token);
