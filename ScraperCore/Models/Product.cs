@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Security.Policy;
 using System.Threading;
 using EO.Internal;
 using StoreScraper.Models;
@@ -87,7 +88,7 @@ namespace StoreScraper.Models
         public void Validate()
         {
             Name = ValidateString(Name, nameof(Name));
-            Url = ValidateString(Url, nameof(Url));
+            ValidateString(Url, nameof(Url));
             Currency = ValidateString(Currency, nameof(Currency));
             Price = ValidatePrice(Price, nameof(Price));
         }
@@ -105,6 +106,16 @@ namespace StoreScraper.Models
             if (!(obj is Product toCompare)) return false;
 
             return this.Url == toCompare.Url;
+        }
+
+        public static bool operator == (Product p1, Product p2)
+        { 
+            return p1?.Url == p2?.Url;
+        }
+
+        public static bool operator !=(Product p1, Product p2)
+        {
+            return !(p1 == p2);
         }
 
         public override int GetHashCode()
