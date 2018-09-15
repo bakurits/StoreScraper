@@ -12,10 +12,18 @@ namespace CheckoutBot.Models
         public string Sku { get; set; }
 
         [Browsable(false)]
+        
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public string Model { get; set; }
         
         [Browsable(false)]
         public List<string> Sizes { get; set; }
+        
+        [Browsable(false)]
+        public string Color { get; set; }
+        
+        [Browsable(false)]
+        public string LaunchCountdownEnabled { get; set; }
 
         public FootsitesProduct(IWebsiteScraper scrapedBy, string name, string url, double price, string imageUrl,
             string id, string currency = "$", DateTime? releaseTime = null)

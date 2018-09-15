@@ -24,7 +24,7 @@ namespace StoreScraper.Bots.Sticky_bit.BSTN
         public BSTNScraper()
         {
             this.WebsiteName = "BSTN";
-            this.WebsiteBaseUrl = "http://www.bstn.com";
+            this.WebsiteBaseUrl = "https://www.bstn.com";
             this.Active = true;
         }
 
@@ -48,7 +48,7 @@ namespace StoreScraper.Bots.Sticky_bit.BSTN
             CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            var searchUrl = $"http://www.bstn.com/en/search/{settings.KeyWords}/page/1/sort/date_new";
+            var searchUrl = $"https://www.bstn.com/en/search/{settings.KeyWords}/page/1/sort/date_new";
             Scrap(searchUrl, ref listOfProducts, settings, token);
         }
 

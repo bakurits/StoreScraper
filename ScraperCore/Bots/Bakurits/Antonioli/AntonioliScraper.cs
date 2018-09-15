@@ -11,11 +11,11 @@ namespace StoreScraper.Bots.Bakurits.Antonioli
 {
     public class AntonioliScraper : ScraperBase
     {
-        private const string SearchFormat = @"http://www.antonioli.eu/en/search?utf8=✓&q={0}&gender={1}";
+        private const string SearchFormat = @"https://www.antonioli.eu/en/search?utf8=✓&q={0}&gender={1}";
 
         private const string NewArrivalPageUrl = "https://www.antonioli.eu/en/section/new-arrivals";
         public override string WebsiteName { get; set; } = "Antonioli";
-        public override string WebsiteBaseUrl { get; set; } = "http://www.antonioli.eu";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.antonioli.eu";
         public override bool Active { get; set; }
 
         public override Type SearchSettingsType { get; set; } = typeof(AntonioliSearchSettings);

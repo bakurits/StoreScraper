@@ -20,7 +20,7 @@ namespace StoreScraper.Bots.Mstanojevic.JimmyJazz
     public class JimmyJazzScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "JimmyJazz";
-        public override string WebsiteBaseUrl { get; set; } = "http://www.jimmyjazz.com";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.jimmyjazz.com";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";
@@ -54,9 +54,9 @@ namespace StoreScraper.Bots.Mstanojevic.JimmyJazz
 
         private readonly List<String> newArrivalPageUrls = new List<string>
         {
-            "http://www.jimmyjazz.com/mens/specials/new-arrivals?category=footwear&sort=most-recent&ppg=104",
-            "http://www.jimmyjazz.com/mens/specials/new-arrivals?category=clothing&sort=most-recent&ppg=104",
-            "http://www.jimmyjazz.com/mens/specials/new-arrivals?category=accessories&sort=most-recent&ppg=104",
+            "https://www.jimmyjazz.com/mens/specials/new-arrivals?category=footwear&sort=most-recent&ppg=104",
+            "https://www.jimmyjazz.com/mens/specials/new-arrivals?category=clothing&sort=most-recent&ppg=104",
+            "https://www.jimmyjazz.com/mens/specials/new-arrivals?category=accessories&sort=most-recent&ppg=104",
         };
 
 
@@ -185,7 +185,7 @@ namespace StoreScraper.Bots.Mstanojevic.JimmyJazz
 
 
        
-                url = "http://search.jimmyjazz.com/search/keywords-" + settings.KeyWords.Replace(" ", "_") + "--res_per_page-100";
+                url = "https://search.jimmyjazz.com/search/keywords-" + settings.KeyWords.Replace(" ", "_") + "--res_per_page-100";
 
                 if (settings.MaxPrice > 0)
                 {
