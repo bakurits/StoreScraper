@@ -62,8 +62,11 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
         public void AccountCheckoutTest()
         {
             AccountCheckoutSettings settings =
-                new AccountCheckoutSettings("bakuricucxashvili@gmail.com", "Yrf7B2RHW", "123")
+                new AccountCheckoutSettings()
                 {
+                    UserPassword = "Yrf7B2RHW",
+                    UserLogin = "bakuricucxashvili@gmail.com",
+                    UserCcv2 = "123",
                     ProductToBuy = new FootsitesProduct(new FootSimpleBase.EastBayScraper(), "yle",
                         "https://www.eastbay.com/product/model:283446/sku:A7097514/nike-nba-swingman-jersey-mens/lebron-james/los-angeles-lakers/purple/",
                         0, "", "A7097514"),

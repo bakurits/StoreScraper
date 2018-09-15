@@ -12,11 +12,7 @@ namespace ScraperTest.CheckoutBots.Core
         [TestMethod]
         public void TestMonitor()
         {
-            new ReleasedProductsMonitor()
-            {
-                Token = CancellationToken.None,
-                MinutesToMonitor = 10
-            }.ProductsMonitoringTask();
+            var releasedProductsMonitor = ReleasedProductsMonitor.Default;
             Thread.Sleep(TimeSpan.FromHours(3));
         }
         
