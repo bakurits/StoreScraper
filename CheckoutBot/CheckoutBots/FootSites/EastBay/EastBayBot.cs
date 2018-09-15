@@ -130,8 +130,11 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         private void AddArbitraryItemToCart(CancellationToken token)
         {
             AccountCheckoutSettings settings =
-                new AccountCheckoutSettings("bakuricucxashvili@gmail.com", "Yrf7B2RHW", "123")
+                new AccountCheckoutSettings()
                 {
+                    UserLogin = "bakuricucxashvili@gmail.com",
+                    UserPassword = "Yrf7B2RHW",
+                    UserCcv2 = "123",
                     ProductToBuy = new FootsitesProduct(new FootSimpleBase.EastBayScraper(), "ADIDAS TEAM STRUCTURED FLEX CAP - MEN'S",
                         "https://www.eastbay.com/product/model:295115/sku:M038Z013/adidas-team-structured-flex-cap-mens/all-white/white/",
                         12, "", "M038Z013"),
