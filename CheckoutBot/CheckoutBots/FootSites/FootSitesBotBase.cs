@@ -124,7 +124,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
                 string correctedUri = this.WebsiteBaseUrl + "/" + uri.PathAndQuery;
                 return correctedUri;
             } 
-            return "Not Available";
+            return null;
         }
 
         private DateTime GetDate(JToken productData)
@@ -140,7 +140,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
         {
             if (productData[property].Type != JTokenType.Null)
                 return (string) productData[property];
-            return "Not Available";
+            return null;
         }
         
         private int GetCountDownEnabled(JToken productData)
