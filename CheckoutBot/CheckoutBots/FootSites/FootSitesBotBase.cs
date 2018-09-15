@@ -61,6 +61,8 @@ namespace CheckoutBot.CheckoutBots.FootSites
             return products;
         }
 
+        private const int NumberOfDaysBefore = 1;
+        private const int NumberOfDaysAfter = 2;
         private List<FootsitesProduct> GetProducts(JToken data)
         {
             var products = new List<FootsitesProduct>();
@@ -71,6 +73,9 @@ namespace CheckoutBot.CheckoutBots.FootSites
                     try
                     {
                         var date = GetDate(productData);
+                        var timeBefore = (DateTime.Now - date).Days; 
+                        var timeAfter = (date - DateTime.Now).Days;
+                        if (timeAfter > NumberOfDaysAfter || timeBefore > NumberOfDaysBefore) continue;
                         var name = GetPropertyAsString(productData, "name");
                         var price = GetPrice(productData);
                         var url = GetUrl(productData);

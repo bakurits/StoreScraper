@@ -42,9 +42,9 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 
         public override bool Login(string username, string password, CancellationToken token)
         {
-            Driver.Url = WebsiteBaseUrl;
-            Task.Delay(DelayInSecond * 1000, token).Wait(token);
+            Driver.LoadUrlAndWait(WebsiteBaseUrl);
             Driver.EvalScript(GetScriptByXpath("//div[@id='header_account_button']/a/span") + ".click();");
+            
 
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             
@@ -65,9 +65,9 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             Driver.ScriptCallDone += CallHandler;
             */
 
-            Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");
-            Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{password}\"");
-            Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_submit']")}.click()");
+            Driver.EvalScript($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");
+            Driver.EvalScript($"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{password}\"");
+            Driver.EvalScript($"{GetScriptByXpath("//input[@id='login_submit']")}.click()");
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             
             string isWrong = (string) Driver.EvalScript(@"document.getElementById(""login_password_error"").innerHTML");
@@ -151,8 +151,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 
         private void AddToCart(AccountCheckoutSettings settings, CancellationToken token)
         {
-            Driver.Url = settings.ProductToBuy.Url;
-            Task.Delay(DelayInSecond * 1000, token).Wait(token);
+            Driver.LoadUrlAndWait(settings.ProductToBuy.Url);
             Driver.EvalScript($@"
 var xhr = new XMLHttpRequest();
 var date = Date.now();

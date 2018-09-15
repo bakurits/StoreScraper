@@ -83,6 +83,7 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
         {
             bool v = EOBrowserHelper.BotTester(new EastBayBot() {DelayInSecond = 10},
                 bot => bot.Login("bakuricucxashvili@gmail.com", "VgnYiiY3t6", CancellationToken.None));
+            
             Assert.IsTrue(v);
         }
         
