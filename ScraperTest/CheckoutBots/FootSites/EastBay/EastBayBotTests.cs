@@ -69,7 +69,7 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
                         0, "", "A7097514"),
                     BuyOptions = new ProductBuyOptions()
                     {
-                        Size = "S"
+                        Size = "XS/S"
                     }
                 };
             EOBrowserHelper.BotTester(new EastBayBot(){DelayInSecond = 7}, bot => bot.AccountCheckout(settings, CancellationToken.None));
