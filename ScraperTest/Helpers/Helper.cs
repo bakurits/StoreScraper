@@ -33,8 +33,8 @@ namespace ScraperTest.Helpers
             MinPrice = 200,
             MaxPrice = 1000,
         };
-
-        public static void PrintFindItemsResults(List<Product> list)
+        
+        public static void PrintFindItemsResults<T>(List<T> list)
         {
             Console.WriteLine(string.Join("\n", list));
         }

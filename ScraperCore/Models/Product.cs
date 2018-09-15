@@ -1,12 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Drawing;
-using System.Security.Policy;
 using System.Threading;
-using EO.Internal;
-using StoreScraper.Models;
-using StoreScraper.Http.Factory;
-using StoreScraper.Helpers;
 using HtmlAgilityPack;
 using ScraperCore.Interfaces;
 using StoreScraper.Core;

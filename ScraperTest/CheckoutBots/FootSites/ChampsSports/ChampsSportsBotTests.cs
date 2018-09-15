@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using CheckoutBot.CheckoutBots.FootSites.ChampsSports;
+using CheckoutBot.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
 using StoreScraper.Models;
@@ -33,7 +34,7 @@ namespace ScraperTest.CheckoutBots.FootSites.ChampsSports
         public void ScrapeReleasePageTest()
         {
             ChampsSportsBot bot = new ChampsSportsBot();
-            List<Product> res = bot.ScrapeReleasePage(CancellationToken.None);
+            List<FootsitesProduct> res = bot.ScrapeReleasePage(CancellationToken.None);
             Helper.PrintFindItemsResults(res);
         }
     }

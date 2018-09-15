@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
+using CheckoutBot.Models;
 using StoreScraper.Models;
 
 namespace CheckoutBot.Interfaces
@@ -12,6 +13,6 @@ namespace CheckoutBot.Interfaces
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        List<Product> ScrapeReleasePage(CancellationToken token);
+        List<FootsitesProduct> ScrapeReleasePage(CancellationToken token);
     }
 }

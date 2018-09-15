@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Timers;
 using CheckoutBot.CheckoutBots.FootSites;
+using CheckoutBot.Models;
 using EO.Internal;
 using EO.WebBrowser;
 using StoreScraper.Models;
@@ -12,10 +13,10 @@ namespace CheckoutBot.Core
 {
     public class ReleasedProductsMonitor
     {
-        private static readonly ConcurrentDictionary<FootSitesBotBase, List<Product>> UpComingReleaseData =
-            new ConcurrentDictionary<FootSitesBotBase, List<Product>>();
+        private static readonly ConcurrentDictionary<FootSitesBotBase, List<FootsitesProduct>> UpComingReleaseData =
+            new ConcurrentDictionary<FootSitesBotBase, List<FootsitesProduct>>();
 
-        public static List<Product> GetUpcomingReleases(FootSitesBotBase bot) => UpComingReleaseData.ContainsKey(bot) ? new List<Product>() : UpComingReleaseData[bot];
+        public static List<FootsitesProduct> GetUpcomingReleases(FootSitesBotBase bot) => UpComingReleaseData.ContainsKey(bot) ? new List<FootsitesProduct>() : UpComingReleaseData[bot];
         public CancellationToken Token { private get; set; } = CancellationToken.None;
         public int MinutesToMonitor { private get; set; } = 10;
         

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using CheckoutBot.Interfaces;
+using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
+using EO.Internal;
 using EO.WebBrowser;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -46,7 +48,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
         }
 
       
-        public List<Product> ScrapeReleasePage(CancellationToken token)
+        public List<FootsitesProduct> ScrapeReleasePage(CancellationToken token)
         {
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var task = client.GetStringAsync(ReleasePageApiEndpoint);
@@ -59,9 +61,9 @@ namespace CheckoutBot.CheckoutBots.FootSites
             return products;
         }
 
-        private List<Product> GetProducts(JToken data)
+        private List<FootsitesProduct> GetProducts(JToken data)
         {
-            var products = new List<Product>();
+            var products = new List<FootsitesProduct>();
             foreach (var day in data)
             {
                 var productsOnDay = day["products"];
@@ -70,13 +72,21 @@ namespace CheckoutBot.CheckoutBots.FootSites
                     {
                         var date = GetDate(productData);
                         if (date < DateTime.UtcNow) continue;
-                        var name = GetName(productData);
+                        var name = GetPropertyAsString(productData, "name");
                         var price = GetPrice(productData);
                         var url = GetUrl(productData);
-                        var image = GetImage(productData);
+                        var image = GetPropertyAsString(productData, "image");
+                        var sku = GetPropertyAsString(productData, "sku");
+                        var model = GetPropertyAsString(productData, "model");
+                        var color = GetPropertyAsString(productData, "color");
                         
 
-                        var product = new Product(this, name, url, price, image, url, "USD", date);
+                        var product = new FootsitesProduct(this, name, url, price, image, url, "USD", date)
+                        {
+                            Sku = sku,
+                            Model = model,
+                            Color = color
+                        };
 
                         products.Add(product);
                     }
@@ -87,13 +97,6 @@ namespace CheckoutBot.CheckoutBots.FootSites
             }
 
             return products;
-        }
-
-        private string GetName(JToken productData)
-        {
-            if (productData["name"].Type != JTokenType.Null)
-                return (string) productData["name"];
-            return "Not Available";
         }
 
         private double GetPrice(JToken productData)
@@ -110,13 +113,6 @@ namespace CheckoutBot.CheckoutBots.FootSites
             return "Not Available";
         }
 
-        private string GetImage(JToken productData)
-        {
-            if (productData["primaryImageURL"].Type != JTokenType.Null)
-                return (string) productData["primaryImageURL"];
-            return "Not Available";
-        }
-
         private DateTime GetDate(JToken productData)
         {
             if (productData["launchDateTimeUTC"].Type == JTokenType.Null) return DateTime.MaxValue;
@@ -124,6 +120,13 @@ namespace CheckoutBot.CheckoutBots.FootSites
             var date = DateTime.Parse(dateInJson);
             return date;
 
+        }
+        
+        private string GetPropertyAsString(JToken productData, string property)
+        {
+            if (productData[property].Type != JTokenType.Null)
+                return (string) productData[property];
+            return "Not Available";
         }
 
 

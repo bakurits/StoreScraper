@@ -85,7 +85,7 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
         public void ScrapeReleasePageTest()
         {
             EastBayBot bot = new EastBayBot();
-            List<Product> res = bot.ScrapeReleasePage(CancellationToken.None);
+            List<FootsitesProduct> res = bot.ScrapeReleasePage(CancellationToken.None);
             Helper.PrintFindItemsResults(res);
         }
 
@@ -98,7 +98,8 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
                 0, "", "")
             {
                 Sku = "84129035",
-                Model = "150074"
+                Model = "150074",
+                Color = ""
             };
             
             bot.GetProductSizes(product, CancellationToken.None);
