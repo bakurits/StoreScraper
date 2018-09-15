@@ -14,6 +14,7 @@ using EO.WebEngine;
 using Newtonsoft.Json.Linq;
 using OpenQA.Selenium.Support.UI;
 using ScraperCore.Http;
+using StoreScraper.Bots.Sticky_bit.ChampsSports_EastBay;
 using StoreScraper.Core;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
@@ -121,8 +122,31 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         {
             Login(settings.UserLogin, settings.UserPassword, token);
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
+            AddArbitraryItemToCart(token);
+            AddToCart(settings, token);
+
+        }
+
+        private void AddArbitraryItemToCart(CancellationToken token)
+        {
+            AccountCheckoutSettings settings =
+                new AccountCheckoutSettings("bakuricucxashvili@gmail.com", "Yrf7B2RHW", "123")
+                {
+                    ProductToBuy = new FootsitesProduct(new FootSimpleBase.EastBayScraper(), "ADIDAS TEAM STRUCTURED FLEX CAP - MEN'S",
+                        "https://www.eastbay.com/product/model:295115/sku:M038Z013/adidas-team-structured-flex-cap-mens/all-white/white/",
+                        12, "", "M038Z013"),
+                    BuyOptions = new ProductBuyOptions()
+                    {
+                        Size = "XS/S"
+                    }
+                };
+           AddToCart(settings,token);
+        }
+
+        private void AddToCart(AccountCheckoutSettings settings, CancellationToken token)
+        {
             Driver.Url = settings.ProductToBuy.Url;
-            Task.Delay(DelayInSecond * 1000, token).Wait(token);            
+            Task.Delay(DelayInSecond * 1000, token).Wait(token);
             Driver.EvalScript($@"
 var xhr = new XMLHttpRequest();
 var date = Date.now();
@@ -139,7 +163,6 @@ xhr.onload = function() {{
     }}
 }};
 xhr.send();");
-
         }
 
         public void GetProductSizes(FootsitesProduct product, CancellationToken token)
