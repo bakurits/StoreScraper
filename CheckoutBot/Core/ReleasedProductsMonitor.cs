@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Timers;
 using CheckoutBot.CheckoutBots.FootSites;
@@ -23,20 +24,29 @@ namespace CheckoutBot.Core
         public CancellationToken Token { private get; set; } = CancellationToken.None;
         // ReSharper disable once UnusedAutoPropertyAccessor.Local
         public int MinutesToMonitor { private get; set; } = 10;
-        private readonly Timer _timer = new Timer();
+        private readonly Timer _timer = new Timer(1000 * 60 * 10);
         
         public ReleasedProductsMonitor()
         {
             _timer.Elapsed += UpdateUpcomingProductList;
             _timer.Start();
+            UpdateUpcomingProductList(null, null);
         }
 
         private void UpdateUpcomingProductList(object sender, ElapsedEventArgs e)
         {
-            foreach (var bot in AppData.AvailableBots)
+            AppData.AvailableBots.AsParallel().ForAll(bot =>
             {
-                _upComingReleaseData[bot] = bot.ScrapeReleasePage(Token);
-            }
+                var prods = bot.ScrapeReleasePage(Token);
+                prods.Sort((p1, p2) => string.Compare(p1.Name, p2.Name, StringComparison.Ordinal));
+                _upComingReleaseData[bot] = prods;
+            });
+        }
+
+
+        public IEnumerable<FootsitesProduct> GetProductsList(FootSitesBotBase website)
+        {
+            return _upComingReleaseData[website];
         }
     }
 }

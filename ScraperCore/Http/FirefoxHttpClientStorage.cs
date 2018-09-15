@@ -18,11 +18,18 @@ namespace StoreScraper.Http
   
         public FirefoxHttpClientStorage()
         {
-           AppSettings.Default.Proxies.ForEach(proxy =>
-           {
-               var client = ClientFactory.CreateProxiedHttpClient(ClientFactory.ParseProxy(proxy), true).AddHeaders(ClientFactory.DefaultHeaders);
-               ProxiedClients.Add(proxy, client);
-           });
+            try
+            {
+                AppSettings.Default.Proxies.ForEach(proxy =>
+                   {
+                       var client = ClientFactory.CreateProxiedHttpClient(ClientFactory.ParseProxy(proxy), true).AddHeaders(ClientFactory.DefaultHeaders);
+                       ProxiedClients.Add(proxy, client);
+                   });
+            }
+            catch
+            {
+                //ignored
+            }
         }
 
         public HttpClient GetHttpClient(WebProxy proxy)

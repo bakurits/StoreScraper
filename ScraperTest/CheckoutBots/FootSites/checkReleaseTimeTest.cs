@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CheckoutBot.CheckoutBots.FootSites;
+using CheckoutBot.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper.Models;
 
@@ -24,7 +25,7 @@ namespace ScraperTest.CheckoutBots.FootSites
         public void testCheckPost()
         {
             CheckRelaeseDates checker = new CheckRelaeseDates();
-            Product product = new Product(null, "sd", "https://www.eastbay.com/product/model:303959/sku:00500617/", 0, "", "", "", null);
+            FootsitesProduct product = new FootsitesProduct(null, "sd", "https://www.eastbay.com/product/model:303959/sku:00500617/", 0, "", "", "", null);
             checker.checkPost(product, CancellationToken.None);
         }
     }

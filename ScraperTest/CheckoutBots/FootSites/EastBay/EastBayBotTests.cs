@@ -48,7 +48,7 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
                     TypeOfPayment = PaymentType.Card,
                     ValidUntil = DateTime.MaxValue,
                 },
-                ProductToBuy = new Product(bot,
+                ProductToBuy = new FootsitesProduct(bot,
                     "ASICS TIGER GEL-DIABLO - MEN'S",
                     "https://www.eastbay.com/product/model:293596/sku:1A129001/",
                     120,

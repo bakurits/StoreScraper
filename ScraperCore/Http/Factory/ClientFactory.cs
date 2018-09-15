@@ -192,7 +192,7 @@ namespace StoreScraper.Http.Factory
             return client;
         }
 
-        public static FirefoxHttpClientStorage Storage = new FirefoxHttpClientStorage();
+        public static Lazy<FirefoxHttpClientStorage> Storage = new Lazy<FirefoxHttpClientStorage>();
 
         public static HttpClient GetFirefoxHttpClient(WebProxy proxy = null, bool autoCookies = false)
         {
@@ -201,7 +201,7 @@ namespace StoreScraper.Http.Factory
                 return CreateProxiedHttpClient(proxy).AddHeaders(DefaultHeaders);
             }
 
-            return proxy == null ? Storage.GetHttpClient() : Storage.GetHttpClient(proxy);
+            return proxy == null ? Storage.Value.GetHttpClient() : Storage.Value.GetHttpClient(proxy);
         }
 
         [DllImport("user32.dll")]
