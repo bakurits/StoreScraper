@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -322,7 +323,8 @@ namespace CheckoutBot
             var curStore = (FootSitesBotBase)cbx_Websites.SelectedValue;
             try
             {
-                var lst = ReleasedProductsMonitor.Default.GetProductsList(curStore);
+                var lst = ReleasedProductsMonitor.Default.GetProductsList(curStore).
+                    Where(prod => prod.ReleaseTime > DateTime.UtcNow || true);
                 foreach (var product in lst)
                 {
                     cbx_Products.Items.Add(product);
@@ -348,13 +350,18 @@ namespace CheckoutBot
                     try
                     {
                         bot.GetProductSizes(product, CancellationToken.None);
-                        product.Sizes.ForEach(size => cbx_Size.Items.Add(size));
-                        //var image = AppData.CommonFirefoxClient.GetImage(product.ImageUrl, 300, 200);
                         if (product.ImageUrl != null)
                         {
                             BitmapImage bImage = new BitmapImage(new Uri(product.ImageUrl));
                             img_Product.Source = bImage;
                         }
+
+                        txt_Prce.Content = product.Price + product.Currency;
+                        lnk_ProductUrl.NavigateUri = new Uri(product.Url);
+                        Run run = new Run("Open");
+                        lnk_ProductUrl.Inlines.Clear();
+                        lnk_ProductUrl.Inlines.Add(run);
+                        product.Sizes.ForEach(size => cbx_Size.Items.Add(size));
                         cbx_Size.IsEnabled = true;
                     }
                     catch (Exception ex)
@@ -363,6 +370,11 @@ namespace CheckoutBot
                     }
                 }
             }
+        }
+
+        private void lnk_ProductUrl_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            System.Diagnostics.Process.Start(e.Uri.ToString());
         }
     }
 

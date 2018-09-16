@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Threading;
 using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
@@ -16,7 +17,6 @@ using StoreScraper.Attributes;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 using StoreScraper.Models;
-using static OpenQA.Selenium.Support.UI.ExpectedConditions;
 
 
 namespace CheckoutBot.CheckoutBots.FootSites
@@ -28,6 +28,8 @@ namespace CheckoutBot.CheckoutBots.FootSites
         public string WebsiteBaseUrl { get; set; }
         private string ReleasePageApiEndpoint { get; set; }
         public WebView Driver { get; set; }
+        public WebView Driver2 { get; set; }
+        public WebView Driver3 { get; set; }
 
         protected FootSitesBotBase(string websiteName, string webSiteBaseUrl, string releasePageEndpoint)
         {
@@ -62,8 +64,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
             return products;
         }
 
-        private const int NumberOfDaysBefore = 1;
-        private const int NumberOfDaysAfter = 2;
+
         private List<FootsitesProduct> GetProducts(JToken data)
         {
             var products = new List<FootsitesProduct>();
@@ -73,10 +74,9 @@ namespace CheckoutBot.CheckoutBots.FootSites
                 foreach (var productData in productsOnDay)
                     try
                     {   
+                        if(productData["availableInventory"].Value<int>() == 0) continue;
+
                         var date = GetDate(productData);
-                        var timeBefore = (DateTime.Now - date).Days; 
-                        var timeAfter = (date - DateTime.Now).Days;
-                        if (timeAfter > NumberOfDaysAfter || timeBefore > NumberOfDaysBefore) continue;
                         var name = GetPropertyAsString(productData, "name");
                         var price = GetPrice(productData);
                         var url = GetUrl(productData);
@@ -130,8 +130,8 @@ namespace CheckoutBot.CheckoutBots.FootSites
         private DateTime GetDate(JToken productData)
         {
             if (productData["launchDateTimeUTC"].Type == JTokenType.Null) return DateTime.MaxValue;
-            var dateInJson = productData["launchDateTimeUTC"].ToString();
-            var date = DateTime.Parse(dateInJson);
+            var dateInJson = productData["launchDateTimeUTC"].Value<DateTime>();
+            var date = dateInJson;
             return date;
 
         }
@@ -158,20 +158,6 @@ namespace CheckoutBot.CheckoutBots.FootSites
             return "Not Available";
         }
 
-
-        protected static IWebElement GetVisibleElementByXPath(string xPath, WebDriverWait wait, CancellationToken token)
-        {
-            var element = wait.Until(ElementIsVisible(By.XPath(xPath)));
-            token.ThrowIfCancellationRequested();
-            return element;
-        }
-
-        protected static IWebElement GetClickableElementByXPath(string xPath, WebDriverWait wait, CancellationToken token)
-        {
-            var element = wait.Until(ElementToBeClickable(By.XPath(xPath)));
-            token.ThrowIfCancellationRequested();
-            return element;
-        }
 
         protected static string GetScriptByXpath(string xPath)
         {
