@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading;
+using System.Threading.Tasks;
 using CheckoutBot.Factory;
 using CheckoutBot.Models.Checkout;
 using OpenQA.Selenium;
@@ -12,7 +13,8 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
 {
     public class ChampsSportsBot : FootSitesBotBase
     {
-        private const string ApiUrl = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/34";
+        private const string ApiUrl = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/20";
+        public int DelayInSecond { private get; set; } = 5;
 
         public ChampsSportsBot() : base("ChampsSports", "https://www.champssports.com/", ApiUrl)
         {
@@ -21,6 +23,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
 
         public override void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token)
         {
+
             throw new NotImplementedException();
         }
 
@@ -29,26 +32,18 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
             throw new NotImplementedException();
         }
 
-        public override HttpClient Login(string username, string password, CancellationToken token)
+        public override bool Login(string username, string password, CancellationToken token)
         {
-
-            var driver = DriverFactory.CreateFirefoxDriver();
-            driver.Navigate().GoToUrl(this.WebsiteBaseUrl);
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
-
-            var loginPopupButton = GetClickableElementByXPath(wait, "//div[@id='header_login']/a", token);
-            loginPopupButton.Click();
-
-            var emailTextBox = GetVisibleElementByXPath(wait, "//input[@id='login_email']", token);
-            emailTextBox.SendKeys(username);
-
-
-            var passwordTextBox = GetVisibleElementByXPath(wait, "//input[@id='login_password']", token);
-            passwordTextBox.SendKeys(password);
-
-            var signinButton = GetClickableElementByXPath(wait, "//div[@class='submit']/button", token);
-            signinButton.Click();
-            throw new NotImplementedException();
+            Driver.Url = WebsiteBaseUrl;
+            Task.Delay(10 * 1000, token).Wait(token);
+            Driver.EvalScript(GetScriptByXpath("//div[@id='header_login']") + ".click();");
+            Task.Delay(10 * 1000, token).Wait(token);
+            username = "ggg";
+            Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");
+            Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{password}\"");
+            //Driver.QueueScriptCall($"{GetScriptByXpath("//div[@id='header_login']/a//input[@id='login_submit']")}.click()");
+            Task.Delay(DelayInSecond * 1000, token).Wait(token);
+            return false;
         }
 
         private IWebElement GetVisibleElementByXPath(WebDriverWait wait, string xPath, CancellationToken token)

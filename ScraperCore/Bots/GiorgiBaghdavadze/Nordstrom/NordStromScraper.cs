@@ -16,11 +16,11 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.Nordstrom
     public class NordstromScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Nordstrom";
-        public override string WebsiteBaseUrl { get; set; } = "http://shop.nordstrom.com";
+        public override string WebsiteBaseUrl { get; set; } = "https://shop.nordstrom.com";
         public override bool Active { get; set; }
         public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
         {
-            var searchUrl = "https://shop.nordstrom.com/c/mens-sneakers?origin=topnav&cm_sp=Top%20Navigation-_-Men-_-Sneakers%20&%20Athletic";
+            var searchUrl = "https://shop.nordstrom.com/c/mens-whats-new?origin=topnav&cm_sp=Top%20Navigation-_-Men-_-Featured-New%20Arrivals";
             listOfProducts = new List<Product>();
             scrap(listOfProducts, searchUrl, token, null);
         }
@@ -28,7 +28,7 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.Nordstrom
         {
             listOfProducts = new List<Product>();
             var searchUrl =
-                $"http://shop.nordstrom.com/sr?origin=keywordsearch&keyword={settings.KeyWords}&top=72&offset=0&page=1&sort=Newest";
+                $"https://shop.nordstrom.com/sr?origin=keywordsearch&keyword={settings.KeyWords}&top=72&offset=0&page=1&sort=Newest";
             scrap(listOfProducts, searchUrl, token, settings);
         }
 
@@ -37,7 +37,7 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.Nordstrom
             var request = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = request.GetDoc(searchUrl, token);
             var ds = document.DocumentNode;
-            var nodes = ds.SelectSingleNode("//div[contains(@class, 'resultSet_RiuQj')]/div");
+            var nodes = ds.SelectSingleNode("//section[contains(@data-element, 'product-gallery')]/div/div");
             if (nodes == null)
             {
                 return;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using CheckoutBot.CheckoutBots.FootSites.ChampsSports;
+using CheckoutBot.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
 using StoreScraper.Models;
@@ -26,15 +27,14 @@ namespace ScraperTest.CheckoutBots.FootSites.ChampsSports
         [TestMethod()]
         public void LoginTest()
         {
-            ChampsSportsBot bot = new ChampsSportsBot();
-            bot.Login("bakuricucxashvili@gmail.com", "Yrf7B2RHW", CancellationToken.None);
+            EOBrowserHelper.BotTester(new ChampsSportsBot() { DelayInSecond = 7 }, bot => bot.Login("gbagh16@freeuni.edu.ge", "giorgi121", CancellationToken.None));
         }
 
         [TestMethod()]
         public void ScrapeReleasePageTest()
         {
             ChampsSportsBot bot = new ChampsSportsBot();
-            List<Product> res = bot.ScrapeReleasePage(CancellationToken.None);
+            List<FootsitesProduct> res = bot.ScrapeReleasePage(CancellationToken.None);
             Helper.PrintFindItemsResults(res);
         }
     }

@@ -14,10 +14,10 @@ namespace StoreScraper.Bots.Bakurits.Rimowa
     public class RimowaScraper : ScraperBase
     {
         private const string SearchFormat =
-            @"http://www.rimowa.com/search?q={0}&srule=newest&sz=12&start={1}&format=page-element";
+            @"https://www.rimowa.com/search?q={0}&srule=newest&sz=12&start={1}&format=page-element";
 
         public override string WebsiteName { get; set; } = "Rimowa";
-        public override string WebsiteBaseUrl { get; set; } = "http://www.rimowa.com/";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.rimowa.com/";
         private int MaxItemCount { get; set; } = 48;
         public override bool Active { get; set; }
 

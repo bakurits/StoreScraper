@@ -15,7 +15,7 @@ namespace ScraperTest.ScraperTests.Bakurits
             MrporterScraper scraper = new MrporterScraper();
             SearchSettingsBase settings = new SearchSettingsBase()
             {
-                KeyWords = "jacket"
+                KeyWords = "Yeezy"
             };
            
             scraper.FindItems(out var lst, settings, CancellationToken.None);

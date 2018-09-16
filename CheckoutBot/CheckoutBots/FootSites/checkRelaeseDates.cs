@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CheckoutBot.CheckoutBots.FootSites.EastBay;
+using CheckoutBot.Models;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 using StoreScraper.Models;
@@ -22,7 +23,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
         public void checkRelaese()
         {
             
-            List <Product> products = eastBayBot.ScrapeReleasePage(CancellationToken.None);
+            List <FootsitesProduct> products = eastBayBot.ScrapeReleasePage(CancellationToken.None);
             products.Sort((a, b) => DateTime.Compare(a.ReleaseTime.Value,b.ReleaseTime.Value));
             foreach (var product in products)
             {
@@ -30,7 +31,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
             }
         }
 
-        public void checkPost(Product product, CancellationToken token)
+        public void checkPost(FootsitesProduct product, CancellationToken token)
         {
             Console.Write(product.Url);
             var request = ClientFactory.CreateProxiedHttpClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);

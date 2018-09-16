@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
+using System.Globalization;
 using System.Threading;
-using System.Threading.Tasks;
 using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
+using EO.Internal;
+using EO.WebBrowser;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OpenQA.Selenium;
@@ -18,7 +17,6 @@ using StoreScraper.Attributes;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 using StoreScraper.Models;
-using static OpenQA.Selenium.Support.UI.ExpectedConditions;
 
 
 namespace CheckoutBot.CheckoutBots.FootSites
@@ -29,6 +27,9 @@ namespace CheckoutBot.CheckoutBots.FootSites
         public string WebsiteName { get; set; }
         public string WebsiteBaseUrl { get; set; }
         private string ReleasePageApiEndpoint { get; set; }
+        public WebView Driver { get; set; }
+        public WebView Driver2 { get; set; }
+        public WebView Driver3 { get; set; }
 
         protected FootSitesBotBase(string websiteName, string webSiteBaseUrl, string releasePageEndpoint)
         {
@@ -49,9 +50,10 @@ namespace CheckoutBot.CheckoutBots.FootSites
         }
 
       
-        public List<Product> ScrapeReleasePage(CancellationToken token)
+        public List<FootsitesProduct> ScrapeReleasePage(CancellationToken token)
         {
-            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var client = ClientFactory.CreateHttpClient(autoCookies: true).AddHeaders(("Accept","application/json")).AddHeaders(ClientFactory.FirefoxUserAgentHeader)
+                .AddHeaders(("Accept-Language", "en-US,en; q=0.5"));
             var task = client.GetStringAsync(ReleasePageApiEndpoint);
             task.Wait(token);
 
@@ -62,41 +64,48 @@ namespace CheckoutBot.CheckoutBots.FootSites
             return products;
         }
 
-        private List<Product> GetProducts(JToken data)
+
+        private List<FootsitesProduct> GetProducts(JToken data)
         {
-            var products = new List<Product>();
+            var products = new List<FootsitesProduct>();
             foreach (var day in data)
             {
                 var productsOnDay = day["products"];
                 foreach (var productData in productsOnDay)
                     try
-                    {
+                    {   
+                        if(productData["availableInventory"].Value<int>() == 0) continue;
+
                         var date = GetDate(productData);
-                        if (date < DateTime.UtcNow) continue;
-                        var name = GetName(productData);
+                        var name = GetPropertyAsString(productData, "name");
                         var price = GetPrice(productData);
                         var url = GetUrl(productData);
-                        var image = GetImage(productData);
+                        var image = GetPropertyAsString(productData, "primaryImageURL");
+                        var sku = GetPropertyAsString(productData, "sku");
+                        var model = GetPropertyAsString(productData, "model");
+                        var color = GetPropertyAsString(productData, "color");
+                        var showLaunchCountdown = GetCountDownEnabled(productData);
+                        var gender = GetGender(productData);
                         
 
-                        var product = new Product(this, name, url, price, image, url, "USD", date);
+                        var product = new FootsitesProduct(this, name, url, price, image, url, "USD", date)
+                        {
+                            Sku = sku,
+                            Model = model,
+                            Color = color,
+                            Gender = gender,
+                            LaunchCountdownEnabled = (showLaunchCountdown != 0)
+                        };
 
                         products.Add(product);
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        Debug.WriteLine(productData);
+                        Debug.WriteLine(e.Message);
                     }
             }
 
             return products;
-        }
-
-        private string GetName(JToken productData)
-        {
-            if (productData["name"].Type != JTokenType.Null)
-                return (string) productData["name"];
-            return "Not Available";
         }
 
         private double GetPrice(JToken productData)
@@ -109,39 +118,62 @@ namespace CheckoutBot.CheckoutBots.FootSites
         private string GetUrl(JToken productData)
         {
             if (productData["buyNowURL"].Type != JTokenType.Null)
-                return ((string) productData["buyNowURL"]).StringBefore("/?sid=");
-            return "Not Available";
-        }
-
-        private string GetImage(JToken productData)
-        {
-            if (productData["primaryImageURL"].Type != JTokenType.Null)
-                return (string) productData["primaryImageURL"];
-            return "Not Available";
+            {   
+                string s = ((string) productData["buyNowURL"]).StringBefore("/?sid=");
+                Uri uri = new Uri(s);
+                string correctedUri = this.WebsiteBaseUrl + "/" + uri.PathAndQuery;
+                return correctedUri;
+            } 
+            return null;
         }
 
         private DateTime GetDate(JToken productData)
         {
             if (productData["launchDateTimeUTC"].Type == JTokenType.Null) return DateTime.MaxValue;
-            var dateInJson = (string) productData["launchDateTimeUTC"];
-            var date = DateTime.Parse(dateInJson);
+            var dateInJson = productData["launchDateTimeUTC"].Value<DateTime>();
+            var date = dateInJson;
             return date;
 
         }
-
-
-        protected static IWebElement GetVisibleElementByXPath(string xPath, WebDriverWait wait, CancellationToken token)
+        
+        private string GetPropertyAsString(JToken productData, string property)
         {
-            var element = wait.Until(ElementIsVisible(By.XPath(xPath)));
-            token.ThrowIfCancellationRequested();
-            return element;
+            if (productData[property].Type != JTokenType.Null)
+                return (string) productData[property];
+            return null;
+        }
+        
+        private int GetCountDownEnabled(JToken productData)
+        {
+            if (productData["showLaunchCountdown"].Type != JTokenType.Null)
+                return (int) productData["showLaunchCountdown"];
+            return 1;
         }
 
-        protected static IWebElement GetClickableElementByXPath(string xPath, WebDriverWait wait, CancellationToken token)
+        private string GetGender(JToken productData)
         {
-            var element = wait.Until(ElementToBeClickable(By.XPath(xPath)));
-            token.ThrowIfCancellationRequested();
-            return element;
+            if (productData["availableSizes"].Type == JTokenType.Null) return "Not Available";
+            if (((JArray)productData["availableSizes"])[0]["gender"].Type != JTokenType.Null)
+                return (string) ((JArray)productData["availableSizes"])[0]["gender"];
+            return "Not Available";
+        }
+
+
+        protected static string GetScriptByXpath(string xPath)
+        {
+            return
+                $@"document.evaluate(""{xPath}"", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue";
+        }
+
+
+        protected static string GetAjaxRequest(JObject data, string url, string method)
+        {
+            return "";
+        }
+
+        public override string ToString()
+        {
+            return this.WebsiteName;
         }
     }
 }

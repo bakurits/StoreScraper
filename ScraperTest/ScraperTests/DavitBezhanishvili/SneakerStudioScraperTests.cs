@@ -25,11 +25,21 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
             Helper.PrintFindItemsResults(list);
         }
         [TestMethod]
+        public void NewArrivalsTest()
+        {
+            var scraper = new SneakerStudioScraper();
+            scraper.Active = true;
+            var stopwatch = Stopwatch.StartNew();
+            scraper.ScrapeNewArrivalsPage(out var list, CancellationToken.None);
+            Helper.PrintFindItemsResults(list);
+            Console.WriteLine(stopwatch.Elapsed.ToString("g"));
+        }
+        [TestMethod]
         public void GetProductDetailsTest1()
         {
             var scraper = new SneakerStudioScraper();
 
-            var testUrl = "https://sneakerstudio.com/product-eng-16341-.html";
+            var testUrl = "https://sneakerstudio.com/product-eng-16693-Scarf-Fila-686015-006.html";
 
             var details = scraper.GetProductDetails(testUrl, CancellationToken.None);
             Helper.PrintGetDetailsResult(details.SizesList);
@@ -49,7 +59,7 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
         {
             var scraper = new SneakerStudioScraper();
 
-            var testUrl = "https://sneakerstudio.com/product-eng-16256-Mens-shorts-Alpha-Industries-Kerosene-Short-Camo-176205-125.html";
+            var testUrl = "https://sneakerstudio.com/product-eng-15474-Womens-shoes-sneakers-New-Balance-WL574ESS.html";
 
             var details = scraper.GetProductDetails(testUrl, CancellationToken.None);
             Helper.PrintGetDetailsResult(details.SizesList);

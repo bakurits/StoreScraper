@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:CheckoutBot"
         mc:Ignorable="d"
         
-        Title="MainWindow" Height="650" Width="860">
+        Title="MainWindow" Height="836" Width="860">
     <Window.Background>
         <LinearGradientBrush EndPoint="1.5,1.5" StartPoint="0.504,0.03">
             <GradientStop Color="#2976C1" Offset="0"/>
@@ -19,6 +19,52 @@
         <local:ShippingNameConverter x:Key="ShippingNameConverter" />
 
         <Style x:Key="ComboBoxTest2" TargetType="{x:Type ComboBox}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton Grid.Column="2" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" >
+                                <ToggleButton.Template>
+                                    <ControlTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="5*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Border x:Name="Border"  Grid.ColumnSpan="2" CornerRadius="5" Background="#ffffff" BorderBrush="#ebecf0" BorderThickness="1" />
+                                            <Border Grid.Column="0" CornerRadius="5,0,0,5"  Margin="1"  Background="#ffffff"  BorderBrush="#ebecf0" BorderThickness="0,0,0,0" />
+                                            <Path x:Name="Arrow" Grid.Column="1"  Fill="#344563" Margin="0 10 10 10" HorizontalAlignment="Right" VerticalAlignment="Center" Data="M 0 0 L 4 4 L 8 0 Z"/>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="ToggleButton.IsMouseOver" Value="true">
+                                                <Setter TargetName="Border" Property="BorderBrush" Value="#5db8f1" />
+                                            </Trigger>
+                                            <Trigger Property="ToggleButton.IsChecked" Value="true">
+                                                <Setter TargetName="Border" Property="BorderBrush" Value="#5db8f1" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter Name="ContentSite" IsHitTestVisible="False"  Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="3"  />
+                            <TextBox x:Name="PART_EditableTextBox" Visibility="Hidden" IsReadOnly="{TemplateBinding IsReadOnly}"/>
+                            <Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True"  Focusable="False" PopupAnimation="Slide">
+                                <Grid  Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border x:Name="DropDownBorder" Background="#ffffff" />
+                                    <ScrollViewer SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" />
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="TextBoxStyle" TargetType="{x:Type TextBox}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ComboBox">
@@ -92,10 +138,10 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            
+
 
                             <Border Background="#5db8f1" HorizontalAlignment="Left" Width="150">
-                            <Image Source="/images/logo.png"  />
+                                <Image Source="/images/logo.png"  />
                             </Border>
                             <TabPanel
                                 VerticalAlignment="Center"
@@ -120,9 +166,9 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
-        
-        
+
+
+
 
 
     </Window.Resources>
@@ -152,9 +198,9 @@
 
 
         <TabControl BorderThickness="0"   Grid.Row="1" Grid.ColumnSpan="12">
-            
+
             <TabControl.Resources>
-                
+
                 <Style TargetType="TabItem">
                     <Setter Property="Template">
                         <Setter.Value>
@@ -192,63 +238,40 @@
 
                     <GroupBox Margin="20 20 10 20" Background="#ffffff" BorderThickness="0">
                         <StackPanel Margin="0 10">
-
-
+                            <StackPanel Orientation="Horizontal">
+                                <Image x:Name="img_Product" HorizontalAlignment="Left" Width="200" Height="200" Margin="3,3,0,3"></Image>
+                                <StackPanel Orientation="Vertical" Margin="10 10" HorizontalAlignment="Center">
+                                    <Label VerticalAlignment="Center" Margin="10 0"  FontSize="16">Price:</Label>
+                                    <Label Name="txt_Prce" Foreground="DodgerBlue" Width="100px" VerticalAlignment="Center" Margin="10 0 10 5" FontWeight="Bold" FontSize="16"></Label>
+                                    <Label VerticalAlignment="Center" Margin="10 0"  FontSize="16">Url:</Label>
+                                    <TextBlock Foreground="DodgerBlue" Width="100px" VerticalAlignment="Center" Margin="10 0 10 5" FontWeight="Bold" FontSize="16">
+                                        <Hyperlink Name="lnk_ProductUrl" RequestNavigate="lnk_ProductUrl_RequestNavigate"></Hyperlink>
+                                    </TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                            
                             <Label Content="CHOOSE SITE" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
-
-                            <ComboBox Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Visibility="Visible" Style="{StaticResource ComboBoxTest2}">
-                                <ComboBoxItem>http://footlocker.com</ComboBoxItem>
-                            </ComboBox>
+                            <ComboBox x:Name="cbx_Websites" Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Visibility="Visible" Style="{StaticResource ComboBoxTest2}" SelectionChanged="cbx_Websites_SelectionChanged"/>
 
                             <Image Source="http://images-na.ssl-images-amazon.com/images/I/61qEF4YYrEL._UX500_.jpg" Width="200">
 
                             </Image>
 
                             <Label Content="PRODUCT" Foreground="#576379" FontWeight="SemiBold" />
-                            
-                            
-                            <ComboBox Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch"  VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}">
-                                
-                            </ComboBox>
 
-                            
+
+                            <ComboBox x:Name="cbx_Products" Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch"  VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}" SelectionChanged="cbx_Products_SelectionChanged" IsEnabled="False">
+
+                            </ComboBox>
 
                             <Label Content="SIZE" Foreground="#576379" FontWeight="SemiBold" Margin="0 5" />
-                            <Grid Margin="0" VerticalAlignment="Center">
 
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="2*" />
-                                    <ColumnDefinition Width="1.5*" />
-                                    <ColumnDefinition Width="1.5*" />
-
-                                </Grid.ColumnDefinitions>
-
-                                <ComboBox Grid.Column="0" Margin="6 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Style="{StaticResource ComboBoxTest2}">
-                                    <ComboBoxItem>US 7</ComboBoxItem>
-                                    <ComboBoxItem>US 7.5</ComboBoxItem>
-                                    <ComboBoxItem>US 23</ComboBoxItem>
-
-                                </ComboBox>
-
-
-
-                                <RadioButton VerticalAlignment="Center" Grid.Column="1"  Content="Specified size" Grid.ColumnSpan="2"  />
-
-                                <RadioButton VerticalAlignment="Center" Grid.Column="2" Content="Random size" Grid.ColumnSpan="2" />
-                            </Grid>
-
-                            <Label Content="NUMER OF RETRIES" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
-
-                            <ComboBox Grid.Column="0" Margin="6 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Style="{StaticResource ComboBoxTest2}">
-                                <ComboBoxItem>0</ComboBoxItem>
-                                <ComboBoxItem IsSelected="True">1</ComboBoxItem>
-                                <ComboBoxItem>2</ComboBoxItem>
-                                <ComboBoxItem>3</ComboBoxItem>
-                                <ComboBoxItem>4</ComboBoxItem>
-                                <ComboBoxItem>5</ComboBoxItem>
-                                <ComboBoxItem>6</ComboBoxItem>
-
+                            <ComboBox x:Name="cbx_Size" Grid.Column="0" Margin="6,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="201" Style="{StaticResource ComboBoxTest2}" Grid.ColumnSpan="2" IsEnabled="False">
                             </ComboBox>
+
+                            <Label Content="QUANTITY" Foreground="#576379" FontWeight="SemiBold" Margin="0 5" />
+
+                            <TextBox Name="tbx_Quantity" Grid.Column="0" Margin="6,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="201" Grid.ColumnSpan="2"/>
 
 
                             <Label Content="ACCOUNT" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
@@ -264,28 +287,24 @@
                                 <ComboBoxItem>Mike Jonhson - **** 0001</ComboBoxItem>
                             </ComboBox>
 
-                            <Label Content="START TIME" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
-
-                            <ComboBox Grid.Column="0" Margin="6 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Style="{StaticResource ComboBoxTest2}">
-                                <ComboBoxItem>Mike Jonhson - **** 0001</ComboBoxItem>
-
-                            </ComboBox>
-
-
-                            <Button Margin="6,20" Width="100" HorizontalAlignment="Left" Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0">
+                            <Label Content="Username" Foreground="#576379" FontWeight="SemiBold" Margin="0 0"/>
+                            <TextBox Name="tbx_UserName" Margin="6 0 6 10" Width="200"  Height="20" HorizontalAlignment="Left"></TextBox>
+                            <Label Content="Password" Foreground="#576379" FontWeight="SemiBold" Margin="0 0"/>
+                            <TextBox Name="tbx_Password" Margin="6 2" Width="200"  Height="20" HorizontalAlignment="Left"></TextBox>
+                            <Button Margin="6,20,0,20" Width="100" HorizontalAlignment="Left" Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0" Content="ADD TASK" Click="Button_Click">
 
 
-                               
+
                                 <Button.Resources>
                                     <Style TargetType="{x:Type Border}">
                                         <Setter Property="CornerRadius" Value="5"/>
                                         <Style.Triggers>
-                                            <Trigger Property="Button.IsMouseOver" Value="True">
-                                                <Setter Property="Button.Background" Value="Red" />
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Control.Background" Value="Red" />
                                             </Trigger>
                                         </Style.Triggers>
                                     </Style>
-                                    
+
 
 
 
@@ -293,8 +312,8 @@
 
                                 </Button.Resources>
 
-                                ADD TASK
                             </Button>
+                            <Label Content="Label"/>
 
                         </StackPanel>
 
@@ -434,7 +453,7 @@
 
                                 </StackPanel>
                                 <DockPanel>
-                                    
+
                                     <Grid >
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="36*" />
@@ -453,7 +472,7 @@
 
                                         </Grid.RowDefinitions>
 
-                                        
+
 
                                         <StackPanel Grid.Column="0" Grid.ColumnSpan="2">
                                             <Label Content="First Name" Foreground="#576379" FontWeight="SemiBold" />
@@ -673,9 +692,9 @@
 
 
                                     </Grid>
-                                    
-                                    
-                                    
+
+
+
                                 </DockPanel>
 
                                 <DockPanel>
@@ -706,26 +725,26 @@
                                                 <ToggleButton Foreground="Black" Width="50" Margin="5" Name="visaCheckBox" Click="HandleVisaSelect">
                                                     <ToggleButton.Template>
                                                         <ControlTemplate TargetType="{x:Type ToggleButton}">
-                                                                <Image>
-                                                                    <Image.Style>
-                                                                        <Style>
-                                                                            <Setter Property="Image.Width"  Value="50"/>
+                                                            <Image>
+                                                                <Image.Style>
+                                                                    <Style>
+                                                                        <Setter Property="Image.Width"  Value="50"/>
 
-                                                                            <Setter Property="Image.Source" 
+                                                                        <Setter Property="Image.Source" 
                                 Value="/images/cc_visa.png" />
-                                                                            <Style.Triggers>
-                                                                                <DataTrigger Binding="{Binding IsChecked, 
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding IsChecked, 
                                     RelativeSource={RelativeSource AncestorType=
                                     {x:Type ToggleButton}}}" Value="True">
-                                                                                    <Setter Property="Image.Source" 
+                                                                                <Setter Property="Image.Source" 
                                         Value="/images/cc_visa_checked.png" />
-                                                                                </DataTrigger>
-                                                                            </Style.Triggers>
-                                                                        </Style>
-                                                                    </Image.Style>
-                                                                </Image>
-                                                          
-                                                            
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </Image.Style>
+                                                            </Image>
+
+
                                                         </ControlTemplate>
                                                     </ToggleButton.Template>
                                                 </ToggleButton>
@@ -1019,10 +1038,10 @@
                     <GroupBox Margin="20 20 10 20" Background="#ffffff" BorderThickness="0">
                         <StackPanel>
                             <StackPanel Margin="50" HorizontalAlignment="Center">
-                            <Image Source="/images/recaptcha.png"  Width="150" VerticalAlignment="Center"/>
-                        </StackPanel>
+                                <Image Source="/images/recaptcha.png"  Width="150" VerticalAlignment="Center"/>
+                            </StackPanel>
 
-                        <StackPanel>
+                            <StackPanel>
                                 <Label Content="CHOOSE SITE" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
 
                                 <ComboBox Name="captchaSite" Margin="6 0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Visibility="Visible" Style="{StaticResource ComboBoxTest2}">
@@ -1068,11 +1087,11 @@
                             <ListView VerticalAlignment="Stretch" ItemsSource="{Binding SourceCollection}" Name="tokens" Background="#ffffff" Grid.Row="1" BorderBrush="#ebecf0" >
                                 <ListView.View>
                                     <GridView ColumnHeaderContainerStyle = "{StaticResource GridViewColumnHeaderStyle1}" >
-                                        
+
 
                                         <GridViewColumn Header="Site" Width="auto" DisplayMemberBinding="{Binding Site}" />
                                         <GridViewColumn Header="Token" Width="auto" DisplayMemberBinding="{Binding Token}" />
-                                        
+
                                     </GridView>
 
 
@@ -1091,7 +1110,7 @@
 
                             </ListView>
 
-                            
+
 
                         </StackPanel>
 

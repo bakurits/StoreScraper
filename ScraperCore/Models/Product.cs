@@ -1,10 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Drawing;
 using System.Threading;
-using StoreScraper.Models;
-using StoreScraper.Http.Factory;
-using StoreScraper.Helpers;
 using HtmlAgilityPack;
 using ScraperCore.Interfaces;
 using StoreScraper.Core;
@@ -19,6 +15,8 @@ namespace StoreScraper.Models
         [Browsable(false)]
         public string BrandName { get; set; } = "";
 
+        [Browsable(false)]
+        public string KeyWords { get; set; } = "";
 
         [Browsable(false)]
         public IWebsiteScraper ScrapedBy { get; set; }
@@ -32,7 +30,7 @@ namespace StoreScraper.Models
         public double Price { get; set; }
 
         /// <summary>
-        /// Short name of currecy.
+        /// Short name of currency.
         /// For example: USD, EUR etc..
         /// </summary>
         [Browsable(false)]
@@ -84,7 +82,7 @@ namespace StoreScraper.Models
         public void Validate()
         {
             Name = ValidateString(Name, nameof(Name));
-            Url = ValidateString(Url, nameof(Url));
+            ValidateString(Url, nameof(Url));
             Currency = ValidateString(Currency, nameof(Currency));
             Price = ValidatePrice(Price, nameof(Price));
         }
@@ -102,6 +100,16 @@ namespace StoreScraper.Models
             if (!(obj is Product toCompare)) return false;
 
             return this.Url == toCompare.Url;
+        }
+
+        public static bool operator == (Product p1, Product p2)
+        { 
+            return p1?.Url == p2?.Url;
+        }
+
+        public static bool operator !=(Product p1, Product p2)
+        {
+            return !(p1 == p2);
         }
 
         public override int GetHashCode()

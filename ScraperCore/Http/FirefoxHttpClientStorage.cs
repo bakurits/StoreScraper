@@ -12,21 +12,37 @@ namespace StoreScraper.Http
 {
     public class FirefoxHttpClientStorage
     {
-        private Dictionary<string ,HttpClient> _proxiedClients = new Dictionary<string, HttpClient>();
-        private HttpClient _proxilessClient = ClientFactory.CreateHttpCLient(null, true).AddHeaders(ClientFactory.DefaultHeaders);
+        public Dictionary<string ,HttpClient> ProxiedClients = new Dictionary<string, HttpClient>();
+        public HttpClient ProxilessClient = ClientFactory.CreateHttpClient(null, true).AddHeaders(ClientFactory.DefaultHeaders);
 
+  
+        public FirefoxHttpClientStorage()
+        {
+            try
+            {
+                AppSettings.Default.Proxies.ForEach(proxy =>
+                   {
+                       var client = ClientFactory.CreateProxiedHttpClient(ClientFactory.ParseProxy(proxy), true).AddHeaders(ClientFactory.DefaultHeaders);
+                       ProxiedClients.Add(proxy, client);
+                   });
+            }
+            catch
+            {
+                //ignored
+            }
+        }
 
         public HttpClient GetHttpClient(WebProxy proxy)
         {
             var uri = proxy.Address.AbsoluteUri;
 
-            if (_proxiedClients.ContainsKey(uri))
+            if (ProxiedClients.ContainsKey(uri))
             {
-                return _proxiedClients[proxy.Address.AbsoluteUri];
+                return ProxiedClients[proxy.Address.AbsoluteUri];
             }
 
             var client = ClientFactory.CreateProxiedHttpClient(proxy, true).AddHeaders(ClientFactory.DefaultHeaders);
-            _proxiedClients.Add(uri, client);
+            ProxiedClients.Add(uri, client);
 
             return client;
         }
@@ -35,13 +51,13 @@ namespace StoreScraper.Http
         {
             if (AppSettings.Default.UseProxy)
             {
-                if (_proxiedClients.Count > 0)
+                if (ProxiedClients.Count > 0)
                 {
-                    _proxiedClients.Values.ToList().GetRandomValue();
+                    ProxiedClients.Values.ToList().GetRandomValue();
                 }
             }
 
-            return _proxilessClient;
+            return ProxilessClient;
         }
 
     }

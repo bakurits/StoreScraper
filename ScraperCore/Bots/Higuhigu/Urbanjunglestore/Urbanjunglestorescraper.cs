@@ -16,7 +16,7 @@ namespace StoreScraper.Bots.Higuhigu.Urbanjunglestore
     public class UrbanjunglestoreScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Urbanjunglestore";
-        public override string WebsiteBaseUrl { get; set; } = "http://www.urbanjunglestore.com";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.urbanjunglestore.com";
         public override bool Active { get; set; }
 
         private const string SearchFormat = @"https://www.urbanjunglestore.com/it/latest-products.html";

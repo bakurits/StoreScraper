@@ -18,10 +18,10 @@ namespace StoreScraper.Bots.DavitBezhanishvili.AwLab
     public class AwLabScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Aw-lab";
-        public override string WebsiteBaseUrl { get; set; } = "http://en.aw-lab.com";
+        public override string WebsiteBaseUrl { get; set; } = "https://en.aw-lab.com";
         public override bool Active { get; set; }
 
-        private readonly List<String> NewArrivalPageUrls = new List<string>
+        private readonly List<string> NewArrivalPageUrls = new List<string>
         {
            "https://en.aw-lab.com/shop/men/new-now/#%2Fshop%2Fmen%2Fnew-now%3Fdir%3Ddesc%26order%3Daw_created_at",
            "https://en.aw-lab.com/shop/women/new-now/#%2Fshop%2Fwomen%2Fnew-now%3Fdir%3Ddesc%26order%3Daw_created_at",
@@ -43,9 +43,9 @@ namespace StoreScraper.Bots.DavitBezhanishvili.AwLab
             var nodes = document.DocumentNode.SelectSingleNode("//div[contains(@class, 'products-grid row')]");
             if (nodes == null)
             {
-                Logger.Instance.WriteErrorLog("Unexcepted Html");
+                Logger.Instance.WriteErrorLog("Unexpected Html");
                 Logger.Instance.SaveHtmlSnapshop(document);
-                throw new WebException("Unexcepted Html");
+                throw new WebException("Unexpected Html");
             }
             var children = nodes.SelectNodes("./div");
             if (children == null)
@@ -59,7 +59,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.AwLab
 #if DEBUG
                 LoadSingleProduct(data, child, settings);
 #else
-                LoadSingleProductTryCatchWraper(data, child, settings);
+                LoadSingleProductTryCatchWrapper(data, child, settings);
 #endif
             }
             
@@ -68,7 +68,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.AwLab
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             var searchUrl =
-                $"http://en.aw-lab.com/shop/catalogsearch/result/index/q/{settings.KeyWords}";
+                $"https://en.aw-lab.com/shop/catalogsearch/result/index/q/{settings.KeyWords}";
             ConcurrentDictionary<Product, byte> data = new ConcurrentDictionary<Product, byte>();
             Scrap(searchUrl, data, settings, token).Wait(token);
 
@@ -80,10 +80,10 @@ namespace StoreScraper.Bots.DavitBezhanishvili.AwLab
         /// This method is simple wrapper on LoadSingleProduct
         /// To catch all Exceptions during release
         /// </summary>
-        /// <param name="listOfProducts"></param>
+        /// <param name="data"></param>
         /// <param name="child"></param>
         /// <param name="settings"></param>
-        private void LoadSingleProductTryCatchWraper(ConcurrentDictionary<Product, byte> data, HtmlNode child, SearchSettingsBase settings)
+        private void LoadSingleProductTryCatchWrapper(ConcurrentDictionary<Product, byte> data, HtmlNode child, SearchSettingsBase settings)
         {
             try
             {
@@ -95,18 +95,18 @@ namespace StoreScraper.Bots.DavitBezhanishvili.AwLab
             }
         }
 
-        private string getImageUrl(HtmlNode child)
+        private string GetImageUrl(HtmlNode child)
         {
             return child.SelectSingleNode(".//div[contains(@class, 'product-image')]/a/img").GetAttributeValue("src", null);
         }
 
-        private string getProductUrl(HtmlNode child)
+        private string GetProductUrl(HtmlNode child)
         {
             return child.SelectSingleNode(".//div[contains(@class, 'product-image')]/a").GetAttributeValue("href", null);
         }
 
 
-        private string getProductName(HtmlNode child)
+        private string GetProductName(HtmlNode child)
         {
             return child.SelectSingleNode(".//div[contains(@class,product-data-container)]/h2/a").InnerText;
         }
@@ -115,9 +115,9 @@ namespace StoreScraper.Bots.DavitBezhanishvili.AwLab
         private void LoadSingleProduct(ConcurrentDictionary<Product, byte> data, HtmlNode child, SearchSettingsBase settings)
         {
 
-            var imageUrl = getImageUrl(child);
-            var productUrl = getProductUrl(child);
-            var productName = getProductName(child);
+            var imageUrl = GetImageUrl(child);
+            var productUrl = GetProductUrl(child);
+            var productName = GetProductName(child);
             var priceNode = child.SelectSingleNode(".//*[contains(@class, 'small-price')]");
 
             var priceStr = priceNode.SelectSingleNode("./del") != null
@@ -142,16 +142,28 @@ namespace StoreScraper.Bots.DavitBezhanishvili.AwLab
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var webPage = GetWebpage(productUrl, token);
-            var jsonStr = Regex.Match(webPage.InnerHtml, @"var spConfig = new Product.Config\((.*)\)").Groups[1].Value;
-            JObject parsed = JObject.Parse(jsonStr);
-
             ProductDetails details = ConstructProduct(webPage, productUrl);
+   
+            var jsonStr = Regex.Match(webPage.InnerHtml, @"var spConfig = new Product.Config\((.*)\)").Groups[1].Value;
+            if (jsonStr == "") return details;
+
+            JObject parsed = JObject.Parse(jsonStr);
+            var str = Regex.Match(webPage.InnerHtml, @"var spConfigDisabledProducts = \[([^()]*)\]").Groups[1].Value;
+            var disabledSizes = JArray.Parse("[" + str + "]");
+            var disabledList = new List<string>();
+            foreach (var sz in disabledSizes)
+            {
+                disabledList.Add((string)sz.ToString());
+            }
 
             var sizes = parsed.SelectToken("attributes").SelectToken("959").SelectToken("options");
             foreach (JToken sz in sizes.Children())
             {
+                var productId = sz.SelectToken("products")[0].ToString();
+                if(disabledList.Contains(productId)) continue;
+
                 var sizeName = (string)sz.SelectToken("label");
-                var size = parseSize(sizeName);
+                var size = ParseSize(sizeName);
                 details.AddSize(size, "Unknown");
             }
             return details;
@@ -180,7 +192,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.AwLab
             return details;
         }
 
-        private string parseSize(string sizeName)
+        private string ParseSize(string sizeName)
         {
             var sizes = sizeName.Split(' ');
             if (sizes.Length == 1) return sizes[0];

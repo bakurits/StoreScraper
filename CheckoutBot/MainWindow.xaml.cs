@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,13 +14,17 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using CheckoutBot.CheckoutBots.FootSites;
+using CheckoutBot.CheckoutBots.FootSites.EastBay;
+using CheckoutBot.Core;
 using CheckoutBot.Models.Shipping;
 using CheckoutBot.Models.Payment;
 using CheckoutBot.Models;
+using CheckoutBot.Models.Checkout;
 using Newtonsoft.Json;
 using EO;
 using EO.WebBrowser;
-using EO.WebEngine;
+using StoreScraper.Helpers;
 
 namespace CheckoutBot
 {
@@ -30,12 +36,13 @@ namespace CheckoutBot
         public MainWindow()
         {
             InitializeComponent();
-            ThreadRunner runner = new ThreadRunner();
-            var webView = runner.CreateWebView(new BrowserOptions());
 
-            webView.Engine.Options.BypassUserGestureCheck = true;
-            
+            foreach (var bot in AppData.AvailableBots)
+            {
+                cbx_Websites.Items.Add(bot);
+            }
 
+            ReleasedProductsMonitor.Default = new ReleasedProductsMonitor();
             List<TaskItem> items = new List<TaskItem>();
             items.Add(new TaskItem() { Keywords = "nike air", Size = 12, Retries = "1", Status="Checking out", ListImage="/images/list_progress.png" });
             items.Add(new TaskItem() { Keywords = "adidas", Size = 7, Retries = "3", Status = "Error", ListImage = "/images/list_error.png" });
@@ -246,14 +253,14 @@ namespace CheckoutBot
 
             if (shippingState.Visibility != Visibility.Hidden)
             {
-                Enum.TryParse<States>(shippingAddress_state.SelectedValue.ToString(), out var shippingState);
-                shippingAddress.State = shippingState;
+                Enum.TryParse<States>(shippingAddress_state.SelectedValue.ToString(), out var state);
+                shippingAddress.State = state;
             }
 
             if (billingState.Visibility != Visibility.Hidden)
             {
-                Enum.TryParse<States>(billingAddress_state.SelectedValue.ToString(), out var billing_state);
-                billingAddress.State = billing_state;
+                Enum.TryParse<States>(billingAddress_state.SelectedValue.ToString(), out var state);
+                billingAddress.State = state;
             }
 
 
@@ -287,12 +294,94 @@ namespace CheckoutBot
                 BillingAddress = billingAddress,
                 CreditCard = creditCard,
                 DateCreated =  DateTime.Now
-     
         };
 
             profileList.Items.Add(profile);
         }
 
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            int.TryParse(tbx_Quantity.Text, out int quantity);
+            if (quantity == default(int))
+            {
+                MessageBox.Show("Incorrect Quntity typed","Error", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+                return;
+            }
+
+            AccountCheckoutSettings settings = new AccountCheckoutSettings()
+            {
+                UserLogin = tbx_UserName.Text,
+                UserPassword = tbx_Password.Text,
+                BuyOptions = new ProductBuyOptions()
+                {
+                    Quantity = quantity,
+                }
+            };
+        }
+
+        private void cbx_Websites_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            cbx_Products.IsEnabled = false;
+            if(cbx_Websites.SelectedValue == null) return;
+
+            cbx_Products.Items.Clear();
+
+            var curStore = (FootSitesBotBase)cbx_Websites.SelectedValue;
+            try
+            {
+                var lst = ReleasedProductsMonitor.Default.GetProductsList(curStore).
+                    Where(prod => prod.ReleaseTime > DateTime.UtcNow || true);
+                foreach (var product in lst)
+                {
+                    cbx_Products.Items.Add(product);
+                }
+                cbx_Products.IsEnabled = true;
+            }
+            catch (Exception ex)
+            {
+                //ignored
+            }
+        }
+
+        private void cbx_Products_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            cbx_Size.IsEnabled = false;
+            if(cbx_Products.SelectedValue == null) return;
+            cbx_Size.Items.Clear();
+
+            if (cbx_Websites.SelectedValue is EastBayBot bot)
+            {
+                if (cbx_Products.SelectedValue is FootsitesProduct product)
+                {
+                    try
+                    {
+                        bot.GetProductSizes(product, CancellationToken.None);
+                        if (product.ImageUrl != null)
+                        {
+                            BitmapImage bImage = new BitmapImage(new Uri(product.ImageUrl));
+                            img_Product.Source = bImage;
+                        }
+
+                        txt_Prce.Content = product.Price + product.Currency;
+                        lnk_ProductUrl.NavigateUri = new Uri(product.Url);
+                        Run run = new Run("Open");
+                        lnk_ProductUrl.Inlines.Clear();
+                        lnk_ProductUrl.Inlines.Add(run);
+                        product.Sizes.ForEach(size => cbx_Size.Items.Add(size));
+                        cbx_Size.IsEnabled = true;
+                    }
+                    catch (Exception ex)
+                    {
+                          //ignored
+                    }
+                }
+            }
+        }
+
+        private void lnk_ProductUrl_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            System.Diagnostics.Process.Start(e.Uri.ToString());
+        }
     }
 
 
@@ -314,9 +403,6 @@ namespace CheckoutBot
     {
         public string Site { get; set; }
         public string Token { get; set; }
-
-
-
     }
 
     public class ProxyItem

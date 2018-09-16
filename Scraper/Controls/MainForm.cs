@@ -270,7 +270,8 @@ namespace StoreScraper.Controls
                     try
                     {
                         store.ScrapeItems(out var curProductsList, convertedFilter, _findTokenSource.Token);
-                        monTask.OldItems.Add(curProductsList);
+                        HashSet<Product> set = new HashSet<Product>(curProductsList);
+                        monTask.OldItems.Add(set);
                     }
                     catch
                     {

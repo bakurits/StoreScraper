@@ -14,11 +14,11 @@ namespace StoreScraper.Bots.Higuhigu.Asphaltgold
     public class AsphaltgoldScraper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Asphaltgold";
-        public override string WebsiteBaseUrl { get; set; } = "http://asphaltgold.de";
+        public override string WebsiteBaseUrl { get; set; } = "https://asphaltgold.de";
         public override bool Active { get; set; }
         public override Type SearchSettingsType { get; set; } = typeof(AsphaltgoldSearchSettings);
 
-        private static readonly string[] Links = { "http://asphaltgold.de/en/sneaker/", "http://asphaltgold.de/en/apparel/" };
+        private static readonly string[] Links = { "https://asphaltgold.de/en/sneaker/", "https://asphaltgold.de/en/apparel/" };
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {

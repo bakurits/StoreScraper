@@ -49,11 +49,24 @@ namespace StoreScraper.Http.Factory
 
         public static StringPair[] ChromeHeaders = new StringPair[]
         {
-            FirefoxAcceptHeader,
+            ChromeAcceptHeader,
             ChromeUserAgentHeader,
             ("Accept-Language", @"en-US,en;q=0.9"),
-            ("Accept-Encoding", "gzip,deflate"),
-            ("Cache-Control", "no-cache")
+            ("Accept-Encoding", "gzip,deflate,br"),
+            ("Cache-Control", "no-cache"),
+            ("Pramgma","no-cache"),
+            ("Connection", "keep-alive"),
+            ("Upgrade-Insecure-Requests", "1"),
+        };
+
+        public static StringPair[] EOHeaders = new StringPair[]
+        {
+            ("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8"),
+            ("Accept-Encoding", "gzip, deflate"),
+            ("Accept-Language", @"en-US,en;q=0.8"),
+            ("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"),
+            ("Upgrade-Insecure-Requests","1"),
+            //("Connection","keep-alive"),
         };
 
 
@@ -155,10 +168,10 @@ namespace StoreScraper.Http.Factory
         public static HttpClient CreateProxiedHttpClient(WebProxy proxy = null, bool autoCookies = false)
         {
             proxy = proxy ?? GetRandomProxy();
-            return CreateHttpCLient(proxy, autoCookies);
+            return CreateHttpClient(proxy, autoCookies);
         }
 
-        public static HttpClient CreateHttpCLient(WebProxy proxy = null, bool autoCookies = false)
+        public static HttpClient CreateHttpClient(WebProxy proxy = null, bool autoCookies = false)
         {
             HttpClientHandler handler = new ExtendedClientHandler()
             {
@@ -179,7 +192,7 @@ namespace StoreScraper.Http.Factory
             return client;
         }
 
-        public static FirefoxHttpClientStorage Storage = new FirefoxHttpClientStorage();
+        public static Lazy<FirefoxHttpClientStorage> Storage = new Lazy<FirefoxHttpClientStorage>();
 
         public static HttpClient GetFirefoxHttpClient(WebProxy proxy = null, bool autoCookies = false)
         {
@@ -188,7 +201,7 @@ namespace StoreScraper.Http.Factory
                 return CreateProxiedHttpClient(proxy).AddHeaders(DefaultHeaders);
             }
 
-            return proxy == null ? Storage.GetHttpClient() : Storage.GetHttpClient(proxy);
+            return proxy == null ? Storage.Value.GetHttpClient() : Storage.Value.GetHttpClient(proxy);
         }
 
         [DllImport("user32.dll")]

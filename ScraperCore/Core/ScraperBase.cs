@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using ScraperCore.Interfaces;
 using ScraperCore.Models;
 using StoreScraper.Core;
@@ -77,60 +76,62 @@ namespace StoreScraper
             List<Exception> exceptions = new List<Exception>();
            
 
-            if (settings.Mode == SearchMode.SearchAPI)
+            switch (settings.Mode)
             {
-                settings.KeyWords.Split(' ', ',').AsParallel().ForAll(k =>
-                   {
-                       k = k.Trim();
-                       var s = (SearchSettingsBase)settings.Clone();
-                       s.KeyWords = k;
-                       for (int i = 0; i < AppSettings.Default.ProxyRotationRetryCount; i++)
-                       {
-                           try
-                           {
-                               FindItems(out var list, s, token);
-                               lock (products)
-                               {
-                                   products.AddRange(list);
-                               }
-                               break;
-                           }
-                           catch (Exception e)
-                           {
-                               if (i == AppSettings.Default.ProxyRotationRetryCount - 1)
-                               {
-                                   Logger.Instance.WriteErrorLog($"Error while search {WebsiteName} with keyword {k}");
-                                   exceptions.Add(e);
-                               }
-                           }
-                       }
-
-                       if (exceptions.Count > 0) throw new AggregateException(exceptions);
-                   });
-            }
-            else if(settings.Mode == SearchMode.NewArrivalsPage)
-            {
-                for (int i = 0; i < AppSettings.Default.ProxyRotationRetryCount; i++)
-                {
-                    try
+                case SearchMode.SearchAPI:
+                    settings.KeyWords.Split('\n', ',').AsParallel().ForAll(k =>
                     {
-                        ScrapeNewArrivalsPage(out var allNewProducts, token);
-                        var filteredProducts = allNewProducts.FindAll(p => Utils.SatisfiesCriteria(p, settings));
-                        lock (products)
+                        k = k.Trim();
+                        var s = (SearchSettingsBase)settings.Clone();
+                        s.KeyWords = k;
+                        for (var i = 0; i < AppSettings.Default.ProxyRotationRetryCount; i++)
                         {
-                            products.AddRange(filteredProducts);
+                            try
+                            {
+                                FindItems(out var list, s, token);
+                                lock (products)
+                                {
+                                    products.AddRange(list);
+                                }
+                                break;
+                            }
+                            catch (Exception e)
+                            {
+                                if (i != AppSettings.Default.ProxyRotationRetryCount - 1) continue;
+                                Logger.Instance.WriteErrorLog($"Error while search {WebsiteName} with keyword {k}");
+                                exceptions.Add(e);
+                            }
                         }
-                        break;
-                    }
-                    catch (Exception e)
+
+                        if (exceptions.Count > 0) throw new AggregateException(exceptions);
+                    });
+                    break;
+                case SearchMode.NewArrivalsPage:
+                {
+                    for (var i = 0; i < AppSettings.Default.ProxyRotationRetryCount; i++)
                     {
-                        if (i == AppSettings.Default.ProxyRotationRetryCount - 1)
+                        try
                         {
+                            ScrapeNewArrivalsPage(out var allNewProducts, token);
+                            var filteredProducts = allNewProducts.FindAll(p => Utils.SatisfiesCriteria(p, settings));
+                            lock (products)
+                            {
+                                products.AddRange(filteredProducts);
+                            }
+                            break;
+                        }
+                        catch (Exception e)
+                        {
+                            if (i != AppSettings.Default.ProxyRotationRetryCount - 1) continue;
                             Logger.Instance.WriteErrorLog($"Error while new arrivals page search {WebsiteName} with keyword {settings.KeyWords}");
                             exceptions.Add(e);
                         }
                     }
+
+                    break;
                 }
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             listOfProducts.AddRange(products);

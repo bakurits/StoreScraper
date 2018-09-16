@@ -63,6 +63,21 @@
     <Reference Include="dotMemory.Unit, Version=111.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.dotMemoryUnit.3.0.20171219.105559\lib\net35\dotMemory.Unit.dll</HintPath>
     </Reference>
+    <Reference Include="EO.Base, Version=18.2.74.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Essential Objects\EO.Total 2018\EO.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="EO.WebBrowser, Version=18.2.74.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Essential Objects\EO.Total 2018\EO.WebBrowser.dll</HintPath>
+    </Reference>
+    <Reference Include="EO.WebBrowser.Wpf, Version=18.2.74.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc">
+      <HintPath>..\CheckoutBot\EO\EO.WebBrowser.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="EO.WebEngine, Version=18.2.74.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Essential Objects\EO.Total 2018\EO.WebEngine.dll</HintPath>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.8.7.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.8.7\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
@@ -81,9 +96,12 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
     <Reference Include="WebDriver, Version=3.14.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Selenium.WebDriver.3.14.0\lib\net45\WebDriver.dll</HintPath>
     </Reference>
@@ -91,18 +109,27 @@
   <ItemGroup>
     <Compile Include="CaptchaTests\AntiCaptchaTest.cs" />
     <Compile Include="CaptchaTests\TwoCaptchaTest.cs" />
+    <Compile Include="CheckoutBots\Core\ReleasedProductsMonitorTest.cs" />
     <Compile Include="CheckoutBots\FootSites\ChampsSports\ChampsSportsBotTests.cs" />
     <Compile Include="CheckoutBots\FootSites\checkReleaseTimeTest.cs" />
     <Compile Include="CheckoutBots\FootSites\EastBay\EastBayBotTests.cs" />
     <Compile Include="CheckoutBots\FootSites\FootAction\FootActionBotTests.cs" />
     <Compile Include="CheckoutBots\FootSites\FootLocker\FootLockerBotTests.cs" />
+    <Compile Include="Controls\EOTestForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\EOTestForm.Designer.cs">
+      <DependentUpon>EOTestForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Factory\DriverFactoryTests.cs" />
+    <Compile Include="Helpers\EOBrowserHelper.cs" />
     <Compile Include="MinorTests\SeleniumTests.cs" />
     <Compile Include="MinorTests\UtilsTests.cs" />
     <Compile Include="MinorTests\SlackWebHookTests.cs" />
     <Compile Include="ScraperTests\DavitBezhanishvili\AwLabScraperTests.cs" />
     <Compile Include="ScraperTests\Bakurits\RimowaScraperTest.cs" />
     <Compile Include="ScraperTests\DavitBezhanishvili\SneakerStudioScraperTests.cs" />
+    <Compile Include="ScraperTests\DavitBezhanishvili\RuvillaScraperTest.cs" />
     <Compile Include="ScraperTests\GiorgiBaghdavadze\SeleniumTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\FootShopTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\SnkrsTest.cs" />
@@ -112,7 +139,7 @@
     <Compile Include="ScraperTests\Sticky_bit\FootSites\FootActonTest.cs" />
     <Compile Include="ScraperTests\Sticky_bit\FootSites\FootLockerTest.cs" />
     <Compile Include="ScraperTests\Sticky_bit\YOOXTest.cs" />
-    <Compile Include="ScraperTests\Sticky_bit\BSTNTest.cs" />
+    <Compile Include="ScraperTests\DavitBezhanishvili\BSTNTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\DtlrTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\ExcelsiormilanoTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\GoodHoodStoreTest.cs" />
@@ -169,6 +196,11 @@
       <Project>{1BE9C1B7-52EB-4530-804F-21A6CE57E147}</Project>
       <Name>CheckoutBot</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Controls\EOTestForm.resx">
+      <DependentUpon>EOTestForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

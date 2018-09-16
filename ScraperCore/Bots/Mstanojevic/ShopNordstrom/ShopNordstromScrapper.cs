@@ -13,7 +13,7 @@ namespace StoreScraper.Bots.Mstanojevic.ShopNordstrom
     public class ShopNordstromScrapper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Nordstrom Online";
-        public override string WebsiteBaseUrl { get; set; } = "http://shop.nordstrom.com";
+        public override string WebsiteBaseUrl { get; set; } = "https://shop.nordstrom.com";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";

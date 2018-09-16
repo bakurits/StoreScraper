@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
+using CheckoutBot.CheckoutBots.FootSites;
 using CheckoutBot.CheckoutBots.FootSites.EastBay;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
 using CheckoutBot.Models.Payment;
 using CheckoutBot.Models.Shipping;
+using EO.WebBrowser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
+using ScraperTest.MinorTests;
+using StoreScraper.Bots.Sticky_bit.ChampsSports_EastBay;
 using StoreScraper.Models;
 
 namespace ScraperTest.CheckoutBots.FootSites.EastBay
@@ -42,7 +48,7 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
                     TypeOfPayment = PaymentType.Card,
                     ValidUntil = DateTime.MaxValue,
                 },
-                ProductToBuy = new Product(bot,
+                ProductToBuy = new FootsitesProduct(bot,
                     "ASICS TIGER GEL-DIABLO - MEN'S",
                     "https://www.eastbay.com/product/model:293596/sku:1A129001/",
                     120,
@@ -55,22 +61,84 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
         [TestMethod]
         public void AccountCheckoutTest()
         {
-            throw new NotImplementedException();
+            AccountCheckoutSettings settings =
+                new AccountCheckoutSettings()
+                {
+                    UserPassword = "tqWg3WXkg4",
+                    UserLogin = "bakuricucxashvili@gmail.com",
+                    UserCcv2 = "123",
+                    ProductToBuy = new FootsitesProduct(new FootSimpleBase.EastBayScraper(), "yle",
+                        "https://www.eastbay.com/product/model:283446/sku:A7097514/nike-nba-swingman-jersey-mens/lebron-james/los-angeles-lakers/purple/",
+                        0, "", "A7097514"),
+                    BuyOptions = new ProductBuyOptions()
+                    {
+                        Size = "XS/S"
+                    }
+                };
+            EOBrowserHelper.BotTester(new EastBayBot(){DelayInSecond = 7}, bot => bot.AccountCheckout(settings, CancellationToken.None));
         }
 
         [TestMethod]
-        public void LoginTest()
+        public void LoginTestSuc()
         {
-            EastBayBot bot = new EastBayBot();
-            bot.Login("bakuricucxashvili@gmail.com", "Yrf7B2RHW", CancellationToken.None);
-        } 
+            bool v = EOBrowserHelper.BotTester(new EastBayBot() {DelayInSecond = 10},
+                bot => bot.Login("bakuricucxashvili@gmail.com", "VgnYiiY3t6", CancellationToken.None));
+            
+            Assert.IsTrue(v);
+        }
+        
+        [TestMethod]
+        public void LoginTestErr()
+        {
+            bool v = EOBrowserHelper.BotTester(new EastBayBot() {DelayInSecond = 10},
+                bot => bot.Login("bakuricucxashvili@gmail.com", "tqWg3WXkg1234", CancellationToken.None));
+            Assert.IsFalse(v);
+        }
 
         [TestMethod]
         public void ScrapeReleasePageTest()
         {
             EastBayBot bot = new EastBayBot();
-            List<Product> res = bot.ScrapeReleasePage(CancellationToken.None);
+            List<FootsitesProduct> res = bot.ScrapeReleasePage(CancellationToken.None);
             Helper.PrintFindItemsResults(res);
+        }
+
+        [TestMethod]
+        public void TestSizes()
+        {
+            EastBayBot bot = new EastBayBot();
+            FootsitesProduct product = new FootsitesProduct(new FootSimpleBase.EastBayScraper(), "JORDAN RETRO 13",
+                "https://www.eastbay.com/product/model:150074/sku:84129035/",
+                0, "", "")
+            {
+                Sku = "84129035",
+                Model = "150074",
+                Color = ""
+            };
+            
+            bot.GetProductSizes(product, CancellationToken.None);
+            Debug.WriteLine(string.Join("\n", product.Sizes));
+        }
+
+
+        private void AddArbitraryItemToCart(CancellationToken token)
+        {
+            EastBayBot bot = new EastBayBot();
+            AccountCheckoutSettings settings =
+                new AccountCheckoutSettings()
+                {
+                    UserLogin = "bakuricucxashvili@gmail.com",
+                    UserPassword = "Yrf7B2RHW",
+                    UserCcv2 = "123",
+                    ProductToBuy = new FootsitesProduct(new FootSimpleBase.EastBayScraper(), "ADIDAS TEAM STRUCTURED FLEX CAP - MEN'S",
+                        "https://www.eastbay.com/product/model:295115/sku:M038Z013/adidas-team-structured-flex-cap-mens/all-white/white/",
+                        12, "", "M038Z013"),
+                    BuyOptions = new ProductBuyOptions()
+                    {
+                        Size = "XS/S"
+                    }
+                };
+            bot.AddToCart(settings,token);
         }
     }
 }

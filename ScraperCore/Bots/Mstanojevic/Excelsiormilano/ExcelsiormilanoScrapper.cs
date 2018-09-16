@@ -17,7 +17,7 @@ namespace StoreScraper.Bots.Mstanojevic.Excelsiormilano
     public class ExcelsiormilanoScrapper : ScraperBase
     {
         public override string WebsiteName { get; set; } = "Excelsiormilano";
-        public override string WebsiteBaseUrl { get; set; } = "http://www.excelsiormilano.com";
+        public override string WebsiteBaseUrl { get; set; } = "https://www.excelsiormilano.com";
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";
