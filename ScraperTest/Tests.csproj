@@ -147,6 +147,7 @@
     <Compile Include="ScraperTests\DavitBezhanishvili\AwLabScraperTests.cs" />
     <Compile Include="ScraperTests\Bakurits\RimowaScraperTest.cs" />
     <Compile Include="ScraperTests\DavitBezhanishvili\SneakerStudioScraperTests.cs" />
+    <Compile Include="ScraperTests\DavitBezhanishvili\RuvillaScraperTest.cs" />
     <Compile Include="ScraperTests\GiorgiBaghdavadze\SeleniumTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\FootShopTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\SnkrsTest.cs" />
