@@ -42,6 +42,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 
         public override bool Login(string username, string password, CancellationToken token)
         {
+`           Driver2.LoadUrlAndWait(WebsiteBaseUrl);
             Driver.LoadUrlAndWait(WebsiteBaseUrl);
             Driver.EvalScript(GetScriptByXpath("//div[@id='header_account_button']/a/span") + ".click();");
             
@@ -104,18 +105,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             driver.Navigate().GoToUrl(WebsiteBaseUrl);
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
 
-            var cartContainer = GetClickableElementByXPath("//div[@id = 'header_cart_button']", wait, token);
-            cartContainer.Click();
-
-            var select = new SelectElement(GetVisibleElementByXPath("//select[@id = 'billCountry']", wait, token));
-            try
-            {
-                select.SelectByText(settings.Shipping.Country.ToString());
-            }
-            catch
-            {
-                Logger.Instance.WriteErrorLog("This country isn't available");
-            }
+            
 
             throw new NotImplementedException();
         }
