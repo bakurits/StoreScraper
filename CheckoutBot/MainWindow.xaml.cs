@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,6 +13,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using CheckoutBot.CheckoutBots.FootSites;
+using CheckoutBot.CheckoutBots.FootSites.EastBay;
+using CheckoutBot.Core;
 using CheckoutBot.Models.Shipping;
 using CheckoutBot.Models.Payment;
 using CheckoutBot.Models;
@@ -19,6 +23,7 @@ using CheckoutBot.Models.Checkout;
 using Newtonsoft.Json;
 using EO;
 using EO.WebBrowser;
+using StoreScraper.Helpers;
 
 namespace CheckoutBot
 {
@@ -31,6 +36,12 @@ namespace CheckoutBot
         {
             InitializeComponent();
 
+            foreach (var bot in AppData.AvailableBots)
+            {
+                cbx_Websites.Items.Add(bot);
+            }
+
+            ReleasedProductsMonitor.Default = new ReleasedProductsMonitor();
             List<TaskItem> items = new List<TaskItem>();
             items.Add(new TaskItem() { Keywords = "nike air", Size = 12, Retries = "1", Status="Checking out", ListImage="/images/list_progress.png" });
             items.Add(new TaskItem() { Keywords = "adidas", Size = 7, Retries = "3", Status = "Error", ListImage = "/images/list_error.png" });
@@ -299,6 +310,59 @@ namespace CheckoutBot
                     Quantity = quantity,
                 }
             };
+        }
+
+        private void cbx_Websites_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            cbx_Products.IsEnabled = false;
+            if(cbx_Websites.SelectedValue == null) return;
+
+            cbx_Products.Items.Clear();
+
+            var curStore = (FootSitesBotBase)cbx_Websites.SelectedValue;
+            try
+            {
+                var lst = ReleasedProductsMonitor.Default.GetProductsList(curStore);
+                foreach (var product in lst)
+                {
+                    cbx_Products.Items.Add(product);
+                }
+                cbx_Products.IsEnabled = true;
+            }
+            catch (Exception ex)
+            {
+                //ignored
+            }
+        }
+
+        private void cbx_Products_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            cbx_Size.IsEnabled = false;
+            if(cbx_Products.SelectedValue == null) return;
+            cbx_Size.Items.Clear();
+
+            if (cbx_Websites.SelectedValue is EastBayBot bot)
+            {
+                if (cbx_Products.SelectedValue is FootsitesProduct product)
+                {
+                    try
+                    {
+                        bot.GetProductSizes(product, CancellationToken.None);
+                        product.Sizes.ForEach(size => cbx_Size.Items.Add(size));
+                        //var image = AppData.CommonFirefoxClient.GetImage(product.ImageUrl, 300, 200);
+                        if (product.ImageUrl != null)
+                        {
+                            BitmapImage bImage = new BitmapImage(new Uri(product.ImageUrl));
+                            img_Product.Source = bImage;
+                        }
+                        cbx_Size.IsEnabled = true;
+                    }
+                    catch (Exception ex)
+                    {
+                          //ignored
+                    }
+                }
+            }
         }
     }
 

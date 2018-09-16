@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using CheckoutBot.Factory;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
@@ -28,7 +27,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
     public class EastBayBot : FootSitesBotBase
     {
         private const string ApiUrl = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/1";
-        private const string CartUrl = "https://www.eastbay.com/shoppingcart";
+
         public EastBayBot() : base("EastBay", "https://www.eastbay.com", ApiUrl)
         {
         }
@@ -41,11 +40,11 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 
         public int DelayInSecond { private get; set; } = 2;
 
-        public override void Login(string username, string password, CancellationToken token)
+        public override bool Login(string username, string password, CancellationToken token)
         {
-            Driver.Url = WebsiteBaseUrl;
-            Task.Delay(DelayInSecond * 1000, token).Wait(token);
+            Driver.LoadUrlAndWait(WebsiteBaseUrl);
             Driver.EvalScript(GetScriptByXpath("//div[@id='header_account_button']/a/span") + ".click();");
+            
 
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             
@@ -66,11 +65,15 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             Driver.ScriptCallDone += CallHandler;
             */
 
-            Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");
-            Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{password}\"");
-            Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_submit']")}.click()");
+            Driver.EvalScript($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");
+            Driver.EvalScript($"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{password}\"");
+            Driver.EvalScript($"{GetScriptByXpath("//input[@id='login_submit']")}.click()");
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             
+            string isWrong = (string) Driver.EvalScript(@"document.getElementById(""login_password_error"").innerHTML");
+            //Console.WriteLine(isWrong);
+            return isWrong.Length == 0;
+
             /*Console.WriteLine("ylep");
             
             
@@ -93,7 +96,6 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             Driver.LoadHtml(doc.DocumentNode.InnerHtml);
             */
 
-            return;
         }
 
         public override void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
@@ -115,7 +117,6 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
                 Logger.Instance.WriteErrorLog("This country isn't available");
             }
 
-
             throw new NotImplementedException();
         }
 
@@ -124,9 +125,6 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             Login(settings.UserLogin, settings.UserPassword, token);
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             AddArbitraryItemToCart(token);
-            Driver.Url = CartUrl;
-            TabControl tc = new TabControl();
-            
             AddToCart(settings, token);
 
         }
@@ -137,7 +135,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
                 new AccountCheckoutSettings()
                 {
                     UserLogin = "bakuricucxashvili@gmail.com",
-                    UserPassword = "tqWg3WXkg4",
+                    UserPassword = "Yrf7B2RHW",
                     UserCcv2 = "123",
                     ProductToBuy = new FootsitesProduct(new FootSimpleBase.EastBayScraper(), "ADIDAS TEAM STRUCTURED FLEX CAP - MEN'S",
                         "https://www.eastbay.com/product/model:295115/sku:M038Z013/adidas-team-structured-flex-cap-mens/all-white/white/",
@@ -152,8 +150,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 
         private void AddToCart(AccountCheckoutSettings settings, CancellationToken token)
         {
-            Driver.Url = settings.ProductToBuy.Url;
-            Task.Delay(DelayInSecond * 1000, token).Wait(token);
+            Driver.LoadUrlAndWait(settings.ProductToBuy.Url);
             Driver.EvalScript($@"
 var xhr = new XMLHttpRequest();
 var date = Date.now();
@@ -175,7 +172,7 @@ xhr.send();");
         public void GetProductSizes(FootsitesProduct product, CancellationToken token)
         {
             List<string> infos = new List<string>();
-            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var client = ClientFactory.CreateHttpClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
             var document = client.GetDoc(product.Url, token).DocumentNode;
             int ind = document.InnerHtml.IndexOf("var styles = ", StringComparison.Ordinal);
             var sizeData = Utils.GetFirstJson(document.InnerHtml.Substring(ind));

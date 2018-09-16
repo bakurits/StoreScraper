@@ -50,7 +50,8 @@ namespace CheckoutBot.CheckoutBots.FootSites
       
         public List<FootsitesProduct> ScrapeReleasePage(CancellationToken token)
         {
-            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var client = ClientFactory.CreateHttpClient(autoCookies: true).AddHeaders(("Accept","application/json")).AddHeaders(ClientFactory.FirefoxUserAgentHeader)
+                .AddHeaders(("Accept-Language", "en-US,en; q=0.5"));
             var task = client.GetStringAsync(ReleasePageApiEndpoint);
             task.Wait(token);
 
@@ -61,6 +62,8 @@ namespace CheckoutBot.CheckoutBots.FootSites
             return products;
         }
 
+        private const int NumberOfDaysBefore = 1;
+        private const int NumberOfDaysAfter = 2;
         private List<FootsitesProduct> GetProducts(JToken data)
         {
             var products = new List<FootsitesProduct>();
@@ -69,8 +72,11 @@ namespace CheckoutBot.CheckoutBots.FootSites
                 var productsOnDay = day["products"];
                 foreach (var productData in productsOnDay)
                     try
-                    {
+                    {   
                         var date = GetDate(productData);
+                        var timeBefore = (DateTime.Now - date).Days; 
+                        var timeAfter = (date - DateTime.Now).Days;
+                        if (timeAfter > NumberOfDaysAfter || timeBefore > NumberOfDaysBefore) continue;
                         var name = GetPropertyAsString(productData, "name");
                         var price = GetPrice(productData);
                         var url = GetUrl(productData);
@@ -112,14 +118,19 @@ namespace CheckoutBot.CheckoutBots.FootSites
         private string GetUrl(JToken productData)
         {
             if (productData["buyNowURL"].Type != JTokenType.Null)
-                return ((string) productData["buyNowURL"]).StringBefore("/?sid=");
-            return "Not Available";
+            {   
+                string s = ((string) productData["buyNowURL"]).StringBefore("/?sid=");
+                Uri uri = new Uri(s);
+                string correctedUri = this.WebsiteBaseUrl + "/" + uri.PathAndQuery;
+                return correctedUri;
+            } 
+            return null;
         }
 
         private DateTime GetDate(JToken productData)
         {
             if (productData["launchDateTimeUTC"].Type == JTokenType.Null) return DateTime.MaxValue;
-            var dateInJson = (string) productData["launchDateTimeUTC"];
+            var dateInJson = productData["launchDateTimeUTC"].ToString();
             var date = DateTime.Parse(dateInJson);
             return date;
 
@@ -129,7 +140,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
         {
             if (productData[property].Type != JTokenType.Null)
                 return (string) productData[property];
-            return "Not Available";
+            return null;
         }
         
         private int GetCountDownEnabled(JToken productData)
@@ -173,6 +184,10 @@ namespace CheckoutBot.CheckoutBots.FootSites
         {
             return "";
         }
-        
+
+        public override string ToString()
+        {
+            return this.WebsiteName;
+        }
     }
 }

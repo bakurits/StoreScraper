@@ -37,7 +37,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
                     (
                         Task.Run(() =>
                         {
-                            Parallel.ForEach(ClientFactory.Storage.ProxiedClients.Values, client =>
+                            Parallel.ForEach(ClientFactory.Storage.Value.ProxiedClients.Values, client =>
                             {
                                 try
                                 {
@@ -63,7 +63,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
                                 message.Method = HttpMethod.Get;
                                 message.RequestUri = SettingsUrl;
                                 message.Headers.Referrer = NewArrivalsUrl;
-                                ClientFactory.Storage.ProxilessClient.SendAsync(message).Result.EnsureSuccessStatusCode();
+                                ClientFactory.Storage.Value.ProxilessClient.SendAsync(message).Result.EnsureSuccessStatusCode();
                             }
                             catch
                             {

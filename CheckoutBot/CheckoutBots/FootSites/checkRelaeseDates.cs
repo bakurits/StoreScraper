@@ -31,7 +31,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
             }
         }
 
-        public void checkPost(Product product, CancellationToken token)
+        public void checkPost(FootsitesProduct product, CancellationToken token)
         {
             Console.Write(product.Url);
             var request = ClientFactory.CreateProxiedHttpClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);

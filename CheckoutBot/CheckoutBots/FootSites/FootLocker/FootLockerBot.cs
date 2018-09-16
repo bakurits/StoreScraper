@@ -9,7 +9,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootLocker
 {
     public class FootLockerBot : FootSitesBotBase
     {
-        public override void Login(string username, string password, CancellationToken token)
+        public override bool Login(string username, string password, CancellationToken token)
         {
             var driver = DriverFactory.CreateFirefoxDriver();
             driver.Navigate().GoToUrl(WebsiteBaseUrl);
@@ -43,8 +43,8 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootLocker
 
         public const string ReleasePageUrl = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/21";
 
-        public FootLockerBot() : base("Footlocker", "http://www.footlocker.com",
-            "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/21")
+        public FootLockerBot() : base("Footlocker", "https://www.footlocker.com",
+            ReleasePageUrl)
         {
         }
     }

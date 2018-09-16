@@ -138,7 +138,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootAction
         }
 
 
-        public override void Login(string username, string password, CancellationToken token)
+        public override bool Login(string username, string password, CancellationToken token)
         {
             var driver = DriverFactory.CreateFirefoxDriver();
             driver.Navigate().GoToUrl(this.WebsiteBaseUrl);
