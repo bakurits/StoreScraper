@@ -72,6 +72,7 @@
             this.webControl2.Size = new System.Drawing.Size(786, 418);
             this.webControl2.TabIndex = 0;
             this.webControl2.Text = "webControl2";
+            this.webControl2.WebView = this.Driver2;
             // 
             // tabPage2
             // 
