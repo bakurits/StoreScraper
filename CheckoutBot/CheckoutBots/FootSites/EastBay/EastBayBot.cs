@@ -49,22 +49,6 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             
-            /*var engine = Driver.Engine;
-            var cookieCollector = new CookieCollection();
-
-            void CallHandler(object sender, ScriptCallDoneEventArgs args)
-            {
-                var cookies = engine.CookieManager.GetCookies();
-                cookieCollector = new CookieCollection();
-                for (int i = 0; i < cookies.Count; i++)
-                {
-                    var cookie = cookies[i];
-                    cookieCollector.Add(new Cookie(cookie.Name, cookie.Value));
-                }
-            }
-
-            Driver.ScriptCallDone += CallHandler;
-            */
 
             Driver.EvalScript($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");
             Driver.EvalScript($"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{password}\"");
@@ -74,29 +58,6 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             string isWrong = (string) Driver.EvalScript(@"document.getElementById(""login_password_error"").innerHTML");
             //Console.WriteLine(isWrong);
             return isWrong.Length == 0;
-
-            /*Console.WriteLine("ylep");
-            
-            
-            var cookieContainer = new CookieContainer();
-            cookieContainer.Add(cookieCollector);
-
-            var handler  = new ExtendedClientHandler()
-            {
-                UseCookies = true,
-                MaxAutomaticRedirections = 3,
-                AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
-                AllowAutoRedirect = true,
-                CookieContainer = cookieContainer
-            };
-
-            var client = new HttpClient(handler).AddHeaders(ClientFactory.ChromeHeaders);
-            client.Timeout = TimeSpan.FromSeconds(5);
-
-            var doc = client.GetDoc("https://www.eastbay.com", CancellationToken.None);
-            Driver.LoadHtml(doc.DocumentNode.InnerHtml);
-            */
-
         }
 
         public override void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
@@ -114,31 +75,11 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         {
             Login(settings.UserLogin, settings.UserPassword, token);
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
-            AddArbitraryItemToCart(token);
             AddToCart(settings, token);
 
         }
 
-        private void AddArbitraryItemToCart(CancellationToken token)
-        {
-            AccountCheckoutSettings settings =
-                new AccountCheckoutSettings()
-                {
-                    UserLogin = "bakuricucxashvili@gmail.com",
-                    UserPassword = "Yrf7B2RHW",
-                    UserCcv2 = "123",
-                    ProductToBuy = new FootsitesProduct(new FootSimpleBase.EastBayScraper(), "ADIDAS TEAM STRUCTURED FLEX CAP - MEN'S",
-                        "https://www.eastbay.com/product/model:295115/sku:M038Z013/adidas-team-structured-flex-cap-mens/all-white/white/",
-                        12, "", "M038Z013"),
-                    BuyOptions = new ProductBuyOptions()
-                    {
-                        Size = "XS/S"
-                    }
-                };
-           AddToCart(settings,token);
-        }
-
-        private void AddToCart(AccountCheckoutSettings settings, CancellationToken token)
+        public void AddToCart(AccountCheckoutSettings settings, CancellationToken token)
         {
             Driver.LoadUrlAndWait(settings.ProductToBuy.Url);
             Driver.EvalScript($@"
@@ -157,6 +98,23 @@ xhr.onload = function() {{
     }}
 }};
 xhr.send();");
+        }
+
+
+        /// <summary>
+        /// Blocks current thread until product will be released
+        /// </summary>
+        /// <param name="model">unique model code of product to wait until release</param>
+        private void WaitBeforeRelease(string model, CancellationToken token)
+        {
+            bool released = false;
+
+            do
+            {
+                var allReleases = ScrapeReleasePage(token);
+                released = !allReleases.Find(p => p.Model == model).LaunchCountdownEnabled;
+                Task.Delay(25, token).Wait(token);
+            } while (released);
         }
 
         public void GetProductSizes(FootsitesProduct product, CancellationToken token)
