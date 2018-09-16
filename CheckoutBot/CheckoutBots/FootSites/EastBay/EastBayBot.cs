@@ -42,8 +42,8 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 
         public override bool Login(string username, string password, CancellationToken token)
         {
+`           Driver2.LoadUrlAndWait(WebsiteBaseUrl);
             Driver.LoadUrlAndWait(WebsiteBaseUrl);
-            Driver2.LoadUrlAndWait(WebsiteBaseUrl);
             Driver.EvalScript(GetScriptByXpath("//div[@id='header_account_button']/a/span") + ".click();");
             
 
