@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -8,6 +9,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using StoreScraper.Core;
 using StoreScraper.Http.Factory;
@@ -24,17 +26,33 @@ namespace StoreScraper.Bots.Jordan.Ruvilla
 
         private const string SearchUrl = "https://www.ruvilla.com/catalogsearch/result/?q={0}";
 
-        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
+        private readonly List<string> _newArrivalPageUrls = new List<String>
         {
-            listOfProducts = new List<Product>();
-            GetProductDetails("https://www.ruvilla.com/new-balance-m530-st-jude-m530sjy.html", token);
+            "https://www.ruvilla.com/men/footwear/new.html",
+            "https://www.ruvilla.com/men/apparel/new.html",
+            "https://www.ruvilla.com/men/accessories/new.html",
+            "https://www.ruvilla.com/women/footwear/new.html",
+            "https://www.ruvilla.com/women/apparel/new.html",
+            "https://www.ruvilla.com/kids/boys-footwear/new.html",
+            "https://www.ruvilla.com/kids/girls-footwear/new.html",
+            "https://www.ruvilla.com/kids/apparel/new.html"
+        };
 
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        {
+            ConcurrentDictionary<Product, byte> data = new ConcurrentDictionary<Product, byte>();
+            Task.WhenAll(_newArrivalPageUrls.Select(url => Scrap(url, data, null, token))).Wait(token);
+            listOfProducts = new List<Product>(data.Keys);
+        }
+
+        private async Task Scrap(string url, ConcurrentDictionary<Product, byte> data, SearchSettingsBase settings, CancellationToken token)
+        {
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             GetWebpage(client, WebsiteBaseUrl, token);
-            listOfProducts = new List<Product>();
-            var rooturl = string.Format(SearchUrl, settings.KeyWords);
-            var rootSearch = GetWebpage(client, rooturl, token);
-           
+            var rooturl = url;
+            var document =(await client.GetDocTask(rooturl,token));
+            var rootSearch = document.DocumentNode;
+
             var initialProducts = rootSearch.SelectNodes("//div[@class='product']");
             var results = rootSearch.SelectSingleNode("//h1").InnerHtml;
             var count = decimal.Parse(results.Split('(', ')')[1]);
@@ -43,7 +61,7 @@ namespace StoreScraper.Bots.Jordan.Ruvilla
             foreach (var item in initialProducts)
             {
                 token.ThrowIfCancellationRequested();
-                LoadSingleProduct(listOfProducts, settings, item);
+                LoadSingleProduct(data, settings, item);
             }
 
             IEnumerable<int> toScrape = Enumerable.Range(2, (int)scrapeAmount);
@@ -56,13 +74,20 @@ namespace StoreScraper.Bots.Jordan.Ruvilla
                 foreach (var item in newProducts)
                 {
                     token.ThrowIfCancellationRequested();
-                    LoadSingleProduct(listOfProducts, settings, item);
+                    LoadSingleProduct(data, settings, item);
                 }
             }
-
         }
 
-        private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
+        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
+        {
+            var data = new ConcurrentDictionary<Product,byte>();
+            var rooturl = string.Format(SearchUrl, settings.KeyWords);
+            Scrap(rooturl,data,settings,token).Wait(token);
+            listOfProducts = new List<Product>(data.Keys);
+        }
+
+        private void LoadSingleProduct(ConcurrentDictionary<Product,byte> data, SearchSettingsBase settings, HtmlNode item)
         {
            
             string name = GetName(item);
@@ -74,7 +99,7 @@ namespace StoreScraper.Bots.Jordan.Ruvilla
                 return;
             }
            
-            else if(pricee != "SEE CART FOR PRICE")
+            if(pricee != "SEE CART FOR PRICE")
             {
                 Debug.WriteLine(pricee);
                 var price = Utils.ParsePrice(pricee);
@@ -82,16 +107,16 @@ namespace StoreScraper.Bots.Jordan.Ruvilla
                 var product = new Product(this, name, url, price.Value, imgurl, url, price.Currency);
                 if (Utils.SatisfiesCriteria(product, settings))
                 {
-                    listOfProducts.Add(product);
+                    data.TryAdd(product,0);
                 }
 
                 return;
             }
 
-            var comingSoon = new Product(this, name, url, 0, imgurl, url, "See Cart For Price");
+            var comingSoon = new Product(this, name, url, -1, imgurl, url);
             if (Utils.SatisfiesCriteria(comingSoon, settings))
             {
-                listOfProducts.Add(comingSoon);
+                data.TryAdd(comingSoon,0);
             }
 
         }

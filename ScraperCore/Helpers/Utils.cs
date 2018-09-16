@@ -345,7 +345,7 @@ namespace StoreScraper.Helpers
             }
 
             if (Math.Abs(settingsBase.MaxPrice) < 0.000001) return true;
-            return product.Price <= settingsBase.MaxPrice && product.Price >= settingsBase.MinPrice;
+            return (Math.Abs(product.Price - (-1)) < 0.000001 || (product.Price <= settingsBase.MaxPrice && product.Price >= settingsBase.MinPrice));
         }
 
         private static readonly Dictionary<string, string> CurrencyConversionSet = new Dictionary<string, string>()

@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using CheckoutBot.Factory;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
@@ -27,7 +28,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
     public class EastBayBot : FootSitesBotBase
     {
         private const string ApiUrl = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/1";
-
+        private const string CartUrl = "https://www.eastbay.com/shoppingcart";
         public EastBayBot() : base("EastBay", "https://www.eastbay.com", ApiUrl)
         {
         }
@@ -123,6 +124,9 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             Login(settings.UserLogin, settings.UserPassword, token);
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             AddArbitraryItemToCart(token);
+            Driver.Url = CartUrl;
+            TabControl tc = new TabControl();
+            
             AddToCart(settings, token);
 
         }
@@ -130,8 +134,11 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         private void AddArbitraryItemToCart(CancellationToken token)
         {
             AccountCheckoutSettings settings =
-                new AccountCheckoutSettings("bakuricucxashvili@gmail.com", "Yrf7B2RHW", "123")
+                new AccountCheckoutSettings()
                 {
+                    UserLogin = "bakuricucxashvili@gmail.com",
+                    UserPassword = "tqWg3WXkg4",
+                    UserCcv2 = "123",
                     ProductToBuy = new FootsitesProduct(new FootSimpleBase.EastBayScraper(), "ADIDAS TEAM STRUCTURED FLEX CAP - MEN'S",
                         "https://www.eastbay.com/product/model:295115/sku:M038Z013/adidas-team-structured-flex-cap-mens/all-white/white/",
                         12, "", "M038Z013"),
