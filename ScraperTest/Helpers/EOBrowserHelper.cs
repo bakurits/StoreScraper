@@ -24,6 +24,11 @@ namespace ScraperTest.Helpers
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             EngineOptions.Default.ExtraCommandLineArgs = "--incognito --start-maximized";
+            EngineOptions.Default.SetDefaultBrowserOptions(new BrowserOptions()
+            {
+                LoadImages = false,
+            });
+
             EOTestForm form = new EOTestForm();
             bot.Driver = form.Driver;
             form.Driver.CertificateError += (sender, args) => args.Continue();

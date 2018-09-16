@@ -72,7 +72,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
                 var productsOnDay = day["products"];
                 foreach (var productData in productsOnDay)
                     try
-                    {
+                    {   
                         var date = GetDate(productData);
                         var timeBefore = (DateTime.Now - date).Days; 
                         var timeAfter = (date - DateTime.Now).Days;

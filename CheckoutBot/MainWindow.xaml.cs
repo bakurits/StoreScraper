@@ -314,22 +314,30 @@ namespace CheckoutBot
 
         private void cbx_Websites_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            cbx_Products.IsEnabled = cbx_Websites.SelectedValue != null;
+            cbx_Products.IsEnabled = false;
             if(cbx_Websites.SelectedValue == null) return;
 
             cbx_Products.Items.Clear();
 
             var curStore = (FootSitesBotBase)cbx_Websites.SelectedValue;
-            var lst = ReleasedProductsMonitor.Default.GetProductsList(curStore);
-            foreach (var product in lst)
+            try
             {
-                cbx_Products.Items.Add(product);
+                var lst = ReleasedProductsMonitor.Default.GetProductsList(curStore);
+                foreach (var product in lst)
+                {
+                    cbx_Products.Items.Add(product);
+                }
+                cbx_Products.IsEnabled = true;
+            }
+            catch (Exception ex)
+            {
+                //ignored
             }
         }
 
         private void cbx_Products_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            cbx_Size.IsEnabled = cbx_Products.SelectedValue != null;
+            cbx_Size.IsEnabled = false;
             if(cbx_Products.SelectedValue == null) return;
             cbx_Size.Items.Clear();
 
@@ -337,11 +345,22 @@ namespace CheckoutBot
             {
                 if (cbx_Products.SelectedValue is FootsitesProduct product)
                 {
-                    bot.GetProductSizes(product, CancellationToken.None);
-                    product.Sizes.ForEach(size => cbx_Size.Items.Add(size));
-                    //var image = AppData.CommonFirefoxClient.GetImage(product.ImageUrl, 300, 200);
-                    BitmapImage bImage = new BitmapImage(new Uri(product.ImageUrl));
-                    img_Product.Source = bImage;
+                    try
+                    {
+                        bot.GetProductSizes(product, CancellationToken.None);
+                        product.Sizes.ForEach(size => cbx_Size.Items.Add(size));
+                        //var image = AppData.CommonFirefoxClient.GetImage(product.ImageUrl, 300, 200);
+                        if (product.ImageUrl != null)
+                        {
+                            BitmapImage bImage = new BitmapImage(new Uri(product.ImageUrl));
+                            img_Product.Source = bImage;
+                        }
+                        cbx_Size.IsEnabled = true;
+                    }
+                    catch (Exception ex)
+                    {
+                          //ignored
+                    }
                 }
             }
         }
