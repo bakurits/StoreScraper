@@ -205,7 +205,13 @@ namespace CheckoutBot
         }
 
 
-
+        private void AddProxy(object sender, RoutedEventArgs e)
+        {
+ 
+            proxies.Items.Add( new ProxyItem() {
+                Proxy = proxy.Text
+            });
+        }
 
         private void AddProfile(object sender, RoutedEventArgs e)
         {
@@ -311,6 +317,11 @@ namespace CheckoutBot
 
 
 
+    }
+
+    public class ProxyItem
+    {
+        public string Proxy { get; set; }
     }
 
 
