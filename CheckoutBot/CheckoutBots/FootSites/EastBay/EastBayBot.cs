@@ -114,7 +114,7 @@ xhr.send();");
                 var allReleases = ScrapeReleasePage(token);
                 released = !allReleases.Find(p => p.Model == model).LaunchCountdownEnabled;
                 Task.Delay(25, token).Wait(token);
-            } while (released);
+            } while (!released);
         }
 
         public void GetProductSizes(FootsitesProduct product, CancellationToken token)
