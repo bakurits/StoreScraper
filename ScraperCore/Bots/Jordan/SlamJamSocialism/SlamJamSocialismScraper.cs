@@ -7,6 +7,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
+using Newtonsoft.Json.Linq;
 using StoreScraper.Core;
 using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
@@ -21,136 +22,120 @@ namespace StoreScraper.Bots.Jordan.SlamJamSocialism
         public override bool Active { get; set; }
         
         private const string SearchUrl = @"https://www.slamjamsocialism.com/module/ambjolisearch/jolisearch?search_query={0}";
-        
+        private const string NewArrivalsUrl = "https://www.slamjamsocialism.com/new-products?icc=21";
+
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
+        {
+            listOfProducts = new List<Product>();
+            Scrap(NewArrivalsUrl, listOfProducts, null, token);
+        }
+
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
+            var keywordUrl = string.Format(SearchUrl, settings.KeyWords);
+            Scrap(keywordUrl, listOfProducts, settings, token);
 
-           
-            
-            var keywordUrl = String.Format(SearchUrl, settings.KeyWords);
-            var pageOne = GetWebpage(keywordUrl, token);
-            var firstResults = pageOne.SelectNodes("//div[contains(@class, 'product-container')]");
-            string lasstPage;
-            try
-            {
-                 lasstPage = pageOne.SelectSingleNode("//div[contains(@id, 'pagination_bottom')]/ul/li[6]/a/span")
-                    .InnerHtml;
-            }
-            catch
-            {
-                lasstPage = pageOne.SelectSingleNode("//div[contains(@id, 'pagination_bottom')]/ul/li[5]/a/span").InnerHtml;
-            }
-           
-           
-            var stopNumb = int.Parse(lasstPage);
-          
-            
-            foreach (var item in firstResults)
-            {
-                token.ThrowIfCancellationRequested();
-                LoadSingleProduct(listOfProducts, settings, item, token);
-            }
-
-            
-
-            var temp = pageOne;
-            var x = 1;
-            while(true)
-            {
-                x += 1;
-                
-              
-               
-                var page = GetWebpage("https://www.slamjamsocialism.com/module/ambjolisearch/jolisearch?search_query="+settings.KeyWords+"&p="+x.ToString(), token);
-               
-                var results =  page.SelectNodes("//div[contains(@class, 'product-container')]");
-                foreach (var item in results)
-                {
-                    token.ThrowIfCancellationRequested();
-                    LoadSingleProduct(listOfProducts, settings, item, token);
-                }
-
-                if (x == stopNumb)
-                {
-                    return;
-                }
-
-                
-            }
-            
         }
 
-        private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item, CancellationToken token)
+        private void Scrap(string url, List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
-            
-          
-           
-            string name = GetName(item);
-            string url = GetUrl(item);
-            double price = GetPrice(item);
-            string imgurl = GetImg(item);
-            string currency = GetCurrency(item);
-            var product = new Product(this, name, url, price, imgurl, url, currency);
+            var webpage = GetWebpage(url, token);
+            var document = webpage.DocumentNode;
+            var items = document.SelectNodes("//div[contains(@class, 'product-container')]");
+
+            if (items == null)
+            {
+                Logger.Instance.WriteErrorLog("Unexpected Html");
+                Logger.Instance.SaveHtmlSnapshop(webpage);
+                throw new WebException("Unexpected Html");
+            }
+
+            foreach (var item in items)
+            if(item.SelectSingleNode(".//span[@class='sold-out-label']")==null)
+            {
+                token.ThrowIfCancellationRequested();
+#if DEBUG
+                LoadSingleProduct(listOfProducts, item, settings);
+#else
+                LoadSingleProductTryCatchWrapper(listOfProducts, item, settings);
+#endif
+            }
+        }
+
+        /// <summary>
+        /// This method is simple wrapper on LoadSingleProduct
+        /// To catch all Exceptions during release
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="child"></param>
+        /// <param name="settings"></param>
+        private void LoadSingleProductTryCatchWrapper(List<Product> listOProducts, HtmlNode child, SearchSettingsBase settings)
+        {
+            try
+            {
+                LoadSingleProduct(listOProducts, child, settings);
+            }
+            catch (Exception e)
+            {
+                Logger.Instance.WriteErrorLog(e.Message);
+            }
+        }
+
+        private void LoadSingleProduct(List<Product> listOfProducts, HtmlNode item, SearchSettingsBase settings)
+        {
+            var name = GetName(item);
+            var url = GetUrl(item);
+            var price = GetPrice(item);
+            var imgurl = GetImg(item);
+            var product = new Product(this, name, url, price.Value, imgurl, url, price.Currency);
+            product.BrandName = getBrandName(item);
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
             }
-         
+
         }
 
-        private string GetCurrency(HtmlNode item)
+        private string getBrandName(HtmlNode item)
         {
-            return item.SelectSingleNode("//div[@class='content_price'][1]/meta[1]").GetAttributeValue("content", null);
+            return item.SelectSingleNode(".//div[contains(@class,'product-item-brand')]").InnerText;
         }
 
         private string GetImg(HtmlNode item)
         {
-            return item.SelectSingleNode("//img[@class='replace-2x img-responsive lazyload'][1]").GetAttributeValue("src", null);
+            return item.SelectSingleNode(".//a[@class='product_img_link']/img").GetAttributeValue("src", null);
         }
 
-        private double ParsePrice(string pricee)
-        {
-            
-            string result = Regex.Match(pricee, @"[\d\.]+").Value;
-            double.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
-            return price;
-        }
 
-        private double GetPrice(HtmlNode item)
+        private Price GetPrice(HtmlNode item)
         {
-            return ParsePrice(item.SelectSingleNode("./div//div[@class='content_price'][1]/span[@class='price product-price'][1]").InnerHtml);
+            return Utils.ParsePrice(item.SelectSingleNode(".//div[contains(@class,'content_price')]/span[@itemprop='price']")
+                .InnerText.Trim());
 
         }
         
         private string GetName(HtmlNode item)
         {
-            return item.SelectSingleNode("./div/div/a[@class='product_img_link'][1]").GetAttributeValue("title", null);
+            return item.SelectSingleNode(".//a[@class='product_img_link']").GetAttributeValue("title", null);
         }
 
         private string GetUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./div/div/a[@class='product_img_link'][1]").GetAttributeValue("href", null);
+            return item.SelectSingleNode(".//a[@class='product_img_link']").GetAttributeValue("href", null);
         }
 
-        private HtmlNode GetWebpage(string url, CancellationToken token)
+        private HtmlDocument GetWebpage(string url, CancellationToken token)
         {
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
-            return client.GetDoc(url, token).DocumentNode;
+            return client.GetDoc(url, token);
         }
 
 
-        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
-        {
-            var toSearch = String.Format(SearchUrl, settings.KeyWords);
-            var searchResults = GetWebpage(toSearch, token);
-            return searchResults.SelectNodes("//a[contains(@class, 'product')]");
-            
-        }
-
+        
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            var resp = GetWebpage(productUrl, token);
+            var resp = GetWebpage(productUrl, token).DocumentNode;
             if (resp == null)
             {
                 Logger.Instance.WriteErrorLog($"Can't Connect to basketrevolution website");
@@ -158,11 +143,9 @@ namespace StoreScraper.Bots.Jordan.SlamJamSocialism
             }
             
             var product = resp.SelectSingleNode("//div[contains(@class, 'primary_block')]");
-            var name = product.SelectSingleNode("//h1[@class='h4'][1]").InnerHtml;
-            var price = Utils.ParsePrice(product.SelectSingleNode("//span[@id='our_price_display'][1]").InnerHtml);
+            var name = product.SelectSingleNode("//h1[@class='h4'][1]").InnerText;
+            var price = Utils.ParsePrice(product.SelectSingleNode("//span[@id='our_price_display'][1]").InnerText);
             var imgurl = product.SelectSingleNode("//div[contains(@class,'img-item')][1]/img[contains(@class,'lazyload')][1]").GetAttributeValue("src", null);
-            var sizes = product.SelectSingleNode("//div[@class='attribute_list']/select[1]");
-            var sizesList = sizes.SelectNodes("./option");
             
             ProductDetails result = new ProductDetails()
             {
@@ -174,17 +157,20 @@ namespace StoreScraper.Bots.Jordan.SlamJamSocialism
                 Id = productUrl,
                 ScrapedBy = this
             };
-            
-            foreach (var size in sizesList)
-            {
-                var sizeString = size.InnerHtml;
 
-                if (sizeString != "Select Size")
-                {
-                    result.AddSize(sizeString, "Unknown");
-                }
+            var sizesStr = Regex.Match(resp.OuterHtml, @"var combinations=(.*?)}}").Groups[1].Value + "}}";
+            var sizes = JObject.Parse(sizesStr);
+            
+            foreach (var size in sizes.Children())
+            {
+                var sizeVal = size.First.SelectToken("attributes_values").First.First.ToString();
+                var quantity = size.First.SelectToken("quantity").ToString();
+              
+                if(int.Parse(quantity) > 0)
+                    result.AddSize(sizeVal, quantity);
             }
             
+
             return result;
 
         }

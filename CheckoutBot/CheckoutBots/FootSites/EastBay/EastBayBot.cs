@@ -1,27 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using CheckoutBot.Factory;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
-using EO.Internal;
 using EO.WebBrowser;
-using EO.WebEngine;
 using Newtonsoft.Json.Linq;
 using OpenQA.Selenium.Support.UI;
-using ScraperCore.Http;
-using StoreScraper.Bots.Sticky_bit.ChampsSports_EastBay;
 using StoreScraper.Core;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
-using StoreScraper.Models;
-using Cookie = EO.WebEngine.Cookie;
-using CookieCollection = System.Net.CookieCollection;
 
 namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 {
@@ -45,26 +35,9 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         {
             Driver.LoadUrlAndWait(WebsiteBaseUrl);
             Driver.EvalScript(GetScriptByXpath("//div[@id='header_account_button']/a/span") + ".click();");
-            
 
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             
-            /*var engine = Driver.Engine;
-            var cookieCollector = new CookieCollection();
-
-            void CallHandler(object sender, ScriptCallDoneEventArgs args)
-            {
-                var cookies = engine.CookieManager.GetCookies();
-                cookieCollector = new CookieCollection();
-                for (int i = 0; i < cookies.Count; i++)
-                {
-                    var cookie = cookies[i];
-                    cookieCollector.Add(new Cookie(cookie.Name, cookie.Value));
-                }
-            }
-
-            Driver.ScriptCallDone += CallHandler;
-            */
 
             Driver.EvalScript($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");
             Driver.EvalScript($"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{password}\"");
@@ -74,29 +47,6 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             string isWrong = (string) Driver.EvalScript(@"document.getElementById(""login_password_error"").innerHTML");
             //Console.WriteLine(isWrong);
             return isWrong.Length == 0;
-
-            /*Console.WriteLine("ylep");
-            
-            
-            var cookieContainer = new CookieContainer();
-            cookieContainer.Add(cookieCollector);
-
-            var handler  = new ExtendedClientHandler()
-            {
-                UseCookies = true,
-                MaxAutomaticRedirections = 3,
-                AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
-                AllowAutoRedirect = true,
-                CookieContainer = cookieContainer
-            };
-
-            var client = new HttpClient(handler).AddHeaders(ClientFactory.ChromeHeaders);
-            client.Timeout = TimeSpan.FromSeconds(5);
-
-            var doc = client.GetDoc("https://www.eastbay.com", CancellationToken.None);
-            Driver.LoadHtml(doc.DocumentNode.InnerHtml);
-            */
-
         }
 
         public override void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
@@ -105,72 +55,85 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             driver.Navigate().GoToUrl(WebsiteBaseUrl);
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
 
-            var cartContainer = GetClickableElementByXPath("//div[@id = 'header_cart_button']", wait, token);
-            cartContainer.Click();
-
-            var select = new SelectElement(GetVisibleElementByXPath("//select[@id = 'billCountry']", wait, token));
-            try
-            {
-                select.SelectByText(settings.Shipping.Country.ToString());
-            }
-            catch
-            {
-                Logger.Instance.WriteErrorLog("This country isn't available");
-            }
+            
 
             throw new NotImplementedException();
         }
-
+        
         public override void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token)
+        {
+            while (!Login(settings.UserLogin, settings.UserPassword, token))
+            {
+                Logger.Instance.WriteErrorLog("Wrong password");
+            }
+
+            FootsitesProduct arbitraryProduct = GetArbitraryItem(token);
+            AddArbitraryItemToCart(arbitraryProduct, token);
+            Task.Delay(DelayInSecond * 1000, token).Wait(token);
+            AddToCart(Driver, settings, token);
+            string lineItemIdScript = GetScriptByXpath("//div[@id = 'cart_items']/ul/li[@data-sku = '" + arbitraryProduct.Sku + "']") + "getAttribute(\"data-lineitemid\")";
+            //todo requestKey
+            Driver.EvalScript($@"
+                    var xhr = new XMLHttpRequest();
+                    var date = Date.now();
+                    var requestKey =   
+                    var itemId = {lineItemIdScript}
+                    xhr.open('GET', 'https://www.eastbay.com/pdp/gateway?requestKey=' + requestKey + '&action=delete&lineItemId='+ itemId + '&_=' + date);
+                    xhr.onload = function() {{
+                        if (xhr.status === 200) {{
+                            console.log(xhr.responseText);
+                        }}
+                        else {{
+                            alert('Request failed.  Returned status of ' + xhr.status);
+                        }}
+                    }};
+                    xhr.send();
+            ");
+        }
+
+        private void AddToCart(WebView driver, AccountCheckoutSettings settings, CancellationToken token)
         {
             Login(settings.UserLogin, settings.UserPassword, token);
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             AddArbitraryItemToCart(token);
-            Driver.Url = CartUrl;
-            TabControl tc = new TabControl();
-            
             AddToCart(settings, token);
 
-        }
-
-        private void AddArbitraryItemToCart(CancellationToken token)
+        private FootsitesProduct GetArbitraryItem(CancellationToken token)
         {
-            AccountCheckoutSettings settings =
-                new AccountCheckoutSettings()
+            FootsitesProduct product = ScrapeReleasePage(token)[0];
+            GetProductSizes(product, token);
+            return product;
+        }
+        
+        private void AddArbitraryItemToCart(FootsitesProduct product, CancellationToken token)
+        {
+            AddToCart(DriverForArbitraryProduct, new AccountCheckoutSettings()
+            {
+                ProductToBuy = product,
+                BuyOptions = new ProductBuyOptions()
                 {
-                    UserLogin = "bakuricucxashvili@gmail.com",
-                    UserPassword = "Yrf7B2RHW",
-                    UserCcv2 = "123",
-                    ProductToBuy = new FootsitesProduct(new FootSimpleBase.EastBayScraper(), "ADIDAS TEAM STRUCTURED FLEX CAP - MEN'S",
-                        "https://www.eastbay.com/product/model:295115/sku:M038Z013/adidas-team-structured-flex-cap-mens/all-white/white/",
-                        12, "", "M038Z013"),
-                    BuyOptions = new ProductBuyOptions()
-                    {
-                        Size = "XS/S"
-                    }
-                };
-           AddToCart(settings,token);
+                    Quantity = 1,
+                    Size = product.Sizes[0]
+                }
+            }, token);
         }
 
-        private void AddToCart(AccountCheckoutSettings settings, CancellationToken token)
+
+        /// <summary>
+        /// Blocks current thread until product will be released
+        /// </summary>
+        /// <param name="model">unique model code of product to wait until release</param>
+        /// <param name="token"></param>
+        private void WaitBeforeRelease(string model, CancellationToken token)
         {
-            Driver.LoadUrlAndWait(settings.ProductToBuy.Url);
-            Driver.EvalScript($@"
-var xhr = new XMLHttpRequest();
-var date = Date.now();
-xhr.open('GET',
-    'https://www.eastbay.com/pdp/gateway?requestKey=' +
-    requestKey +
-    '&action=add&qty=1&sku={settings.ProductToBuy.Id}&size={settings.BuyOptions.Size}&fulfillmentType=SHIP_TO_HOME&storeNumber=0&_=' +
-    date);
-xhr.onload = function() {{
-    if (xhr.status === 200) {{
-        console.log(xhr.responseText);
-    }} else {{
-        alert('Request failed.  Returned status of ' + xhr.status);
-    }}
-}};
-xhr.send();");
+            bool released = false;
+
+            do
+            {
+                var allReleases = ScrapeReleasePage(token);
+                released = !allReleases.Find(p => p.Model == model).LaunchCountdownEnabled;
+                Task.Delay(25, token).Wait(token);
+            } while (!released);
         }
 
         public void GetProductSizes(FootsitesProduct product, CancellationToken token)

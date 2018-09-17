@@ -46,7 +46,7 @@ namespace ScraperTest.ScraperTests.GiorgiChkhikvadze
         [TestMethod]
         public void TestScrapeNewArrivalsPage()
         {
-            scrapper.ScrapeNewArrivalsPage(out var products, CancellationToken.None);
+            scrapper.ScrapeNewArrivalsPage(out var products, ScrappingLevel.PrimaryFields, CancellationToken.None);
             Helper.PrintFindItemsResults(products);
         }
     }

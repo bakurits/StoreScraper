@@ -230,7 +230,7 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze
             return result;
         }
 
-        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
         {
             listOfProducts = new List<Product>();
             FinditemsInternal(listOfProducts, null, token, "https://www.off---white.com/en/US/section/new-arrivals");

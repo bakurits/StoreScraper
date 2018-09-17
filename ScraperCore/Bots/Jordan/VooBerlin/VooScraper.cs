@@ -22,7 +22,7 @@ namespace StoreScraper.Bots.Jordan.VooBerlin
         
         private const string SearchUrl = @"https://www.vooberlin.com/search?sSearch={0}&p={1}";
 
-        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
         {
             listOfProducts = new List<Product>();
         }

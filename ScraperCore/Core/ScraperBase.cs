@@ -49,7 +49,7 @@ namespace StoreScraper
         /// </summary>
         /// <param name="listOfProducts">All products that exist on new arrivals page</param>
         /// <param name="token">Cancellation token for canceling task. </param>
-        public virtual void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        public virtual void ScrapeNewArrivalsPage(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
         {
             throw new NotImplementedException();
         }
@@ -112,7 +112,7 @@ namespace StoreScraper
                     {
                         try
                         {
-                            ScrapeNewArrivalsPage(out var allNewProducts, token);
+                            ScrapeNewArrivalsPage(out var allNewProducts, settings.RequiredScrappingLevel, token);
                             var filteredProducts = allNewProducts.FindAll(p => Utils.SatisfiesCriteria(p, settings));
                             lock (products)
                             {

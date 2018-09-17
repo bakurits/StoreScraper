@@ -67,34 +67,16 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Essential Objects\EO.Total 2018\EO.Base.dll</HintPath>
     </Reference>
-    <Reference Include="EO.Pdf">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Essential Objects\EO.Total 2018\EO.Pdf.dll</HintPath>
-    </Reference>
-    <Reference Include="EO.Pdf.Mvc">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Essential Objects\EO.Total 2018\EO.Pdf.Mvc.dll</HintPath>
-    </Reference>
-    <Reference Include="EO.Pdf.Wpf">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Essential Objects\EO.Total 2018\EO.Pdf.Wpf.dll</HintPath>
-    </Reference>
-    <Reference Include="EO.Web">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Essential Objects\EO.Total 2018\EO.Web.dll</HintPath>
-    </Reference>
-    <Reference Include="EO.Web.Design">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Essential Objects\EO.Total 2018\EO.Web.Design.dll</HintPath>
-    </Reference>
     <Reference Include="EO.WebBrowser, Version=18.2.74.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Essential Objects\EO.Total 2018\EO.WebBrowser.dll</HintPath>
     </Reference>
-    <Reference Include="EO.WebBrowser.Wpf">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Essential Objects\EO.Total 2018\EO.WebBrowser.Wpf.dll</HintPath>
+    <Reference Include="EO.WebBrowser.Wpf, Version=18.2.74.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc">
+      <HintPath>..\CheckoutBot\EO\EO.WebBrowser.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="EO.WebEngine, Version=18.2.74.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Essential Objects\EO.Total 2018\EO.WebEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="EO.Wpf">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Essential Objects\EO.Total 2018\EO.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.8.7.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.8.7\lib\Net45\HtmlAgilityPack.dll</HintPath>
@@ -147,7 +129,6 @@
     <Compile Include="ScraperTests\DavitBezhanishvili\AwLabScraperTests.cs" />
     <Compile Include="ScraperTests\Bakurits\RimowaScraperTest.cs" />
     <Compile Include="ScraperTests\DavitBezhanishvili\SneakerStudioScraperTests.cs" />
-    <Compile Include="ScraperTests\DavitBezhanishvili\RuvillaScrapperTests.cs" />
     <Compile Include="ScraperTests\GiorgiBaghdavadze\SeleniumTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\FootShopTest.cs" />
     <Compile Include="ScraperTests\Mstanojevic\SnkrsTest.cs" />

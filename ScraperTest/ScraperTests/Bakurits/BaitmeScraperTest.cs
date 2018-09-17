@@ -46,7 +46,7 @@ namespace ScraperTest.ScraperTests.Bakurits
         {
             BaitmeScraper scraper = new BaitmeScraper();
             
-            scraper.ScrapeNewArrivalsPage(out var lst, CancellationToken.None);
+            scraper.ScrapeNewArrivalsPage(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
             Helper.PrintFindItemsResults(lst);
         }
     }

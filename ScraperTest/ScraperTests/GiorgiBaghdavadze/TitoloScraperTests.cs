@@ -23,7 +23,7 @@ namespace ScraperTest.ScraperTests.GiorgiBaghdavadze
         [TestMethod()]
         public void testArrivals()
         {
-            scraper.ScrapeNewArrivalsPage(out var lst, CancellationToken.None);
+            scraper.ScrapeNewArrivalsPage(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
             
             Helper.PrintFindItemsResults(lst);
         }

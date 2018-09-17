@@ -64,15 +64,20 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
             AccountCheckoutSettings settings =
                 new AccountCheckoutSettings()
                 {
-                    UserPassword = "tqWg3WXkg4",
+                    UserPassword = "VgnYiiY3t6",
                     UserLogin = "bakuricucxashvili@gmail.com",
                     UserCcv2 = "123",
-                    ProductToBuy = new FootsitesProduct(new FootSimpleBase.EastBayScraper(), "yle",
-                        "https://www.eastbay.com/product/model:283446/sku:A7097514/nike-nba-swingman-jersey-mens/lebron-james/los-angeles-lakers/purple/",
-                        0, "", "A7097514"),
+                    ProductToBuy = new FootsitesProduct(new FootSimpleBase.EastBayScraper()
+                        , "yle",
+                        "https://www.eastbay.com/product/model:283446/sku:A7097514",
+                        0, "", "A7097514")
+                    {
+                        Sku = "A7097514",
+                        Model = "283446",
+                    },
                     BuyOptions = new ProductBuyOptions()
                     {
-                        Size = "XS/S"
+                        Size = "S"
                     }
                 };
             EOBrowserHelper.BotTester(new EastBayBot(){DelayInSecond = 7}, bot => bot.AccountCheckout(settings, CancellationToken.None));
@@ -119,5 +124,6 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
             bot.GetProductSizes(product, CancellationToken.None);
             Debug.WriteLine(string.Join("\n", product.Sizes));
         }
+
     }
 }

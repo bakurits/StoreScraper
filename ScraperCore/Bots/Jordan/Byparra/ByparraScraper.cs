@@ -16,7 +16,7 @@ namespace StoreScraper.Bots.Jordan.Byparra
     public class ByparraScraper: ScraperBase
     {
         public override string WebsiteName { get; set; } = "Byparra";
-        public override string WebsiteBaseUrl { get; set; } = "https://byparra.com/";
+        public override string WebsiteBaseUrl { get; set; } = "https://byparra.com";
         public override bool Active { get; set; }
         
         private const string SearchUrl = @"https://byparra.com/?q={0}";
@@ -93,7 +93,7 @@ namespace StoreScraper.Bots.Jordan.Byparra
 
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
-            var toSearch = String.Format(SearchUrl, settings.KeyWords);
+            var toSearch = string.Format(SearchUrl, settings.KeyWords);
             var searchResults = GetWebpage(toSearch, token);
             var a = searchResults.InnerHtml;
             return searchResults.SelectNodes("//a[contains(@class, 'product')]");

@@ -28,7 +28,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.AwLab
            "https://en.aw-lab.com/shop/shoes-kids/new-now#%2Fshop%2Fshoes-kids%2Fnew-now%3Fdir%3Ddesc%26is_ajax%3D1%26order%3Daw_created_at"
         };
 
-        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
         {
             ConcurrentDictionary<Product, byte> data = new ConcurrentDictionary<Product, byte>();
             Task.WhenAll(NewArrivalPageUrls.Select(url => Scrap(url, data, null, token))).Wait(token);

@@ -14,18 +14,8 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootLocker
             var driver = DriverFactory.CreateFirefoxDriver();
             driver.Navigate().GoToUrl(WebsiteBaseUrl);
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
-            var loginPopupButton = GetClickableElementByXPath("//header/nav[contains(@class, 'c-header-ribbon')]/div/button", wait, token);
-            loginPopupButton.Click();
-
-            var emailTextBox = GetVisibleElementByXPath("//input[@type = 'EMAIL']", wait, token);
-            emailTextBox.SendKeys(username);
-
-
-            var passwordTextBox = GetVisibleElementByXPath("//input[@type = 'PASSWORD']", wait, token);
-            passwordTextBox.SendKeys(password);
-
-            var signinButton = GetClickableElementByXPath("//button[normalize-space(text())='Sign In']", wait, token);
-            signinButton.Click();
+            
+           
 
             throw new NotImplementedException();
         }

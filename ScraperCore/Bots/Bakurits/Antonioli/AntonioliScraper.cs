@@ -83,7 +83,7 @@ namespace StoreScraper.Bots.Bakurits.Antonioli
             return details;
         }
 
-        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
         {
             var document = GetWebpage(NewArrivalPageUrl, token);
             var itemCollection = document.SelectNodes("//*[@id='content']/section/article");

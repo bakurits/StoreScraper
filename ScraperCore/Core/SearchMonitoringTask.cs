@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using StoreScraper.Helpers;
 using StoreScraper.Models;
 
 namespace StoreScraper.Core
@@ -19,9 +20,10 @@ namespace StoreScraper.Core
         /// </summary>
         public List<HashSet<Product>> OldItems { get; set; } = new List<HashSet<Product>>();
 
-        public override void StartMonitoring(CancellationToken token)
+        public override void MonitoringProcess(CancellationToken token)
         {
             var monTasks = new Task[Stores.Count];
+            SearchSettings.RequiredScrappingLevel = ScrappingLevel.Url; // only url required in monitoring
             for (int s = 0; s < Stores.Count; s++)
             {
                 var oldSearch = OldItems[s];
@@ -54,8 +56,11 @@ namespace StoreScraper.Core
                 {
                     if (oldSearch.Contains(product)) continue;
                     Logger.Instance.WriteVerboseLog($"New Item Appeared: {product}");
+                    var details = product.GetDetails(token);
+
+                    if (!Utils.SatisfiesCriteria(details, SearchSettings)) continue;
                     oldSearch.Add(product);
-                    DoFinalActions(product.GetDetails(token), token);
+                    DoFinalActions(details, token);
                 }
 
                 Task.Delay(AppSettings.Default.MonitoringDelay, token).Wait(token);

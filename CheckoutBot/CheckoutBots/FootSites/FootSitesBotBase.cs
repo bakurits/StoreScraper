@@ -28,7 +28,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
         public string WebsiteBaseUrl { get; set; }
         private string ReleasePageApiEndpoint { get; set; }
         public WebView Driver { get; set; }
-        public WebView Driver2 { get; set; }
+        public WebView DriverForArbitraryProduct { get; set; }
         public WebView Driver3 { get; set; }
 
         protected FootSitesBotBase(string websiteName, string webSiteBaseUrl, string releasePageEndpoint)
@@ -166,9 +166,20 @@ namespace CheckoutBot.CheckoutBots.FootSites
         }
 
 
-        protected static string GetAjaxRequest(JObject data, string url, string method)
+        protected static string AjaxGetRequest(string url)
         {
-            return "";
+            return $@"
+                        var xhr = new XMLHttpRequest();
+                        var date = Date.now();
+                        xhr.open('GET', {url});
+                        xhr.onload = function() {{
+                            if (xhr.status === 200) {{
+                                console.log(xhr.responseText);
+                            }} else {{
+                                alert('Request failed.  Returned status of ' + xhr.status);
+                            }}
+                        }};
+                        xhr.send();";
         }
 
         public override string ToString()

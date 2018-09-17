@@ -70,11 +70,20 @@ namespace StoreScraper.Models
         /// inner keyword group matches means all of keywords in group in contained in product name
         /// </summary>
         [Browsable(false)] 
-        public string[][] ParsedKeywords { get; set; }
+        public string[][] ParsedKeywords { get; private set; }
 
-
+        /// <summary>
+        /// Same as <see cref="ParsedKeywords"/> buf for negative keywords
+        /// </summary>
         [Browsable(false)]
-        public string[][] ParsedNegKeywords { get; set; }
+        public string[][] ParsedNegKeywords { get; private set; }
+
+
+        /// <summary>
+        /// This property describes what kind of product info is required to scrape
+        /// </summary>
+        [Browsable(false)]
+        public ScrappingLevel RequiredScrappingLevel { get; set; } = ScrappingLevel.PrimaryFields;
 
         public override string ToString()
         {

@@ -47,7 +47,7 @@ namespace ScraperTest.ScraperTests.Bakurits
         {
             RimowaScraper scraper = new RimowaScraper();
             
-            scraper.ScrapeNewArrivalsPage(out var lst, CancellationToken.None);
+            scraper.ScrapeNewArrivalsPage(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
             Helper.PrintFindItemsResults(lst);
         }
     }
