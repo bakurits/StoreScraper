@@ -20,13 +20,38 @@ namespace StoreScraper.Bots.Jordan.BounceWear
         public override bool Active { get; set; }
         
         private const string SearchUrl = "https://bouncewear.com/search";
-        
+
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        {
+            listOfProducts = new List<Product>();
+            var searchUrl = "https://bouncewear.com/category/schoenen";
+            ScrapNewArrivals(listOfProducts, token, searchUrl);
+            searchUrl = "https://bouncewear.com/category/nba";
+            ScrapNewArrivals(listOfProducts, token, searchUrl);
+        }
+
+        private void ScrapNewArrivals(List<Product> listOfProducts, CancellationToken token, string searchUrl)
+        {
+            var request = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var document = request.GetDoc(searchUrl, token);
+            var searchResults = document.DocumentNode;
+            HtmlNodeCollection itemCollection = searchResults.SelectNodes("//div[contains(@class, 'productBox')]");
+            if (itemCollection == null)
+                return;
+            foreach (var item in itemCollection)
+            {
+                token.ThrowIfCancellationRequested();
+                LoadSingleProduct(listOfProducts, null, item);
+            }
+
+        }
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
           
             HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
-          
+            if (itemCollection == null)
+                return;
             foreach (var item in itemCollection)
             {
                 token.ThrowIfCancellationRequested();
@@ -43,6 +68,11 @@ namespace StoreScraper.Bots.Jordan.BounceWear
             double price = GetPrice(item);
             string imgurl = GetImg(item);
             var product = new Product(this, name, url, price, imgurl, url, "EUR");
+            if (settings == null)
+            {
+                listOfProducts.Add(product);
+                return;
+            }
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
@@ -51,12 +81,12 @@ namespace StoreScraper.Bots.Jordan.BounceWear
 
         private string GetImg(HtmlNode item)
         {
-            return item.SelectSingleNode(".//div[1]/a/img").GetAttributeValue("src", null);
+            return item.SelectSingleNode(".//div[contains(@class, 'productImage')]/a/img").GetAttributeValue("src", null);
         }
 
         private double GetPrice(HtmlNode item)
         {
-            var fullPrice = item.SelectSingleNode(".//div[2]/h3").InnerHtml;
+            var fullPrice = item.SelectSingleNode(".//div[contains(@class, 'productCaption')]/h3").InnerHtml;
             string result = Regex.Match(fullPrice, @"[\d\.]+").Value;
             double.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
             return price;
@@ -64,12 +94,12 @@ namespace StoreScraper.Bots.Jordan.BounceWear
 
         private string GetName(HtmlNode item)
         {
-            return item.SelectSingleNode(".//div[2]/a/h5").InnerHtml;
+            return item.SelectSingleNode(".//div[contains(@class, 'productCaption')]/a/h5").InnerHtml;
         }
 
         private string GetUrl(HtmlNode item)
         {
-            return item.SelectSingleNode(".//div[1]/a").GetAttributeValue("href", null);
+            return item.SelectSingleNode(".//div[contains(@class, 'productImage')]/a").GetAttributeValue("href", null);
         }
 
         private HtmlNode PostSearch(string url, CancellationToken token, SearchSettingsBase settings)
