@@ -186,10 +186,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Factory\" />
-    <Folder Include="ScraperTests\Jordan\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\CheckoutBot\CheckoutBot.csproj">
       <Project>{1BE9C1B7-52EB-4530-804F-21A6CE57E147}</Project>
       <Name>CheckoutBot</Name>

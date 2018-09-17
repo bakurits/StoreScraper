@@ -63,9 +63,16 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             AddArbitraryItemToCart(arbitraryProduct, token);
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             AddToCart(Driver, settings, token);
-            RemoveArbitraryItem(arbitraryProduct, token);
+            RemoveArbitraryItem(DriverForArbitraryProduct, arbitraryProduct, token);
+            Task.Delay(DelayInSecond * 1000, token).Wait(token);
         }
         
+        /// <summary>
+        /// This method adds product to cart
+        /// </summary>
+        /// <param name="driver"> driver from which scripts are called </param>
+        /// <param name="settings"> Checkout settings </param>
+        /// <param name="token"></param>
         private void AddToCart(WebView driver, AccountCheckoutSettings settings, CancellationToken token)
         {
             //Console.WriteLine(settings);
@@ -76,9 +83,11 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
                             '&action=add&qty={settings.BuyOptions.Quantity}&sku={settings.ProductToBuy.Sku}&size={settings.BuyOptions.Size}&fulfillmentType=SHIP_TO_HOME&storeNumber=0&_=' +
                             date"));
             Task.Delay(2000, token).Wait(token);
-            driver.LoadUrlAndWait("https://www.eastbay.com/checkout/?uri=checkout");
         }
 
+        /// <summary>
+        /// This method gets random item from releases page
+        /// </summary>
         private FootsitesProduct GetArbitraryItem(CancellationToken token)
         {
             FootsitesProduct product = ScrapeReleasePage(token)[0];
@@ -86,6 +95,11 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             return product;
         }
         
+        /// <summary>
+        /// This method adds Arbitrary item to cart
+        /// </summary>
+        /// <param name="product"> Item to add </param>
+        /// <param name="token"></param>
         private void AddArbitraryItemToCart(FootsitesProduct product, CancellationToken token)
         {
             AddToCart(DriverForArbitraryProduct, new AccountCheckoutSettings()
@@ -98,11 +112,18 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
                 }
             }, token);
         }
-        
-        private void RemoveArbitraryItem(FootsitesProduct product, CancellationToken token)
+
+        /// <summary>
+        /// This method removes item from cart
+        /// </summary>
+        /// <param name="driver"> driver from which scripts are called </param>
+        /// <param name="product"> product to remove </param>
+        /// <param name="token"></param>
+        private void RemoveArbitraryItem(WebView driver, FootsitesProduct product, CancellationToken token)
         {
-            string lineItemIdScript = GetScriptByXpath("//div[@id = 'cart_items']/ul/li[@data-sku = '" + product.Sku + "']") + "getAttribute(\"data-lineitemid\")";
-            Driver.EvalScript($@"
+            driver.LoadUrlAndWait(CartUrl);   
+            string lineItemIdScript = GetScriptByXpath("//div[@id = 'cart_items']/ul/li[@data-sku = '" + product.Sku + "']") + ".getAttribute(\"data-lineitemid\")";
+            driver.EvalScript($@"
                     var xhr = new XMLHttpRequest();
                     var date = Date.now();
                     var requestKey = window.frames.accountGateway._requestKey;
