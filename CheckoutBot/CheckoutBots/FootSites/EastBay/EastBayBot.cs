@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using CheckoutBot.Core;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
 using EO.WebBrowser;

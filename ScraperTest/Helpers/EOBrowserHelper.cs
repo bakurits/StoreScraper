@@ -47,6 +47,7 @@ namespace ScraperTest.Helpers
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36";
 
             TResult flag = default(TResult);
+            WebView.ShowDebugUI();
             Task.Delay(5000).ContinueWith(delay =>
             {
                 flag = action(bot);
@@ -86,6 +87,7 @@ namespace ScraperTest.Helpers
             form.Driver3.CertificateError += (sender, args) => args.Continue();
             form.Driver3.CustomUserAgent =
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36";
+            WebView.ShowDebugUI();
             Task.Delay(5000).ContinueWith(delay =>
             {  
                 action(bot);
