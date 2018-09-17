@@ -122,9 +122,10 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         /// <param name="token"></param>
         private void RemoveArbitraryItem(WebView driver, FootsitesProduct product, CancellationToken token)
         {
-            driver.LoadUrlAndWait(CartUrl);   
-            string lineItemIdScript = GetScriptByXpath("//div[@id = 'cart_items']/ul/li[@data-sku = '" + product.Sku + "']") + ".getAttribute(\"data-lineitemid\")";
-            driver.EvalScript($@"
+            driver.LoadUrlAndWait(CartUrl);
+            driver.EvalScript(GetScriptByXpath("//div[@id = 'cart_items']/ul/li[@data-sku = '" + product.Sku + "']/div/span/div/a[@data-btntype = 'remove']/span[2]") + ".click()");
+            Console.WriteLine(GetScriptByXpath("//div[@id = 'cart_items']/ul/li[@data-sku = '" + product.Sku + "']/div/span/div/a[@data-btntype = 'remove']/span[2]") + ".click()");
+            /*driver.EvalScript($@"
                     var xhr = new XMLHttpRequest();
                     var date = Date.now();
                     var requestKey = window.frames.accountGateway._requestKey;
@@ -139,7 +140,8 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
                         }}
                     }};
                     xhr.send();
-            ");
+            ");*/
+            Task.Delay(5000, token).Wait(token);
         }
 
 
