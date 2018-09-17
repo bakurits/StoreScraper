@@ -32,7 +32,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
             SearchSettingsBase settings = new SearchSettingsBase();
             settings.KeyWords = "adidas";
 
-            scraper.ScrapeNewArrivalsPage(out var lst, CancellationToken.None);
+            scraper.ScrapeNewArrivalsPage(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
             Helpers.Helper.PrintFindItemsResults(lst);
         }
 

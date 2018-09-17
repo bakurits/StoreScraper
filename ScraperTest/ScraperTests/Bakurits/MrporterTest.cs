@@ -58,7 +58,7 @@ namespace ScraperTest.ScraperTests.Bakurits
         {
             MrporterScraper scraper = new MrporterScraper();
             
-            scraper.ScrapeNewArrivalsPage(out var lst, CancellationToken.None);
+            scraper.ScrapeNewArrivalsPage(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
             Helper.PrintFindItemsResults(lst);
         }
     }

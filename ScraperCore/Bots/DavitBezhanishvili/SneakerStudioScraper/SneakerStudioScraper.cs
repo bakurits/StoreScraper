@@ -84,7 +84,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
         private readonly Uri SettingsUrl2 = new Uri(@"https://sneakerstudio.com/settings.php?curr=USD");
       
 
-        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
         {
             listOfProducts = new List<Product>();
             var client = ClientFactory.GetProxiedFirefoxClient();

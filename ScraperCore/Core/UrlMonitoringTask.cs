@@ -15,7 +15,7 @@ namespace StoreScraper.Core
         public string Url { get; set; }
         
 
-        public override void StartMonitoring(CancellationToken token)
+        public override void MonitoringProcess(CancellationToken token)
         {
             while (!token.IsCancellationRequested)
             {

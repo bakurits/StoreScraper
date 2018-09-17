@@ -28,7 +28,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
             DtlrScrapper scraper = new DtlrScrapper();
             SearchSettingsBase settings = new SearchSettingsBase();
             settings.KeyWords = "nike air";
-            scraper.ScrapeNewArrivalsPage(out var lst, CancellationToken.None);
+            scraper.ScrapeNewArrivalsPage(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
             Helpers.Helper.PrintFindItemsResults(lst);
 
         }

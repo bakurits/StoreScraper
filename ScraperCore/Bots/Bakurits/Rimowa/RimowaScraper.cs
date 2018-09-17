@@ -31,7 +31,7 @@ namespace StoreScraper.Bots.Bakurits.Rimowa
             GetProducts(listOfProducts, settings, token, SearchFormat);
         }
 
-        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
         {
             listOfProducts = new List<Product>();
             GetProducts(listOfProducts, null, token,

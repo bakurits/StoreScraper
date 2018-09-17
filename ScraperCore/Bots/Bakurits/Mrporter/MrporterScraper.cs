@@ -112,7 +112,7 @@ namespace StoreScraper.Bots.Bakurits.Mrporter
             return details;
         }
 
-        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
         {
             var node = GetPage("https://www.mrporter.com/mens/whats-new", token);
             listOfProducts = new List<Product>();

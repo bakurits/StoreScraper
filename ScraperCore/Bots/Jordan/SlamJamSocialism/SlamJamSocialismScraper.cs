@@ -24,7 +24,7 @@ namespace StoreScraper.Bots.Jordan.SlamJamSocialism
         private const string SearchUrl = @"https://www.slamjamsocialism.com/module/ambjolisearch/jolisearch?search_query={0}";
         private const string NewArrivalsUrl = "https://www.slamjamsocialism.com/new-products?icc=21";
 
-        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
         {
             listOfProducts = new List<Product>();
             Scrap(NewArrivalsUrl, listOfProducts, null, token);

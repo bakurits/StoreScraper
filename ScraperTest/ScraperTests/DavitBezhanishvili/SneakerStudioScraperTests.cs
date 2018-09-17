@@ -30,7 +30,7 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
             var scraper = new SneakerStudioScraper();
             scraper.Active = true;
             var stopwatch = Stopwatch.StartNew();
-            scraper.ScrapeNewArrivalsPage(out var list, CancellationToken.None);
+            scraper.ScrapeNewArrivalsPage(out var list, ScrappingLevel.PrimaryFields, CancellationToken.None);
             Helper.PrintFindItemsResults(list);
             Console.WriteLine(stopwatch.Elapsed.ToString("g"));
         }
