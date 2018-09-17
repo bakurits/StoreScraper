@@ -65,57 +65,53 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             {
                 Logger.Instance.WriteErrorLog("Wrong password");
             }
-            AddArbitraryItemToCart(token);
+
+            FootsitesProduct arbitraryProduct = GetArbitraryItem(token);
+            AddArbitraryItemToCart(arbitraryProduct, token);
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             AddToCart(Driver, settings, token);
+            string lineItemIdScript = GetScriptByXpath("//div[@id = 'cart_items']/ul/li[@data-sku = '" + arbitraryProduct.Sku + "']") + "getAttribute(\"data-lineitemid\")";
+            //todo requestKey
+            Driver.EvalScript($@"
+                    var xhr = new XMLHttpRequest();
+                    var date = Date.now();
+                    var requestKey =   
+                    var itemId = {lineItemIdScript}
+                    xhr.open('GET', 'https://www.eastbay.com/pdp/gateway?requestKey=' + requestKey + '&action=delete&lineItemId='+ itemId + '&_=' + date);
+                    xhr.onload = function() {{
+                        if (xhr.status === 200) {{
+                            console.log(xhr.responseText);
+                        }}
+                        else {{
+                            alert('Request failed.  Returned status of ' + xhr.status);
+                        }}
+                    }};
+                    xhr.send();
+            ");
         }
 
         private void AddToCart(WebView driver, AccountCheckoutSettings settings, CancellationToken token)
         {
             //Console.WriteLine(settings);
             driver.LoadUrlAndWait(settings.ProductToBuy.Url);
-            Console.WriteLine($@"
-                        var xhr = new XMLHttpRequest();
-                        var date = Date.now();
-                        xhr.open('GET',
-                            'https://www.eastbay.com/pdp/gateway?requestKey=' +
+            
+            driver.EvalScript(AjaxGetRequest($@"'https://www.eastbay.com/pdp/gateway?requestKey=' +
                             requestKey +
                             '&action=add&qty={settings.BuyOptions.Quantity}&sku={settings.ProductToBuy.Sku}&size={settings.BuyOptions.Size}&fulfillmentType=SHIP_TO_HOME&storeNumber=0&_=' +
-                            date);
-                        xhr.onload = function() {{
-                            if (xhr.status === 200) {{
-                                console.log(xhr.responseText);
-                            }} else {{
-                                alert('Request failed.  Returned status of ' + xhr.status);
-                            }}
-                        }};
-                        xhr.send();");
-            driver.EvalScript($@"
-                        var xhr = new XMLHttpRequest();
-                        var date = Date.now();
-                        xhr.open('GET',
-                            'https://www.eastbay.com/pdp/gateway?requestKey=' +
-                            requestKey +
-                            '&action=add&qty={settings.BuyOptions.Quantity}&sku={settings.ProductToBuy.Sku}&size={settings.BuyOptions.Size}&fulfillmentType=SHIP_TO_HOME&storeNumber=0&_=' +
-                            date);
-                        xhr.onload = function() {{
-                            if (xhr.status === 200) {{
-                                console.log(xhr.responseText);
-                            }} else {{
-                                alert('Request failed.  Returned status of ' + xhr.status);
-                            }}
-                        }};
-                        xhr.send();");
+                            date"));
             Task.Delay(2000, token).Wait(token);
             driver.LoadUrlAndWait("https://www.eastbay.com/checkout/?uri=checkout");
-            Task.Delay(10000, token).Wait(token);
         }
-        
-        private void AddArbitraryItemToCart(CancellationToken token)
+
+        private FootsitesProduct GetArbitraryItem(CancellationToken token)
         {
             FootsitesProduct product = ScrapeReleasePage(token)[0];
             GetProductSizes(product, token);
-            
+            return product;
+        }
+        
+        private void AddArbitraryItemToCart(FootsitesProduct product, CancellationToken token)
+        {
             AddToCart(DriverForArbitraryProduct, new AccountCheckoutSettings()
             {
                 ProductToBuy = product,
