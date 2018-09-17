@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading;
-using CheckoutBot.Factory;
 using CheckoutBot.Models.Checkout;
 using OpenQA.Selenium.Support.UI;
 
@@ -11,11 +10,6 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootLocker
     {
         public override bool Login(string username, string password, CancellationToken token)
         {
-            var driver = DriverFactory.CreateFirefoxDriver();
-            driver.Navigate().GoToUrl(WebsiteBaseUrl);
-            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
-            
-           
 
             throw new NotImplementedException();
         }

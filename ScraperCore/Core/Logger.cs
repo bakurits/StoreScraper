@@ -67,7 +67,16 @@ namespace StoreScraper.Core
             string nowTime = DateTime.Now.ToString(CultureInfo.InvariantCulture);
 
             string log = $"[{nowTime}]: [Verbose] {message}" + Environment.NewLine + Environment.NewLine;
-            OnLogged?.Invoke(log, Color.Blue);
+            OnLogged?.Invoke(log, Color.DodgerBlue);
+        }
+
+
+        public void WriteVerboseLog(string message, Color color)
+        {
+            string nowTime = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+
+            string log = $"[{nowTime}]: [Verbose] {message}" + Environment.NewLine + Environment.NewLine;
+            OnLogged?.Invoke(log, color);
         }
 
 
