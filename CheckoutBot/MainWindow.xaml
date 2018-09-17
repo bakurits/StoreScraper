@@ -3,10 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:gif="http://wpfanimatedgif.codeplex.com"
         xmlns:local="clr-namespace:CheckoutBot"
         mc:Ignorable="d"
-        
-        Title="MainWindow" Height="600" Width="860">
+        Loaded="Window_Loaded"
+        Title="MainWindow" Height="600" Width="890">
     <Window.Background>
         <LinearGradientBrush EndPoint="1.5,1.5" StartPoint="0.504,0.03">
             <GradientStop Color="#2976C1" Offset="0"/>
@@ -193,11 +194,22 @@
 
         </Grid.ColumnDefinitions>
 
+        <GroupBox Visibility="Hidden" Name="loadingBox" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Grid.ColumnSpan="12"   Background="#ffffff">
+            <StackPanel VerticalAlignment="Center">
+                <Image Height="140" Width="140" Margin="0 0 0 20" gif:ImageBehavior.AnimatedSource="images/loading.gif" HorizontalAlignment="Center" VerticalAlignment="Center"  Grid.ColumnSpan="12">
+
+                </Image>
+
+                <Label HorizontalAlignment="Center" Foreground="Black" FontSize="26" FontWeight="Bold">
+                    Cheif R Footsite
+                </Label>
+            </StackPanel>
+
+        </GroupBox>
 
 
 
-
-        <TabControl BorderThickness="0"   Grid.Row="1" Grid.ColumnSpan="12">
+        <TabControl Name="activeArea" Visibility="Visible" BorderThickness="0"   Grid.Row="1" Grid.ColumnSpan="12">
 
             <TabControl.Resources>
 
@@ -1319,6 +1331,49 @@ VerticalScrollBarVisibility="Auto"
                         </StackPanel>
 
                     </GroupBox>
+                </Grid>
+
+            </TabItem>
+
+
+            <TabItem Header="LOG" Foreground="#ffffff">
+
+                <Grid Background="#e9ecf1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+
+
+
+                    <GroupBox Margin="20 20 10 20" Background="#ffffff" BorderThickness="0">
+                        <StackPanel>
+
+                            <StackPanel>
+
+
+                                <TextBox HorizontalAlignment="Stretch" Name="log" Margin="6 20 " BorderBrush="#ebecf0" Padding="3" TextWrapping="Wrap"
+AcceptsReturn="True"
+HorizontalScrollBarVisibility="Disabled"
+VerticalScrollBarVisibility="Auto"
+                                         Height="436">
+                                    <TextBox.Resources>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="CornerRadius" Value="5"/>
+                                        </Style>
+                                    </TextBox.Resources>
+
+                                </TextBox>
+
+                            
+
+
+
+
+                            </StackPanel>
+                        </StackPanel>
+
+                    </GroupBox>
+                   
                 </Grid>
 
             </TabItem>

@@ -112,7 +112,25 @@ namespace CheckoutBot
             shippingAddress_state.SelectedValue = States.Alabama;
             billingAddress_state.SelectedValue = States.Alabama;
 
+
+
         }
+
+        async Task PutTaskDelay()
+        {
+            await Task.Delay(5000);
+        }
+
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            await PutTaskDelay();
+
+            loadingBox.Visibility = Visibility.Hidden;
+            activeArea.Visibility = Visibility.Visible;
+
+        }
+
 
 
         private void HandleVisaSelect(object sender, RoutedEventArgs e)
