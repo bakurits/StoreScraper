@@ -277,44 +277,45 @@
                             <Label Content="ACCOUNT" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
                             <StackPanel Orientation="Horizontal">
 
-                                <RadioButton Name="userRadioBtn" IsChecked="True" Margin="10 0" VerticalAlignment="Center"   Content="User" Grid.ColumnSpan="2"  Click="HandleAccountType"/>
-                                <RadioButton Name="guestRadioBtn" VerticalAlignment="Center"  Content="Guest" Grid.ColumnSpan="2" Click="HandleAccountType"/>
+                                <RadioButton Name="userRadioBtn" IsChecked="True" Margin="10 0" VerticalAlignment="Center"   Content="User" Grid.ColumnSpan="2"  />
+                                <RadioButton Name="guestRadioBtn" VerticalAlignment="Center"  Content="Guest" Grid.ColumnSpan="2"/>
 
 
                             </StackPanel>
 
-                            <ComboBox Name="accComboBox" Margin="6 10" HorizontalAlignment="Left" VerticalAlignment="Top" Width="200" Visibility="Visible" Style="{StaticResource ComboBoxTest2}">
-                                <ComboBoxItem>Mike Jonhson - **** 0001</ComboBoxItem>
-                            </ComboBox>
-
-                            <Label Content="Username" Foreground="#576379" FontWeight="SemiBold" Margin="0 0"/>
-                            <TextBox Name="tbx_UserName" Margin="6 0 6 10" Width="200"  Height="20" HorizontalAlignment="Left"></TextBox>
-                            <Label Content="Password" Foreground="#576379" FontWeight="SemiBold" Margin="0 0"/>
-                            <TextBox Name="tbx_Password" Margin="6 2" Width="200"  Height="20" HorizontalAlignment="Left"></TextBox>
-                            <Button Margin="6,20,0,20" Width="100" HorizontalAlignment="Left" Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0" Content="ADD TASK" Click="Button_Click">
-
-
-
-                                <Button.Resources>
-                                    <Style TargetType="{x:Type Border}">
-                                        <Setter Property="CornerRadius" Value="5"/>
-                                        <Style.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Control.Background" Value="Red" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
+                            
+                            <StackPanel Orientation="Vertical">
+                                <Label Content="USERNAME" Foreground="#576379" FontWeight="SemiBold" Margin="0 0"/>
+                                <TextBox Name="tbx_UserName" Margin="6 0 6 10" Width="200"  Height="20" HorizontalAlignment="Left"></TextBox>
+                                <Label Content="PASSWORD" Foreground="#576379" FontWeight="SemiBold" Margin="0 0"/>
+                                <TextBox Name="tbx_Password" Margin="6 2" Width="200"  Height="20" HorizontalAlignment="Left"></TextBox>
+                                <Label Content="CCV2" Foreground="#576379" FontWeight="SemiBold" Margin="0 0"/>
+                                <TextBox Name="tbx_CCV2" Margin="6 2" Width="200"  Height="20" HorizontalAlignment="Left"></TextBox>
+                                <Button Margin="6,20,0,20" Width="100" HorizontalAlignment="Left" Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0" Content="ADD TASK" Click="Button_Click">
 
 
+
+                                    <Button.Resources>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="CornerRadius" Value="5"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Control.Background" Value="Red" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
 
 
 
 
-                                </Button.Resources>
 
-                            </Button>
-                            <Label Content="Label"/>
 
+                                    </Button.Resources>
+
+                                </Button>
+
+                            </StackPanel>
+                            
                         </StackPanel>
 
 

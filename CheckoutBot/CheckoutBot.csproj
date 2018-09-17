@@ -175,7 +175,7 @@
     <Compile Include="CheckoutBots\FootSites\FootSiteBaseParts\FootSteBase.AddToCard.cs" />
     <Compile Include="CheckoutBots\FootSites\FootSitesBotBase.cs" />
     <Compile Include="Core\Helper.cs" />
-    <Compile Include="Core\ProductMonitoringTask.cs" />
+    <Compile Include="Core\CheckoutTask.cs" />
     <Compile Include="Core\ReleasedProductsMonitor.cs" />
     <Compile Include="Env.cs" />
     <Compile Include="Interfaces\IAccountCheckouter.cs" />

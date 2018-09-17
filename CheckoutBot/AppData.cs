@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using CheckoutBot.CheckoutBots.FootSites;
 using CheckoutBot.CheckoutBots.FootSites.ChampsSports;
@@ -23,6 +24,8 @@ namespace CheckoutBot
             //new ChampsSportsBot(),
             new EastBayBot(), 
         };
+
+        public static CancellationTokenSource ApplicationGlobalTokenSource { get; set; } = new CancellationTokenSource();
 
         public static HttpClient CommonFirefoxClient =
             ClientFactory.CreateHttpClient(autoCookies: false).AddHeaders(ClientFactory.FireFoxHeaders);

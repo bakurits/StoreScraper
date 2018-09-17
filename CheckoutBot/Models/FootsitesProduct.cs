@@ -35,6 +35,11 @@ namespace CheckoutBot.Models
             
         }
 
+        public FootsitesProduct()
+        {
+            
+        }
+
 
         public override string ToString()
         {

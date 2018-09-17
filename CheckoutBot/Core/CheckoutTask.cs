@@ -10,7 +10,7 @@ using StoreScraper.Models;
 
 namespace CheckoutBot.Core
 {
-    public class ProductMonitoringTask
+    public class CheckoutTask
     {
         /// <summary>
         /// Target Product which to buy immediately after released

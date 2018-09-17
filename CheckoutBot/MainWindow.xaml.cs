@@ -33,6 +33,7 @@ namespace CheckoutBot
     /// </summary>
     public partial class MainWindow : Window
     {
+
         public MainWindow()
         {
             InitializeComponent();
@@ -113,11 +114,6 @@ namespace CheckoutBot
 
         }
 
-
-        private void HandleAccountType(object sender, RoutedEventArgs e)
-        {
-            accComboBox.Visibility = userRadioBtn.IsChecked == true ? Visibility.Visible : Visibility.Hidden;
-        }
 
         private void HandleVisaSelect(object sender, RoutedEventArgs e)
         {
@@ -294,7 +290,7 @@ namespace CheckoutBot
                 BillingAddress = billingAddress,
                 CreditCard = creditCard,
                 DateCreated =  DateTime.Now
-        };
+            };
 
             profileList.Items.Add(profile);
         }
@@ -304,7 +300,7 @@ namespace CheckoutBot
             int.TryParse(tbx_Quantity.Text, out int quantity);
             if (quantity == default(int))
             {
-                MessageBox.Show("Incorrect Quntity typed","Error", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+                MessageBox.Show("Incorrect Quantity typed","Error", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
                 return;
             }
 
@@ -312,11 +308,23 @@ namespace CheckoutBot
             {
                 UserLogin = tbx_UserName.Text,
                 UserPassword = tbx_Password.Text,
+                ProductToBuy = (FootsitesProduct)cbx_Products.SelectedValue,
                 BuyOptions = new ProductBuyOptions()
                 {
                     Quantity = quantity,
-                }
+                    Size = cbx_Size.SelectedValue.ToString()
+                },
+                UserCcv2 = tbx_CCV2.Text
             };
+
+            CheckoutTask task = new CheckoutTask()
+            {
+                CheckoutInfo = settings,
+                MonitoringTokenSource =
+                    CancellationTokenSource.CreateLinkedTokenSource(AppData.ApplicationGlobalTokenSource.Token),
+            };
+
+            MessageBox.Show("Checkout Task Added","Success", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
         }
 
         private void cbx_Websites_SelectionChanged(object sender, SelectionChangedEventArgs e)
