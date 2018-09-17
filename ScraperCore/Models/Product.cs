@@ -24,7 +24,7 @@ namespace StoreScraper.Models
         public string Name { get; set; } = "";
 
         [DisplayName("Price")]
-        public string PriceStr => Price + Currency;
+        public string PriceStr => Price != 0? Price + Currency : "<unknown price>";
 
         [Browsable(false)]
         public double Price { get; set; }

@@ -72,7 +72,9 @@ namespace StoreScraper.Models
         [Browsable(false)] 
         public string[][] ParsedKeywords { get; private set; }
 
-
+        /// <summary>
+        /// Same as <see cref="ParsedKeywords"/> buf for negative keywords
+        /// </summary>
         [Browsable(false)]
         public string[][] ParsedNegKeywords { get; private set; }
 
