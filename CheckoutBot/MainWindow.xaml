@@ -1252,7 +1252,11 @@
                                 <Label Content="Add proxy" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
 
 
-                                <TextBox Name="proxy" Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                <TextBox Name="proxy" Margin="6 0 " BorderBrush="#ebecf0" Padding="3" TextWrapping="Wrap"
+AcceptsReturn="True"
+HorizontalScrollBarVisibility="Disabled"
+VerticalScrollBarVisibility="Auto"
+                                         Height="200">
                                     <TextBox.Resources>
                                         <Style TargetType="{x:Type Border}">
                                             <Setter Property="CornerRadius" Value="5"/>
