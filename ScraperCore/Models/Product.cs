@@ -57,6 +57,9 @@ namespace StoreScraper.Models
         public DateTime? ReleaseTime { get; set; }
 
 
+        public ScrappingLevel ScrappingLevel { get; set; } = ScrappingLevel.PrimaryFields;
+
+
         public Product(IWebsiteScraper scrapedBy, string name, string url, double price, string imageUrl,
             string id, string currency = "$", DateTime? releaseTime = null)
         {
@@ -69,6 +72,26 @@ namespace StoreScraper.Models
             this.ImageUrl = imageUrl;
             this.Currency = currency;
             this.ReleaseTime = releaseTime;
+        }
+
+
+        public Product(IWebsiteScraper scrapedBy, string url)
+        {
+            this.ScrappingLevel = ScrappingLevel.Url;
+            this.Url = url ?? "<unknown url>";
+            this.Id = url;
+            this.ScrapedBy = scrapedBy;
+            this.StoreName = scrapedBy?.WebsiteName;
+        }
+
+        public Product(IWebsiteScraper scrapedBy, string url, string name)
+        {
+            this.ScrappingLevel = ScrappingLevel.NameAndUrl;
+            this.Url = url ?? "<unknown url>";
+            this.Id = url;
+            this.Name = name;
+            this.ScrapedBy = scrapedBy;
+            this.StoreName = scrapedBy?.WebsiteName;
         }
 
         public Product()
