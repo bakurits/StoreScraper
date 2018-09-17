@@ -113,6 +113,8 @@ namespace CheckoutBot
             billingAddress_state.SelectedValue = States.Alabama;
 
 
+            loadingBox.Visibility = Visibility.Visible;
+            activeArea.Visibility = Visibility.Hidden;
 
         }
 
@@ -124,6 +126,7 @@ namespace CheckoutBot
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+
             await PutTaskDelay();
 
             loadingBox.Visibility = Visibility.Hidden;
