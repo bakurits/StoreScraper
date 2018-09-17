@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:CheckoutBot"
         mc:Ignorable="d"
         
-        Title="MainWindow" Height="836" Width="860">
+        Title="MainWindow" Height="600" Width="860">
     <Window.Background>
         <LinearGradientBrush EndPoint="1.5,1.5" StartPoint="0.504,0.03">
             <GradientStop Color="#2976C1" Offset="0"/>
@@ -237,89 +237,123 @@
 
 
                     <GroupBox Margin="20 20 10 20" Background="#ffffff" BorderThickness="0">
-                        <StackPanel Margin="0 10">
-                            <StackPanel Orientation="Horizontal">
-                                <Image x:Name="img_Product" HorizontalAlignment="Left" Width="200" Height="200" Margin="3,3,0,3"></Image>
-                                <StackPanel Orientation="Vertical" Margin="10 10" HorizontalAlignment="Center">
-                                    <Label VerticalAlignment="Center" Margin="10 0"  FontSize="16">Price:</Label>
-                                    <Label Name="txt_Prce" Foreground="DodgerBlue" Width="100px" VerticalAlignment="Center" Margin="10 0 10 5" FontWeight="Bold" FontSize="16"></Label>
-                                    <Label VerticalAlignment="Center" Margin="10 0"  FontSize="16">Url:</Label>
-                                    <TextBlock Foreground="DodgerBlue" Width="100px" VerticalAlignment="Center" Margin="10 0 10 5" FontWeight="Bold" FontSize="16">
+                        <ScrollViewer VerticalAlignment="Stretch"  VerticalScrollBarVisibility="Auto">
+
+                            <StackPanel Margin="0 10">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image x:Name="img_Product" HorizontalAlignment="Left" Width="200" Height="200" Margin="3,3,0,3"></Image>
+                                    <StackPanel Orientation="Vertical" Margin="10 10" HorizontalAlignment="Center">
+                                        <Label VerticalAlignment="Center" Margin="10 0"  FontSize="16">Price:</Label>
+                                        <Label Name="txt_Prce" Foreground="DodgerBlue" Width="100px" VerticalAlignment="Center" Margin="10 0 10 5" FontWeight="Bold" FontSize="16"></Label>
+                                        <Label VerticalAlignment="Center" Margin="10 0"  FontSize="16">Url:</Label>
+                                        <TextBlock Foreground="DodgerBlue" Width="100px" VerticalAlignment="Center" Margin="10 0 10 5" FontWeight="Bold" FontSize="16">
                                         <Hyperlink Name="lnk_ProductUrl" RequestNavigate="lnk_ProductUrl_RequestNavigate"></Hyperlink>
-                                    </TextBlock>
+                                        </TextBlock>
+                                    </StackPanel>
                                 </StackPanel>
-                            </StackPanel>
-                            
-                            <Label Content="CHOOSE SITE" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
-                            <ComboBox x:Name="cbx_Websites" Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Visibility="Visible" Style="{StaticResource ComboBoxTest2}" SelectionChanged="cbx_Websites_SelectionChanged"/>
 
-                            <Image Source="http://images-na.ssl-images-amazon.com/images/I/61qEF4YYrEL._UX500_.jpg" Width="200">
+                                <Label Content="CHOOSE SITE" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
+                                <ComboBox x:Name="cbx_Websites" Margin="6 0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Visibility="Visible" Style="{StaticResource ComboBoxTest2}" SelectionChanged="cbx_Websites_SelectionChanged"/>
 
-                            </Image>
+                                <Image Source="http://images-na.ssl-images-amazon.com/images/I/61qEF4YYrEL._UX500_.jpg" Width="200">
 
-                            <Label Content="PRODUCT" Foreground="#576379" FontWeight="SemiBold" />
+                                </Image>
 
-
-                            <ComboBox x:Name="cbx_Products" Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch"  VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}" SelectionChanged="cbx_Products_SelectionChanged" IsEnabled="False">
-
-                            </ComboBox>
-
-                            <Label Content="SIZE" Foreground="#576379" FontWeight="SemiBold" Margin="0 5" />
-
-                            <ComboBox x:Name="cbx_Size" Grid.Column="0" Margin="6,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="201" Style="{StaticResource ComboBoxTest2}" Grid.ColumnSpan="2" IsEnabled="False">
-                            </ComboBox>
-
-                            <Label Content="QUANTITY" Foreground="#576379" FontWeight="SemiBold" Margin="0 5" />
-
-                            <TextBox Name="tbx_Quantity" Grid.Column="0" Margin="6,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="201" Grid.ColumnSpan="2"/>
+                                <Label Content="PRODUCT" Foreground="#576379" FontWeight="SemiBold" />
 
 
-                            <Label Content="ACCOUNT" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
-                            <StackPanel Orientation="Horizontal">
+                                <ComboBox x:Name="cbx_Products" Grid.Column="0" Margin="6 0" HorizontalAlignment="Stretch"  VerticalAlignment="Top"  Style="{StaticResource ComboBoxTest2}" SelectionChanged="cbx_Products_SelectionChanged" IsEnabled="False">
 
-                                <RadioButton Name="userRadioBtn" IsChecked="True" Margin="10 0" VerticalAlignment="Center"   Content="User" Grid.ColumnSpan="2"  />
-                                <RadioButton Name="guestRadioBtn" VerticalAlignment="Center"  Content="Guest" Grid.ColumnSpan="2"/>
+                                </ComboBox>
 
+                                <Label Content="SIZE" Foreground="#576379" FontWeight="SemiBold" Margin="0 5" />
 
-                            </StackPanel>
+                                <ComboBox x:Name="cbx_Size" Grid.Column="0" Margin="6,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="201" Style="{StaticResource ComboBoxTest2}" Grid.ColumnSpan="2" IsEnabled="False">
+                                </ComboBox>
 
-                            
-                            <StackPanel Orientation="Vertical">
-                                <Label Content="USERNAME" Foreground="#576379" FontWeight="SemiBold" Margin="0 0"/>
-                                <TextBox Name="tbx_UserName" Margin="6 0 6 10" Width="200"  Height="20" HorizontalAlignment="Left"></TextBox>
-                                <Label Content="PASSWORD" Foreground="#576379" FontWeight="SemiBold" Margin="0 0"/>
-                                <TextBox Name="tbx_Password" Margin="6 2" Width="200"  Height="20" HorizontalAlignment="Left"></TextBox>
-                                <Label Content="CCV2" Foreground="#576379" FontWeight="SemiBold" Margin="0 0"/>
-                                <TextBox Name="tbx_CCV2" Margin="6 2" Width="200"  Height="20" HorizontalAlignment="Left"></TextBox>
-                                <Button Margin="6,20,0,20" Width="100" HorizontalAlignment="Left" Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0" Content="ADD TASK" Click="Button_Click">
+                                <Label Content="QUANTITY" Foreground="#576379" FontWeight="SemiBold" Margin="0 5" />
 
-
-
-                                    <Button.Resources>
+                                <TextBox Name="tbx_Quantity" HorizontalAlignment="Left" Width="201" Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                    <TextBox.Resources>
                                         <Style TargetType="{x:Type Border}">
                                             <Setter Property="CornerRadius" Value="5"/>
-                                            <Style.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Control.Background" Value="Red" />
-                                                </Trigger>
-                                            </Style.Triggers>
                                         </Style>
+                                    </TextBox.Resources>
+
+
+                                </TextBox>
+
+
+                                <Label Content="ACCOUNT" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
+                                <StackPanel Orientation="Horizontal">
+
+                                    <RadioButton Name="userRadioBtn" IsChecked="True" Margin="10 0" VerticalAlignment="Center"   Content="User" Grid.ColumnSpan="2"  />
+                                    <RadioButton Name="guestRadioBtn" VerticalAlignment="Center"  Content="Guest" Grid.ColumnSpan="2"/>
+
+
+                                </StackPanel>
+
+
+                                <StackPanel Orientation="Vertical">
+                                    <Label Content="USERNAME" Foreground="#576379" FontWeight="SemiBold" Margin="0 0"/>
+                                    <TextBox Name="tbx_UserName"  HorizontalAlignment="Left" Width="201" Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                        <TextBox.Resources>
+                                            <Style TargetType="{x:Type Border}">
+                                                <Setter Property="CornerRadius" Value="5"/>
+                                            </Style>
+                                        </TextBox.Resources>
+
+
+                                    </TextBox>
+                                    <Label Content="PASSWORD" Foreground="#576379" FontWeight="SemiBold" Margin="0 0"/>
+                                    <TextBox Name="tbx_Password" HorizontalAlignment="Left" Width="201" Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                        <TextBox.Resources>
+                                            <Style TargetType="{x:Type Border}">
+                                                <Setter Property="CornerRadius" Value="5"/>
+                                            </Style>
+                                        </TextBox.Resources>
+
+
+                                    </TextBox>
+                                    <Label Content="CCV2" Foreground="#576379" FontWeight="SemiBold" Margin="0 0"/>
+                                    <TextBox Name="tbx_CCV2" HorizontalAlignment="Left" Width="201" Margin="6 0 " BorderBrush="#ebecf0" Padding="3">
+                                        <TextBox.Resources>
+                                            <Style TargetType="{x:Type Border}">
+                                                <Setter Property="CornerRadius" Value="5"/>
+                                            </Style>
+                                        </TextBox.Resources>
+
+
+                                    </TextBox>
+                                    <Button Margin="6,20,0,20" Width="100" HorizontalAlignment="Left" Padding="5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0" Content="ADD TASK" Click="Button_Click">
+
+
+
+                                        <Button.Resources>
+                                            <Style TargetType="{x:Type Border}">
+                                                <Setter Property="CornerRadius" Value="5"/>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Control.Background" Value="Red" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
 
 
 
 
 
 
-                                    </Button.Resources>
+                                        </Button.Resources>
 
-                                </Button>
+                                    </Button>
+
+                                </StackPanel>
 
                             </StackPanel>
-                            
-                        </StackPanel>
 
 
-
+                        </ScrollViewer>
                     </GroupBox>
                     <GroupBox  Grid.Column="1" Margin="10 20 20 20" Grid.ColumnSpan="6" Background="#ffffff" BorderThickness="0">
                         <StackPanel Margin="10">
