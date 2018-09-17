@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using CheckoutBot.Factory;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
@@ -93,10 +92,16 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 
         private void AddToCart(WebView driver, AccountCheckoutSettings settings, CancellationToken token)
         {
-            Login(settings.UserLogin, settings.UserPassword, token);
-            Task.Delay(DelayInSecond * 1000, token).Wait(token);
-            AddArbitraryItemToCart(token);
-            AddToCart(settings, token);
+            //Console.WriteLine(settings);
+            driver.LoadUrlAndWait(settings.ProductToBuy.Url);
+            
+            driver.EvalScript(AjaxGetRequest($@"'https://www.eastbay.com/pdp/gateway?requestKey=' +
+                            requestKey +
+                            '&action=add&qty={settings.BuyOptions.Quantity}&sku={settings.ProductToBuy.Sku}&size={settings.BuyOptions.Size}&fulfillmentType=SHIP_TO_HOME&storeNumber=0&_=' +
+                            date"));
+            Task.Delay(2000, token).Wait(token);
+            driver.LoadUrlAndWait("https://www.eastbay.com/checkout/?uri=checkout");
+        }
 
         private FootsitesProduct GetArbitraryItem(CancellationToken token)
         {
