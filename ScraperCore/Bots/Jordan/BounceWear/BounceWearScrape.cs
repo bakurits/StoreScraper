@@ -21,7 +21,7 @@ namespace StoreScraper.Bots.Jordan.BounceWear
         
         private const string SearchUrl = "https://bouncewear.com/search";
 
-        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
         {
             listOfProducts = new List<Product>();
             var searchUrl = "https://bouncewear.com/category/schoenen";
