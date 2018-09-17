@@ -37,7 +37,7 @@ namespace StoreScraper.Bots.Jordan.Byparra
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item, CancellationToken token)
         {
-           
+            Console.WriteLine(item.InnerHtml);
             string name = GetName(item);
             string url = GetUrl(item);
             double price = GetPrice(url, token);
@@ -57,7 +57,7 @@ namespace StoreScraper.Bots.Jordan.Byparra
 
         private double ParsePrice(string pricee)
         {
-            
+            if (pricee == null) return 0;
             string result = Regex.Match(pricee, @"[\d\.]+").Value;
             double.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
             return price;
@@ -66,8 +66,10 @@ namespace StoreScraper.Bots.Jordan.Byparra
         private double GetPrice(string url, CancellationToken token)
         {
             var urlNew = "https://byparra.com" + url.Substring(1);
-            var resp = GetWebpage(urlNew, token);    
-            var price = resp.SelectSingleNode("//p[contains(@class, 'price')]/b").InnerHtml;
+            var resp = GetWebpage(urlNew, token);
+            resp = GetWebpage(urlNew, token);
+            var t = resp.InnerText;
+            var price = resp.SelectSingleNode("//p[contains(@class, 'price')]/b")?.InnerHtml;
             return ParsePrice(price);
 
         }
@@ -93,6 +95,7 @@ namespace StoreScraper.Bots.Jordan.Byparra
         {
             var toSearch = String.Format(SearchUrl, settings.KeyWords);
             var searchResults = GetWebpage(toSearch, token);
+            var a = searchResults.InnerHtml;
             return searchResults.SelectNodes("//a[contains(@class, 'product')]");
             
         }
