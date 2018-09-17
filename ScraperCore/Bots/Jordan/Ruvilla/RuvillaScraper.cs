@@ -156,13 +156,11 @@ namespace StoreScraper.Bots.Jordan.Ruvilla
 
         private string GetName(HtmlNode item)
         {
-            Debug.WriteLine(item.OuterHtml);
             return item.SelectSingleNode(".//h3").InnerHtml;
         }
 
         private string GetUrl(HtmlNode item)
         {
-            Debug.WriteLine(item.OuterHtml);
             return item.SelectSingleNode(".//a").GetAttributeValue("href", null);
         }
 
