@@ -28,7 +28,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
         public string WebsiteBaseUrl { get; set; }
         private string ReleasePageApiEndpoint { get; set; }
         public WebView Driver { get; set; }
-        public WebView Driver2 { get; set; }
+        public WebView DriverForArbitraryProduct { get; set; }
         public WebView Driver3 { get; set; }
 
         protected FootSitesBotBase(string websiteName, string webSiteBaseUrl, string releasePageEndpoint)

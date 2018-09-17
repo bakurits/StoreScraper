@@ -10,5 +10,15 @@ namespace CheckoutBot.Models.Checkout
 
         public FootsitesProduct ProductToBuy { get; set; }
         public ProductBuyOptions BuyOptions { get; set; }
+
+
+        public override string ToString()
+        {
+            return $@"{UserLogin}\n
+                    {UserPassword}\n
+                    {ProductToBuy}\n
+                    {BuyOptions.Size}
+                    ";
+        }
     }
 }
