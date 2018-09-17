@@ -70,26 +70,9 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             AddArbitraryItemToCart(arbitraryProduct, token);
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             AddToCart(Driver, settings, token);
-            string lineItemIdScript = GetScriptByXpath("//div[@id = 'cart_items']/ul/li[@data-sku = '" + arbitraryProduct.Sku + "']") + "getAttribute(\"data-lineitemid\")";
-            //todo requestKey
-            Driver.EvalScript($@"
-                    var xhr = new XMLHttpRequest();
-                    var date = Date.now();
-                    var requestKey =   
-                    var itemId = {lineItemIdScript}
-                    xhr.open('GET', 'https://www.eastbay.com/pdp/gateway?requestKey=' + requestKey + '&action=delete&lineItemId='+ itemId + '&_=' + date);
-                    xhr.onload = function() {{
-                        if (xhr.status === 200) {{
-                            console.log(xhr.responseText);
-                        }}
-                        else {{
-                            alert('Request failed.  Returned status of ' + xhr.status);
-                        }}
-                    }};
-                    xhr.send();
-            ");
+            RemoveArbitraryItem(arbitraryProduct, token);
         }
-
+        
         private void AddToCart(WebView driver, AccountCheckoutSettings settings, CancellationToken token)
         {
             //Console.WriteLine(settings);
@@ -121,6 +104,27 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
                     Size = product.Sizes[0]
                 }
             }, token);
+        }
+        
+        private void RemoveArbitraryItem(FootsitesProduct product, CancellationToken token)
+        {
+            string lineItemIdScript = GetScriptByXpath("//div[@id = 'cart_items']/ul/li[@data-sku = '" + product.Sku + "']") + "getAttribute(\"data-lineitemid\")";
+            Driver.EvalScript($@"
+                    var xhr = new XMLHttpRequest();
+                    var date = Date.now();
+                    var requestKey = window.frames.accountGateway._requestKey;
+                    var itemId = {lineItemIdScript}
+                    xhr.open('GET', 'https://www.eastbay.com/pdp/gateway?requestKey=' + requestKey + '&action=delete&lineItemId='+ itemId + '&_=' + date);
+                    xhr.onload = function() {{
+                        if (xhr.status === 200) {{
+                            console.log(xhr.responseText);
+                        }}
+                        else {{
+                            alert('Request failed.  Returned status of ' + xhr.status);
+                        }}
+                    }};
+                    xhr.send();
+            ");
         }
 
 
