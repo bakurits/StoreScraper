@@ -18,7 +18,7 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.Nordstrom
         public override string WebsiteName { get; set; } = "Nordstrom";
         public override string WebsiteBaseUrl { get; set; } = "https://shop.nordstrom.com";
         public override bool Active { get; set; }
-        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
         {
             var searchUrl = "https://shop.nordstrom.com/c/mens-whats-new?origin=topnav&cm_sp=Top%20Navigation-_-Men-_-Featured-New%20Arrivals";
             listOfProducts = new List<Product>();

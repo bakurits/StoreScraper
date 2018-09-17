@@ -3,6 +3,7 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
 using StoreScraper.Bots.Sticky_bit.BSTN;
+using StoreScraper.Models;
 
 namespace ScraperTest.ScraperTests.DavitBezhanishvili
 {
@@ -32,7 +33,7 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
         {
             var scraper = new BSTNScraper();
 
-            scraper.ScrapeNewArrivalsPage(out var lst, CancellationToken.None);
+            scraper.ScrapeNewArrivalsPage(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
             Helper.PrintFindItemsResults(lst);
         }
 

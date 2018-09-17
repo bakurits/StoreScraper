@@ -21,7 +21,7 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze.TitoloShop
         public override bool Active { get; set; }
 
 
-        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
         {
             var searchUrl = "https://en.titolo.ch/brands";
             listOfProducts = new List<Product>();

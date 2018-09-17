@@ -29,7 +29,7 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
         {
             var scraper = new SlamJamSocialismScraper();
 
-            scraper.ScrapeNewArrivalsPage(out var list, CancellationToken.None);
+            scraper.ScrapeNewArrivalsPage(out var list, ScrappingLevel.PrimaryFields, CancellationToken.None);
             Helper.PrintFindItemsResults(list);
         }
 

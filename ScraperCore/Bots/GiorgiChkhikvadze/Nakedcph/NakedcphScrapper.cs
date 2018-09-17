@@ -60,7 +60,7 @@ namespace StoreScraper.Bots.GiorgiChkhikvadze.Nakedcph
         }
 
         private const string NewArrivalsPageUrl = "https://www.nakedcph.com/new-arrivals/s/6";
-        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
         {
             listOfProducts = new List<Product>();
             HttpClient client = ClientFactory.GetProxiedFirefoxClient();

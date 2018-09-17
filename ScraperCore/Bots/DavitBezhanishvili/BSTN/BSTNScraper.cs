@@ -37,7 +37,7 @@ namespace StoreScraper.Bots.Sticky_bit.BSTN
             return document;
         }
 
-        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
         {
             listOfProducts = new List<Product>();
             var url = "https://www.bstn.com/en/new-arrivals/page/1/sort/date_new";

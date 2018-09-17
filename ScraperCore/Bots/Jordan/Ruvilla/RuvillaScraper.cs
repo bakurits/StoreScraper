@@ -38,7 +38,7 @@ namespace StoreScraper.Bots.Jordan.Ruvilla
             "https://www.ruvilla.com/kids/apparel/new.html"
         };
 
-        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
         {
             ConcurrentDictionary<Product, byte> data = new ConcurrentDictionary<Product, byte>();
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);

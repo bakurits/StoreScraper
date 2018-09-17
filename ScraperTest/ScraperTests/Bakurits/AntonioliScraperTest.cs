@@ -49,7 +49,7 @@ namespace ScraperTest.ScraperTests.Bakurits
         {
             AntonioliScraper scraper = new AntonioliScraper();
             
-            scraper.ScrapeNewArrivalsPage(out var lst, CancellationToken.None);
+            scraper.ScrapeNewArrivalsPage(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
             Helper.PrintFindItemsResults(lst);
         }
     }

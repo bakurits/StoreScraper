@@ -65,7 +65,7 @@ namespace StoreScraper.Bots.Bakurits.Shelflife
             return details;
         }
 
-        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
         {
             listOfProducts = new List<Product>();
             const string searchFormat = "https://www.shelflife.co.za/New-arrivals?page={0}";

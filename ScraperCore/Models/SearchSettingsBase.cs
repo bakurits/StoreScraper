@@ -83,7 +83,7 @@ namespace StoreScraper.Models
         /// This property describes what kind of product info is required to scrape
         /// </summary>
         [Browsable(false)]
-        public ScrappingLevel RequiredScrappingLevel { get; set; }
+        public ScrappingLevel RequiredScrappingLevel { get; set; } = ScrappingLevel.PrimaryFields;
 
         public override string ToString()
         {

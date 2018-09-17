@@ -82,7 +82,7 @@ namespace StoreScraper.Bots.Bakurits.Baitme
             "https://www.baitme.com/skateboard-snowboard"
         };
 
-        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, CancellationToken token)
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
         {
             ConcurrentDictionary<Product, byte> data = new ConcurrentDictionary<Product, byte>();
             Task.WhenAll(_newArrivalPageUrls.Select(url => GetProductsForPage(url, data, null, token))).Wait(token);

@@ -31,7 +31,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
             settings.KeyWords = "nike";
 
 
-            scraper.ScrapeNewArrivalsPage(out var lst, CancellationToken.None);
+            scraper.ScrapeNewArrivalsPage(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
             Helpers.Helper.PrintFindItemsResults(lst);
 
         }
