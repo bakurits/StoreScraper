@@ -121,9 +121,7 @@
     <Compile Include="Controls\EOTestForm.Designer.cs">
       <DependentUpon>EOTestForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Factory\DriverFactoryTests.cs" />
     <Compile Include="Helpers\EOBrowserHelper.cs" />
-    <Compile Include="MinorTests\SeleniumTests.cs" />
     <Compile Include="MinorTests\UtilsTests.cs" />
     <Compile Include="MinorTests\SlackWebHookTests.cs" />
     <Compile Include="ScraperTests\DavitBezhanishvili\AwLabScraperTests.cs" />
@@ -188,6 +186,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Factory\" />
     <Folder Include="ScraperTests\Jordan\" />
   </ItemGroup>
   <ItemGroup>

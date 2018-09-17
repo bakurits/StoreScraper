@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using CheckoutBot.Factory;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
 using EO.WebBrowser;
@@ -50,12 +49,6 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 
         public override void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
         {
-            var driver = DriverFactory.CreateFirefoxDriver();
-            driver.Navigate().GoToUrl(WebsiteBaseUrl);
-            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(2));
-
-            
-
             throw new NotImplementedException();
         }
         
