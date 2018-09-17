@@ -11,8 +11,6 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ScraperCore", "ScraperCore\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckoutBot", "CheckoutBot\CheckoutBot.csproj", "{1BE9C1B7-52EB-4530-804F-21A6CE57E147}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkamaiBypasser", "AkamaiBotTesting\AkamaiBypasser.csproj", "{4EA82419-E290-45DD-B198-DD5C8471DE7E}"
-EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		ScraperCore\ScraperCore.projitems*{057afe2c-9129-440d-b196-d6c13b264a66}*SharedItemsImports = 13
@@ -50,14 +48,6 @@ Global
 		{1BE9C1B7-52EB-4530-804F-21A6CE57E147}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1BE9C1B7-52EB-4530-804F-21A6CE57E147}.Release|x64.ActiveCfg = Release|x86
 		{1BE9C1B7-52EB-4530-804F-21A6CE57E147}.Release|x64.Build.0 = Release|x86
-		{4EA82419-E290-45DD-B198-DD5C8471DE7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4EA82419-E290-45DD-B198-DD5C8471DE7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4EA82419-E290-45DD-B198-DD5C8471DE7E}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{4EA82419-E290-45DD-B198-DD5C8471DE7E}.Debug|x64.Build.0 = Debug|Any CPU
-		{4EA82419-E290-45DD-B198-DD5C8471DE7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4EA82419-E290-45DD-B198-DD5C8471DE7E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4EA82419-E290-45DD-B198-DD5C8471DE7E}.Release|x64.ActiveCfg = Release|Any CPU
-		{4EA82419-E290-45DD-B198-DD5C8471DE7E}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
