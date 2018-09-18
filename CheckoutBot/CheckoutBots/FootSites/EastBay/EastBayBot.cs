@@ -64,8 +64,10 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             AddArbitraryItemToCart(arbitraryProduct, token);
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             AddToCart(Driver, settings, token);
-            RemoveArbitraryItem(DriverForArbitraryProduct, arbitraryProduct, token);
+            RemoveArbitraryItem(Driver3, arbitraryProduct, token);
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
+            DriverForArbitraryProduct.Reload().WaitOne(10);
+            Task.Delay(10 * 1000, token).Wait(token);
         }
         
         /// <summary>
@@ -112,6 +114,9 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
                     Size = product.Sizes[0]
                 }
             }, token);
+            DriverForArbitraryProduct.LoadUrlAndWait(CartUrl);
+            DriverForArbitraryProduct.EvalScript("document.getElementById(\"cart_checkout_button\").click();");
+            Task.Delay(10000, token).Wait(token);
         }
 
         /// <summary>
