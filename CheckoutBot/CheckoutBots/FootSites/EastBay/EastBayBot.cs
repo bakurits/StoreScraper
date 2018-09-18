@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using CheckoutBot.Core;
+using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
+using EO.Internal;
 using EO.WebBrowser;
+using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 using StoreScraper.Core;
 using StoreScraper.Helpers;
@@ -13,7 +20,7 @@ using StoreScraper.Http.Factory;
 
 namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 {
-    public class EastBayBot : FootSitesBotBase
+    public class EastBayBot : FootSitesBotBase, IProxyChecker
     {
         private const string ApiUrl = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/1";
         private const string CartUrl = "https://www.eastbay.com/shoppingcart";
@@ -183,6 +190,55 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             }
 
             product.Sizes = infos;
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="proxyPool"></param>
+        /// <param name="maxCount"></param>
+        /// <returns></returns>
+        public List<WebProxy> ChooseBestProxies(List<WebProxy> proxyPool, int maxCount)
+        {
+            List<Tuple<long, WebProxy>> lst = new List<Tuple<long, WebProxy>>();
+            Parallel.ForEach(proxyPool, proxy =>
+            {
+                using (HttpClient client = ClientFactory.CreateProxiedHttpClient(proxy, true).AddHeaders(ClientFactory.DefaultHeaders))
+                {
+                    Stopwatch stopwatch = new Stopwatch();
+                    stopwatch.Start();
+                    
+                    try
+                    {
+                        var doc = client.GetDoc(WebsiteBaseUrl, CancellationToken.None);
+                        stopwatch.Stop();
+                        if (!IsFaulted(doc))
+                        {
+                            lst.Add(new Tuple<long, WebProxy>(stopwatch.ElapsedMilliseconds, proxy));   
+                        }    
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
+                }
+            });
+
+            lst = lst.OrderBy(item => item.Item1).ToList().GetRange(0, Math.Min( maxCount, lst.Count));
+            List<WebProxy> ans = new List<WebProxy>();
+            foreach (var item in lst)
+            {
+                ans.Add(item.Item2);
+                Console.WriteLine(item.Item1);
+            }
+            
+            return ans;
+        }
+
+        private bool IsFaulted(HtmlDocument doc)
+        {
+            var ind = doc.DocumentNode.SelectSingleNode("//title").InnerHtml.IndexOf("Access Denied", StringComparison.Ordinal);
+            return ind != -1;
         }
     }
 }

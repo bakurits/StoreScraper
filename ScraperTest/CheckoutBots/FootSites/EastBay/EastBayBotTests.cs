@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using CheckoutBot.CheckoutBots.FootSites;
@@ -9,6 +10,7 @@ using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
 using CheckoutBot.Models.Payment;
 using CheckoutBot.Models.Shipping;
+using EO.Internal;
 using EO.WebBrowser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
@@ -125,5 +127,22 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
             Debug.WriteLine(string.Join("\n", product.Sizes));
         }
 
+        [TestMethod]
+        public void ChooseBestProxiesTest()
+        {
+            EastBayBot bot = new EastBayBot();
+            List<WebProxy> lst = new List<WebProxy>
+            {
+                new WebProxy("81.198.103.228:8080"),
+                new WebProxy("78.25.98.114:8080"),
+                new WebProxy("178.248.71.120:33930"),
+                new WebProxy("181.236.246.224:33969"),
+                new WebProxy("46.228.13.42:3128"),
+                new WebProxy("187.84.191.34:61900"),
+                new WebProxy("123.176.34.159:58737"),
+                new WebProxy("89.23.194.174:8080")
+            };
+            Debug.WriteLine(bot.ChooseBestProxies(lst, 4));
+        }
     }
 }
