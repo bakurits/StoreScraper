@@ -19,6 +19,9 @@ namespace StoreScraper.Bots.GiorgiBaghdavadze._290sqm
         public override string WebsiteName { get; set; } = "290sqm";
         public override string WebsiteBaseUrl { get; set; } = "https://ist.290sqm.com";
         public override bool Active { get; set; }
+
+
+
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();

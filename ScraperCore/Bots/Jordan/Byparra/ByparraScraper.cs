@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Net;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using StoreScraper.Core;
 using StoreScraper.Http.Factory;
@@ -16,38 +18,94 @@ namespace StoreScraper.Bots.Jordan.Byparra
     public class ByparraScraper: ScraperBase
     {
         public override string WebsiteName { get; set; } = "Byparra";
-        public override string WebsiteBaseUrl { get; set; } = "https://byparra.com";
+        public override string WebsiteBaseUrl { get; set; } = "https://byparra.com/us";
         public override bool Active { get; set; }
-        
         private const string SearchUrl = @"https://byparra.com/?q={0}";
-        
+
+        public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
+        {
+            listOfProducts = new List<Product>();
+            var searchUrl = "https://byparra.com/us";
+            var searchResults = GetWebpage(searchUrl, token);
+            var itemCollection = searchResults.SelectNodes("//a[contains(@class, 'product')]");
+            int num = 0;
+            List<Thread> threads = new List<Thread>();
+            List<Product> products = new List<Product>();
+            foreach (var item in itemCollection)
+            {
+                if (num == 12) break;
+                ++num;
+                token.ThrowIfCancellationRequested();
+                Thread thread = new Thread(() =>
+                {
+                    var product = LoadSingleProduct(null, item, token);
+                    if (product != null)
+                    {
+                        lock (products)
+                        {
+                            products.Add(LoadSingleProduct(null, item, token));
+                        }
+                    }
+                });
+                thread.Start();
+                threads.Add(thread);
+            }
+            foreach (var thread in threads)
+            {
+                thread.Join();
+            }
+
+            listOfProducts = products;
+        }
+
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
 
             HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
-          
+            int num = 0;
+            List<Thread> threads = new List<Thread>();
+            List<Product> products = new List<Product>();
             foreach (var item in itemCollection)
             {
+                if (num == 12) break;
+                ++num;
                 token.ThrowIfCancellationRequested();
-                LoadSingleProduct(listOfProducts, settings, item, token);
+                Thread thread = new Thread(() =>
+                {
+                    var product = LoadSingleProduct(settings, item, token);
+                    if (product != null)
+                    {
+                        products.Add(LoadSingleProduct(settings, item, token));
+  
+                    }
+                });
+                thread.Start();
+                threads.Add(thread);
+            }
+            foreach (var thread in threads)
+            {
+                thread.Join();
             }
 
+            listOfProducts = products;
         }
 
-        private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item, CancellationToken token)
+        private Product LoadSingleProduct(SearchSettingsBase settings, HtmlNode item, CancellationToken token)
         {
+            List<Product> listOfProducts = new List<Product> ();
             Console.WriteLine(item.InnerHtml);
             string name = GetName(item);
             string url = GetUrl(item);
             double price = GetPrice(url, token);
             string imgurl = GetImg(item);
             var product = new Product(this, name, url, price, imgurl, url, "EUR");
-            if (Utils.SatisfiesCriteria(product, settings))
+            if (settings == null || Utils.SatisfiesCriteria(product, settings))
             {
-                listOfProducts.Add(product);
+                return product;
             }
-         
+
+            return null;
         }
 
         private string GetImg(HtmlNode item)
@@ -65,10 +123,8 @@ namespace StoreScraper.Bots.Jordan.Byparra
 
         private double GetPrice(string url, CancellationToken token)
         {
-            var urlNew = "https://byparra.com" + url.Substring(1);
+            var urlNew = "https://byparra.com/us" + url.Substring(1);
             var resp = GetWebpage(urlNew, token);
-            resp = GetWebpage(urlNew, token);
-            var t = resp.InnerText;
             var price = resp.SelectSingleNode("//p[contains(@class, 'price')]/b")?.InnerHtml;
             return ParsePrice(price);
 
@@ -86,7 +142,7 @@ namespace StoreScraper.Bots.Jordan.Byparra
 
         private HtmlNode GetWebpage(string url, CancellationToken token)
         {
-            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            HttpClient client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             return client.GetDoc(url, token).DocumentNode;
         }
 

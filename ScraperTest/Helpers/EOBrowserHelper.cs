@@ -12,6 +12,7 @@ using EO.WebBrowser.DOM;
 using EO.WebEngine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using EO.WinForm;
+using OpenQA.Selenium;
 using ScraperTest.Controls;
 
 namespace ScraperTest.Helpers
@@ -29,9 +30,7 @@ namespace ScraperTest.Helpers
             {
                 LoadImages = false,
             });
-
             EOTestForm form = new EOTestForm();
-            
             bot.Driver = form.Driver;
             form.Driver.CertificateError += (sender, args) => args.Continue();
             form.Driver.CustomUserAgent =
