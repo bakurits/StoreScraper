@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CheckoutBot.CheckoutBots.FootSites;
 using CheckoutBot.Controls;
+using EO.Base;
 using EO.Internal;
 using EO.WebBrowser;
 using EO.WebBrowser.DOM;
@@ -20,11 +22,21 @@ namespace ScraperTest.Helpers
     public static class EOBrowserHelper
     {   
         public static EOBrowserWindow MainForm;
-        public static TResult BotTester<TResult, T>(T bot, Func<T, TResult> action) where T : FootSitesBotBase
+
+
+        public static TResult BotTester<TResult, T>(T bot, Func<T, TResult> action, string proxyAddr = null) where T : FootSitesBotBase
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             EngineOptions.Default.ExtraCommandLineArgs = "--incognito --start-maximized";
+            EngineOptions.Default.BypassUserGestureCheck = true;
+            EngineOptions.Default.DisableSpellChecker = true;
+            if (proxyAddr != null)
+            {
+                WebProxy proxy = new WebProxy(proxyAddr);
+                EngineOptions.Default.Proxy = new ProxyInfo(ProxyType.HTTP, proxy.Address.Host, proxy.Address.Port);
+            }
+ 
             EngineOptions.Default.SetDefaultBrowserOptions(new BrowserOptions()
             {
                 LoadImages = false,
@@ -60,7 +72,7 @@ namespace ScraperTest.Helpers
         }
         
         
-        public static void BotTester<T>(T bot, Action<T> action) where T : FootSitesBotBase
+        public static void BotTester<T>(T bot, System.Action<T> action) where T : FootSitesBotBase
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
