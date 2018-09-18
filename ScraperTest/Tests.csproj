@@ -115,12 +115,6 @@
     <Compile Include="CheckoutBots\FootSites\EastBay\EastBayBotTests.cs" />
     <Compile Include="CheckoutBots\FootSites\FootAction\FootActionBotTests.cs" />
     <Compile Include="CheckoutBots\FootSites\FootLocker\FootLockerBotTests.cs" />
-    <Compile Include="Controls\EOTestForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Controls\EOTestForm.Designer.cs">
-      <DependentUpon>EOTestForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Helpers\EOBrowserHelper.cs" />
     <Compile Include="MinorTests\UtilsTests.cs" />
     <Compile Include="MinorTests\SlackWebHookTests.cs" />
@@ -190,11 +184,17 @@
       <Project>{1BE9C1B7-52EB-4530-804F-21A6CE57E147}</Project>
       <Name>CheckoutBot</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Scraper\Scraper.csproj">
+      <Project>{102caa56-c642-4afe-a235-3b8e614e6c32}</Project>
+      <Name>Scraper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\StoraScraper.Core\Scraper.Core.csproj">
+      <Project>{dd1dab1b-bf5b-432d-b292-9acac2721cde}</Project>
+      <Name>Scraper.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Controls\EOTestForm.resx">
-      <DependentUpon>EOTestForm.cs</DependentUpon>
-    </EmbeddedResource>
+    <Folder Include="Controls\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

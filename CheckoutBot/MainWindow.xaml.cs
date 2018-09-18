@@ -470,6 +470,4 @@ namespace CheckoutBot
         }
     }
 
-
-
 }

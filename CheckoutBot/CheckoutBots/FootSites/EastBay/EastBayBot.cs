@@ -7,7 +7,6 @@ using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
 using EO.WebBrowser;
 using Newtonsoft.Json.Linq;
-using OpenQA.Selenium.Support.UI;
 using StoreScraper.Core;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;

@@ -5,7 +5,6 @@ using CheckoutBot.CheckoutBots.FootSites.ChampsSports;
 using CheckoutBot.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
-using StoreScraper.Models;
 
 namespace ScraperTest.CheckoutBots.FootSites.ChampsSports
 {

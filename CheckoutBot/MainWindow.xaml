@@ -197,7 +197,7 @@
         <GroupBox Visibility="Hidden" Name="loadingBox" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Grid.ColumnSpan="12"   Background="#ffffff">
             <StackPanel VerticalAlignment="Center">
                 <Image Height="140" Width="140" Margin="0 0 0 20" gif:ImageBehavior.AnimatedSource="images/loading.gif" HorizontalAlignment="Center" VerticalAlignment="Center"  Grid.ColumnSpan="12">
-
+                
                 </Image>
 
                 <Label HorizontalAlignment="Center" Foreground="Black" FontSize="26" FontWeight="Bold">

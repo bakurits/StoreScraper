@@ -1,6 +1,6 @@
-﻿namespace ScraperTest.Controls
+﻿namespace CheckoutBot.Controls
 {
-    partial class EOTestForm
+    partial class EOBrowserWindow
     {
         /// <summary>
         /// Required designer variable.
@@ -135,14 +135,14 @@
             // 
             this.Driver3.ObjectForScripting = null;
             // 
-            // EOTestForm
+            // EOBrowserWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.tabControl1);
             this.Name = "EOTestForm";
-            this.Text = "EOTestForm";
+            this.Text = "EOBrowserWindow";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);

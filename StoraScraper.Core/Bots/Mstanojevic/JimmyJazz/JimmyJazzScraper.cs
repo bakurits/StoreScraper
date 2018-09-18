@@ -7,10 +7,7 @@ using StoreScraper.Core;
 using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
-
-
 using System.Threading.Tasks;
-using System.Collections.Concurrent;
 using System.Linq;
 
 

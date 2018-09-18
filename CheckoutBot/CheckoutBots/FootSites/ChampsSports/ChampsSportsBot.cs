@@ -3,10 +3,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using CheckoutBot.Models.Checkout;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 using StoreScraper.Http.Factory;
-using static SeleniumExtras.WaitHelpers.ExpectedConditions;
 
 namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
 {
@@ -43,20 +40,6 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
             //Driver.QueueScriptCall($"{GetScriptByXpath("//div[@id='header_login']/a//input[@id='login_submit']")}.click()");
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             return false;
-        }
-
-        private IWebElement GetVisibleElementByXPath(WebDriverWait wait, string xPath, CancellationToken token)
-        {
-            var element = wait.Until(ElementIsVisible(By.XPath(xPath)));
-            token.ThrowIfCancellationRequested();
-            return element;
-        }
-
-        private IWebElement GetClickableElementByXPath(WebDriverWait wait, string xPath, CancellationToken token)
-        {
-            var element = wait.Until(ElementToBeClickable(By.XPath(xPath)));
-            token.ThrowIfCancellationRequested();
-            return element;
         }
     }
 }

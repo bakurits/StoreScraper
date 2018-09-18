@@ -2,7 +2,6 @@
 using System.Net.Http;
 using System.Threading;
 using CheckoutBot.Models.Checkout;
-using OpenQA.Selenium.Support.UI;
 
 namespace CheckoutBot.CheckoutBots.FootSites.FootLocker
 {

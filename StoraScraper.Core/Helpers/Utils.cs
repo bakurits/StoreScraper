@@ -13,11 +13,9 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Interactions;
-using ScraperCore.Models;
 using StoreScraper.Attributes;
 using StoreScraper.Core;
+using ScraperCore.Models;
 using StoreScraper.Models;
 using Cookie = System.Net.Cookie;
 using HtmlDocument = HtmlAgilityPack.HtmlDocument;
@@ -389,24 +387,6 @@ namespace StoreScraper.Helpers
 #endif
 
             return new Price(parsed, c);
-        }
-
-        #endregion
-
-        #region BrowserSimulation
-
-        public static void ClickAtRandomPoint(this IWebDriver driver, IWebElement elem)
-        {
-            Actions actions = new Actions(driver);
-            actions.MoveToElement(elem, R.Next(0, elem.Size.Width), R.Next(0, elem.Size.Height));
-            actions.Click();
-            actions.Build().Perform();
-        }
-
-        public static void SimulateTyping(this IWebDriver driver, string keysToType)
-        {
-            Actions actions = new Actions(driver);
-            actions.SendKeys(keysToType).Build().Perform();
         }
 
         #endregion

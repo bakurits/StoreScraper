@@ -10,8 +10,6 @@ using EO.Internal;
 using EO.WebBrowser;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 using ScraperCore.Interfaces;
 using StoreScraper.Attributes;
 using StoreScraper.Helpers;
