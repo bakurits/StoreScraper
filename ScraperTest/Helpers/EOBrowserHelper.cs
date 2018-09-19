@@ -22,7 +22,6 @@ namespace ScraperTest.Helpers
     // ReSharper disable once InconsistentNaming
     public static class EOBrowserHelper
     {   
-        public static EOBrowserWindow MainForm;
 
 
         public static TResult BotTester<TResult, T>(T bot, Func<T, TResult> action, string proxyAddr = null) where T : FootSitesBotBase
@@ -35,6 +34,7 @@ namespace ScraperTest.Helpers
             {
                 flag = action(bot);
                 Application.Exit();
+                Environment.Exit(Environment.ExitCode);
             });
 
             FootSitesBotBase.Browser =  new EOBrowserDriver();
@@ -48,14 +48,7 @@ namespace ScraperTest.Helpers
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            EngineOptions.Default.ExtraCommandLineArgs = "--incognito --start-maximized";
-            EngineOptions.Default.SetDefaultBrowserOptions(new BrowserOptions()
-            {
-                LoadImages = false,
-            });
 
-            
-            FootSitesBotBase.Browser = new EOBrowserDriver();
             Task.Delay(5000).ContinueWith(delay =>
             {  
                 action(bot);
@@ -63,6 +56,8 @@ namespace ScraperTest.Helpers
                 Environment.Exit(Environment.ExitCode);
             });
             
+            FootSitesBotBase.Browser =  new EOBrowserDriver();
+            WebView.ShowDebugUI();
             Application.Run();
         }
 
