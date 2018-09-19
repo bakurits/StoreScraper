@@ -1,5 +1,7 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using CheckoutBot.Interfaces;
@@ -15,12 +17,21 @@ namespace CheckoutBot.Core
         /// <summary>
         /// Target Product which to buy immediately after released
         /// </summary>
+        [Browsable(false)]
         public ICheckoutSettings CheckoutInfo { get; set; }
+
+
+        public string ProductName => CheckoutInfo.ProductToBuy.ToString();
+        public string Quantity => CheckoutInfo.BuyOptions.Quantity.ToString();
+
+        public string TotalCost =>
+            (CheckoutInfo.ProductToBuy.Price * CheckoutInfo.BuyOptions.Quantity).ToString(CultureInfo.InvariantCulture);
 
         /// <summary>
         /// Monitoring token source. Monitoring task can be canceled from this tokenSource.
         /// Should be called when user removes task from monitoring list
         /// </summary>
+        [Browsable(false)]
         public CancellationTokenSource MonitoringTokenSource { get; set; }
 
         public void StartMonitoring()

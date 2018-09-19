@@ -30,8 +30,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
         //public WebView Driver { get; set; }
         //public WebView DriverForArbitraryProduct { get; set; }
         //public WebView Driver3 { get; set; }
-
-        [ThreadStatic] 
+ 
         public static EOBrowserDriver Browser;
 
         protected FootSitesBotBase(string websiteName, string webSiteBaseUrl, string releasePageEndpoint)
