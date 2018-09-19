@@ -18,7 +18,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
     public class ChampsSportsBot : FootSitesBotBase
     {
         private const string ApiUrl = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/20";
-        private const string CartUrl = "https://www.eastbay.com/shoppingcart";
+        private const string CartUrl = "https://www.champssports.com/shoppingcart#/shoppingcart";
         public int DelayInSecond { private get; set; } = 5;
 
         public ChampsSportsBot() : base("ChampsSports", "https://www.champssports.com/", ApiUrl)
@@ -39,7 +39,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
             FootsitesProduct arbitraryProduct = GetArbitraryItem(token);
             var cartTab = Browser.NewTab("Cart");
             AddArbitraryItemToCart(arbitraryProduct, token);
-            Task.Delay(DelayInSecond * 1000, token).Wait(token);
+            Task.Delay(10 * 1000, token).Wait(token);
             AddToCart(Browser.ActiveTab, settings, token);
             Task.Delay(5 * 1000).Wait(token);
 /*
@@ -99,9 +99,12 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
         private void AddToCart(WebView driver, AccountCheckoutSettings settings, CancellationToken token)
         {
             //Console.WriteLine(settings);
+            var a = settings.ProductToBuy.Url;
             driver.LoadUrlAndWait(settings.ProductToBuy.Url);
             
             driver.EvalScript(AjaxGetRequest($@"'https://www.champssports.com/pdp/gateway?requestKey=' + requestKey + '&action=add&qty={settings.BuyOptions.Quantity}&sku={settings.ProductToBuy.Sku}&size={settings.BuyOptions.Size}&fulfillmentType=SHIP_TO_HOME&storeNumber=00000&storeCostOfGoods=0.00&_=1537363416933'"));
+            //https://www.eastbay.com/pdp/gateway?requestKey=DF4D9B7FFB6EiB7D&action=add&qty=1&sku=31498357&size=M&fulfillmentType=SHIP_TO_HOME&storeNumber=0&_=1537373905543
+            
             Task.Delay(2000, token).Wait(token);
         }
 
