@@ -63,7 +63,6 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         
         public override void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token)
         {
-            Browser = new EOBrowserDriver();
             Browser.NewTab("MainTab");
 
             if (!Login(settings.UserLogin, settings.UserPassword, token))
@@ -128,7 +127,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             }, token);
             Browser.ActiveTab.LoadUrlAndWait(CartUrl);
             Browser.ActiveTab.EvalScript("document.getElementById(\"cart_checkout_button\").click();");
-            Task.Delay(10000, token).Wait(token);
+            Task.Delay(2000, token).Wait(token);
         }
 
         /// <summary>
