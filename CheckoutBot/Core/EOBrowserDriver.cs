@@ -13,7 +13,7 @@ namespace CheckoutBot.Core
 {
     public class EOBrowserDriver : IDisposable
     {
-        public EOBrowserWindow MainWindow { get; } = new EOBrowserWindow();
+        private EOBrowserWindow MainWindow { get; } = new EOBrowserWindow();
 
         public WebView ActiveTab { get; private set; }
 
@@ -59,7 +59,7 @@ namespace CheckoutBot.Core
         /// <summary>
         /// Sets tab specified with name as active
         /// </summary>
-        /// <param name="tabName">unique name to indentify tab</param>
+        /// <param name="tabName">unique name to identify tab</param>
         /// <returns></returns>
         public WebView SwitchToTab(string tabName)
         {
@@ -77,7 +77,7 @@ namespace CheckoutBot.Core
         /// <summary>
         /// Sets tab specified with index as active
         /// </summary>
-        /// <param name="tabIndex">index to indentify tab</param>
+        /// <param name="tabIndex">index to identify tab</param>
         /// <returns></returns>
         public WebView SwitchToTab(int tabIndex)
         {

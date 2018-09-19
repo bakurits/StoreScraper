@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Threading;
+using CheckoutBot.CheckoutBots.FootSites.EastBay;
 using CheckoutBot.CheckoutBots.FootSites.FootLocker;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ScraperTest.Helpers;
 
 namespace ScraperTest.CheckoutBots.FootSites.FootLocker
 {
@@ -10,10 +12,21 @@ namespace ScraperTest.CheckoutBots.FootSites.FootLocker
     {
         private readonly FootLockerBot _bot = new FootLockerBot();
 
-        [TestMethod()]
-        public void LoginTest()
+        [TestMethod]
+        public void LoginTestSuc()
         {
-            _bot.Login("bakuricucxashvili@gmail.com", "Yrf7B2RHW", CancellationToken.None);
+            bool v = EOBrowserHelper.BotTester(new FootLockerBot(),
+                bot => bot.Login("bakuricucxashvili@gmail.com", "P4rxKi47VHfSwDa", CancellationToken.None));
+            
+            Assert.IsTrue(v);
+        }
+        
+        [TestMethod]
+        public void LoginTestErr()
+        {
+            bool v = EOBrowserHelper.BotTester(new FootLockerBot(),
+                bot => bot.Login("bakuricucxashvili@gmail.com", "tqWg3WXkg1234", CancellationToken.None));
+            Assert.IsFalse(v);
         }
 
         [TestMethod()]
