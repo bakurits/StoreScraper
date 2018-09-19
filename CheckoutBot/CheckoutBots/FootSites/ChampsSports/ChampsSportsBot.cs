@@ -37,13 +37,19 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
             webView.LoadUrlAndWait(WebsiteBaseUrl);
             webView.EvalScript(GetScriptByXpath("//div[@id='header_login']") + ".click();");
             Task.Delay(10 * 1000, token).Wait(token);
-            username = "ggg";
-            webView.EvalScript($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");
-            webView.EvalScript($"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{password}\"");
+            webView.EvalScript($"{getElementById("login_email")}.value='{username}'");
+            webView.EvalScript($"{getElementById("login_password")}.value='{password}'");
+            Task.Delay(10 * 1000).Wait(token);
+            webView.EvalScript($"var a = document.getElementById('loginIFrame').contentDocument.getElementsByClassName('button'); a[0].click()");
             Debug.WriteLine(webView.LastJSException.ToString());
-            //Driver.QueueScriptCall($"{GetScriptByXpath("//div[@id='header_login']/a//input[@id='login_submit']")}.click()");
-            Task.Delay(100 * 1000, token).Wait(token);
+            Task.Delay(10 * 1000, token).Wait(token);
             return false;
+        }
+
+        private string getElementById(string id)
+        {
+            return
+                $"document.getElementById('loginIFrame').contentDocument.getElementById('{id}')";
         }
     }
 }
