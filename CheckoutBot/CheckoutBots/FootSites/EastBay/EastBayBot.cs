@@ -76,6 +76,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             var cartTab = Browser.NewTab("Cart");
             WaitBeforeRelease(settings.ProductToBuy.Model, token);
             AddToCart(Browser.ActiveTab, settings, token);
+            Task.Delay(DelayInSecond * 1000, token).Wait(token);
             RemoveArbitraryItem(cartTab, arbitraryProduct, token);
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             Browser.SwitchToTab(0).Reload().WaitOne();
@@ -128,7 +129,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             }, token);
             Browser.ActiveTab.LoadUrlAndWait(CartUrl);
             Browser.ActiveTab.EvalScript("document.getElementById(\"cart_checkout_button\").click();");
-            Task.Delay(2000, token).Wait(token);
+            Task.Delay(10000, token).Wait(token);
         }
 
         /// <summary>

@@ -73,15 +73,15 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
                     UserCcv2 = "123",
                     ProductToBuy = new FootsitesProduct(new FootSimpleBase.EastBayScraper()
                         , "yle",
-                        "https://www.eastbay.com/product/model:283446/sku:A7097514",
-                        0, "", "A7097514")
+                        "https://www.eastbay.com/product/model:288213/sku:CN2980",
+                        0, "", "CN2980")
                     {
-                        Sku = "A7097514",
-                        Model = "283446",
+                        Sku = "CN2980",
+                        Model = "288213",
                     },
                     BuyOptions = new ProductBuyOptions()
                     {
-                        Size = "S"
+                        Size = "05.0"
                     }
                 };
             EOBrowserHelper.BotTester(new EastBayBot(){DelayInSecond = 7}, bot =>

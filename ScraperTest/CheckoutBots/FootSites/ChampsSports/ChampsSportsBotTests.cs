@@ -7,7 +7,6 @@ using CheckoutBot.CheckoutBots.FootSites.ChampsSports;
 using CheckoutBot.Core;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
-using EO.Wpf;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
 using StoreScraper.Bots.Sticky_bit.ChampsSports_EastBay;
