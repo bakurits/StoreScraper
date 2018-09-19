@@ -15,7 +15,6 @@ using EO.WebBrowser;
 using EO.WebBrowser.DOM;
 using EO.WebEngine;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using EO.WinForm;
 using OpenQA.Selenium;
 namespace ScraperTest.Helpers
 {
