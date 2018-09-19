@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,12 +35,12 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
         {
             var webView = Browser.ActiveTab;
             webView.LoadUrlAndWait(WebsiteBaseUrl);
-            Task.Delay(DelayInSecond * 1000, token).Wait(token);
             webView.EvalScript(GetScriptByXpath("//div[@id='header_login']") + ".click();");
             Task.Delay(10 * 1000, token).Wait(token);
             username = "ggg";
             webView.EvalScript($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");
             webView.EvalScript($"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{password}\"");
+            Debug.WriteLine(webView.LastJSException.ToString());
             //Driver.QueueScriptCall($"{GetScriptByXpath("//div[@id='header_login']/a//input[@id='login_submit']")}.click()");
             Task.Delay(100 * 1000, token).Wait(token);
             return false;

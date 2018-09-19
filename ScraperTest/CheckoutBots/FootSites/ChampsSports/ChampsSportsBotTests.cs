@@ -33,8 +33,6 @@ namespace ScraperTest.CheckoutBots.FootSites.ChampsSports
         {
             EOBrowserHelper.BotTester(new ChampsSportsBot() { DelayInSecond = 7 }, bot =>
             {
-                FootSitesBotBase.Browser =  new EOBrowserDriver();
-                WebView.ShowDebugUI();
                 FootSitesBotBase.Browser.NewTab("loginTab");
                 return bot.Login("gbagh16@freeuni.edu.ge", "giorgi121", CancellationToken.None);
             });

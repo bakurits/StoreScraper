@@ -62,6 +62,9 @@ namespace ScraperTest.Helpers
                 flag = action(bot);
                 Application.Exit();
             });
+
+            FootSitesBotBase.Browser =  new EOBrowserDriver();
+            WebView.ShowDebugUI();
             Application.Run();
             return flag;
         }
