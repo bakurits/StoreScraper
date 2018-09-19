@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CheckoutBot.Controls;
+using EO.Base;
 using EO.WebBrowser;
 using EO.WebEngine;
 using EO.WinForm;
@@ -14,14 +16,27 @@ namespace CheckoutBot.Core
     public class EOBrowserDriver : IDisposable
     {
         private EOBrowserWindow MainWindow { get; } = new EOBrowserWindow();
+        private Engine DefaultEngine { get; }
 
         public WebView ActiveTab { get; private set; }
 
 
 
-        public EOBrowserDriver()
+        public EOBrowserDriver(string proxy = null)
         {
             MainWindow.Show();
+            DefaultEngine = Engine.Create("CheckoutBot");
+            DefaultEngine.Options.ExtraCommandLineArgs = "--incognito --start-maximized";
+            if (proxy != null)
+            {
+                var proxyParsed = new WebProxy();
+                DefaultEngine.Options.Proxy = new ProxyInfo(ProxyType.HTTP, proxyParsed.Address.Host, proxyParsed.Address.Port);
+            }
+
+            DefaultEngine.Options.SetDefaultBrowserOptions(new BrowserOptions()
+            {
+                LoadImages = false,
+            });
         }
 
         /// <summary>
@@ -37,11 +52,13 @@ namespace CheckoutBot.Core
                 var tab = MainWindow.tabControl1.TabPages[tabName]; 
                 var view = new WebView()
                 {
-                    Engine = Engine.Default,
+                    Engine = DefaultEngine,
                     CustomUserAgent =  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
                     AcceptLanguage = "en-US,en;q=0.9",
-                    AllowDropLoad = true
+                    AllowDropLoad = true,
                 };
+
+                view.CertificateError += (sender, args) => args.Continue();
                 var control = new WebControl()
                 {
                     WebView = view,
