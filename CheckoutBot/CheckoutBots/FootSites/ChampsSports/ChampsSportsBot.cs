@@ -32,15 +32,16 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
 
         public override bool Login(string username, string password, CancellationToken token)
         {
-            Browser.ActiveTab.Url = WebsiteBaseUrl;
-            Task.Delay(10 * 1000, token).Wait(token);
-            Browser.ActiveTab.EvalScript(GetScriptByXpath("//div[@id='header_login']") + ".click();");
+            var webView = Browser.ActiveTab;
+            webView.LoadUrlAndWait(WebsiteBaseUrl);
+            Task.Delay(DelayInSecond * 1000, token).Wait(token);
+            webView.EvalScript(GetScriptByXpath("//div[@id='header_login']") + ".click();");
             Task.Delay(10 * 1000, token).Wait(token);
             username = "ggg";
-            Browser.ActiveTab.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");
-            Browser.ActiveTab.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{password}\"");
+            webView.EvalScript($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");
+            webView.EvalScript($"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{password}\"");
             //Driver.QueueScriptCall($"{GetScriptByXpath("//div[@id='header_login']/a//input[@id='login_submit']")}.click()");
-            Task.Delay(DelayInSecond * 1000, token).Wait(token);
+            Task.Delay(100 * 1000, token).Wait(token);
             return false;
         }
     }

@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using CheckoutBot.CheckoutBots.FootSites;
 using CheckoutBot.CheckoutBots.FootSites.ChampsSports;
+using CheckoutBot.Core;
 using CheckoutBot.Models;
+using EO.Wpf;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
+using Helper = ScraperTest.Helpers.Helper;
+using WebView = EO.WebBrowser.WebView;
 
 namespace ScraperTest.CheckoutBots.FootSites.ChampsSports
 {
@@ -26,7 +31,13 @@ namespace ScraperTest.CheckoutBots.FootSites.ChampsSports
         [TestMethod()]
         public void LoginTest()
         {
-            EOBrowserHelper.BotTester(new ChampsSportsBot() { DelayInSecond = 7 }, bot => bot.Login("gbagh16@freeuni.edu.ge", "giorgi121", CancellationToken.None));
+            EOBrowserHelper.BotTester(new ChampsSportsBot() { DelayInSecond = 7 }, bot =>
+            {
+                FootSitesBotBase.Browser =  new EOBrowserDriver();
+                WebView.ShowDebugUI();
+                FootSitesBotBase.Browser.NewTab("loginTab");
+                return bot.Login("gbagh16@freeuni.edu.ge", "giorgi121", CancellationToken.None);
+            });
         }
 
         [TestMethod()]

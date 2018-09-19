@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CheckoutBot.CheckoutBots.FootSites;
 using CheckoutBot.Controls;
+using CheckoutBot.Core;
 using EO.Base;
 using EO.Internal;
 using EO.WebBrowser;
@@ -41,7 +42,6 @@ namespace ScraperTest.Helpers
             {
                 LoadImages = false,
             });
-            EOBrowserWindow form = new EOBrowserWindow();
             //bot.Driver = form.Driver;
             //form.Driver.CertificateError += (sender, args) => args.Continue();
             //form.Driver.CustomUserAgent =
@@ -57,17 +57,12 @@ namespace ScraperTest.Helpers
             //    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36";
 
             TResult flag = default(TResult);
-            WebView.ShowDebugUI();
             Task.Delay(5000).ContinueWith(delay =>
             {
                 flag = action(bot);
                 Application.Exit();
             });
-            
-            form.Visible = true;
-            form.Focus();
-            MainForm = form;
-            Application.Run(form);
+            Application.Run();
             return flag;
         }
         

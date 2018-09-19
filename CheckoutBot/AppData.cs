@@ -82,7 +82,7 @@ namespace CheckoutBot
         [JsonProperty]
         private ProxyGroup[] ProxyGroups { get; set; }
 
-        public CancellationTokenSource ApplicationGlobalTokenSource { get; set; } = new CancellationTokenSource();
+        public static CancellationTokenSource ApplicationGlobalTokenSource { get; set; } = new CancellationTokenSource();
 
         public static HttpClient CommonFirefoxClient =
             ClientFactory.CreateHttpClient(autoCookies: false).AddHeaders(ClientFactory.FireFoxHeaders);

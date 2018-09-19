@@ -342,7 +342,7 @@ namespace CheckoutBot
             {
                 CheckoutInfo = settings,
                 MonitoringTokenSource =
-                    CancellationTokenSource.CreateLinkedTokenSource(AppData.Session.ApplicationGlobalTokenSource.Token),
+                    CancellationTokenSource.CreateLinkedTokenSource(AppData.ApplicationGlobalTokenSource.Token),
             };
 
             MessageBox.Show("Checkout Task Added","Success", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
