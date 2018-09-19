@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -23,6 +24,56 @@ namespace CheckoutBot
     {   
         public static AppData Session { get; set; }
 
+        public static string DataFilePath { get; set; }
+
+        public static string DataDir { get; set; }
+
+        public const string AppName = "CheckoutBot";
+
+        public static void Init()
+        {  
+            DataDir = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "CheckoutBot");
+
+            DataFilePath = Path.Combine(AppName, "config.json");
+        }
+
+
+        public static AppData Load()
+        {
+            Init();
+
+            if (!File.Exists(DataFilePath))
+            {
+                return new AppData();
+            }
+
+
+            var jsonData = File.ReadAllText(DataFilePath);
+
+            try
+            {
+                var data = JsonConvert.DeserializeObject<AppData>(jsonData);
+                return data;
+            }
+            catch
+            {
+                //ignored
+            } 
+           
+
+            try
+            {
+                File.Delete(DataFilePath);
+            }
+            catch
+            {
+                //ingored
+            }
+            return new AppData();
+        }
+
         public static FootSitesBotBase[] AvailableBots = new FootSitesBotBase[]
         {
             //new FootActionBot(),
@@ -31,8 +82,6 @@ namespace CheckoutBot
             new EastBayBot(), 
         };
 
-
-        
 
         [JsonIgnore]
         public Dictionary<FootSitesBotBase, List<WebProxy>> ParsedProxies { get; set; }
@@ -44,6 +93,14 @@ namespace CheckoutBot
 
         public static HttpClient CommonFirefoxClient =
             ClientFactory.CreateHttpClient(autoCookies: false).AddHeaders(ClientFactory.FireFoxHeaders);
+
+
+
+        public void Save()
+        {
+            var jsonData = JsonConvert.SerializeObject(this);
+            File.WriteAllText(DataFilePath,jsonData);
+        }
 
 
         [JsonObject]

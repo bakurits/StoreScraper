@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
+using CheckoutBot.Controls;
+using CheckoutBot.Core;
 using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
@@ -20,14 +22,17 @@ using StoreScraper.Models;
 namespace CheckoutBot.CheckoutBots.FootSites
 {
     [DisableInGUI]
-    public abstract partial class FootSitesBotBase : IWebsiteScraper, IGuestCheckouter, IAccountCheckouter, IReleasePageScraper
+    public abstract  class FootSitesBotBase : IWebsiteScraper, IGuestCheckouter, IAccountCheckouter, IReleasePageScraper
     {
         public string WebsiteName { get; set; }
         public string WebsiteBaseUrl { get; set; }
         private string ReleasePageApiEndpoint { get; set; }
-        public WebView Driver { get; set; }
-        public WebView DriverForArbitraryProduct { get; set; }
-        public WebView Driver3 { get; set; }
+        //public WebView Driver { get; set; }
+        //public WebView DriverForArbitraryProduct { get; set; }
+        //public WebView Driver3 { get; set; }
+
+        [ThreadStatic] 
+        public static EOBrowserDriver Browser;
 
         protected FootSitesBotBase(string websiteName, string webSiteBaseUrl, string releasePageEndpoint)
         {
@@ -47,7 +52,9 @@ namespace CheckoutBot.CheckoutBots.FootSites
             
         }
 
-      
+        public abstract bool Login(string username, string password, CancellationToken token);
+
+
         public List<FootsitesProduct> ScrapeReleasePage(CancellationToken token)
         {
             var client = ClientFactory.CreateHttpClient(autoCookies: true).AddHeaders(("Accept","application/json")).AddHeaders(ClientFactory.FirefoxUserAgentHeader)

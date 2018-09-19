@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using CheckoutBot.Controls;
 using CheckoutBot.Core;
 using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
@@ -38,18 +39,19 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 
         public override bool Login(string username, string password, CancellationToken token)
         {
-            Driver.LoadUrlAndWait(WebsiteBaseUrl);
-            Driver.EvalScript(GetScriptByXpath("//div[@id='header_account_button']/a/span") + ".click();");
+            var webView = Browser.ActiveTab;
+            webView.LoadUrlAndWait(WebsiteBaseUrl);
+            webView.EvalScript(GetScriptByXpath("//div[@id='header_account_button']/a/span") + ".click();");
 
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             
 
-            Driver.EvalScript($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");
-            Driver.EvalScript($"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{password}\"");
-            Driver.EvalScript($"{GetScriptByXpath("//input[@id='login_submit']")}.click()");
+            webView.EvalScript($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");
+            webView.EvalScript($"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{password}\"");
+            webView.EvalScript($"{GetScriptByXpath("//input[@id='login_submit']")}.click()");
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             
-            string isWrong = (string) Driver.EvalScript(@"document.getElementById(""login_password_error"").innerHTML");
+            string isWrong = (string) webView.EvalScript(@"document.getElementById(""login_password_error"").innerHTML");
             //Console.WriteLine(isWrong);
             return isWrong.Length == 0;
         }
@@ -61,18 +63,22 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         
         public override void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token)
         {
-            while (!Login(settings.UserLogin, settings.UserPassword, token))
+            Browser = new EOBrowserDriver();
+            Browser.NewTab("MainTab");
+
+            if (!Login(settings.UserLogin, settings.UserPassword, token))
             {
                 Logger.Instance.WriteErrorLog("Wrong password");
             }
 
             FootsitesProduct arbitraryProduct = GetArbitraryItem(token);
+            var cartTab = Browser.NewTab("Cart");
             AddArbitraryItemToCart(arbitraryProduct, token);
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
-            AddToCart(Driver, settings, token);
-            RemoveArbitraryItem(Driver3, arbitraryProduct, token);
+            AddToCart(Browser.ActiveTab, settings, token);
+            RemoveArbitraryItem(cartTab, arbitraryProduct, token);
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
-            DriverForArbitraryProduct.Reload().WaitOne(10);
+            Browser.SwitchToTab(0).Reload().WaitOne();
             Task.Delay(10 * 1000, token).Wait(token);
         }
         
@@ -111,7 +117,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         /// <param name="token"></param>
         private void AddArbitraryItemToCart(FootsitesProduct product, CancellationToken token)
         {
-            AddToCart(DriverForArbitraryProduct, new AccountCheckoutSettings()
+            AddToCart(Browser.ActiveTab, new AccountCheckoutSettings()
             {
                 ProductToBuy = product,
                 BuyOptions = new ProductBuyOptions()
@@ -120,8 +126,8 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
                     Size = product.Sizes[0]
                 }
             }, token);
-            DriverForArbitraryProduct.LoadUrlAndWait(CartUrl);
-            DriverForArbitraryProduct.EvalScript("document.getElementById(\"cart_checkout_button\").click();");
+            Browser.ActiveTab.LoadUrlAndWait(CartUrl);
+            Browser.ActiveTab.EvalScript("document.getElementById(\"cart_checkout_button\").click();");
             Task.Delay(10000, token).Wait(token);
         }
 

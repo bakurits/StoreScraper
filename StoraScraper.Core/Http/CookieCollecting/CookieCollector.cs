@@ -73,7 +73,6 @@ namespace StoreScraper.Http
             while (true)
             {
                 MonitorEpoch();
-                _cancellationTokenSource.Token.ThrowIfCancellationRequested();
             }
         }
 

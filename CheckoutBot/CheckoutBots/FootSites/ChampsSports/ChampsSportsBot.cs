@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using CheckoutBot.Core;
 using CheckoutBot.Models.Checkout;
 using StoreScraper.Http.Factory;
 
@@ -19,8 +20,9 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
 
         public override void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token)
         {
-
-            throw new NotImplementedException();
+            Browser = new EOBrowserDriver();
+            Browser.NewTab("MainTab");
+            Login(settings.UserLogin, settings.UserPassword, token);
         }
 
         public override void GuestCheckOut(GuestCheckoutSettings settings, CancellationToken token)
@@ -30,13 +32,13 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
 
         public override bool Login(string username, string password, CancellationToken token)
         {
-            Driver.Url = WebsiteBaseUrl;
+            Browser.ActiveTab.Url = WebsiteBaseUrl;
             Task.Delay(10 * 1000, token).Wait(token);
-            Driver.EvalScript(GetScriptByXpath("//div[@id='header_login']") + ".click();");
+            Browser.ActiveTab.EvalScript(GetScriptByXpath("//div[@id='header_login']") + ".click();");
             Task.Delay(10 * 1000, token).Wait(token);
             username = "ggg";
-            Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");
-            Driver.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{password}\"");
+            Browser.ActiveTab.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");
+            Browser.ActiveTab.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{password}\"");
             //Driver.QueueScriptCall($"{GetScriptByXpath("//div[@id='header_login']/a//input[@id='login_submit']")}.click()");
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             return false;
