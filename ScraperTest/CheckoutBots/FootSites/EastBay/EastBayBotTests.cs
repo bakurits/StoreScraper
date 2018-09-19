@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CheckoutBot.CheckoutBots.FootSites;
 using CheckoutBot.CheckoutBots.FootSites.EastBay;
+using CheckoutBot.Core;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
 using CheckoutBot.Models.Payment;
@@ -17,6 +18,7 @@ using ScraperTest.Helpers;
 using ScraperTest.MinorTests;
 using StoreScraper.Bots.Sticky_bit.ChampsSports_EastBay;
 using StoreScraper.Models;
+using Helper = ScraperTest.Helpers.Helper;
 
 namespace ScraperTest.CheckoutBots.FootSites.EastBay
 {
@@ -82,7 +84,11 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
                         Size = "S"
                     }
                 };
-            EOBrowserHelper.BotTester(new EastBayBot(){DelayInSecond = 7}, bot => bot.AccountCheckout(settings, CancellationToken.None));
+            EOBrowserHelper.BotTester(new EastBayBot(){DelayInSecond = 7}, bot =>
+            {
+                FootSitesBotBase.Browser = new EOBrowserDriver();
+                bot.AccountCheckout(settings, CancellationToken.None);
+            });
         }
 
         [TestMethod]
