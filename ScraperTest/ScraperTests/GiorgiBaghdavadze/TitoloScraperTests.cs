@@ -10,7 +10,7 @@ namespace ScraperTest.ScraperTests.GiorgiBaghdavadze
     [TestClass()]
     public class TitoloScraperTests
     {
-        TitoloScraper scraper = new TitoloScraper();
+        private TitoloScraper scraper = new TitoloScraper();
 
         [TestMethod()]
         public void FindItemsTest()
