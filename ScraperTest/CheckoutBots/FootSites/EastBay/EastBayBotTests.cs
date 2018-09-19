@@ -85,8 +85,7 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
                     }
                 };
             EOBrowserHelper.BotTester(new EastBayBot(){DelayInSecond = 7}, bot =>
-            {
-                FootSitesBotBase.Browser = new EOBrowserDriver();
+            { 
                 bot.AccountCheckout(settings, CancellationToken.None);
             });
         }
