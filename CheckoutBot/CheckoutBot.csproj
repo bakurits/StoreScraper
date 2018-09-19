@@ -172,7 +172,7 @@
   <ItemGroup>
     <Compile Include="Interfaces\IReleasePageScraper.cs" />
     <Compile Include="Models\Checkout\AccountCheckoutSettings.cs" />
-    <Compile Include="Models\Checkout\ICheckoutSettings.cs" />
+    <Compile Include="Interfaces\ICheckoutSettings.cs" />
     <Compile Include="Models\Payment\Card.cs" />
     <Compile Include="Models\Checkout\GuestCheckoutSettings.cs" />
     <Compile Include="Models\Payment\IPaymentMethod.cs" />

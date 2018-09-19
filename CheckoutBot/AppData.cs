@@ -14,8 +14,8 @@ namespace CheckoutBot
 {
     [JsonObject]
     internal class AppData
-    {   
-        public static AppData Session { get; set; }
+    {
+        public static AppData Session { get; set; } = AppData.Load();
 
         public static string DataFilePath { get; set; }
 
@@ -31,6 +31,7 @@ namespace CheckoutBot
 
             DataFilePath = Path.Combine(AppName, "config.json");
         }
+
 
 
         public static AppData Load()
@@ -67,7 +68,7 @@ namespace CheckoutBot
             return new AppData();
         }
 
-        public static FootSitesBotBase[] AvailableBots = new FootSitesBotBase[]
+        public static List<FootSitesBotBase> AvailableBots = new List<FootSitesBotBase>()
         {
             //new FootActionBot(),
             //new FootLockerBot(),
@@ -80,7 +81,15 @@ namespace CheckoutBot
         public Dictionary<FootSitesBotBase, List<WebProxy>> ParsedProxies { get; set; }
 
         [JsonProperty]
-        private ProxyGroup[] ProxyGroups { get; set; }
+        public ProxyGroup[] ProxyGroups
+        {
+            set
+            {
+                ParsedProxies =
+                    value.ToDictionary(group => AvailableBots.Find(bot => bot.WebsiteName == group.SiteName),
+                        group => group.Proxies.Select(proxy => new WebProxy(proxy)).ToList());
+            }
+        }
 
         public static CancellationTokenSource ApplicationGlobalTokenSource { get; set; } = new CancellationTokenSource();
 
@@ -97,7 +106,7 @@ namespace CheckoutBot
 
 
         [JsonObject]
-        private class ProxyGroup
+        internal class ProxyGroup
         {
             public string SiteName { get; set; }
             public string[] Proxies { get; set; }

@@ -1,4 +1,5 @@
-﻿using StoreScraper.Models;
+﻿using CheckoutBot.Interfaces;
+using StoreScraper.Models;
 
 namespace CheckoutBot.Models.Checkout
 {
