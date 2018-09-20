@@ -1346,34 +1346,20 @@ VerticalScrollBarVisibility="Auto"
                             <StackPanel>
 
 
-                                <TextBox HorizontalAlignment="Stretch" Name="tbx_Log" Margin="6 20 " BorderBrush="#ebecf0" Padding="3" TextWrapping="Wrap"
+                                <RichTextBox HorizontalAlignment="Stretch" Name="tbx_Log" Margin="6 20 " BorderBrush="#ebecf0" Padding="3"
 AcceptsReturn="True"
 HorizontalScrollBarVisibility="Disabled"
 VerticalScrollBarVisibility="Auto"
                                          Height="436"
                                          xml:space="preserve"
                                          FontSize="20">
-                                    <TextBox.Resources>
+                                    <RichTextBox.Resources>
                                         <Style TargetType="{x:Type Border}">
                                             <Setter Property="CornerRadius" Value="5"/>
                                         </Style>
-                                    </TextBox.Resources>
-    17:57:26 -  starting task
-    17:57:26 -  task using proxy
-    17:57:26 -  logging in eastbay account
-    17:57:36 -  login succesful
-    17:57:36 -  waiting for product to be added...
-    18:00:01 -  product added (JORDAN RETRO 13 - BOYS' GRADE SCHOOL)
-    18:00:01 -  waiting for sku/size combination (84129035/05.0) to be in stock
-    18:00:01 -  sku/size combination found in stock
-    18:00:01 -  starting checkout process
-    18:00:01 -  adding product to cart
-    18:00:02 -  product successfully added to cart 
-    18:00:03 -  proceeding to checkout
-    18:00:03 -  entering CVV/CVC code
-    18:00:03 -  buying product
-    18:00:03 -  checkout succesful
-                                </TextBox>
+                                    </RichTextBox.Resources>
+
+                                </RichTextBox>
 
                             
 

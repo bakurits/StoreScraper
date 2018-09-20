@@ -17,6 +17,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
 using ScraperTest.MinorTests;
 using StoreScraper.Bots.Sticky_bit.ChampsSports_EastBay;
+using StoreScraper.Core;
 using StoreScraper.Models;
 using Helper = ScraperTest.Helpers.Helper;
 
@@ -149,6 +150,12 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
                 new WebProxy("89.23.194.174:8080")
             };
             Debug.WriteLine(bot.ChooseBestProxies(lst, 4));
+        }
+
+        [AssemblyInitialize]
+        public static void InitSettings(TestContext context)
+        {
+            Logger.Instance.OnLogged += (message, color) => Debug.WriteLine(message);
         }
     }
 }

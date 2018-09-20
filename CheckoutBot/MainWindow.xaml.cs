@@ -25,6 +25,7 @@ using CheckoutBot.Models.Checkout;
 using Newtonsoft.Json;
 using EO;
 using EO.WebBrowser;
+using StoreScraper.Core;
 using StoreScraper.Helpers;
 
 namespace CheckoutBot
@@ -48,8 +49,10 @@ namespace CheckoutBot
                 cbx_Websites.Items.Add(bot);
             }
 
+
             ReleasedProductsMonitor.Default = new ReleasedProductsMonitor();
             tasksList.ItemsSource = new List<CheckoutTask>();
+            Logger.Instance.OnLogged += (message, color) => tbx_Log.AppendText(message, color);
 
             foreach (var item in Enum.GetValues(typeof(Countries)))
             {
@@ -84,7 +87,6 @@ namespace CheckoutBot
         {
 
             await PutTaskDelay();
-
             loadingBox.Visibility = Visibility.Hidden;
             activeArea.Visibility = Visibility.Visible;
 
