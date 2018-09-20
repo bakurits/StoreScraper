@@ -68,8 +68,8 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
             AccountCheckoutSettings settings =
                 new AccountCheckoutSettings()
                 {
-                    UserPassword = "VgnYiiY3t6",
-                    UserLogin = "bakuricucxashvili@gmail.com",
+                    UserPassword = "giorgi121",
+                    UserLogin = "gbagh16@freeuni.edu.ge",
                     UserCcv2 = "123",
                     ProductToBuy = new FootsitesProduct(new FootSimpleBase.EastBayScraper()
                         , "yle",

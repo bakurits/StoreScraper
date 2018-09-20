@@ -18,7 +18,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
     public class ChampsSportsBot : FootSitesBotBase
     {
         private const string ApiUrl = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/20";
-        private const string CartUrl = "https://www.champssports.com/shoppingcart#/shoppingcart";
+        private const string CartUrl = "https://www.champssports.com/shoppingcart";
         public int DelayInSecond { private get; set; } = 5;
 
         public ChampsSportsBot() : base("ChampsSports", "https://www.champssports.com/", ApiUrl)
@@ -42,14 +42,44 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
             Task.Delay(10 * 1000, token).Wait(token);
             AddToCart(Browser.ActiveTab, settings, token);
             Task.Delay(5 * 1000).Wait(token);
-/*
+
             RemoveArbitraryItem(cartTab, arbitraryProduct, token);
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             Browser.SwitchToTab(0).Reload().WaitOne();
             Task.Delay(10 * 1000, token).Wait(token);
-*/
-
         }
+        
+        
+        /// <summary>
+        /// This method removes item from cart
+        /// </summary>
+        /// <param name="driver"> driver from which scripts are called </param>
+        /// <param name="product"> product to remove </param>
+        /// <param name="token"></param>
+        private void RemoveArbitraryItem(WebView driver, FootsitesProduct product, CancellationToken token)
+        {
+            driver.LoadUrlAndWait(CartUrl);
+            Task.Delay(4000, token).Wait(token);
+            Console.WriteLine(GetScriptByXpath("//div[@id = 'cart_items']/ul/li[@data-sku = '" + product.Sku + "']/div/span/div/a[@data-btntype = 'remove']/span[2]") + ".click()");
+            driver.EvalScript(GetScriptByXpath("//*[@id='page_cart']/ul/li[@data-sku='"+ product.Sku + "']/a/span") + ".click()");
+            /*driver.EvalScript($@"
+                    var xhr = new XMLHttpRequest();
+                    var date = Date.now();
+                    var requestKey = window.frames.accountGateway._requestKey;
+                    var itemId = {lineItemIdScript}
+                    xhr.open('GET', 'https://www.eastbay.com/pdp/gateway?requestKey=' + requestKey + '&action=delete&lineItemId='+ itemId + '&_=' + date);
+                    xhr.onload = function() {{
+                        if (xhr.status === 200) {{
+                            console.log(xhr.responseText);
+                        }}
+                        else {{
+                            alert('Request failed.  Returned status of ' + xhr.status);
+                        }}
+                    }};
+                    xhr.send();
+            ");*/
+        }
+
         
         /// <summary>
         /// This method adds Arbitrary item to cart
