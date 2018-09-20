@@ -24,7 +24,6 @@ namespace CheckoutBot.Core
 
         public EOBrowserDriver(string proxy = null)
         {
-            MainWindow.Show();
             DefaultEngine = Engine.Create("CheckoutBot");
             DefaultEngine.Options.ExtraCommandLineArgs = "--incognito --start-maximized";
             if (proxy != null)
@@ -38,6 +37,9 @@ namespace CheckoutBot.Core
                 LoadImages = false,
             });
         }
+
+
+        public void ShowDialog() => MainWindow.ShowDialog();
 
         /// <summary>
         /// Creates new tab and automatically sets it as active tab

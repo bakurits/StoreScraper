@@ -84,27 +84,28 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
                         Size = "05.0"
                     }
                 };
-            EOBrowserHelper.BotTester(new EastBayBot(){DelayInSecond = 7}, bot =>
-            { 
-                bot.AccountCheckout(settings, CancellationToken.None);
-            });
+           EastBayBot bot = new EastBayBot(){DelayInSecond = 5};
+           bot.Start();
+           bot.AccountCheckout(settings, CancellationToken.None);
         }
 
         [TestMethod]
         public void LoginTestSuc()
         {
-            bool v = EOBrowserHelper.BotTester(new EastBayBot() {DelayInSecond = 10},
-                bot => bot.Login("bakuricucxashvili@gmail.com", "VgnYiiY3t6", CancellationToken.None));
+            EastBayBot bot = new EastBayBot(){DelayInSecond = 5};
+            bot.Start();
+            var logged = bot.Login("bakuricucxashvili@gmail.com", "VgnYiiY3t6", CancellationToken.None);
             
-            Assert.IsTrue(v);
+            Assert.IsTrue(logged);
         }
         
         [TestMethod]
         public void LoginTestErr()
         {
-            bool v = EOBrowserHelper.BotTester(new EastBayBot() {DelayInSecond = 10},
-                bot => bot.Login("bakuricucxashvili@gmail.com", "tqWg3WXkg1234", CancellationToken.None));
-            Assert.IsFalse(v);
+            EastBayBot bot = new EastBayBot(){DelayInSecond = 5};
+            bot.Start();
+            var logged = bot.Login("bakuricucxashvili@gmail.com", "tqWg3WXkg1234", CancellationToken.None);
+            Assert.IsFalse(logged);
         }
 
         [TestMethod]

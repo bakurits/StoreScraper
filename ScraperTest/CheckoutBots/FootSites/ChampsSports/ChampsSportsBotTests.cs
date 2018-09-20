@@ -46,22 +46,20 @@ namespace ScraperTest.CheckoutBots.FootSites.ChampsSports
                         Size = "S"
                     }
                 };
-            EOBrowserHelper.BotTester(new ChampsSportsBot(){DelayInSecond = 7}, bot =>
-            {
-                bot.AccountCheckout(settings, CancellationToken.None);
-            });
+
+            ChampsSportsBot bot = new ChampsSportsBot() { DelayInSecond = 5 };
+            bot.Start();
+            bot.AccountCheckout(settings, CancellationToken.None);
         }
 
         [TestMethod()]
         public void LoginTest()
         {
-            EOBrowserHelper.BotTester(new ChampsSportsBot() { DelayInSecond = 7 }, bot =>
-            {
-                FootSitesBotBase.Browser.NewTab("loginTab");
-                bool a = bot.Login("gbagh16@freeuni.edu.ge", "giorgi121", CancellationToken.None);
-                Console.WriteLine(a);
-                return a;
-            });
+            ChampsSportsBot bot = new ChampsSportsBot() { DelayInSecond = 5 };
+            bot.Start();
+            bot.Browser.NewTab("loginTab");
+            bool a = bot.Login("gbagh16@freeuni.edu.ge", "giorgi121", CancellationToken.None);
+            Console.WriteLine(a);
         }
 
         [TestMethod()]

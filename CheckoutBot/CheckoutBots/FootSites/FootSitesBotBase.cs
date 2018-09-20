@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
+using System.Threading.Tasks;
 using CheckoutBot.Controls;
 using CheckoutBot.Core;
 using CheckoutBot.Interfaces;
@@ -22,22 +23,25 @@ using StoreScraper.Models;
 namespace CheckoutBot.CheckoutBots.FootSites
 {
     [DisableInGUI]
-    public abstract  class FootSitesBotBase : IWebsiteScraper, IGuestCheckouter, IAccountCheckouter, IReleasePageScraper
+    public abstract  class FootSitesBotBase : IWebsiteScraper, IGuestCheckouter, IAccountCheckouter, IReleasePageScraper, IStartAble
     {
         public string WebsiteName { get; set; }
         public string WebsiteBaseUrl { get; set; }
         private string ReleasePageApiEndpoint { get; set; }
-        //public WebView Driver { get; set; }
-        //public WebView DriverForArbitraryProduct { get; set; }
-        //public WebView Driver3 { get; set; }
- 
-        public static EOBrowserDriver Browser;
+
+        public EOBrowserDriver Browser;
 
         protected FootSitesBotBase(string websiteName, string webSiteBaseUrl, string releasePageEndpoint)
         {
             this.WebsiteName = websiteName;
             this.WebsiteBaseUrl = webSiteBaseUrl;
             this.ReleasePageApiEndpoint = releasePageEndpoint;
+        }
+
+        public void Start(bool hidden = false)
+        {
+            Browser = new EOBrowserDriver();
+            Task.Factory.StartNew(() => Browser.ShowDialog(), TaskCreationOptions.LongRunning);
         }
 
 
@@ -178,6 +182,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
                         xhr.open('GET', {url});
                         xhr.onload = function() {{
                             if (xhr.status === 200) {{
+                                DONE = true;
                                 console.log(xhr.responseText);
                             }} else {{
                                 alert('Request failed.  Returned status of ' + xhr.status);

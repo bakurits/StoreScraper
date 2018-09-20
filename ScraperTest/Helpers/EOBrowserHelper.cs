@@ -36,9 +36,9 @@ namespace ScraperTest.Helpers
                 Environment.Exit(Environment.ExitCode);
             });
 
-            FootSitesBotBase.Browser =  new EOBrowserDriver();
+            bot.Browser =  new EOBrowserDriver();
             WebView.ShowDebugUI();
-            Application.Run();
+            bot.Browser.ShowDialog();
             return flag;
         }
         
@@ -48,16 +48,16 @@ namespace ScraperTest.Helpers
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Task.Delay(5000).ContinueWith(delay =>
+            Task.Delay(10000).ContinueWith(delay =>
             {  
                 action(bot);
                 Application.Exit();
                 Environment.Exit(Environment.ExitCode);
             });
             
-            FootSitesBotBase.Browser =  new EOBrowserDriver();
+            bot.Browser =  new EOBrowserDriver();
             WebView.ShowDebugUI();
-            Application.Run();
+            bot.Browser.ShowDialog();
         }
 
 
