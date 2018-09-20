@@ -20,7 +20,7 @@ namespace CheckoutBot.Core
         [Browsable(false)]
         public ICheckoutSettings CheckoutInfo { get; set; }
 
-
+        public string Website => CheckoutInfo.ProductToBuy.ScrapedBy.WebsiteName;
         public string ProductName => CheckoutInfo.ProductToBuy.ToString();
         public string Quantity => CheckoutInfo.BuyOptions.Quantity.ToString();
 

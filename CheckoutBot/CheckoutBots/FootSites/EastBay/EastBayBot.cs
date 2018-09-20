@@ -138,7 +138,8 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             Browser.ActiveTab.LoadUrl(CartUrl);
             Task.Delay(4000, token).Wait(token);
             Browser.ActiveTab.EvalScript("document.getElementById(\"cart_checkout_button\").click();");
-            Task.Delay(10000, token).Wait(token);
+            Debug.WriteLine(Browser.ActiveTab.LastJSException);
+            Task.Delay(5000, token).Wait(token);
         }
 
         /// <summary>

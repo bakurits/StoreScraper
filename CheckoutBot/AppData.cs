@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -7,6 +8,7 @@ using System.Net.Http;
 using System.Threading;
 using CheckoutBot.CheckoutBots.FootSites;
 using CheckoutBot.CheckoutBots.FootSites.EastBay;
+using CheckoutBot.Core;
 using Newtonsoft.Json;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
@@ -23,6 +25,7 @@ namespace CheckoutBot
         public static string DataDir { get; set; }
 
         public const string AppName = "CheckoutBot";
+
 
         public static void Init()
         {  
@@ -81,16 +84,9 @@ namespace CheckoutBot
         [JsonIgnore]
         public Dictionary<FootSitesBotBase, List<WebProxy>> ParsedProxies { get; set; }
 
-        [JsonProperty]
-        public ProxyGroup[] ProxyGroups
-        {
-            set
-            {
-                ParsedProxies =
-                    value.ToDictionary(group => AvailableBots.Find(bot => bot.WebsiteName == group.SiteName),
-                        group => group.Proxies.Select(proxy => new WebProxy(proxy)).ToList());
-            }
-        }
+        [JsonIgnore] 
+        public BindingList<CheckoutTask> CurrentTasks { get; set; } = new BindingList<CheckoutTask>();
+
 
         public static CancellationTokenSource ApplicationGlobalTokenSource { get; set; } = new CancellationTokenSource();
 

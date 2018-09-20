@@ -39,6 +39,10 @@ namespace CheckoutBot
         {
             InitializeComponent();
 
+
+            loadingBox.Visibility = Visibility.Visible;
+            activeArea.Visibility = Visibility.Hidden;
+
             foreach (var bot in AppData.AvailableBots)
             {
                 cbx_Websites.Items.Add(bot);
@@ -46,19 +50,6 @@ namespace CheckoutBot
 
             ReleasedProductsMonitor.Default = new ReleasedProductsMonitor();
             tasksList.ItemsSource = new List<CheckoutTask>();
-            List<TokenItem> tokenItems = new List<TokenItem>
-            {
-                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"},
-                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"},
-                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"},
-                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"},
-                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"},
-                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"},
-                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"},
-                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"},
-                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"}
-            };
-            tokens.ItemsSource = tokenItems;
 
             foreach (var item in Enum.GetValues(typeof(Countries)))
             {
@@ -79,9 +70,7 @@ namespace CheckoutBot
             shippingAddress_state.SelectedValue = States.Alabama;
             billingAddress_state.SelectedValue = States.Alabama;
 
-
-            loadingBox.Visibility = Visibility.Visible;
-            activeArea.Visibility = Visibility.Hidden;
+            tasksList.ItemsSource = AppData.Session.CurrentTasks;
 
         }
 
@@ -307,18 +296,29 @@ namespace CheckoutBot
                 return;
             }
 
-            AccountCheckoutSettings settings = new AccountCheckoutSettings()
+            AccountCheckoutSettings settings;
+
+            try
             {
-                UserLogin = tbx_UserName.Text,
-                UserPassword = tbx_Password.Text,
-                ProductToBuy = (FootsitesProduct)cbx_Products.SelectedValue,
-                BuyOptions = new ProductBuyOptions()
+                settings = new AccountCheckoutSettings()
                 {
-                    Quantity = quantity,
-                    Size = cbx_Size.SelectedValue.ToString()
-                },
-                UserCcv2 = tbx_CCV2.Text
-            };
+                    UserLogin = tbx_UserName.Text,
+                    UserPassword = tbx_Password.Text,
+                    ProductToBuy = (FootsitesProduct)cbx_Products.SelectedValue,
+                    BuyOptions = new ProductBuyOptions()
+                    {
+                        Quantity = quantity,
+                        Size = cbx_Size.SelectedValue.ToString()
+                    },
+                    UserCcv2 = tbx_CCV2.Text
+                };
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("All required field is not filled correctly", "Error while adding task",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
             CheckoutTask task = new CheckoutTask()
             {
@@ -326,6 +326,9 @@ namespace CheckoutBot
                 MonitoringTokenSource =
                     CancellationTokenSource.CreateLinkedTokenSource(AppData.ApplicationGlobalTokenSource.Token),
             };
+
+            AppData.Session.CurrentTasks.Add(task);
+            task.StartMonitoring();
 
             MessageBox.Show("Checkout Task Added","Success", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
         }
