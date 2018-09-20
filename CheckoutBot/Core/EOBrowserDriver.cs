@@ -49,15 +49,14 @@ namespace CheckoutBot.Core
             MainWindow.tabControl1.Invoke((MethodInvoker)(() =>
             {
                 MainWindow.tabControl1.TabPages.Add(tabName, tabName);
-                var tab = MainWindow.tabControl1.TabPages[tabName]; 
+                var tab = MainWindow.tabControl1.TabPages[tabName];
                 var view = new WebView()
-                {
+                {   
                     Engine = DefaultEngine,
                     CustomUserAgent =  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
                     AcceptLanguage = "en-US,en;q=0.9",
                     AllowDropLoad = true,
                 };
-
                 view.CertificateError += (sender, args) => args.Continue();
                 var control = new WebControl()
                 {

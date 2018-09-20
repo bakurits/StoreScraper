@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
+using CheckoutBot.CheckoutBots.FootSites.EastBay;
 using CheckoutBot.CheckoutBots.FootSites.FootAction;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
 using CheckoutBot.Models.Payment;
 using CheckoutBot.Models.Shipping;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ScraperTest.Helpers;
+using StoreScraper.Bots.Sticky_bit.ChampsSports_EastBay;
 using StoreScraper.Models;
 
 namespace ScraperTest.CheckoutBots.FootSites.FootAction
@@ -56,13 +59,34 @@ namespace ScraperTest.CheckoutBots.FootSites.FootAction
         [TestMethod()]
         public void AccountCheckoutTest()
         {
-            throw new NotImplementedException();
+            AccountCheckoutSettings settings =
+                new AccountCheckoutSettings()
+                {
+                    UserPassword = "kohabitacia",
+                    UserLogin = "datobejanishvili@gmail.com",
+                    UserCcv2 = "123",
+                    ProductToBuy = new FootsitesProduct(new FootSimpleBase.EastBayScraper()
+                        , "yle",
+                        "https://www.eastbay.com/product/model:283446/sku:A7097514",
+                        0, "", "A7097514")
+                    {
+                        Sku = "A7097514",
+                        Model = "283446",
+                    },
+                    BuyOptions = new ProductBuyOptions()
+                    {
+                        Size = "S"
+                    }
+                };
+            EOBrowserHelper.BotTester(new FootActionBot() { DelayInSecond = 7 }, bot => bot.AccountCheckout(settings, CancellationToken.None));
         }
 
         [TestMethod()]
         public void LoginTest()
         {
-            _bot.Login("chudo", "chudisimo", CancellationToken.None);
+            bool v = EOBrowserHelper.BotTester(new FootActionBot() { DelayInSecond = 10 },
+                bot => bot.Login("datobejanishvili@gmail.com", "kohabitacia", CancellationToken.None), "81.198.103.228:8080");
+            Assert.IsTrue(v);
         }
 
         [TestMethod()]
