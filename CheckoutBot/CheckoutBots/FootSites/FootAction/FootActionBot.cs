@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CodeDom;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Net.Http;
@@ -9,7 +10,10 @@ using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
 using CheckoutBot.Models.Shipping;
 using EO.WebBrowser;
+using Newtonsoft.Json.Linq;
 using StoreScraper.Core;
+using StoreScraper.Helpers;
+using StoreScraper.Http.Factory;
 
 namespace CheckoutBot.CheckoutBots.FootSites.FootAction
 {
@@ -110,7 +114,24 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootAction
             return webView.EvalScript($"{GetScriptByXpath("//p[text() ='Invalid email and/or password. Please try again']")}") is JSNull;
         }
 
-        
+        public void GetProductSizes(FootsitesProduct product, CancellationToken token)
+        {
+            List<string> infos = new List<string>();
+            var client = ClientFactory.CreateHttpClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
+            var document = client.GetDoc(product.Url, token).DocumentNode;
+            int ind = document.InnerHtml.IndexOf("var styles = ", StringComparison.Ordinal);
+            var sizeData = Utils.GetFirstJson(document.InnerHtml.Substring(ind));
+            var sizesForCurProd = (JArray)sizeData[product.Sku][7];
+
+            foreach (var item in sizesForCurProd)
+            {
+                var t = (JArray) item;
+                var s = (string)t[0];
+                infos.Add(s.Trim());
+            }
+
+            product.Sizes = infos;
+        }
 
         public FootActionBot() : base("FootAction", "https://www.footaction.com/", ApiUrl)
         {
