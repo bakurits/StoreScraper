@@ -110,15 +110,18 @@ namespace CheckoutBot.Core
 
         public void Dispose()
         {
-
-            foreach (TabPage tab in MainWindow.tabControl1.TabPages)
+            MainWindow.Invoke((MethodInvoker) (() =>
             {
-                var webControl = (WebControl) tab.Controls[0];
-                tab.Controls.Remove(webControl);
-                webControl.WebView.Destroy();
-            }
-            MainWindow.Close();
-            MainWindow.Dispose();
+                foreach (TabPage tab in MainWindow.tabControl1.TabPages)
+                {
+                    var webControl = (WebControl) tab.Controls[0];
+                    tab.Controls.Remove(webControl);
+                    webControl.WebView.Destroy();
+                }
+                MainWindow.Close();
+                MainWindow.Dispose();
+            }));
+            
         }
     }
 }

@@ -97,7 +97,7 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
             bot.Start();
             bot.Browser.NewTab("MainTab");
             var logged = bot.Login("bakuricucxashvili@gmail.com", "VgnYiiY3t6", CancellationToken.None);
-            
+            bot.Stop();
             Assert.IsTrue(logged);
         }
         
@@ -108,6 +108,7 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
             bot.Start();
             bot.Browser.NewTab("MainTab");
             var logged = bot.Login("bakuricucxashvili@gmail.com", "tqWg3WXkg1234", CancellationToken.None);
+            bot.Stop();
             Assert.IsFalse(logged);
         }
 

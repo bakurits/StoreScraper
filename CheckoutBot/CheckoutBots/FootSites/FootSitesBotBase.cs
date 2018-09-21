@@ -192,6 +192,15 @@ namespace CheckoutBot.CheckoutBots.FootSites
                         xhr.send();";
         }
 
+        protected static void ImitateTyping(WebView webView, string str, CancellationToken token)
+        {
+            foreach (var key in str)
+            {
+                webView.SendChar(key);
+                Task.Delay(25, token).Wait(token);
+            }   
+        }
+
         public override string ToString()
         {
             return this.WebsiteName;
