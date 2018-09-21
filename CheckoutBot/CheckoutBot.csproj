@@ -159,7 +159,7 @@
     <Compile Include="Interfaces\ICustomAvailabilityChecker.cs" />
     <Compile Include="Interfaces\IGuestCheckouter.cs" />
     <Compile Include="Interfaces\IProxyChecker.cs" />
-    <Compile Include="Interfaces\IStartAble.cs" />
+    <Compile Include="Interfaces\IHasSession.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>

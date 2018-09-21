@@ -19,7 +19,16 @@ namespace StoreScraper.Core
         {
             while (!token.IsCancellationRequested)
             {
-                var details = _scraper.GetProductDetails(Url, token);
+                ProductDetails details = null;
+                try
+                {
+                    details = _scraper.GetProductDetails(Url, token);
+                }
+                catch (Exception e)
+                {
+                    Logger.Instance.WriteErrorLog($"Error while monitoring url ({Url}) \n msg={e.Message}");
+                    continue;
+                }
 
                 if (details.SizesList.Count > _oldDetails.SizesList.Count)
                 {

@@ -1,7 +1,8 @@
 ﻿namespace CheckoutBot.Interfaces
 {
-    public interface IStartAble
+    public interface IHasSession
     {
         void Start(bool hidden = false);
+        void Stop();
     }
 }

@@ -117,7 +117,7 @@ namespace CheckoutBot.Core
                 tab.Controls.Remove(webControl);
                 webControl.WebView.Destroy();
             }
-
+            MainWindow.Close();
             MainWindow.Dispose();
         }
     }

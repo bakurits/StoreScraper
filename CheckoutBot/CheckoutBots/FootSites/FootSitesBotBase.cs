@@ -23,7 +23,7 @@ using StoreScraper.Models;
 namespace CheckoutBot.CheckoutBots.FootSites
 {
     [DisableInGUI]
-    public abstract  class FootSitesBotBase : IWebsiteScraper, IGuestCheckouter, IAccountCheckouter, IReleasePageScraper, IStartAble
+    public abstract  class FootSitesBotBase : IWebsiteScraper, IGuestCheckouter, IAccountCheckouter, IReleasePageScraper, IHasSession
     {
         public string WebsiteName { get; set; }
         public string WebsiteBaseUrl { get; set; }
@@ -195,6 +195,11 @@ namespace CheckoutBot.CheckoutBots.FootSites
         public override string ToString()
         {
             return this.WebsiteName;
+        }
+
+        public void Stop()
+        {
+            this.Browser.Dispose();
         }
     }
 }
