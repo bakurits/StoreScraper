@@ -126,7 +126,7 @@ namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
             {
                 HttpRequestMessage message = new HttpRequestMessage();
                 message.Method = HttpMethod.Get;
-                message.RequestUri = SettingsUrl;
+                message.RequestUri = SettingsUrl2; ///////////////// change to settingsUrl
                 message.Headers.Referrer = referer;
                 doc = client.GetDoc(message, token);
             }
