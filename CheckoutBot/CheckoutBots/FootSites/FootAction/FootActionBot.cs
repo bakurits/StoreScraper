@@ -32,13 +32,23 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootAction
             webView.EvalScript($"{GetScriptByXpath("//div[@class='c-header-ribbon__user']/button")}.click();");
 
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
-            webView.EvalScript($"{GetScriptByXpath("//input[@name='email.email']")}.value=\"{username}\"");
-            webView.EvalScript($"{GetScriptByXpath("//input[@name='password.password']")}.value=\"{password}\"");
+            webView.QueueScriptCall($"{GetScriptByXpath("//input[@name='email.email']")}.focus()").WaitOne();
+            webView.QueueScriptCall($"{GetScriptByXpath("//input[@name='email.email']")}.select()").WaitOne();
+            Debug.WriteLine(Browser.ActiveTab.LastJSException);
+            foreach (var key in username)
+            {
+                webView.SendChar(key);
+            }
+            webView.QueueScriptCall($"{GetScriptByXpath("//input[@name='password.password']")}.focus()").WaitOne();
+            webView.QueueScriptCall($"{GetScriptByXpath("//input[@name='password.password']")}.select()").WaitOne();
+            foreach (var key in password)
+            {
+                webView.SendChar(key);
+            }
             webView.EvalScript($"{GetScriptByXpath("//div[contains(@class,'c-sign-in-form__actions')]//button[contains(@class,'c-btn--primary')]")}.click()");
-            Task.Delay(DelayInSecond * 1000, token).Wait(token);
-
-            string isWrong = (string)webView.EvalScript(GetScriptByXpath("//p[@class='c-alert error']"));
-            return isWrong.Length == 0;
+            Task.Delay(10 * 1000, token).Wait(token);
+            string isWrong = (string) webView.EvalScript($"{GetScriptByXpath("//p[text() ='Invalid email and/or password. Please try again']")}");
+            return isWrong == null;
         }
 
         public FootActionBot() : base("FootAction", "https://www.footaction.com/", ApiUrl)

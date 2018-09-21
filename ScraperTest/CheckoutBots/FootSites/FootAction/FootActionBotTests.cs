@@ -23,6 +23,7 @@ namespace ScraperTest.CheckoutBots.FootSites.FootAction
         public void GuestCheckOutTest()
         {
             FootActionBot bot = new FootActionBot();
+            bot.Start();
             bot.GuestCheckOut(new GuestCheckoutSettings()
             {
                 Shipping = new ShippinInfo()
@@ -78,15 +79,27 @@ namespace ScraperTest.CheckoutBots.FootSites.FootAction
                         Size = "S"
                     }
                 };
-            EOBrowserHelper.BotTester(new FootActionBot() { DelayInSecond = 7 }, bot => bot.AccountCheckout(settings, CancellationToken.None));
+            FootActionBot bot = new FootActionBot(){DelayInSecond = 5};
+            bot.Start();
+            bot.AccountCheckout(settings, CancellationToken.None);
         }
-
-        [TestMethod()]
-        public void LoginTest()
+        [TestMethod]
+        public void LoginTestSuc()
         {
-            bool v = EOBrowserHelper.BotTester(new FootActionBot() { DelayInSecond = 10 },
-                bot => bot.Login("datobejanishvili@gmail.com", "kohabitacia", CancellationToken.None), "81.198.103.228:8080");
-            Assert.IsTrue(v);
+            FootActionBot bot = new FootActionBot(){DelayInSecond = 5};
+            bot.Start();
+            
+            var logged = bot.Login("datobejanishvili@gmail.com", "kohabitacia", CancellationToken.None);
+            Assert.IsTrue(logged);
+        }
+        
+        [TestMethod]
+        public void LoginTestErr()
+        {
+            FootActionBot bot = new FootActionBot(){DelayInSecond = 5};
+            bot.Start();
+            var logged = bot.Login("datobejanishvili@gmail.com", "kohabitaci13123a", CancellationToken.None);
+            Assert.IsFalse(logged);
         }
 
         [TestMethod()]

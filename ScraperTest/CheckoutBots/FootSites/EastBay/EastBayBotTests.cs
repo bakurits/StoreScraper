@@ -69,8 +69,8 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
             AccountCheckoutSettings settings =
                 new AccountCheckoutSettings()
                 {
-                    UserPassword = "giorgi121",
-                    UserLogin = "gbagh16@freeuni.edu.ge",
+                    UserPassword = "VgnYiiY3t6",
+                    UserLogin = "bakuricucxashvili@gmail.com",
                     UserCcv2 = "123",
                     ProductToBuy = new FootsitesProduct(new FootSimpleBase.EastBayScraper()
                         , "yle",
@@ -95,6 +95,7 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
         {
             EastBayBot bot = new EastBayBot(){DelayInSecond = 5};
             bot.Start();
+            
             var logged = bot.Login("bakuricucxashvili@gmail.com", "VgnYiiY3t6", CancellationToken.None);
             
             Assert.IsTrue(logged);
@@ -152,10 +153,5 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
             Debug.WriteLine(bot.ChooseBestProxies(lst, 4));
         }
 
-        [AssemblyInitialize]
-        public static void InitSettings(TestContext context)
-        {
-            Logger.Instance.OnLogged += (message, color) => Debug.WriteLine(message);
-        }
     }
 }

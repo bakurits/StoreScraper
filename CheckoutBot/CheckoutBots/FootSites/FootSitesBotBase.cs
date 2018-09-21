@@ -42,6 +42,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
         {
             Browser = new EOBrowserDriver();
             Task.Factory.StartNew(() => Browser.ShowDialog(), TaskCreationOptions.LongRunning);
+            Task.Delay(4000).Wait();
         }
 
 

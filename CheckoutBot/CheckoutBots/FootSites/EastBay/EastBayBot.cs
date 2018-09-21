@@ -73,7 +73,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             {
                 Logger.Instance.WriteErrorLog("Wrong password");
             }
-            Logger.Instance.WriteVerboseLog($"Login succesfull!", Color.DarkOliveGreen);
+            Logger.Instance.WriteVerboseLog($"Login successful!", Color.DarkOliveGreen);
 
             Logger.Instance.WriteVerboseLog($"Clearing cart...", Color.Black);
             RemoveAllItems(Browser.ActiveTab, token);
@@ -81,7 +81,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             Logger.Instance.WriteVerboseLog($"Preparing for checkout...", Color.Black);
             FootsitesProduct arbitraryProduct = GetArbitraryItem(token);
             Browser.ActiveTab.LoadUrlAndWait(arbitraryProduct.Url);
-            Task.Delay(4000, token).Wait();
+            Task.Delay(4000, token).Wait(token);
             AddArbitraryItemToCart(arbitraryProduct, token);
             Task.Delay(2000, token).Wait(token);
             GoToCheckoutPage(token);
@@ -97,8 +97,8 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             Logger.Instance.WriteVerboseLog($"Product release detected!", Color.DarkOliveGreen);
             Logger.Instance.WriteVerboseLog("Adding product to cart..", Color.Black);
             AddToCart(settings, token);
-            Logger.Instance.WriteVerboseLog("Product succesfully added to cart!", Color.DarkOliveGreen);
-            Logger.Instance.WriteVerboseLog("Checkouting product...", Color.Black);
+            Logger.Instance.WriteVerboseLog("Product successfully added to cart!", Color.DarkOliveGreen);
+            Logger.Instance.WriteVerboseLog("Checkout product...", Color.Black);
             Browser.SwitchToTab(0).Reload().WaitOne();
             FinalCheckout(settings,token);
             Logger.Instance.WriteVerboseLog("CHECKOUT SUCCESS!!!", Color.DarkGreen);
@@ -238,8 +238,8 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             product.Sizes = infos;
         }
         
+        /// <inheritdoc />
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="proxyPool"></param>
         /// <param name="maxCount"></param>
