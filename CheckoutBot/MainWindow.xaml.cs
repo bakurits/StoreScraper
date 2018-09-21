@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using CheckoutBot.CheckoutBots.FootSites;
 using CheckoutBot.CheckoutBots.FootSites.EastBay;
 using CheckoutBot.Core;
+using CheckoutBot.Interfaces;
 using CheckoutBot.Models.Shipping;
 using CheckoutBot.Models.Payment;
 using CheckoutBot.Models;
@@ -24,6 +25,7 @@ using CheckoutBot.Models.Checkout;
 using Newtonsoft.Json;
 using EO;
 using EO.WebBrowser;
+using StoreScraper.Core;
 using StoreScraper.Helpers;
 
 namespace CheckoutBot
@@ -38,60 +40,19 @@ namespace CheckoutBot
         {
             InitializeComponent();
 
+
+            loadingBox.Visibility = Visibility.Visible;
+            activeArea.Visibility = Visibility.Hidden;
+
             foreach (var bot in AppData.AvailableBots)
             {
                 cbx_Websites.Items.Add(bot);
             }
 
+
             ReleasedProductsMonitor.Default = new ReleasedProductsMonitor();
-            List<TaskItem> items = new List<TaskItem>();
-            items.Add(new TaskItem() { Keywords = "nike air", Size = 12, Retries = "1", Status="Checking out", ListImage="/images/list_progress.png" });
-            items.Add(new TaskItem() { Keywords = "adidas", Size = 7, Retries = "3", Status = "Error", ListImage = "/images/list_error.png" });
-            items.Add(new TaskItem() { Keywords = "puma", Size = 8, Retries = "0", Status = "Done", ListImage = "/images/list_done.png" });
-            tasksList.ItemsSource = items;
-
-
-            List<TaskItem> successfulItems = new List<TaskItem>
-            {
-                new TaskItem()
-                {
-                    Keywords = "nike air",
-                    Size = 12,
-                    Retries = "1",
-                    Status = "Done",
-                    ListImage = "/images/list_done.png"
-                },
-                new TaskItem()
-                {
-                    Keywords = "adidas",
-                    Size = 7,
-                    Retries = "3",
-                    Status = "Done",
-                    ListImage = "/images/list_done.png"
-                },
-                new TaskItem()
-                {
-                    Keywords = "puma",
-                    Size = 8,
-                    Retries = "0",
-                    Status = "Done",
-                    ListImage = "/images/list_done.png"
-                }
-            };
-            successfulTaks.ItemsSource = successfulItems;
-            List<TokenItem> tokenItems = new List<TokenItem>
-            {
-                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"},
-                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"},
-                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"},
-                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"},
-                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"},
-                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"},
-                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"},
-                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"},
-                new TokenItem() {Site = "http://footlocker.com", Token = "grIUWHSUHA:sadiajsw98equwSNAsamcnasub"}
-            };
-            tokens.ItemsSource = tokenItems;
+            tasksList.ItemsSource = new List<CheckoutTask>();
+            Logger.Instance.OnLogged += (message, color) => tbx_Log.AppendText(message, color);
 
             foreach (var item in Enum.GetValues(typeof(Countries)))
             {
@@ -112,9 +73,7 @@ namespace CheckoutBot
             shippingAddress_state.SelectedValue = States.Alabama;
             billingAddress_state.SelectedValue = States.Alabama;
 
-
-            loadingBox.Visibility = Visibility.Visible;
-            activeArea.Visibility = Visibility.Hidden;
+            tasksList.ItemsSource = AppData.Session.CurrentTasks;
 
         }
 
@@ -128,7 +87,6 @@ namespace CheckoutBot
         {
 
             await PutTaskDelay();
-
             loadingBox.Visibility = Visibility.Hidden;
             activeArea.Visibility = Visibility.Visible;
 
@@ -232,9 +190,24 @@ namespace CheckoutBot
         private void AddProxy(object sender, RoutedEventArgs e)
         {
  
-            proxies.Items.Add( new ProxyItem() {
+            proxies.Items.Add( new ProxyItem() 
+            {
                 Proxy = proxy.Text
             });
+
+            var proxyList = proxy.Text.Split('\n').Select(txt => new WebProxy(txt.Trim())).ToList();
+            foreach (var site in AppData.AvailableBots)
+            {
+                if (site is IProxyChecker checker)
+                {
+                    AppData.Session.ParsedProxies[site] = checker.ChooseBestProxies(proxyList, proxyList.Count / 2);
+                }
+                else
+                {
+                    AppData.Session.ParsedProxies[site] = proxyList;
+                }
+            }
+
         }
 
         private void AddProfile(object sender, RoutedEventArgs e)
@@ -319,24 +292,35 @@ namespace CheckoutBot
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             int.TryParse(tbx_Quantity.Text, out int quantity);
-            if (quantity == default(int))
+            if (quantity <= 0)
             {
                 MessageBox.Show("Incorrect Quantity typed","Error", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
                 return;
             }
 
-            AccountCheckoutSettings settings = new AccountCheckoutSettings()
+            AccountCheckoutSettings settings;
+
+            try
             {
-                UserLogin = tbx_UserName.Text,
-                UserPassword = tbx_Password.Text,
-                ProductToBuy = (FootsitesProduct)cbx_Products.SelectedValue,
-                BuyOptions = new ProductBuyOptions()
+                settings = new AccountCheckoutSettings()
                 {
-                    Quantity = quantity,
-                    Size = cbx_Size.SelectedValue.ToString()
-                },
-                UserCcv2 = tbx_CCV2.Text
-            };
+                    UserLogin = tbx_UserName.Text,
+                    UserPassword = tbx_Password.Text,
+                    ProductToBuy = (FootsitesProduct)cbx_Products.SelectedValue,
+                    BuyOptions = new ProductBuyOptions()
+                    {
+                        Quantity = quantity,
+                        Size = cbx_Size.SelectedValue.ToString()
+                    },
+                    UserCcv2 = tbx_CCV2.Text
+                };
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("All required field is not filled correctly", "Error while adding task",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
             CheckoutTask task = new CheckoutTask()
             {
@@ -344,6 +328,9 @@ namespace CheckoutBot
                 MonitoringTokenSource =
                     CancellationTokenSource.CreateLinkedTokenSource(AppData.ApplicationGlobalTokenSource.Token),
             };
+
+            AppData.Session.CurrentTasks.Add(task);
+            task.StartMonitoring();
 
             MessageBox.Show("Checkout Task Added","Success", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
         }
@@ -358,15 +345,14 @@ namespace CheckoutBot
             var curStore = (FootSitesBotBase)cbx_Websites.SelectedValue;
             try
             {
-                var lst = ReleasedProductsMonitor.Default.GetProductsList(curStore).
-                    Where(prod => prod.ReleaseTime > DateTime.UtcNow || true);
+                var lst = ReleasedProductsMonitor.Default.GetProductsList(curStore);
                 foreach (var product in lst)
                 {
                     cbx_Products.Items.Add(product);
                 }
                 cbx_Products.IsEnabled = true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //ignored
             }
@@ -469,7 +455,5 @@ namespace CheckoutBot
             throw new Exception("Not implemented yet!");
         }
     }
-
-
 
 }

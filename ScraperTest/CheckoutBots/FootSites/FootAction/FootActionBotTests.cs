@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
+using CheckoutBot.CheckoutBots.FootSites.EastBay;
 using CheckoutBot.CheckoutBots.FootSites.FootAction;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
 using CheckoutBot.Models.Payment;
 using CheckoutBot.Models.Shipping;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ScraperTest.Helpers;
+using StoreScraper.Bots.Sticky_bit.ChampsSports_EastBay;
 using StoreScraper.Models;
 
 namespace ScraperTest.CheckoutBots.FootSites.FootAction
@@ -20,6 +23,7 @@ namespace ScraperTest.CheckoutBots.FootSites.FootAction
         public void GuestCheckOutTest()
         {
             FootActionBot bot = new FootActionBot();
+            bot.Start();
             bot.GuestCheckOut(new GuestCheckoutSettings()
             {
                 Shipping = new ShippinInfo()
@@ -56,13 +60,49 @@ namespace ScraperTest.CheckoutBots.FootSites.FootAction
         [TestMethod()]
         public void AccountCheckoutTest()
         {
-            throw new NotImplementedException();
+            AccountCheckoutSettings settings =
+                new AccountCheckoutSettings()
+                {
+                    UserPassword = "kohabitacia",
+                    UserLogin = "datobejanishvili@gmail.com",
+                    UserCcv2 = "123",
+                    ProductToBuy = new FootsitesProduct(new FootSimpleBase.EastBayScraper()
+                        , "yle",
+                        "https://www.eastbay.com/product/model:283446/sku:A7097514",
+                        0, "", "A7097514")
+                    {
+                        Sku = "A7097514",
+                        Model = "283446",
+                    },
+                    BuyOptions = new ProductBuyOptions()
+                    {
+                        Size = "S"
+                    }
+                };
+            FootActionBot bot = new FootActionBot(){DelayInSecond = 5};
+            bot.Start();
+            bot.AccountCheckout(settings, CancellationToken.None);
         }
-
-        [TestMethod()]
-        public void LoginTest()
+        [TestMethod]
+        public void LoginTestSuc()
         {
-            _bot.Login("chudo", "chudisimo", CancellationToken.None);
+            FootActionBot bot = new FootActionBot(){DelayInSecond = 5};
+            bot.Start();
+            bot.Browser.NewTab("MainTab");
+            var logged = bot.Login("datobejanishvili@gmail.com", "kohabitacia", CancellationToken.None);
+            bot.Stop();
+            Assert.IsTrue(logged);
+        }
+        
+        [TestMethod]
+        public void LoginTestErr()
+        {
+            FootActionBot bot = new FootActionBot(){DelayInSecond = 5};
+            bot.Start();
+            bot.Browser.NewTab("MainTab");
+            var logged = bot.Login("datobejanishvili@gmail.com", "kohabitaci13123a", CancellationToken.None);
+            bot.Stop();
+            Assert.IsFalse(logged);
         }
 
         [TestMethod()]

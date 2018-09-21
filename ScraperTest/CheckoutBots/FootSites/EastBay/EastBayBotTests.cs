@@ -1,20 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using CheckoutBot.CheckoutBots.FootSites;
 using CheckoutBot.CheckoutBots.FootSites.EastBay;
+using CheckoutBot.Core;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
 using CheckoutBot.Models.Payment;
 using CheckoutBot.Models.Shipping;
+using EO.Internal;
 using EO.WebBrowser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
 using ScraperTest.MinorTests;
 using StoreScraper.Bots.Sticky_bit.ChampsSports_EastBay;
+using StoreScraper.Core;
 using StoreScraper.Models;
+using Helper = ScraperTest.Helpers.Helper;
 
 namespace ScraperTest.CheckoutBots.FootSites.EastBay
 {
@@ -69,35 +74,42 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
                     UserCcv2 = "123",
                     ProductToBuy = new FootsitesProduct(new FootSimpleBase.EastBayScraper()
                         , "yle",
-                        "https://www.eastbay.com/product/model:283446/sku:A7097514",
-                        0, "", "A7097514")
+                        "https://www.eastbay.com/product/model:288213/sku:CN2980",
+                        0, "", "CN2980")
                     {
-                        Sku = "A7097514",
-                        Model = "283446",
+                        Sku = "CN2980",
+                        Model = "288213",
                     },
                     BuyOptions = new ProductBuyOptions()
                     {
-                        Size = "S"
+                        Size = "05.0"
                     }
                 };
-            EOBrowserHelper.BotTester(new EastBayBot(){DelayInSecond = 7}, bot => bot.AccountCheckout(settings, CancellationToken.None));
+           EastBayBot bot = new EastBayBot(){DelayInSecond = 5};
+           bot.Start();
+           bot.AccountCheckout(settings, CancellationToken.None);
         }
 
         [TestMethod]
         public void LoginTestSuc()
         {
-            bool v = EOBrowserHelper.BotTester(new EastBayBot() {DelayInSecond = 10},
-                bot => bot.Login("bakuricucxashvili@gmail.com", "VgnYiiY3t6", CancellationToken.None));
-            
-            Assert.IsTrue(v);
+            EastBayBot bot = new EastBayBot(){DelayInSecond = 5};
+            bot.Start();
+            bot.Browser.NewTab("MainTab");
+            var logged = bot.Login("bakuricucxashvili@gmail.com", "VgnYiiY3t6", CancellationToken.None);
+            bot.Stop();
+            Assert.IsTrue(logged);
         }
         
         [TestMethod]
         public void LoginTestErr()
         {
-            bool v = EOBrowserHelper.BotTester(new EastBayBot() {DelayInSecond = 10},
-                bot => bot.Login("bakuricucxashvili@gmail.com", "tqWg3WXkg1234", CancellationToken.None));
-            Assert.IsFalse(v);
+            EastBayBot bot = new EastBayBot(){DelayInSecond = 5};
+            bot.Start();
+            bot.Browser.NewTab("MainTab");
+            var logged = bot.Login("bakuricucxashvili@gmail.com", "tqWg3WXkg1234", CancellationToken.None);
+            bot.Stop();
+            Assert.IsFalse(logged);
         }
 
         [TestMethod]
@@ -123,6 +135,24 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
             
             bot.GetProductSizes(product, CancellationToken.None);
             Debug.WriteLine(string.Join("\n", product.Sizes));
+        }
+
+        [TestMethod]
+        public void ChooseBestProxiesTest()
+        {
+            EastBayBot bot = new EastBayBot();
+            List<WebProxy> lst = new List<WebProxy>
+            {
+                new WebProxy("81.198.103.228:8080"),
+                new WebProxy("78.25.98.114:8080"),
+                new WebProxy("178.248.71.120:33930"),
+                new WebProxy("181.236.246.224:33969"),
+                new WebProxy("46.228.13.42:3128"),
+                new WebProxy("187.84.191.34:61900"),
+                new WebProxy("123.176.34.159:58737"),
+                new WebProxy("89.23.194.174:8080")
+            };
+            Debug.WriteLine(bot.ChooseBestProxies(lst, 4));
         }
 
     }

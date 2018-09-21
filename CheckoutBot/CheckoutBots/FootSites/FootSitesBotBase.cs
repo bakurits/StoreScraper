@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
+using System.Threading.Tasks;
+using CheckoutBot.Controls;
+using CheckoutBot.Core;
 using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
@@ -10,8 +13,6 @@ using EO.Internal;
 using EO.WebBrowser;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 using ScraperCore.Interfaces;
 using StoreScraper.Attributes;
 using StoreScraper.Helpers;
@@ -22,20 +23,26 @@ using StoreScraper.Models;
 namespace CheckoutBot.CheckoutBots.FootSites
 {
     [DisableInGUI]
-    public abstract partial class FootSitesBotBase : IWebsiteScraper, IGuestCheckouter, IAccountCheckouter, IReleasePageScraper
+    public abstract  class FootSitesBotBase : IWebsiteScraper, IGuestCheckouter, IAccountCheckouter, IReleasePageScraper, IBrowserSession
     {
         public string WebsiteName { get; set; }
         public string WebsiteBaseUrl { get; set; }
         private string ReleasePageApiEndpoint { get; set; }
-        public WebView Driver { get; set; }
-        public WebView DriverForArbitraryProduct { get; set; }
-        public WebView Driver3 { get; set; }
+
+        public EOBrowserDriver Browser;
 
         protected FootSitesBotBase(string websiteName, string webSiteBaseUrl, string releasePageEndpoint)
         {
             this.WebsiteName = websiteName;
             this.WebsiteBaseUrl = webSiteBaseUrl;
             this.ReleasePageApiEndpoint = releasePageEndpoint;
+        }
+
+        public void Start(bool hidden = false, string proxy = null)
+        {
+            Browser = new EOBrowserDriver(proxy);
+            Task.Factory.StartNew(() => Browser.ShowDialog(), TaskCreationOptions.LongRunning);
+            Task.Delay(4000).Wait();
         }
 
 
@@ -49,7 +56,9 @@ namespace CheckoutBot.CheckoutBots.FootSites
             
         }
 
-      
+        public abstract bool Login(string username, string password, CancellationToken token);
+
+
         public List<FootsitesProduct> ScrapeReleasePage(CancellationToken token)
         {
             var client = ClientFactory.CreateHttpClient(autoCookies: true).AddHeaders(("Accept","application/json")).AddHeaders(ClientFactory.FirefoxUserAgentHeader)
@@ -174,6 +183,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
                         xhr.open('GET', {url});
                         xhr.onload = function() {{
                             if (xhr.status === 200) {{
+                                DONE = true;
                                 console.log(xhr.responseText);
                             }} else {{
                                 alert('Request failed.  Returned status of ' + xhr.status);
@@ -182,9 +192,25 @@ namespace CheckoutBot.CheckoutBots.FootSites
                         xhr.send();";
         }
 
+        protected static void ImitateTyping(WebView webView, string xPath, string str, CancellationToken token)
+        {
+            webView.QueueScriptCall($@"{GetScriptByXpath(xPath)}.focus()").WaitOne();
+            webView.QueueScriptCall($"{GetScriptByXpath(xPath)}.select()").WaitOne();
+            foreach (var key in str)
+            {
+                webView.SendChar(key);
+                Task.Delay(25, token).Wait(token);
+            }   
+        }
+
         public override string ToString()
         {
             return this.WebsiteName;
+        }
+
+        public void Stop()
+        {
+            this.Browser.Dispose();
         }
     }
 }

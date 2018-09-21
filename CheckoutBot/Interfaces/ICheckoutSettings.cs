@@ -1,6 +1,7 @@
-﻿using StoreScraper.Models;
+﻿using CheckoutBot.Models;
+using CheckoutBot.Models.Checkout;
 
-namespace CheckoutBot.Models.Checkout
+namespace CheckoutBot.Interfaces
 {
     public interface ICheckoutSettings
     {

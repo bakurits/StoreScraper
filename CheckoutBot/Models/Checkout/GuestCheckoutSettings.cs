@@ -1,4 +1,5 @@
-﻿using CheckoutBot.Models.Payment;
+﻿using CheckoutBot.Interfaces;
+using CheckoutBot.Models.Payment;
 using CheckoutBot.Models.Shipping;
 using StoreScraper.Models;
 

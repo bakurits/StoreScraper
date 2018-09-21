@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using OpenQA.Selenium;
 using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
 
@@ -74,7 +73,6 @@ namespace StoreScraper.Http
             while (true)
             {
                 MonitorEpoch();
-                _cancellationTokenSource.Token.ThrowIfCancellationRequested();
             }
         }
 
@@ -157,7 +155,7 @@ namespace StoreScraper.Http
         public void RemoveAction(string uniqueName)
         {
             var findIndex = _registeredTasks.FindIndex(task => task.Name == uniqueName);
-            if (findIndex == -1) throw new NoSuchElementException("FinalActions with given name is not registered");
+            if (findIndex == -1) throw new Exception("FinalActions with given name is not registered");
             _registeredTasks.RemoveAt(findIndex);
         }
 
