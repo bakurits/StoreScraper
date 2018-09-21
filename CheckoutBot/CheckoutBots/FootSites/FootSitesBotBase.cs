@@ -23,7 +23,7 @@ using StoreScraper.Models;
 namespace CheckoutBot.CheckoutBots.FootSites
 {
     [DisableInGUI]
-    public abstract  class FootSitesBotBase : IWebsiteScraper, IGuestCheckouter, IAccountCheckouter, IReleasePageScraper, IHasSession
+    public abstract  class FootSitesBotBase : IWebsiteScraper, IGuestCheckouter, IAccountCheckouter, IReleasePageScraper, IBrowserSession
     {
         public string WebsiteName { get; set; }
         public string WebsiteBaseUrl { get; set; }
@@ -38,9 +38,9 @@ namespace CheckoutBot.CheckoutBots.FootSites
             this.ReleasePageApiEndpoint = releasePageEndpoint;
         }
 
-        public void Start(bool hidden = false)
+        public void Start(bool hidden = false, string proxy = null)
         {
-            Browser = new EOBrowserDriver();
+            Browser = new EOBrowserDriver(proxy);
             Task.Factory.StartNew(() => Browser.ShowDialog(), TaskCreationOptions.LongRunning);
             Task.Delay(4000).Wait();
         }
