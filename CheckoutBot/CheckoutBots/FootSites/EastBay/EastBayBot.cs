@@ -63,57 +63,13 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         {
             throw new NotImplementedException();
         }
-        
-        public override void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token)
-        {
-            Logger.Instance.WriteVerboseLog($"Checkout process ({settings.ProductToBuy.Name}) started", Color.DarkOrange);
-            Browser.NewTab("MainTab");
 
-            Logger.Instance.WriteVerboseLog($"Signing in (username={settings.UserLogin}...");
-            if (!Login(settings.UserLogin, settings.UserPassword, token))
-            {
-                Logger.Instance.WriteErrorLog("Wrong password");
-            }
-            Logger.Instance.WriteVerboseLog($"Login successful!", Color.DarkOliveGreen);
-
-            Logger.Instance.WriteVerboseLog($"Clearing cart...", Color.Black);
-            RemoveAllItems(Browser.ActiveTab, token);
-            Logger.Instance.WriteVerboseLog($"Cart cleared!", Color.DarkOliveGreen);
-            Logger.Instance.WriteVerboseLog($"Preparing for checkout...", Color.Black);
-            FootsitesProduct arbitraryProduct = GetArbitraryItem(token);
-            Browser.ActiveTab.LoadUrlAndWait(arbitraryProduct.Url);
-            Task.Delay(4000, token).Wait(token);
-            AddArbitraryItemToCart(arbitraryProduct, token);
-            Task.Delay(2000, token).Wait(token);
-            GoToCheckoutPage(token);
-            var cartTab = Browser.NewTab("Cart");
-            RemoveArbitraryItem(cartTab, arbitraryProduct, token);
-            Browser.ActiveTab.LoadUrlAndWait(settings.ProductToBuy.Url);
-            Task.Delay(4000, token).Wait(token);
-            Logger.Instance.WriteVerboseLog("Preparation Done!", Color.DarkOliveGreen);
-            var secondsLeft = (settings.ProductToBuy.ReleaseTime - DateTime.UtcNow)?.Seconds;
-            Logger.Instance.WriteVerboseLog($"Waiting product to be released (about {secondsLeft} seconds left...");
-
-            WaitBeforeRelease(settings.ProductToBuy.Model, token);
-            Logger.Instance.WriteVerboseLog($"Product release detected!", Color.DarkOliveGreen);
-            Logger.Instance.WriteVerboseLog("Adding product to cart..", Color.Black);
-            AddToCart(settings, token);
-            Logger.Instance.WriteVerboseLog("Product successfully added to cart!", Color.DarkOliveGreen);
-            Logger.Instance.WriteVerboseLog("Checkout product...", Color.Black);
-            Browser.SwitchToTab(0).Reload().WaitOne();
-            FinalCheckout(settings,token);
-            Logger.Instance.WriteVerboseLog("CHECKOUT SUCCESS!!!", Color.DarkGreen);
-            Logger.Instance.WriteVerboseLog("Signing out from account...");
-            LogOut(token);
-            Logger.Instance.WriteVerboseLog("Sign out success!", Color.Green);
-        }
-        
         /// <summary>
         /// This method adds product to cart
         /// </summary>
         /// <param name="settings"> Checkout settings </param>
         /// <param name="token"></param>
-        private void AddToCart(AccountCheckoutSettings settings, CancellationToken token)
+        protected override void AddToCart(AccountCheckoutSettings settings, CancellationToken token)
         { 
             Browser.ActiveTab.QueueScriptCall(AjaxGetRequest($@"'https://www.eastbay.com/pdp/gateway?requestKey=' +
                             requestKey +
@@ -124,7 +80,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         }
 
 
-        protected void FinalCheckout(AccountCheckoutSettings settings,CancellationToken token)
+        protected override void FinalCheckout(AccountCheckoutSettings settings,CancellationToken token)
         {
             Browser.ActiveTab.QueueScriptCall($@"document.getElementById(""payMethodPaneStoredCCCVV"").value = ""{settings.UserCcv2}""").WaitOne();
             Task.Delay(10 * 1000, token).Wait(token);
@@ -135,7 +91,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         /// <summary>
         /// This method gets random item from releases page
         /// </summary>
-        private FootsitesProduct GetArbitraryItem(CancellationToken token)
+        protected override FootsitesProduct GetArbitraryItem(CancellationToken token)
         {
             FootsitesProduct product = ScrapeReleasePage(token)[0];
             GetProductSizes(product, token);
@@ -147,7 +103,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         /// </summary>
         /// <param name="product"> Item to add </param>
         /// <param name="token"></param>
-        private void AddArbitraryItemToCart(FootsitesProduct product , CancellationToken token)
+        protected override void AddArbitraryItem(FootsitesProduct product , CancellationToken token)
         {
             AddToCart(new AccountCheckoutSettings()
             {
@@ -162,8 +118,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         }
 
 
-
-        private void GoToCheckoutPage(CancellationToken token)
+        protected override void GoToCheckoutPage(CancellationToken token)
         {
             Browser.ActiveTab.LoadUrl(CartUrl);
             Task.Delay(4000, token).Wait(token);
@@ -175,15 +130,14 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         /// <summary>
         /// Navigates to cart page and removes arbitrary product from cart
         /// </summary>
-        /// <param name="driver"> driver from which scripts are called </param>
         /// <param name="product"> product to remove </param>
         /// <param name="token"></param>
-        private void RemoveArbitraryItem(WebView driver, FootsitesProduct product, CancellationToken token)
+        protected override void RemoveArbitraryItem(FootsitesProduct product, CancellationToken token)
         {
-            driver.LoadUrlAndWait(CartUrl);
+            Browser.ActiveTab.LoadUrlAndWait(CartUrl);
             Task.Delay(4000, token).Wait(token);
             Debug.WriteLine(GetScriptByXpath("//div[@id = 'cart_items']/ul/li[@data-sku = '" + product.Sku + "']/div/span/div/a[@data-btntype = 'remove']/span[2]") + ".click()");
-            driver.QueueScriptCall(GetScriptByXpath("//div[@id = 'cart_items']/ul/li[@data-sku = '" + product.Sku + "']/div/span/div/a[@data-btntype = 'remove']/span[2]") + ".click()").WaitOne();
+            Browser.ActiveTab.QueueScriptCall(GetScriptByXpath("//div[@id = 'cart_items']/ul/li[@data-sku = '" + product.Sku + "']/div/span/div/a[@data-btntype = 'remove']/span[2]") + ".click()").WaitOne();
             /*driver.EvalScript($@"
                     var xhr = new XMLHttpRequest();
                     var date = Date.now();
@@ -208,7 +162,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         /// </summary>
         /// <param name="model">unique model code of product to wait until release</param>
         /// <param name="token"></param>
-        private void WaitBeforeRelease(string model, CancellationToken token)
+        protected override void WaitBeforeRelease(string model, CancellationToken token)
         {
             bool released = false;
 
@@ -288,11 +242,11 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             return ind != -1;
         }
 
-        private void RemoveAllItems(WebView webView, CancellationToken token)
+        protected override void RemoveAllItems(CancellationToken token)
         {
-            webView.LoadUrlAndWait(CartUrl);
+            Browser.ActiveTab.LoadUrlAndWait(CartUrl);
             Task.Delay(4000, token).Wait(token);
-            webView.QueueScriptCall(
+            Browser.ActiveTab.QueueScriptCall(
                 @"var items = document.getElementById(""cart_items"").getElementsByTagName(""ul"")[0].getElementsByTagName(""li"")""
                 for (var i = 0; i < items.length; i++) {
                     var item = items[i];
@@ -302,7 +256,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             Task.Delay(2000, token).Wait(token);
         }
 
-        private void LogOut(CancellationToken token)
+        protected override void LogOut(CancellationToken token)
         {
             var webView = Browser.ActiveTab;
             webView.LoadUrl(WebsiteBaseUrl);

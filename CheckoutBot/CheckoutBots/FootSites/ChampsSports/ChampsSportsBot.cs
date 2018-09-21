@@ -41,27 +41,62 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
             AddArbitraryItemToCart(arbitraryProduct, token);
             Task.Delay(10 * 1000, token).Wait(token);
             AddToCart(Browser.ActiveTab, settings, token);
-            Task.Delay(5 * 1000).Wait(token);
+            Task.Delay(5 * 1000, token).Wait(token);
 
-            RemoveArbitraryItem(cartTab, arbitraryProduct, token);
+            RemoveArbitraryItem(arbitraryProduct, token);
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             Browser.SwitchToTab(0).Reload().WaitOne();
             Task.Delay(10 * 1000, token).Wait(token);
         }
-        
-        
+
+        protected override void AddArbitraryItem(FootsitesProduct product, CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void GoToCheckoutPage(CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void WaitBeforeRelease(string model, CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void AddToCart(AccountCheckoutSettings settings, CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void FinalCheckout(AccountCheckoutSettings settings, CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void LogOut(CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void RemoveAllItems(CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+
         /// <summary>
         /// This method removes item from cart
         /// </summary>
         /// <param name="driver"> driver from which scripts are called </param>
         /// <param name="product"> product to remove </param>
         /// <param name="token"></param>
-        private void RemoveArbitraryItem(WebView driver, FootsitesProduct product, CancellationToken token)
+        protected override void RemoveArbitraryItem(FootsitesProduct product, CancellationToken token)
         {
-            driver.LoadUrlAndWait(CartUrl);
+            Browser.ActiveTab.LoadUrlAndWait(CartUrl);
             Task.Delay(4000, token).Wait(token);
             Console.WriteLine(GetScriptByXpath("//div[@id = 'cart_items']/ul/li[@data-sku = '" + product.Sku + "']/div/span/div/a[@data-btntype = 'remove']/span[2]") + ".click()");
-            driver.EvalScript(GetScriptByXpath("//*[@id='page_cart']/ul/li[@data-sku='"+ product.Sku + "']/a/span") + ".click()");
+            Browser.ActiveTab.EvalScript(GetScriptByXpath("//*[@id='page_cart']/ul/li[@data-sku='"+ product.Sku + "']/a/span") + ".click()");
             /*driver.EvalScript($@"
                     var xhr = new XMLHttpRequest();
                     var date = Date.now();
@@ -125,7 +160,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
         /// <summary>
         /// This method gets random item from releases page
         /// </summary>
-        private FootsitesProduct GetArbitraryItem(CancellationToken token)
+        protected override FootsitesProduct GetArbitraryItem(CancellationToken token)
         {
             FootsitesProduct product = ScrapeReleasePage(token)[0];
             GetProductSizes(product, token);
@@ -165,11 +200,11 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
             webView.EvalScript($"{getElementById("login_email")}.value='{username}'");
             Debug.WriteLine(webView.LastJSException);
             webView.EvalScript($"{getElementById("login_password")}.value='{password}'");
-            Task.Delay(10 * 1000).Wait(token);
+            Task.Delay(10 * 1000, token).Wait(token);
             webView.EvalScript($"var a = document.getElementById('loginIFrame').contentDocument.getElementsByClassName('button'); a[0].click()");
             Task.Delay(10 * 1000, token).Wait(token);
             var a =  webView.EvalScript($"{getElementById("emptyFieldErrorContainer")}");
-            Task.Delay(2 * 1000).Wait(token);
+            Task.Delay(2 * 1000, token).Wait(token);
             return a == null;
         }
 

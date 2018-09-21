@@ -2,12 +2,18 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
 
 namespace CheckoutBot.CheckoutBots.FootSites.FootLocker
 {
     public class FootLockerBot : FootSitesBotBase
     {
+        protected override FootsitesProduct GetArbitraryItem(CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
         public override bool Login(string username, string password, CancellationToken token)
         {
             var webView = Browser.ActiveTab;
@@ -35,6 +41,46 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootLocker
         }
 
         public override void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void AddArbitraryItem(FootsitesProduct product, CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void RemoveArbitraryItem(FootsitesProduct product, CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void GoToCheckoutPage(CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void WaitBeforeRelease(string model, CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void AddToCart(AccountCheckoutSettings settings, CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void FinalCheckout(AccountCheckoutSettings settings, CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void LogOut(CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void RemoveAllItems(CancellationToken token)
         {
             throw new NotImplementedException();
         }

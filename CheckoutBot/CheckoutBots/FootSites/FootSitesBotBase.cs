@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ScraperCore.Interfaces;
 using StoreScraper.Attributes;
+using StoreScraper.Core;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 using StoreScraper.Models;
@@ -53,8 +55,61 @@ namespace CheckoutBot.CheckoutBots.FootSites
 
         public virtual void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token)
         {
+            Logger.Instance.WriteVerboseLog($"Checkout process ({settings.ProductToBuy.Name}) started", Color.DarkOrange);
+            Browser.NewTab("MainTab");
+
+            Logger.Instance.WriteVerboseLog($"Signing in (username={settings.UserLogin}...");
+            if (!Login(settings.UserLogin, settings.UserPassword, token))
+            {
+                Logger.Instance.WriteErrorLog("Wrong password");
+            }
+            Logger.Instance.WriteVerboseLog($"Login successful!", Color.DarkOliveGreen);
+
+            Logger.Instance.WriteVerboseLog($"Clearing cart...", Color.Black);
+            RemoveAllItems(token);
+            Logger.Instance.WriteVerboseLog($"Cart cleared!", Color.DarkOliveGreen);
+            Logger.Instance.WriteVerboseLog($"Preparing for checkout...", Color.Black);
+            FootsitesProduct arbitraryProduct = GetArbitraryItem(token);
+            Browser.ActiveTab.LoadUrlAndWait(arbitraryProduct.Url);
+            Task.Delay(4000, token).Wait(token);
+            AddArbitraryItem(arbitraryProduct, token);
+            Task.Delay(2000, token).Wait(token);
+            GoToCheckoutPage(token);
+            var cartTab = Browser.NewTab("Cart");
+            RemoveArbitraryItem(arbitraryProduct, token);
+            Browser.ActiveTab.LoadUrlAndWait(settings.ProductToBuy.Url);
+            Task.Delay(4000, token).Wait(token);
+            Logger.Instance.WriteVerboseLog("Preparation Done!", Color.DarkOliveGreen);
+            var secondsLeft = (settings.ProductToBuy.ReleaseTime - DateTime.UtcNow)?.Seconds;
+            Logger.Instance.WriteVerboseLog($"Waiting product to be released (about {secondsLeft} seconds left...");
+
+            WaitBeforeRelease(settings.ProductToBuy.Model, token);
+            Logger.Instance.WriteVerboseLog($"Product release detected!", Color.DarkOliveGreen);
+            Logger.Instance.WriteVerboseLog("Adding product to cart..", Color.Black);
+            AddToCart(settings, token);
+            Logger.Instance.WriteVerboseLog("Product successfully added to cart!", Color.DarkOliveGreen);
+            Logger.Instance.WriteVerboseLog("Checkout product...", Color.Black);
+            Browser.SwitchToTab(0).Reload().WaitOne();
+            FinalCheckout(settings, token);
+            Logger.Instance.WriteVerboseLog("CHECKOUT SUCCESS!!!", Color.DarkGreen);
+            Logger.Instance.WriteVerboseLog("Signing out from account...");
+            LogOut(token);
+            Logger.Instance.WriteVerboseLog("Sign out success!", Color.Green);
             
         }
+
+        protected abstract void AddArbitraryItem(FootsitesProduct product, CancellationToken token);
+        protected abstract void RemoveArbitraryItem(FootsitesProduct product, CancellationToken token);
+        protected abstract void GoToCheckoutPage(CancellationToken token);
+        protected abstract void WaitBeforeRelease(string model, CancellationToken token);
+        protected abstract void AddToCart(AccountCheckoutSettings settings, CancellationToken token);
+        protected abstract void FinalCheckout(AccountCheckoutSettings settings, CancellationToken token);
+        protected abstract void LogOut(CancellationToken token);
+        protected abstract void RemoveAllItems(CancellationToken token);
+        protected abstract FootsitesProduct GetArbitraryItem(CancellationToken token);
+        
+        
+        
 
         public abstract bool Login(string username, string password, CancellationToken token);
 

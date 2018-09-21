@@ -26,64 +26,45 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootAction
         
         public override void AccountCheckout(AccountCheckoutSettings settings, CancellationToken token)
         {
-            Logger.Instance.WriteVerboseLog($"Checkout process ({settings.ProductToBuy.Name}) started", Color.DarkOrange);
-            Browser.NewTab("MainTab");
-
-            Logger.Instance.WriteVerboseLog($"Signing in (username={settings.UserLogin}...");
-            if (!Login(settings.UserLogin, settings.UserPassword, token))
-            {
-                Logger.Instance.WriteErrorLog("Wrong password");
-            }
-            Logger.Instance.WriteVerboseLog($"Login successful!", Color.DarkOliveGreen);
-
-            Logger.Instance.WriteVerboseLog($"Clearing cart...", Color.Black);
-            RemoveAllItems(Browser.ActiveTab, token);
-            Logger.Instance.WriteVerboseLog($"Cart cleared!", Color.DarkOliveGreen);
-            Logger.Instance.WriteVerboseLog($"Preparing for checkout...", Color.Black);
-            FootsitesProduct arbitraryProduct = GetArbitraryItem(token);
-            Browser.ActiveTab.LoadUrlAndWait(arbitraryProduct.Url);
-            Task.Delay(4000, token).Wait(token);
-            AddArbitraryItemToCart(arbitraryProduct, token);
-            Task.Delay(2000, token).Wait(token);
-            GoToCheckoutPage(token);
-            var cartTab = Browser.NewTab("Cart");
-            RemoveArbitraryItem(cartTab, arbitraryProduct, token);
-            Browser.ActiveTab.LoadUrlAndWait(settings.ProductToBuy.Url);
-            Task.Delay(4000, token).Wait(token);
-            Logger.Instance.WriteVerboseLog("Preparation Done!", Color.DarkOliveGreen);
-            var secondsLeft = (settings.ProductToBuy.ReleaseTime - DateTime.UtcNow)?.Seconds;
-            Logger.Instance.WriteVerboseLog($"Waiting product to be released (about {secondsLeft} seconds left...");
-
-            WaitBeforeRelease(settings.ProductToBuy.Model, token);
-            Logger.Instance.WriteVerboseLog($"Product release detected!", Color.DarkOliveGreen);
-            Logger.Instance.WriteVerboseLog("Adding product to cart..", Color.Black);
-            AddToCart(settings, token);
-            Logger.Instance.WriteVerboseLog("Product successfully added to cart!", Color.DarkOliveGreen);
-            Logger.Instance.WriteVerboseLog("Checkout product...", Color.Black);
-            Browser.SwitchToTab(0).Reload().WaitOne();
-            FinalCheckout(settings, token);
-            Logger.Instance.WriteVerboseLog("CHECKOUT SUCCESS!!!", Color.DarkGreen);
-            Logger.Instance.WriteVerboseLog("Signing out from account...");
-            LogOut(token);
-            Logger.Instance.WriteVerboseLog("Sign out success!", Color.Green);
+            
         }
 
-        private void LogOut(CancellationToken token)
+        protected override void AddArbitraryItem(FootsitesProduct product, CancellationToken token)
         {
             throw new NotImplementedException();
         }
 
-        private void FinalCheckout(AccountCheckoutSettings settings, CancellationToken token)
+        protected override void RemoveArbitraryItem(FootsitesProduct product, CancellationToken token)
         {
             throw new NotImplementedException();
         }
 
-        private void AddToCart(AccountCheckoutSettings settings, CancellationToken token)
+        protected override void LogOut(CancellationToken token)
         {
             throw new NotImplementedException();
         }
 
-        private void WaitBeforeRelease(string model, CancellationToken token)
+        protected override void RemoveAllItems(CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override FootsitesProduct GetArbitraryItem(CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void FinalCheckout(AccountCheckoutSettings settings, CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void AddToCart(AccountCheckoutSettings settings, CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void WaitBeforeRelease(string model, CancellationToken token)
         {
             throw new NotImplementedException();
         }
@@ -93,7 +74,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootAction
             throw new NotImplementedException();
         }
 
-        private void GoToCheckoutPage(CancellationToken token)
+        protected override void GoToCheckoutPage(CancellationToken token)
         {
             throw new NotImplementedException();
         }
