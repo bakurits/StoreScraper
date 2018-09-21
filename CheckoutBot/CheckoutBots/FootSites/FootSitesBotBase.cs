@@ -192,8 +192,10 @@ namespace CheckoutBot.CheckoutBots.FootSites
                         xhr.send();";
         }
 
-        protected static void ImitateTyping(WebView webView, string str, CancellationToken token)
+        protected static void ImitateTyping(WebView webView, string xPath, string str, CancellationToken token)
         {
+            webView.QueueScriptCall($@"{GetScriptByXpath(xPath)}.focus()").WaitOne();
+            webView.QueueScriptCall($"{GetScriptByXpath(xPath)}.select()").WaitOne();
             foreach (var key in str)
             {
                 webView.SendChar(key);

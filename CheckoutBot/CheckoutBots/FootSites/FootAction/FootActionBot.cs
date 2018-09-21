@@ -34,14 +34,8 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootAction
             webView.EvalScript($"{GetScriptByXpath("//div[@class='c-header-ribbon__user']/button")}.click();");
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             
-            webView.QueueScriptCall($"{GetScriptByXpath("//input[@name='email.email']")}.focus()").WaitOne();
-            webView.QueueScriptCall($"{GetScriptByXpath("//input[@name='email.email']")}.select()").WaitOne();
-            Debug.WriteLine(Browser.ActiveTab.LastJSException);
-            ImitateTyping(webView, username, token);
-            
-            webView.QueueScriptCall($"{GetScriptByXpath("//input[@name='password.password']")}.focus()").WaitOne();
-            webView.QueueScriptCall($"{GetScriptByXpath("//input[@name='password.password']")}.select()").WaitOne();
-            ImitateTyping(webView, password, token);
+            ImitateTyping(webView, "//input[@name='email.email']", username, token);
+            ImitateTyping(webView, "//input[@name='password.password", password, token);
             
             webView.EvalScript($"{GetScriptByXpath("//div[contains(@class,'c-sign-in-form__actions')]//button[contains(@class,'c-btn--primary')]")}.click()");
             Task.Delay(10 * 1000, token).Wait(token);
