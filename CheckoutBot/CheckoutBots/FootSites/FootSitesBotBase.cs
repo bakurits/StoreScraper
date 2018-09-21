@@ -193,6 +193,19 @@ namespace CheckoutBot.CheckoutBots.FootSites
                         xhr.send();";
         }
 
+        protected static void ImitateTyping(WebView webView, string xPath, string str, CancellationToken token)
+        {
+            webView.QueueScriptCall($"{GetScriptByXpath(xPath)}.focus()").WaitOne();
+            webView.QueueScriptCall($"{GetScriptByXpath(xPath)}.select()").WaitOne();
+            foreach (var key in str)
+            {
+                webView.SendChar(key);
+                Task.Delay(25, token).Wait(token);
+            }
+
+            //Task.Delay(1000, token).Wait(token);
+        }
+
         public override string ToString()
         {
             return this.WebsiteName;

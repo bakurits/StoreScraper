@@ -24,7 +24,7 @@ namespace StoreScraper.Bots.Jordan.VooBerlin
 
         public override void ScrapeNewArrivalsPage(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
         {
-            listOfProducts = new List<Product>();
+            base.ScrapeNewArrivalsPage(out listOfProducts, requiredInfo, token);
         }
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)

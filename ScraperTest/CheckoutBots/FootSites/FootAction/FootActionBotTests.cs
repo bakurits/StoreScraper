@@ -87,9 +87,10 @@ namespace ScraperTest.CheckoutBots.FootSites.FootAction
         public void LoginTestSuc()
         {
             FootActionBot bot = new FootActionBot(){DelayInSecond = 5};
-            bot.Start();
+            bot.Start(false, "123.176.34.159:58737");
             bot.Browser.NewTab("MainTab");
             var logged = bot.Login("datobejanishvili@gmail.com", "kohabitacia", CancellationToken.None);
+            bot.Stop();
             Assert.IsTrue(logged);
         }
         
@@ -100,6 +101,7 @@ namespace ScraperTest.CheckoutBots.FootSites.FootAction
             bot.Start();
             bot.Browser.NewTab("MainTab");
             var logged = bot.Login("datobejanishvili@gmail.com", "kohabitaci13123a", CancellationToken.None);
+            bot.Stop();
             Assert.IsFalse(logged);
         }
 
