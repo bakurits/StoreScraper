@@ -117,7 +117,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
 
         public List<FootsitesProduct> ScrapeReleasePage(CancellationToken token)
         {
-            var client = ClientFactory.CreateProxiedHttpClient(proxy:null,autoCookies: true).AddHeaders(("Accept","application/json")).AddHeaders(ClientFactory.FirefoxUserAgentHeader)
+            var client = ClientFactory.CreateHttpClient(proxy:null,autoCookies: true).AddHeaders(("Accept","application/json")).AddHeaders(ClientFactory.FirefoxUserAgentHeader)
                 .AddHeaders(("Accept-Language", "en-US,en; q=0.5"));
             var task = client.GetStringAsync(ReleasePageApiEndpoint);
             task.Wait(token);
