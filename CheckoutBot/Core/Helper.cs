@@ -19,9 +19,12 @@ namespace CheckoutBot.Core
     {
         public static void AppendText(this RichTextBox box, string text, DColor color)
         {
-            TextRange range = new TextRange(box.Document.ContentEnd, box.Document.ContentEnd);
-            range.Text = text;
-            range.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(ToMediaColor(color)));
+            box.Dispatcher.Invoke(() =>
+            {
+                TextRange range = new TextRange(box.Document.ContentEnd, box.Document.ContentEnd);
+                range.Text = text;
+                range.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(ToMediaColor(color)));
+            });  
         }
 
 
