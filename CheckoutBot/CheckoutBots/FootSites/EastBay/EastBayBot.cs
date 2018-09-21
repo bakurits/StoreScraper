@@ -75,17 +75,16 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
                             requestKey +
                             '&action=add&qty={settings.BuyOptions.Quantity}&sku={settings.ProductToBuy.Sku}&size={settings.BuyOptions.Size}&fulfillmentType=SHIP_TO_HOME&storeNumber=0&_=' +
                             date")).WaitOne();
-
-            Task.Delay(2000, token).Wait(token);
+            Task.Delay(500, token).Wait(token);
         }
 
 
         protected override void FinalCheckout(AccountCheckoutSettings settings,CancellationToken token)
         {
             Browser.ActiveTab.QueueScriptCall($@"document.getElementById(""payMethodPaneStoredCCCVV"").value = ""{settings.UserCcv2}""").WaitOne();
-            Task.Delay(10 * 1000, token).Wait(token);
+            Debug.WriteLine(Browser.ActiveTab.LastJSException);
+            Debug.WriteLine(Browser.ActiveTab.QueueScriptCall($@"document.getElementById(""payMethodPaneStoredCCCVV"").value)"));
             Browser.ActiveTab.QueueScriptCall(@"document.getElementById(""orderSubmit"").click()").WaitOne();
-            Task.Delay(10 * 1000, token).Wait(token);
         }
 
         /// <summary>
