@@ -48,7 +48,7 @@ namespace ScraperTest.CheckoutBots.FootSites.ChampsSports
                 };
 
             ChampsSportsBot bot = new ChampsSportsBot() { DelayInSecond = 5 };
-            bot.Start();
+            bot.Start(proxy: "123.176.34.159:58737");
             bot.AccountCheckout(settings, CancellationToken.None);
         }
 
@@ -56,7 +56,7 @@ namespace ScraperTest.CheckoutBots.FootSites.ChampsSports
         public void LoginTest()
         {
             ChampsSportsBot bot = new ChampsSportsBot() { DelayInSecond = 5 };
-            bot.Start();
+            bot.Start(proxy: "123.176.34.159:58737");
             bot.Browser.NewTab("loginTab");
             bool a = bot.Login("gbagh16@freeuni.edu.ge", "giorgi121", CancellationToken.None);
             Console.WriteLine(a);

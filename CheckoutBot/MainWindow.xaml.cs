@@ -378,6 +378,9 @@ namespace CheckoutBot
                         }
 
                         txt_Prce.Content = product.Price + product.Currency;
+                        txt_Status.Content = product.ReleaseTime != null && product.ReleaseTime > DateTime.UtcNow
+                            ? $"Will Be Released on {product.ReleaseTime.Value.ToLocalTime():G}"
+                            : "Already Released";
                         lnk_ProductUrl.NavigateUri = new Uri(product.Url);
                         Run run = new Run("Open");
                         lnk_ProductUrl.Inlines.Clear();
@@ -387,7 +390,7 @@ namespace CheckoutBot
                     }
                     catch (Exception ex)
                     {
-                          //ignored
+                        //ignored
                     }
                 }
             }
@@ -396,6 +399,14 @@ namespace CheckoutBot
         private void lnk_ProductUrl_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
             System.Diagnostics.Process.Start(e.Uri.ToString());
+        }
+
+
+        private void btn_DeleteTask_OnClick(object sender, RoutedEventArgs e)
+        {
+            var index = tasksList.SelectedIndex;
+            AppData.Session.CurrentTasks[index].MonitoringTokenSource.Cancel();
+            AppData.Session.CurrentTasks.RemoveAt(index);
         }
     }
 

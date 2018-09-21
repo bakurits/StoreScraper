@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,9 +40,9 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
             FootsitesProduct arbitraryProduct = GetArbitraryItem(token);
             var cartTab = Browser.NewTab("Cart");
             AddArbitraryItemToCart(arbitraryProduct, token);
-            Task.Delay(10 * 1000, token).Wait(token);
+            Task.Delay(3 * 1000, token).Wait(token);
             AddToCart(Browser.ActiveTab, settings, token);
-            Task.Delay(5 * 1000).Wait(token);
+            Task.Delay(3 * 1000).Wait(token);
 
             RemoveArbitraryItem(cartTab, arbitraryProduct, token);
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
@@ -60,8 +61,9 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
         {
             driver.LoadUrlAndWait(CartUrl);
             Task.Delay(4000, token).Wait(token);
-            Console.WriteLine(GetScriptByXpath("//div[@id = 'cart_items']/ul/li[@data-sku = '" + product.Sku + "']/div/span/div/a[@data-btntype = 'remove']/span[2]") + ".click()");
+            Console.WriteLine(GetScriptByXpath("//*[@id='page_cart']/ul/li[@data-sku='" + product.Sku + "']/a/span") + ".click()");
             driver.EvalScript(GetScriptByXpath("//*[@id='page_cart']/ul/li[@data-sku='"+ product.Sku + "']/a/span") + ".click()");
+            Console.Write(Browser.ActiveTab.LastJSException);
             /*driver.EvalScript($@"
                     var xhr = new XMLHttpRequest();
                     var date = Date.now();
@@ -99,7 +101,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
             }, token);
             Browser.ActiveTab.LoadUrlAndWait(CartUrl);
             Browser.ActiveTab.EvalScript("document.getElementById(\"cta_button\").click();");
-            Task.Delay(10000, token).Wait(token);
+            Task.Delay(4000, token).Wait(token);
         }
 
         
@@ -135,7 +137,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
         public void GetProductSizes(FootsitesProduct product, CancellationToken token)
         {
             List<string> infos = new List<string>();
-            var client = ClientFactory.CreateHttpClient(autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
+            var client = ClientFactory.CreateProxiedHttpClient(new WebProxy("123.176.34.159:58737"),autoCookies: true).AddHeaders(ClientFactory.FireFoxHeaders);
             var document = client.GetDoc(product.Url, token).DocumentNode;
             int ind = document.InnerHtml.IndexOf("var styles = ", StringComparison.Ordinal);
             var sizeData = Utils.GetFirstJson(document.InnerHtml.Substring(ind));
@@ -161,13 +163,13 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
             var webView = Browser.ActiveTab;
             webView.LoadUrlAndWait(WebsiteBaseUrl);
             webView.EvalScript(GetScriptByXpath("//div[@id='header_login']") + ".click();");
-            Task.Delay(10 * 1000, token).Wait(token);
+            Task.Delay(3 * 1000, token).Wait(token);
             webView.EvalScript($"{getElementById("login_email")}.value='{username}'");
             Debug.WriteLine(webView.LastJSException);
             webView.EvalScript($"{getElementById("login_password")}.value='{password}'");
-            Task.Delay(10 * 1000).Wait(token);
+            Task.Delay(3 * 1000).Wait(token);
             webView.EvalScript($"var a = document.getElementById('loginIFrame').contentDocument.getElementsByClassName('button'); a[0].click()");
-            Task.Delay(10 * 1000, token).Wait(token);
+            Task.Delay(3 * 1000, token).Wait(token);
             var a =  webView.EvalScript($"{getElementById("emptyFieldErrorContainer")}");
             Task.Delay(2 * 1000).Wait(token);
             return a == null;
