@@ -77,7 +77,7 @@ namespace CheckoutBot.Core
                                     (IAccountCheckouter) Activator.CreateInstance(accountCheckout.ProductToBuy.ScrapedBy
                                         .GetType());
 
-                                if (checkouterInstance is IHasSession startableBot)
+                                if (checkouterInstance is IBrowserSession startableBot)
                                 {
                                     startableBot.Start();
                                 }
