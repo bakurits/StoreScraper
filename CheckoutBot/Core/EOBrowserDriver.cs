@@ -28,7 +28,7 @@ namespace CheckoutBot.Core
             DefaultEngine.Options.ExtraCommandLineArgs = "--incognito --start-maximized";
             if (proxy != null)
             {
-                var proxyParsed = new WebProxy();
+                var proxyParsed = new WebProxy(proxy);
                 DefaultEngine.Options.Proxy = new ProxyInfo(ProxyType.HTTP, proxyParsed.Address.Host, proxyParsed.Address.Port);
             }
 
