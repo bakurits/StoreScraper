@@ -31,7 +31,15 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootAction
 
         protected override void AddArbitraryItem(FootsitesProduct product, CancellationToken token)
         {
-            throw new NotImplementedException();
+            AddToCart(new AccountCheckoutSettings()
+            {
+                ProductToBuy = product,
+                BuyOptions = new ProductBuyOptions()
+                {
+                    Quantity = 1,
+                    Size = product.Sizes[0]
+                }
+            }, token);
         }
 
         protected override void RemoveArbitraryItem(FootsitesProduct product, CancellationToken token)
@@ -51,7 +59,9 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootAction
 
         protected override FootsitesProduct GetArbitraryItem(CancellationToken token)
         {
-            throw new NotImplementedException();
+            FootsitesProduct product = ScrapeReleasePage(token)[0];
+            GetProductSizes(product, token);
+            return product;
         }
 
         protected override void FinalCheckout(AccountCheckoutSettings settings, CancellationToken token)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,9 +40,9 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
             FootsitesProduct arbitraryProduct = GetArbitraryItem(token);
             var cartTab = Browser.NewTab("Cart");
             AddArbitraryItemToCart(arbitraryProduct, token);
-            Task.Delay(10 * 1000, token).Wait(token);
+            Task.Delay(3 * 1000, token).Wait(token);
             AddToCart(Browser.ActiveTab, settings, token);
-            Task.Delay(5 * 1000, token).Wait(token);
+            Task.Delay(3 * 1000).Wait(token);
 
             RemoveArbitraryItem(arbitraryProduct, token);
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
@@ -95,8 +96,9 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
         {
             Browser.ActiveTab.LoadUrlAndWait(CartUrl);
             Task.Delay(4000, token).Wait(token);
-            Console.WriteLine(GetScriptByXpath("//div[@id = 'cart_items']/ul/li[@data-sku = '" + product.Sku + "']/div/span/div/a[@data-btntype = 'remove']/span[2]") + ".click()");
+            Console.WriteLine(GetScriptByXpath("//*[@id='page_cart']/ul/li[@data-sku='" + product.Sku + "']/a/span") + ".click()");
             Browser.ActiveTab.EvalScript(GetScriptByXpath("//*[@id='page_cart']/ul/li[@data-sku='"+ product.Sku + "']/a/span") + ".click()");
+            Console.Write(Browser.ActiveTab.LastJSException);
             /*driver.EvalScript($@"
                     var xhr = new XMLHttpRequest();
                     var date = Date.now();
@@ -134,7 +136,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
             }, token);
             Browser.ActiveTab.LoadUrlAndWait(CartUrl);
             Browser.ActiveTab.EvalScript("document.getElementById(\"cta_button\").click();");
-            Task.Delay(10000, token).Wait(token);
+            Task.Delay(4000, token).Wait(token);
         }
 
         
@@ -196,7 +198,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
             var webView = Browser.ActiveTab;
             webView.LoadUrlAndWait(WebsiteBaseUrl);
             webView.EvalScript(GetScriptByXpath("//div[@id='header_login']") + ".click();");
-            Task.Delay(10 * 1000, token).Wait(token);
+            Task.Delay(3 * 1000, token).Wait(token);
             webView.EvalScript($"{getElementById("login_email")}.value='{username}'");
             Debug.WriteLine(webView.LastJSException);
             webView.EvalScript($"{getElementById("login_password")}.value='{password}'");
