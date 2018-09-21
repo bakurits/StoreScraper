@@ -68,6 +68,32 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootAction
             Logger.Instance.WriteVerboseLog("Sign out success!", Color.Green);
         }
 
+        private void AddArbitraryItemToCart(FootsitesProduct arbitraryProduct, CancellationToken token)
+        {
+            AddToCart(new AccountCheckoutSettings()
+            {
+                ProductToBuy = arbitraryProduct,
+                BuyOptions = new ProductBuyOptions()
+                {
+                    Quantity = 1,
+                    Size = arbitraryProduct.Sizes[0]
+                }
+            }, token);
+          
+        }
+
+        private FootsitesProduct GetArbitraryItem(CancellationToken token)
+        {
+            FootsitesProduct product = ScrapeReleasePage(token)[0];
+            GetProductSizes(product, token);
+            return product;
+        }
+
+        private void GetProductSizes(FootsitesProduct product, CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
         private void LogOut(CancellationToken token)
         {
             throw new NotImplementedException();
@@ -75,7 +101,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootAction
 
         private void FinalCheckout(AccountCheckoutSettings settings, CancellationToken token)
         {
-            throw new NotImplementedException();
+
         }
 
         private void AddToCart(AccountCheckoutSettings settings, CancellationToken token)
