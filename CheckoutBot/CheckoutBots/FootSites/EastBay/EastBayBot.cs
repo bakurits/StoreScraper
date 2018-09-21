@@ -26,6 +26,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
     {
         private const string ApiUrl = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/1";
         private const string CartUrl = "https://www.eastbay.com/shoppingcart";
+
         public EastBayBot() : base("EastBay", "https://www.eastbay.com", ApiUrl)
         {
         }
