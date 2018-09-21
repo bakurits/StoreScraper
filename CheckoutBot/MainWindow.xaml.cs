@@ -74,6 +74,7 @@ namespace CheckoutBot
             billingAddress_state.SelectedValue = States.Alabama;
 
             tasksList.ItemsSource = AppData.Session.CurrentTasks;
+            cbx_Products.ItemsSource = AppData.CurProductList;
 
         }
 
@@ -340,7 +341,7 @@ namespace CheckoutBot
             cbx_Products.IsEnabled = false;
             if(cbx_Websites.SelectedValue == null) return;
 
-            cbx_Products.Items.Clear();
+            AppData.CurProductList.Clear();
 
             var curStore = (FootSitesBotBase)cbx_Websites.SelectedValue;
             try
@@ -348,7 +349,7 @@ namespace CheckoutBot
                 var lst = ReleasedProductsMonitor.Default.GetProductsList(curStore);
                 foreach (var product in lst)
                 {
-                    cbx_Products.Items.Add(product);
+                    AppData.CurProductList.Add(product);
                 }
                 cbx_Products.IsEnabled = true;
             }

@@ -42,17 +42,16 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         public override bool Login(string username, string password, CancellationToken token)
         {
             var webView = Browser.ActiveTab;
-            webView.LoadUrl(WebsiteBaseUrl);
-            Task.Delay(5 * 1000, token).Wait(token);
-            webView.EvalScript(GetScriptByXpath("//div[@id='header_account_button']/a/span") + ".click();");
-
-            Task.Delay(DelayInSecond * 1000, token).Wait(token);
+            webView.LoadUrlAndWait(WebsiteBaseUrl);
+            Task.Delay(4000, token).Wait(token);
+            webView.QueueScriptCall(GetScriptByXpath("//div[@id='header_account_button']/a/span") + ".click();").WaitOne();
+            Task.Delay(4000, token).Wait(token);
             
 
-            webView.EvalScript($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"");
-            webView.EvalScript($"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{password}\"");
-            webView.EvalScript($"{GetScriptByXpath("//input[@id='login_submit']")}.click()");
-            Task.Delay(DelayInSecond * 1000, token).Wait(token);
+            webView.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_email']")}.value=\"{username}\"").WaitOne();
+            webView.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_password']")}.value=\"{password}\"").WaitOne();
+            webView.QueueScriptCall($"{GetScriptByXpath("//input[@id='login_submit']")}.click()").WaitOne();
+            Task.Delay(5000, token).Wait(token);
             
             string isWrong = (string) webView.EvalScript(@"document.getElementById(""login_password_error"").innerHTML");
             //Console.WriteLine(isWrong);
@@ -75,15 +74,15 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
                             requestKey +
                             '&action=add&qty={settings.BuyOptions.Quantity}&sku={settings.ProductToBuy.Sku}&size={settings.BuyOptions.Size}&fulfillmentType=SHIP_TO_HOME&storeNumber=0&_=' +
                             date")).WaitOne();
-            Task.Delay(500, token).Wait(token);
+            Task.Delay(200, token).Wait(token);
         }
 
 
-        protected override void FinalCheckout(AccountCheckoutSettings settings,CancellationToken token)
+        protected override void FinalCheckout(AccountCheckoutSettings settings, CancellationToken token)
         {
             Browser.ActiveTab.QueueScriptCall($@"document.getElementById(""payMethodPaneStoredCCCVV"").value = ""{settings.UserCcv2}""").WaitOne();
             Debug.WriteLine(Browser.ActiveTab.LastJSException);
-            Debug.WriteLine(Browser.ActiveTab.QueueScriptCall($@"document.getElementById(""payMethodPaneStoredCCCVV"").value)"));
+            Task.Delay(200, token).Wait(token);
             Browser.ActiveTab.QueueScriptCall(@"document.getElementById(""orderSubmit"").click()").WaitOne();
         }
 
@@ -92,7 +91,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         /// </summary>
         protected override FootsitesProduct GetArbitraryItem(CancellationToken token)
         {
-            FootsitesProduct product = ScrapeReleasePage(token)[0];
+            FootsitesProduct product = ScrapeReleasePage(token).Where(prod => (!prod.LaunchCountdownEnabled && prod.ReleaseTime < DateTime.UtcNow)).ToList()[0];
             GetProductSizes(product, token);
             return product;
         }

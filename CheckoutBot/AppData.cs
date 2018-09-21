@@ -9,6 +9,7 @@ using System.Threading;
 using CheckoutBot.CheckoutBots.FootSites;
 using CheckoutBot.CheckoutBots.FootSites.EastBay;
 using CheckoutBot.Core;
+using CheckoutBot.Models;
 using Newtonsoft.Json;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
@@ -26,6 +27,8 @@ namespace CheckoutBot
 
         public const string AppName = "CheckoutBot";
 
+
+        public static BindingList<FootsitesProduct> CurProductList = new BindingList<FootsitesProduct>();
 
         public static void Init()
         {  

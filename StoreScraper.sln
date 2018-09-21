@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckoutBot", "CheckoutBot\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scraper.Core", "StoraScraper.Core\Scraper.Core.csproj", "{DD1DAB1B-BF5B-432D-B292-9ACAC2721CDE}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "FootSiteBotInstaller", "FootSiteBotInstaller\FootSiteBotInstaller.vdproj", "{671D4D70-7311-4E61-A028-7886B0738679}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{DD1DAB1B-BF5B-432D-B292-9ACAC2721CDE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DD1DAB1B-BF5B-432D-B292-9ACAC2721CDE}.Release|x64.ActiveCfg = Release|Any CPU
 		{DD1DAB1B-BF5B-432D-B292-9ACAC2721CDE}.Release|x64.Build.0 = Release|Any CPU
+		{671D4D70-7311-4E61-A028-7886B0738679}.Debug|Any CPU.ActiveCfg = Debug
+		{671D4D70-7311-4E61-A028-7886B0738679}.Debug|x64.ActiveCfg = Debug
+		{671D4D70-7311-4E61-A028-7886B0738679}.Release|Any CPU.ActiveCfg = Release
+		{671D4D70-7311-4E61-A028-7886B0738679}.Release|x64.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

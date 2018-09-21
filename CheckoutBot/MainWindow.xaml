@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:CheckoutBot"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
-        Title="MainWindow" Height="600" Width="1334">
+        Title="MainWindow" Height="600" Width="1334" WindowState="Maximized">
     <Window.Background>
         <LinearGradientBrush EndPoint="1.5,1.5" StartPoint="0.504,0.03">
             <GradientStop Color="#2976C1" Offset="0"/>
