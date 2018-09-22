@@ -15,6 +15,7 @@ using CheckoutBot.Models.Checkout;
 using EO.Internal;
 using EO.WebBrowser;
 using HtmlAgilityPack;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using StoreScraper.Core;
 using StoreScraper.Helpers;
@@ -22,6 +23,7 @@ using StoreScraper.Http.Factory;
 
 namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 {
+    [JsonObject]
     public class EastBayBot : FootSitesBotBase, IProxyChecker
     {
         private const string ApiUrl = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/1";
@@ -37,6 +39,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         {
         }
 
+        [JsonIgnore]
         public int DelayInSecond { private get; set; } = 2;
 
         public override bool Login(string username, string password, CancellationToken token)
@@ -200,6 +203,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         public List<WebProxy> ChooseBestProxies(List<WebProxy> proxyPool, int maxCount)
         {
             List<Tuple<long, WebProxy>> lst = new List<Tuple<long, WebProxy>>();
+            var lst1 = lst;
             Parallel.ForEach(proxyPool, proxy =>
             {
                 using (HttpClient client = ClientFactory.CreateProxiedHttpClient(proxy, true).AddHeaders(ClientFactory.DefaultHeaders))
@@ -213,7 +217,10 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
                         stopwatch.Stop();
                         if (!IsFaulted(doc))
                         {
-                            lst.Add(new Tuple<long, WebProxy>(stopwatch.ElapsedMilliseconds, proxy));   
+                            lock (lst1)
+                            {
+                                lst1.Add(new Tuple<long, WebProxy>(stopwatch.ElapsedMilliseconds, proxy));   
+                            }     
                         }    
                     }
                     catch
@@ -228,7 +235,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             foreach (var item in lst)
             {
                 ans.Add(item.Item2);
-                Console.WriteLine(item.Item1);
+                Debug.WriteLine(item.Item1);
             }
             
             return ans;

@@ -9,6 +9,7 @@ using CheckoutBot.Core;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
 using EO.WebBrowser;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using StoreScraper.Core;
 using StoreScraper.Helpers;
@@ -16,6 +17,7 @@ using StoreScraper.Http.Factory;
 
 namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
 {
+    [JsonObject]
     public class ChampsSportsBot : FootSitesBotBase
     {
         private const string ApiUrl = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/20";

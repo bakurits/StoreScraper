@@ -8,12 +8,15 @@ using System.Threading.Tasks;
 using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using StoreScraper.Core;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
 namespace CheckoutBot.Core
 {
+    [JsonObject]
     public class CheckoutTask
     {
         /// <summary>
@@ -22,9 +25,17 @@ namespace CheckoutBot.Core
         [Browsable(false)]
         public ICheckoutSettings CheckoutInfo { get; set; }
 
+        [JsonIgnore]
         public string Website => CheckoutInfo.ProductToBuy.ScrapedBy.WebsiteName;
+
+        [JsonIgnore]
         public string ProductName => CheckoutInfo.ProductToBuy.ToString();
+
+        [JsonIgnore]
         public string Quantity => CheckoutInfo.BuyOptions.Quantity.ToString();
+
+        [JsonIgnore]
+        public string Type => CheckoutInfo is GuestCheckoutSettings ? "GUEST" : "ACCOUNT";
 
         public string TotalCost =>
             (CheckoutInfo.ProductToBuy.Price * CheckoutInfo.BuyOptions.Quantity).ToString(CultureInfo.InvariantCulture);

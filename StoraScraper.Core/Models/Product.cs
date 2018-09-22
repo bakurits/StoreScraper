@@ -1,12 +1,15 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Runtime.Serialization;
 using System.Threading;
 using HtmlAgilityPack;
+using Newtonsoft.Json;
 using ScraperCore.Interfaces;
 using StoreScraper.Core;
 
 namespace StoreScraper.Models
 {
+    [JsonObject]
     public class Product
     {
         [DisplayName("Store")]
@@ -19,6 +22,7 @@ namespace StoreScraper.Models
         public string KeyWords { get; set; } = "";
 
         [Browsable(false)]
+        [JsonProperty("Website")]
         public IWebsiteScraper ScrapedBy { get; set; }
 
         public string Name { get; set; } = "";

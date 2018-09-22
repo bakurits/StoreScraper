@@ -25,13 +25,14 @@ using StoreScraper.Models;
 
 namespace CheckoutBot.CheckoutBots.FootSites
 {
-    [DisableInGUI]
+    [JsonObject]
     public abstract  class FootSitesBotBase : IWebsiteScraper, IGuestCheckouter, IAccountCheckouter, IReleasePageScraper, IBrowserSession
     {
         public string WebsiteName { get; set; }
         public string WebsiteBaseUrl { get; set; }
         private string ReleasePageApiEndpoint { get; set; }
 
+        [JsonIgnore]
         public EOBrowserDriver Browser;
 
         protected FootSitesBotBase(string websiteName, string webSiteBaseUrl, string releasePageEndpoint)

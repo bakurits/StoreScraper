@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Newtonsoft.Json;
 using ScraperCore.Interfaces;
 using StoreScraper.Models;
 
 namespace CheckoutBot.Models
 {
+    [JsonObject]
     public class FootsitesProduct : Product
     {
         [Browsable(false)]
@@ -32,7 +34,6 @@ namespace CheckoutBot.Models
             string id, string currency = "$", DateTime? releaseTime = null)
             : base(scrapedBy, name, url, price, imageUrl, id, currency, releaseTime)
         {
-            
         }
 
         public FootsitesProduct()

@@ -43,6 +43,17 @@ namespace CheckoutBot.Core
             });
         }
 
+        public FootsitesProduct FindProductByUrl(string url)
+        {
+            foreach (var releaseGroup in _upComingReleaseData)
+            {
+                var result = releaseGroup.Value.Find(prod => prod.Url == url);
+                if (result != null) return result;
+            }
+
+            return null;
+        }
+
 
         public IEnumerable<FootsitesProduct> GetProductsList(FootSitesBotBase website)
         {

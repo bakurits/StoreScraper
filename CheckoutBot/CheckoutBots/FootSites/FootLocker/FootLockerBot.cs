@@ -4,9 +4,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
+using Newtonsoft.Json;
 
 namespace CheckoutBot.CheckoutBots.FootSites.FootLocker
 {
+    [JsonObject]
     public class FootLockerBot : FootSitesBotBase
     {
         protected override FootsitesProduct GetArbitraryItem(CancellationToken token)

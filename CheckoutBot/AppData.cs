@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.Serialization;
 using System.Threading;
 using CheckoutBot.CheckoutBots.FootSites;
 using CheckoutBot.CheckoutBots.FootSites.EastBay;
@@ -19,14 +21,22 @@ namespace CheckoutBot
     [JsonObject]
     internal class AppData
     {
-        public static AppData Session { get; set; } = AppData.Load();
+        [JsonIgnore]
+        public static AppData Session { get; set; }
 
-        public static string DataFilePath { get; set; }
 
-        public static string DataDir { get; set; }
+        public static string DataFilePath;
+
+        public static JsonSerializerSettings settings = new JsonSerializerSettings()
+        {
+            Culture = CultureInfo.InvariantCulture,
+            TypeNameHandling = TypeNameHandling.All,
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+        };
+
+        public static string DataDir;
 
         public const string AppName = "CheckoutBot";
-
 
         public static BindingList<FootsitesProduct> CurProductList = new BindingList<FootsitesProduct>();
 
@@ -34,9 +44,9 @@ namespace CheckoutBot
         {  
             DataDir = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                "CheckoutBot");
+                AppName);
 
-            DataFilePath = Path.Combine(AppName, "config.json");
+            DataFilePath = Path.Combine(DataDir, "config.json");
         }
 
 
@@ -44,8 +54,7 @@ namespace CheckoutBot
         public static AppData Load()
         {
             Init();
-
-            if (!File.Exists(DataFilePath))
+            if (!Directory.Exists(DataDir) || !File.Exists(DataFilePath))
             {
                 return new AppData();
             }
@@ -56,7 +65,7 @@ namespace CheckoutBot
             try
             {
                 var data = JsonConvert.DeserializeObject<AppData>(jsonData);
-                return data;
+                return data?? new AppData();
             }
             catch
             {
@@ -84,10 +93,15 @@ namespace CheckoutBot
         };
 
 
-        [JsonIgnore]
-        public Dictionary<FootSitesBotBase, List<WebProxy>> ParsedProxies { get; set; }
+        [JsonProperty]
+        private List<KeyValuePair<string, List<WebProxy>>> _parsedProxies = new List<KeyValuePair<string, List<WebProxy>>>();
 
-        [JsonIgnore] 
+        [JsonIgnore]
+        public Dictionary<FootSitesBotBase, List<WebProxy>> ParsedProxies { get; set; } =
+            new Dictionary<FootSitesBotBase, List<WebProxy>>();
+
+
+        [JsonIgnore]
         public BindingList<CheckoutTask> CurrentTasks { get; set; } = new BindingList<CheckoutTask>();
 
 
@@ -98,18 +112,37 @@ namespace CheckoutBot
 
 
 
+        [OnSerializing]
+        internal void OnSerializing(StreamingContext context)
+        {
+            foreach (var parsedProxy in ParsedProxies)
+            {
+                _parsedProxies.Add(new KeyValuePair<string, List<WebProxy>>(parsedProxy.Key.WebsiteName, parsedProxy.Value));
+            }
+        }
+
+
+        [OnDeserialized]
+        internal void OnDeserialized(StreamingContext context)
+        {
+            foreach (var parsedProxy in _parsedProxies)
+            {
+                ParsedProxies.Add(AvailableBots.Find(bot => bot.WebsiteBaseUrl == parsedProxy.Key), parsedProxy.Value);
+            }
+        }
+
         public void Save()
         {
-            var jsonData = JsonConvert.SerializeObject(this);
+            var jsonData = JsonConvert.SerializeObject(this, Formatting.Indented);
+            CreateConfigFileIfNotExists();
             File.WriteAllText(DataFilePath,jsonData);
         }
 
 
-        [JsonObject]
-        internal class ProxyGroup
+        private static void CreateConfigFileIfNotExists()
         {
-            public string SiteName { get; set; }
-            public string[] Proxies { get; set; }
+            if (!Directory.Exists(DataDir)) Directory.CreateDirectory(DataDir);
+            if (!File.Exists(DataFilePath)) File.Create(DataFilePath).Close();
         }
 
     }

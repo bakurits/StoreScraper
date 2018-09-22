@@ -44,6 +44,10 @@ namespace CheckoutBot
             loadingBox.Visibility = Visibility.Visible;
             activeArea.Visibility = Visibility.Hidden;
 
+
+            ServicePointManager.CheckCertificateRevocationList = false;
+            ServicePointManager.DefaultConnectionLimit = 1000;
+            ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
             foreach (var bot in AppData.AvailableBots)
             {
                 cbx_Websites.Items.Add(bot);
@@ -53,6 +57,7 @@ namespace CheckoutBot
             ReleasedProductsMonitor.Default = new ReleasedProductsMonitor();
             tasksList.ItemsSource = new List<CheckoutTask>();
             Logger.Instance.OnLogged += (message, color) => tbx_Log.AppendText(message, color);
+            AppData.Session = AppData.Load();
 
             foreach (var item in Enum.GetValues(typeof(Countries)))
             {
@@ -190,25 +195,59 @@ namespace CheckoutBot
 
         private void AddProxy(object sender, RoutedEventArgs e)
         {
- 
-            proxies.Items.Add( new ProxyItem() 
-            {
-                Proxy = proxy.Text
-            });
 
-            var proxyList = proxy.Text.Split('\n').Select(txt => new WebProxy(txt.Trim())).ToList();
-            foreach (var site in AppData.AvailableBots)
-            {
-                if (site is IProxyChecker checker)
-                {
-                    AppData.Session.ParsedProxies[site] = checker.ChooseBestProxies(proxyList, proxyList.Count / 2);
-                }
-                else
-                {
-                    AppData.Session.ParsedProxies[site] = proxyList;
-                }
-            }
+            loadingBox.Visibility = Visibility.Visible;
+            activeArea.Visibility = Visibility.Hidden;
 
+
+            if (!string.IsNullOrEmpty(proxy.Text))
+            {
+                var text = proxy.Text;
+                Task.Run(() =>
+                {
+                    var proxyList = text.Split('\n').Select(txt =>
+                    {
+                        try
+                        {
+                            return new WebProxy(txt.Trim());
+                        }
+                        catch
+                        {
+                            return null;
+                        }
+                    }).Where(txt => txt != null).ToList();
+                    foreach (var site in AppData.AvailableBots)
+                    {
+                        if (site is IProxyChecker checker)
+                        {
+                            AppData.Session.ParsedProxies[site] = checker.ChooseBestProxies(proxyList, proxyList.Count / 2);
+                        }
+                        else
+                        {
+                            AppData.Session.ParsedProxies[site] = proxyList;
+                        }
+                    }
+
+                    proxies.Dispatcher.Invoke(() =>
+                    {
+                        foreach (var item in proxyList)
+                        {
+                            proxies.Items.Add(item.Address.AbsoluteUri);
+                        }
+                    });
+
+                    loadingBox.Dispatcher.Invoke(() =>
+                    {
+                        loadingBox.Visibility = Visibility.Hidden;
+                    });
+
+                    activeArea.Dispatcher.Invoke(() =>
+                    {
+                        return activeArea.Visibility = Visibility.Visible;
+                    });
+
+                });  
+            }         
         }
 
         private void AddProfile(object sender, RoutedEventArgs e)
@@ -409,6 +448,17 @@ namespace CheckoutBot
             AppData.Session.CurrentTasks[index].MonitoringTokenSource.Cancel();
             AppData.Session.CurrentTasks.RemoveAt(index);
         }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            AppData.Session.Save();
+        }
+
+        private void ClearProxies(object sender, RoutedEventArgs e)
+        {
+            AppData.Session.ParsedProxies.Clear();
+            proxies.Items.Clear();
+        }
     }
 
 
@@ -430,11 +480,6 @@ namespace CheckoutBot
     {
         public string Site { get; set; }
         public string Token { get; set; }
-    }
-
-    public class ProxyItem
-    {
-        public string Proxy { get; set; }
     }
 
 

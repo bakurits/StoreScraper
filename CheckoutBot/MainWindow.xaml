@@ -7,9 +7,10 @@
         xmlns:local="clr-namespace:CheckoutBot"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
-        Title="MainWindow" Height="600" Width="1334" WindowState="Maximized">
+        Title="MainWindow" Height="600" Width="1334" WindowState="Maximized" Closed="Window_Closed">
     <Window.Background>
         <LinearGradientBrush EndPoint="1.5,1.5" StartPoint="0.504,0.03">
+
             <GradientStop Color="#2976C1" Offset="0"/>
             <GradientStop Color="#522360" Offset="0.2"/>
         </LinearGradientBrush>
@@ -240,7 +241,7 @@
                 </Style>
             </TabControl.Resources>
             <TabItem Header="TASK" Foreground="#ffffff">
-                <Grid Background="#e9ecf1" Margin="0,0,0,-149">
+                <Grid Background="#e9ecf1" Margin="0,0,0,-362">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*" />
                         <ColumnDefinition Width="1*" />
@@ -298,7 +299,6 @@
 
 
                                 </TextBox>
-
 
                                 <Label Content="ACCOUNT" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
                                 <StackPanel Orientation="Horizontal">
@@ -1283,9 +1283,18 @@ VerticalScrollBarVisibility="Auto"
 
                                         ADD PROXIES
                                     </Button>
+                                <Button  Margin="6,0" Name="btn_ClearProxies" HorizontalAlignment="Right"   Padding="20 5" Background="#CB390F" Foreground="#ffffff" BorderBrush="#ebecf0" Click="ClearProxies">
+                                    <Button.Resources>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="CornerRadius" Value="5"/>
+                                        </Style>
+                                    </Button.Resources>
+
+                                    CLEAR PROXIES
+                                </Button>
 
 
-                                
+
 
                             </StackPanel>
                         </StackPanel>
@@ -1298,17 +1307,7 @@ VerticalScrollBarVisibility="Auto"
                                 <Label Content="11 proxies" Foreground="#5db8f1" FontWeight="SemiBold" Margin="-2 0" HorizontalAlignment="Right"/>
 
                             </DockPanel>
-                            <ListView VerticalAlignment="Stretch" ItemsSource="{Binding SourceCollection}" Name="proxies" Background="#ffffff" Grid.Row="1" BorderBrush="#ebecf0" >
-                                <ListView.View>
-                                    <GridView ColumnHeaderContainerStyle = "{StaticResource GridViewColumnHeaderStyle1}" >
-
-
-                                        <GridViewColumn Header="Proxy" Width="auto" DisplayMemberBinding="{Binding Proxy}" />
-
-                                    </GridView>
-
-
-                                </ListView.View>
+                            <ListView VerticalAlignment="Stretch" Name="proxies" Background="#ffffff" Grid.Row="1" BorderBrush="#ebecf0" >
 
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="ListViewItem">
