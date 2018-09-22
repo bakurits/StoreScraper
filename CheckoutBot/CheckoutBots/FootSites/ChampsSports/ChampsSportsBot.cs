@@ -91,7 +91,6 @@ namespace CheckoutBot.CheckoutBots.FootSites.ChampsSports
         /// <summary>
         /// This method removes item from cart
         /// </summary>
-        /// <param name="driver"> driver from which scripts are called </param>
         /// <param name="product"> product to remove </param>
         /// <param name="token"></param>
         protected override void RemoveArbitraryItem(FootsitesProduct product, CancellationToken token)
