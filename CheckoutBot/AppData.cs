@@ -13,6 +13,7 @@ using CheckoutBot.CheckoutBots.FootSites.EastBay;
 using CheckoutBot.Core;
 using CheckoutBot.Models;
 using Newtonsoft.Json;
+using ScraperCore.Interfaces;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 
@@ -97,8 +98,8 @@ namespace CheckoutBot
         private List<KeyValuePair<string, List<WebProxy>>> _parsedProxies = new List<KeyValuePair<string, List<WebProxy>>>();
 
         [JsonIgnore]
-        public Dictionary<FootSitesBotBase, List<WebProxy>> ParsedProxies { get; set; } =
-            new Dictionary<FootSitesBotBase, List<WebProxy>>();
+        public Dictionary<IWebsiteScraper, List<WebProxy>> ParsedProxies { get; set; } =
+            new Dictionary<IWebsiteScraper, List<WebProxy>>();
 
 
         [JsonIgnore]

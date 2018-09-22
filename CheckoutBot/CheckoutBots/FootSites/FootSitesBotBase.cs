@@ -28,8 +28,8 @@ namespace CheckoutBot.CheckoutBots.FootSites
     [JsonObject]
     public abstract  class FootSitesBotBase : IWebsiteScraper, IGuestCheckouter, IAccountCheckouter, IReleasePageScraper, IBrowserSession
     {
-        public string WebsiteName { get; set; }
-        public string WebsiteBaseUrl { get; set; }
+        public string WebsiteName { get;}
+        public string WebsiteBaseUrl { get; }
         private string ReleasePageApiEndpoint { get; set; }
 
         [JsonIgnore]
@@ -118,7 +118,8 @@ namespace CheckoutBot.CheckoutBots.FootSites
 
         public List<FootsitesProduct> ScrapeReleasePage(CancellationToken token)
         {
-            var client = ClientFactory.CreateHttpClient(proxy:null,autoCookies: true).AddHeaders(("Accept","application/json")).AddHeaders(ClientFactory.FirefoxUserAgentHeader)
+            var proxy = Helper.GetRandomProxy(this);
+            var client = ClientFactory.CreateHttpClient(proxy:proxy,autoCookies: true).AddHeaders(("Accept","application/json")).AddHeaders(ClientFactory.FirefoxUserAgentHeader)
                 .AddHeaders(("Accept-Language", "en-US,en; q=0.5"));
             var task = client.GetStringAsync(ReleasePageApiEndpoint);
             task.Wait(token);
@@ -265,6 +266,16 @@ namespace CheckoutBot.CheckoutBots.FootSites
         public override string ToString()
         {
             return this.WebsiteName;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj != null && this.GetType() == obj.GetType();
+        }
+
+        public override int GetHashCode()
+        {
+            return this.WebsiteBaseUrl.GetHashCode();
         }
 
         public void Stop()

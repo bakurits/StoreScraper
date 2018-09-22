@@ -6,7 +6,7 @@ namespace ScraperCore.Interfaces
 {
     public interface IWebsiteScraper
     {
-        string WebsiteName { get; set; }
-        string WebsiteBaseUrl { get; set; }
+        string WebsiteName { get;}
+        string WebsiteBaseUrl { get;}
     }
 }
