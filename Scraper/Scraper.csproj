@@ -119,6 +119,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\KeywordInputForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\KeywordInputForm.Designer.cs">
+      <DependentUpon>KeywordInputForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -129,6 +135,9 @@
     <Compile Include="GuiHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Controls\KeywordInputForm.resx">
+      <DependentUpon>KeywordInputForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\MainForm.en-US.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

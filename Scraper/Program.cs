@@ -35,9 +35,8 @@ namespace StoreScraper
 
             CookieCollector.Default = new CookieCollector();
             ServicePointManager.CheckCertificateRevocationList = false;
+            ServicePointManager.DefaultConnectionLimit = 1000;
             ServicePointManager.Expect100Continue = false;
-
-
             ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
 
             AppSettings.Default.AvailableScrapers = Utils.GetAllSubClassInstances<ScraperBase>().ToList();

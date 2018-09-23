@@ -90,7 +90,13 @@ namespace CheckoutBot.Core
 
                                 if (checkouterInstance is IBrowserSession startableBot)
                                 {
-                                    startableBot.Start();
+                                    var proxy = Helper.GetRandomProxy(accountCheckout.ProductToBuy.ScrapedBy);
+#if DEBUG
+                                    startableBot.Start(proxy:proxy.Address.AbsoluteUri, hidden: true);
+#else
+                                    startableBot.Start(proxy:proxy.Address.AbsoluteUri, hidden: false);
+#endif
+                                    
                                 }
 
                                 checkouterInstance.AccountCheckout(accountCheckout, MonitoringTokenSource.Token);

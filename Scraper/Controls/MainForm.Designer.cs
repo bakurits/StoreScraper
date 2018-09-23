@@ -57,6 +57,8 @@
             this.Btn_ClearAllLogs = new System.Windows.Forms.Button();
             this.Rtbx_EventLog = new System.Windows.Forms.RichTextBox();
             this.Rtbx_DebugLog = new System.Windows.Forms.RichTextBox();
+            this.btn_Keywords = new System.Windows.Forms.Button();
+            this.btn_NegKeywords = new System.Windows.Forms.Button();
             this.toolStripContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.SuspendLayout();
@@ -91,10 +93,10 @@
             this.PGrid_Bot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.PGrid_Bot.CanShowVisualStyleGlyphs = false;
             this.PGrid_Bot.HelpVisible = false;
-            this.PGrid_Bot.Location = new System.Drawing.Point(459, 6);
+            this.PGrid_Bot.Location = new System.Drawing.Point(459, 50);
             this.PGrid_Bot.Name = "PGrid_Bot";
             this.PGrid_Bot.PropertySort = System.Windows.Forms.PropertySort.Categorized;
-            this.PGrid_Bot.Size = new System.Drawing.Size(433, 192);
+            this.PGrid_Bot.Size = new System.Drawing.Size(433, 155);
             this.PGrid_Bot.TabIndex = 2;
             this.PGrid_Bot.ToolbarVisible = false;
             // 
@@ -102,7 +104,7 @@
             // 
             this.btn_FindProducts.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btn_FindProducts.ForeColor = System.Drawing.Color.DarkCyan;
-            this.btn_FindProducts.Location = new System.Drawing.Point(896, 6);
+            this.btn_FindProducts.Location = new System.Drawing.Point(896, 50);
             this.btn_FindProducts.Name = "btn_FindProducts";
             this.btn_FindProducts.Size = new System.Drawing.Size(126, 23);
             this.btn_FindProducts.TabIndex = 3;
@@ -123,6 +125,8 @@
             // 
             // Tab_Main
             // 
+            this.Tab_Main.Controls.Add(this.btn_NegKeywords);
+            this.Tab_Main.Controls.Add(this.btn_Keywords);
             this.Tab_Main.Controls.Add(this.Btn_UrlMon);
             this.Tab_Main.Controls.Add(this.Tbx_Url);
             this.Tab_Main.Controls.Add(this.Clbx_Websites);
@@ -165,9 +169,9 @@
             // 
             this.Clbx_Websites.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Clbx_Websites.FormattingEnabled = true;
-            this.Clbx_Websites.Location = new System.Drawing.Point(154, 14);
+            this.Clbx_Websites.Location = new System.Drawing.Point(154, 6);
             this.Clbx_Websites.Name = "Clbx_Websites";
-            this.Clbx_Websites.Size = new System.Drawing.Size(299, 184);
+            this.Clbx_Websites.Size = new System.Drawing.Size(299, 199);
             this.Clbx_Websites.TabIndex = 23;
             this.Clbx_Websites.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.Clbx_Websites_ItemCheck);
             this.Clbx_Websites.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Clbx_Websites_MouseUp);
@@ -205,7 +209,7 @@
             // 
             this.Btn_AddCriteriaToMonitor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Btn_AddCriteriaToMonitor.ForeColor = System.Drawing.Color.DarkGreen;
-            this.Btn_AddCriteriaToMonitor.Location = new System.Drawing.Point(896, 64);
+            this.Btn_AddCriteriaToMonitor.Location = new System.Drawing.Point(896, 108);
             this.Btn_AddCriteriaToMonitor.Name = "Btn_AddCriteriaToMonitor";
             this.Btn_AddCriteriaToMonitor.Size = new System.Drawing.Size(126, 40);
             this.Btn_AddCriteriaToMonitor.TabIndex = 14;
@@ -228,7 +232,7 @@
             // 
             this.Btn_Stop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.Btn_Stop.ForeColor = System.Drawing.Color.Crimson;
-            this.Btn_Stop.Location = new System.Drawing.Point(896, 35);
+            this.Btn_Stop.Location = new System.Drawing.Point(896, 79);
             this.Btn_Stop.Name = "Btn_Stop";
             this.Btn_Stop.Size = new System.Drawing.Size(126, 23);
             this.Btn_Stop.TabIndex = 7;
@@ -400,6 +404,28 @@
             this.Rtbx_DebugLog.TabIndex = 0;
             this.Rtbx_DebugLog.Text = "";
             // 
+            // btn_Keywords
+            // 
+            this.btn_Keywords.ForeColor = System.Drawing.Color.DarkGreen;
+            this.btn_Keywords.Location = new System.Drawing.Point(459, 21);
+            this.btn_Keywords.Name = "btn_Keywords";
+            this.btn_Keywords.Size = new System.Drawing.Size(106, 23);
+            this.btn_Keywords.TabIndex = 26;
+            this.btn_Keywords.Text = "Keywords";
+            this.btn_Keywords.UseVisualStyleBackColor = true;
+            this.btn_Keywords.Click += new System.EventHandler(this.btn_Keywords_Click);
+            // 
+            // btn_NegKeywords
+            // 
+            this.btn_NegKeywords.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.btn_NegKeywords.Location = new System.Drawing.Point(571, 21);
+            this.btn_NegKeywords.Name = "btn_NegKeywords";
+            this.btn_NegKeywords.Size = new System.Drawing.Size(120, 23);
+            this.btn_NegKeywords.TabIndex = 27;
+            this.btn_NegKeywords.Text = "Negative Keywords";
+            this.btn_NegKeywords.UseVisualStyleBackColor = true;
+            this.btn_NegKeywords.Click += new System.EventHandler(this.btn_NegKeywords_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -457,6 +483,8 @@
         private System.Windows.Forms.Button Btn_Reset;
         private System.Windows.Forms.Button Btn_UrlMon;
         private System.Windows.Forms.TextBox Tbx_Url;
+        private System.Windows.Forms.Button btn_NegKeywords;
+        private System.Windows.Forms.Button btn_Keywords;
     }
 }
 
