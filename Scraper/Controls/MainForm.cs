@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Scraper.Controls;
 using StoreScraper.Core;
 using StoreScraper.Helpers;
 using StoreScraper.Http;
@@ -362,6 +363,22 @@ namespace StoreScraper.Controls
         private void Clbx_Websites_MouseUp(object sender, MouseEventArgs e)
         {
             
+        }
+
+        private void btn_Keywords_Click(object sender, EventArgs e)
+        {
+            var settings = (SearchSettingsBase) PGrid_Bot.SelectedObject;
+            KeywordInputForm form = new KeywordInputForm {Tbx_Input = {Text = settings.KeyWords}};
+            form.ShowDialog();
+            settings.KeyWords = form.ResultText;
+        }
+
+        private void btn_NegKeywords_Click(object sender, EventArgs e)
+        {
+            var settings = (SearchSettingsBase) PGrid_Bot.SelectedObject;
+            KeywordInputForm form = new KeywordInputForm {Tbx_Input = {Text = settings.NegKeyWords}};
+            form.ShowDialog();
+            settings.NegKeyWords = form.ResultText;
         }
     }
 }

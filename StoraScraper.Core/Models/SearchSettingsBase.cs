@@ -29,7 +29,7 @@ namespace StoreScraper.Models
 
         private string _keywords = "";
 
-        [Category(FilterCatName), DisplayName("Search Text:")]
+        [Browsable(false)]
         public string KeyWords
         {
             get => _keywords;
@@ -42,7 +42,7 @@ namespace StoreScraper.Models
 
         private string _negKeywords = "";
 
-        [Category(FilterCatName), DisplayName("Negative Keywords")]
+        [Browsable(false)]
         public string NegKeyWords
         {
             get => _negKeywords;

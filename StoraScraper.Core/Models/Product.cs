@@ -60,7 +60,7 @@ namespace StoreScraper.Models
         [Browsable(false)]
         public DateTime? ReleaseTime { get; set; }
 
-
+        [Browsable(false)]
         public ScrappingLevel ScrappingLevel { get; set; } = ScrappingLevel.PrimaryFields;
 
 
