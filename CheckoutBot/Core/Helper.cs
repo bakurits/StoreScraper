@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using CheckoutBot.CheckoutBots.FootSites;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperCore.Interfaces;
 using StoreScraper.Models;
 using DColor = System.Drawing.Color;
@@ -54,6 +55,13 @@ namespace CheckoutBot.Core
 
             var lst = AppData.Session.ParsedProxies[bot];
             return lst[rand.Next(lst.Count - 1)];
+        }
+
+
+        [ClassInitialize]
+        public static void ClassInit(TestContext context)
+        {
+           AppData.Session = AppData.Load();
         }
     }
 }

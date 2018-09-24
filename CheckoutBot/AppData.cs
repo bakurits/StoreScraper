@@ -20,7 +20,7 @@ using StoreScraper.Http.Factory;
 namespace CheckoutBot
 {
     [JsonObject]
-    internal class AppData
+    public class AppData
     {
         [JsonIgnore]
         public static AppData Session { get; set; }

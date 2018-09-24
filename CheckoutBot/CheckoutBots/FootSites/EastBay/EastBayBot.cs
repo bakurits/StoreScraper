@@ -183,6 +183,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             Browser.ActiveTab.LoadUrlAndWait(CartUrl);
             Task.Delay(4000, token).Wait(token);
             ClickContinueButton();
+            Task.Delay(2000).Wait();
             Browser.ActiveTab.QueueScriptCall(
                 @"var items = document.getElementById(""cart_items"").getElementsByTagName(""ul"")[0].getElementsByTagName(""li"")""
                 for (var i = 0; i < items.length; i++) {
@@ -196,13 +197,13 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         protected override void LogOut(CancellationToken token)
         {
             var webView = Browser.ActiveTab;
-            webView.LoadUrl(WebsiteBaseUrl);
-            Task.Delay(5 * 1000, token).Wait(token);
-            webView.EvalScript(GetScriptByXpath("//div[@id='header_account_button']/a/span") + ".click();");
+            webView.LoadUrlAndWait(WebsiteBaseUrl);
+            Task.Delay(4000, token).Wait(token);
+            webView.QueueScriptCall(GetScriptByXpath("//div[@id='header_account_button']/a/span") + ".click();").WaitOne();
 
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             
-            webView.EvalScript("document.getElementById(\"header_registered_logout_link\").click()");
+            webView.QueueScriptCall("document.getElementById(\"header_registered_logout_link\").click()").WaitOne();
             Task.Delay(DelayInSecond * 1000, token).Wait(token);
             
         }

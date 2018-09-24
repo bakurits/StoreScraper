@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using CheckoutBot;
 using CheckoutBot.CheckoutBots.FootSites;
 using CheckoutBot.CheckoutBots.FootSites.EastBay;
 using CheckoutBot.Core;
@@ -153,6 +154,12 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
                 new WebProxy("89.23.194.174:8080")
             };
             Debug.WriteLine(bot.ChooseBestProxies(lst, 4));
+        }
+
+        [ClassInitialize()]
+        public static void ClassInit(TestContext context)
+        {
+           AppData.Session = AppData.Load();
         }
 
     }
