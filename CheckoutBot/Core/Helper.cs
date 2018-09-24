@@ -40,6 +40,18 @@ namespace CheckoutBot.Core
 
         public static WebProxy GetRandomProxy(IWebsiteScraper bot)
         {
+
+            if (!AppData.Session.UseProxy)
+            {
+                return null;
+            }
+
+            if (!AppData.Session.ParsedProxies.ContainsKey(bot))
+            {
+                return null;
+            }
+
+
             var lst = AppData.Session.ParsedProxies[bot];
             return lst[rand.Next(lst.Count - 1)];
         }

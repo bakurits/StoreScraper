@@ -198,7 +198,7 @@
         <GroupBox Visibility="Hidden" Name="loadingBox" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" Grid.ColumnSpan="12"   Background="#ffffff">
             <StackPanel VerticalAlignment="Center">
                 <Image Height="140" Width="140" Margin="0 0 0 20" gif:ImageBehavior.AnimatedSource="images/loading.gif" HorizontalAlignment="Center" VerticalAlignment="Center"  Grid.ColumnSpan="12">
-                
+
                 </Image>
 
                 <Label HorizontalAlignment="Center" Foreground="Black" FontSize="26" FontWeight="Bold">
@@ -1256,7 +1256,7 @@
 
                     <GroupBox Margin="20 20 10 20" Background="#ffffff" BorderThickness="0">
                         <StackPanel>
-                           
+
                             <StackPanel>
                                 <Label Content="Add proxy" Foreground="#576379" FontWeight="SemiBold" Margin="0 5"/>
 
@@ -1274,7 +1274,8 @@ VerticalScrollBarVisibility="Auto"
 
                                 </TextBox>
 
-                                <Button  Margin="6,10" HorizontalAlignment="Right"   Padding="20 5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0" Click="AddProxy">
+                                <StackPanel Orientation="Horizontal">
+                                    <Button  Margin="6,10" HorizontalAlignment="Right"   Padding="20 5" Background="#5db8f1" Foreground="#ffffff" BorderBrush="#ebecf0" Click="AddProxy">
                                         <Button.Resources>
                                             <Style TargetType="{x:Type Border}">
                                                 <Setter Property="CornerRadius" Value="5"/>
@@ -1283,15 +1284,24 @@ VerticalScrollBarVisibility="Auto"
 
                                         ADD PROXIES
                                     </Button>
-                                <Button  Margin="6,0" Name="btn_ClearProxies" HorizontalAlignment="Right"   Padding="20 5" Background="#CB390F" Foreground="#ffffff" BorderBrush="#ebecf0" Click="ClearProxies">
-                                    <Button.Resources>
-                                        <Style TargetType="{x:Type Border}">
-                                            <Setter Property="CornerRadius" Value="5"/>
-                                        </Style>
-                                    </Button.Resources>
+                                    <Button  Margin="6 10" x:Name="btn_ClearProxies" HorizontalAlignment="Right"   Padding="20 5" Background="#CB390F" Foreground="#ffffff" BorderBrush="#ebecf0" Click="ClearProxies" Height="33">
+                                        <Button.Resources>
+                                            <Style TargetType="{x:Type Border}">
+                                                <Setter Property="CornerRadius" Value="5"/>
+                                            </Style>
+                                        </Button.Resources>
+                                   Clear Proxies
+                                    </Button>
+                                    <Button  Margin="6 10" x:Name="btn_ProxyOnOff" HorizontalAlignment="Right"   Padding="20 5" Background="#CB390F" Foreground="#ffffff" BorderBrush="#ebecf0" Click="Btn_ProxyOnOff_OnClick" Height="33">
+                                        <Button.Resources>
+                                            <Style TargetType="{x:Type Border}">
+                                                <Setter Property="CornerRadius" Value="5"/>
+                                            </Style>
+                                        </Button.Resources>
+                                        Turn Off Proxies
+                                    </Button>
+                                </StackPanel>
 
-                                    CLEAR PROXIES
-                                </Button>
 
 
 
@@ -1362,7 +1372,7 @@ VerticalScrollBarVisibility="Auto"
 
                                 </RichTextBox>
 
-                            
+
 
 
 
@@ -1371,7 +1381,7 @@ VerticalScrollBarVisibility="Auto"
                         </StackPanel>
 
                     </GroupBox>
-                   
+
                 </Grid>
 
             </TabItem>

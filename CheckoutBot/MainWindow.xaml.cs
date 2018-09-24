@@ -53,11 +53,10 @@ namespace CheckoutBot
                 cbx_Websites.Items.Add(bot);
             }
 
-
+            AppData.Session = AppData.Load();
             ReleasedProductsMonitor.Default = new ReleasedProductsMonitor();
             tasksList.ItemsSource = new List<CheckoutTask>();
             Logger.Instance.OnLogged += (message, color) => tbx_Log.AppendText(message, color);
-            AppData.Session = AppData.Load();
 
             foreach (var item in Enum.GetValues(typeof(Countries)))
             {
@@ -78,8 +77,11 @@ namespace CheckoutBot
             shippingAddress_state.SelectedValue = States.Alabama;
             billingAddress_state.SelectedValue = States.Alabama;
 
+            Btn_ProxyOnOff_OnClick(null, null);
+
             tasksList.ItemsSource = AppData.Session.CurrentTasks;
             cbx_Products.ItemsSource = AppData.CurProductList;
+
 
         }
 
@@ -95,7 +97,6 @@ namespace CheckoutBot
             await PutTaskDelay();
             loadingBox.Visibility = Visibility.Hidden;
             activeArea.Visibility = Visibility.Visible;
-
         }
 
 
@@ -458,6 +459,24 @@ namespace CheckoutBot
         {
             AppData.Session.ParsedProxies.Clear();
             proxies.Items.Clear();
+        }
+
+        private void Btn_ProxyOnOff_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (AppData.Session.UseProxy)
+            {
+                btn_ProxyOnOff.Content = "Turn On Proxies";
+                btn_ProxyOnOff.Background = new SolidColorBrush(Colors.IndianRed);
+                proxy.IsEnabled = false;
+                AppData.Session.UseProxy = false;
+            }
+            else
+            {
+                btn_ProxyOnOff.Content = "Turn Off Proxies";
+                btn_ProxyOnOff.Background = new SolidColorBrush(Colors.DarkGreen);
+                proxy.IsEnabled = true;
+                AppData.Session.UseProxy = true;
+            }
         }
     }
 

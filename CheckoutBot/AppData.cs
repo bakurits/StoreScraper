@@ -28,6 +28,7 @@ namespace CheckoutBot
 
         public static string DataFilePath;
 
+
         public static JsonSerializerSettings settings = new JsonSerializerSettings()
         {
             Culture = CultureInfo.InvariantCulture,
@@ -95,7 +96,9 @@ namespace CheckoutBot
 
 
         [JsonProperty]
-        private List<KeyValuePair<string, List<WebProxy>>> _parsedProxies = new List<KeyValuePair<string, List<WebProxy>>>();
+        private List<KeyValuePair<string, List<string>>> _parsedProxies { get; set; } = new List<KeyValuePair<string, List<string>>>();
+
+        public bool UseProxy { get; set; } = false;
 
         [JsonIgnore]
         public Dictionary<IWebsiteScraper, List<WebProxy>> ParsedProxies { get; set; } =
@@ -118,7 +121,7 @@ namespace CheckoutBot
         {
             foreach (var parsedProxy in ParsedProxies)
             {
-                _parsedProxies.Add(new KeyValuePair<string, List<WebProxy>>(parsedProxy.Key.WebsiteName, parsedProxy.Value));
+                _parsedProxies.Add(new KeyValuePair<string, List<string>>(parsedProxy.Key.WebsiteName, parsedProxy.Value.Select(proxy => proxy.Address.AbsoluteUri).ToList()));
             }
         }
 
@@ -128,7 +131,7 @@ namespace CheckoutBot
         {
             foreach (var parsedProxy in _parsedProxies)
             {
-                ParsedProxies.Add(AvailableBots.Find(bot => bot.WebsiteBaseUrl == parsedProxy.Key), parsedProxy.Value);
+                ParsedProxies.Add(AvailableBots.Find(bot => bot.WebsiteBaseUrl == parsedProxy.Key), parsedProxy.Value.Select(proxy => new WebProxy(proxy)).ToList());
             }
         }
 
