@@ -120,6 +120,7 @@
     <Compile Include="Core\ScraperBase.cs" />
     <Compile Include="Core\SearchMonitoringTask.cs" />
     <Compile Include="Core\UrlMonitoringTask.cs" />
+    <Compile Include="Exceptions\ScrappingException.cs" />
     <Compile Include="Helpers\DiscordPoster.cs" />
     <Compile Include="Helpers\SlackPoster.cs" />
     <Compile Include="Helpers\Utils.cs" />

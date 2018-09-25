@@ -77,7 +77,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
             AddArbitraryItem(arbitraryProduct, token);
             Task.Delay(2000, token).Wait(token);
             GoToCheckoutPage(token);
-            var cartTab = Browser.NewTab("Cart");
+            Browser.NewTab("Cart");
             RemoveArbitraryItem(arbitraryProduct, token);
             Browser.ActiveTab.LoadUrlAndWait(settings.ProductToBuy.Url);
             Task.Delay(4000, token).Wait(token);

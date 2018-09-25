@@ -88,6 +88,7 @@ namespace ScraperTest.CheckoutBots.FootSites.EastBay
                 };
            EastBayBot bot = new EastBayBot(){DelayInSecond = 5};
            bot.Start();
+            WebView.ShowDebugUI();
            bot.AccountCheckout(settings, CancellationToken.None);
         }
 
