@@ -72,11 +72,14 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
         /// <param name="settings"> Checkout settings </param>
         /// <param name="token"></param>
         protected override void AddToCart(AccountCheckoutSettings settings, CancellationToken token)
-        { 
-            Browser.ActiveTab.QueueScriptCall(AjaxGetRequest($@"'https://www.eastbay.com/pdp/gateway?requestKey=' +
+        {
+            var script = AjaxGetRequest($@"'https://www.eastbay.com/pdp/gateway?requestKey=' +
                             requestKey +
-                            '&action=add&qty={settings.BuyOptions.Quantity}&sku={settings.ProductToBuy.Sku}&size={settings.BuyOptions.Size}&fulfillmentType=SHIP_TO_HOME&storeNumber=0&_=' +
-                            date")).WaitOne();
+                            '&action=add&qty={settings.BuyOptions.Quantity}&sku={settings.ProductToBuy.Sku}&size={
+                    settings.BuyOptions.Size
+                }&fulfillmentType=SHIP_TO_HOME&storeNumber=0&_=' +
+                            date");
+            Browser.ActiveTab.QueueScriptCall(script).WaitOne();
             Task.Delay(200, token).Wait(token);
         }
 
@@ -121,12 +124,16 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 
         protected override void GoToCheckoutPage(CancellationToken token)
         {
-            Browser.ActiveTab.LoadUrl(CartUrl);
+            //Browser.ActiveTab.LoadUrl(CartUrl);
+            Browser.ActiveTab.LoadUrlAndWait("https://www.eastbay.com/checkout/?uri=checkout");
             Task.Delay(4000, token).Wait(token);
             ClickContinueButton();
             Browser.ActiveTab.QueueScriptCall("document.getElementById(\"cart_checkout_button\").click();").WaitOne(); //load checkout page
             Debug.WriteLine(Browser.ActiveTab.LastJSException);
             Task.Delay(5000, token).Wait(token);
+
+            
+            Task.Delay(4000, token).Wait(token);
         }
 
         /// <summary>
@@ -183,7 +190,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             Browser.ActiveTab.LoadUrlAndWait(CartUrl);
             Task.Delay(4000, token).Wait(token);
             ClickContinueButton();
-            Task.Delay(2000).Wait();
+            Task.Delay(2000, token).Wait(token);
             Browser.ActiveTab.QueueScriptCall(
                 @"var items = document.getElementById(""cart_items"").getElementsByTagName(""ul"")[0].getElementsByTagName(""li"")""
                 for (var i = 0; i < items.length; i++) {
@@ -191,6 +198,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
                     item.querySelectorAll('[title=""Remove Item From Cart""]')[0].click();
     
                 }").WaitOne();
+            Debug.WriteLine(Browser.ActiveTab.LastJSException);
             Task.Delay(2000, token).Wait(token);
         }
 
