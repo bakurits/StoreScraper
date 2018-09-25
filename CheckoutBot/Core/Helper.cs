@@ -1,18 +1,11 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Dynamic;
 using System.Net;
-using System.Threading;
-using System.Timers;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using CheckoutBot.CheckoutBots.FootSites;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperCore.Interfaces;
-using StoreScraper.Models;
 using DColor = System.Drawing.Color;
 using MColor = System.Windows.Media.Color;
 
@@ -24,20 +17,19 @@ namespace CheckoutBot.Core
         {
             box.Dispatcher.Invoke(() =>
             {
-                TextRange range = new TextRange(box.Document.ContentEnd, box.Document.ContentEnd);
-                range.Text = text;
+                TextRange range = new TextRange(box.Document.ContentEnd, box.Document.ContentEnd) {Text = text};
                 range.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(ToMediaColor(color)));
             });
         }
 
 
-        public static MColor ToMediaColor(this DColor color)
+        private static MColor ToMediaColor(this DColor color)
         {
             return MColor.FromArgb(color.A, color.R, color.G, color.B);
         }
 
 
-        static Random rand = new Random();
+        private static readonly Random Rand = new Random();
 
         public static WebProxy GetRandomProxy(IWebsiteScraper bot)
         {
@@ -54,7 +46,7 @@ namespace CheckoutBot.Core
 
 
             var lst = AppData.Session.ParsedProxies[bot];
-            return lst[rand.Next(lst.Count - 1)];
+            return lst[Rand.Next(lst.Count - 1)];
         }
 
 

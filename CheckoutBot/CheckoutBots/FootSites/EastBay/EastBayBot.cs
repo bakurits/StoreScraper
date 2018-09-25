@@ -183,13 +183,12 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             Browser.ActiveTab.LoadUrlAndWait(CartUrl);
             Task.Delay(4000, token).Wait(token);
             ClickContinueButton();
-            Task.Delay(2000).Wait();
+            Task.Delay(2000, token).Wait(token);
             Browser.ActiveTab.QueueScriptCall(
-                @"var items = document.getElementById(""cart_items"").getElementsByTagName(""ul"")[0].getElementsByTagName(""li"")""
+                @"var items = document.getElementById(""cart_items"").getElementsByTagName(""ul"")[0].getElementsByTagName(""li"");
                 for (var i = 0; i < items.length; i++) {
                     var item = items[i];
                     item.querySelectorAll('[title=""Remove Item From Cart""]')[0].click();
-    
                 }").WaitOne();
             Task.Delay(2000, token).Wait(token);
         }
@@ -279,6 +278,7 @@ namespace CheckoutBot.CheckoutBots.FootSites.EastBay
             var ind = doc.DocumentNode.SelectSingleNode("//title").InnerHtml.IndexOf("Access Denied", StringComparison.Ordinal);
             return ind != -1;
         }
+        
         /// <summary>
         /// Removes disturbing error messages from page
         /// </summary>
