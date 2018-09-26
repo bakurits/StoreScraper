@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StoreScraper.Bots.Bakurits.Shelflife;
+using StoreScraper.Bots.Html.Bakurits.Shelflife;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 

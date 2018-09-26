@@ -9,7 +9,6 @@ using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
-using StoreScraper.Bots.Sticky_bit.ChampsSports_EastBay;
 using Helper = ScraperTest.Helpers.Helper;
 using WebView = EO.WebBrowser.WebView;
 

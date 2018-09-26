@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
-using ScraperCore.Interfaces;
-using ScraperCore.Models;
-using StoreScraper.Core;
 using StoreScraper.Helpers;
+using StoreScraper.Interfaces;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
-namespace StoreScraper
+namespace StoreScraper.Core
 {
     public abstract class ScraperBase : IWebsiteScraper
     {
@@ -49,7 +48,7 @@ namespace StoreScraper
         /// </summary>
         /// <param name="listOfProducts">All products that exist on new arrivals page</param>
         /// <param name="token">Cancellation token for canceling task. </param>
-        public virtual void ScrapeNewArrivalsPage(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
+        public virtual void ScrapeAllProducts(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
         {
             throw new NotImplementedException();
         }
@@ -112,7 +111,7 @@ namespace StoreScraper
                     {
                         try
                         {
-                            ScrapeNewArrivalsPage(out var allNewProducts, settings.RequiredScrappingLevel, token);
+                            ScrapeAllProducts(out var allNewProducts, settings.RequiredScrappingLevel, token);
                             var filteredProducts = allNewProducts.FindAll(p => Utils.SatisfiesCriteria(p, settings));
                             lock (products)
                             {

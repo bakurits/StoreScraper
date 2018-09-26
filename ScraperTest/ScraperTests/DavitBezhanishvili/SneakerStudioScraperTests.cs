@@ -4,8 +4,9 @@ using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
-using StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper;
+using StoreScraper.Bots.Html.DavitBezhanishvili.SneakerStudioScraper;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
 namespace ScraperTest.ScraperTests.DavitBezhanishvili
 {
@@ -30,7 +31,7 @@ namespace ScraperTest.ScraperTests.DavitBezhanishvili
             var scraper = new SneakerStudioScraper();
             scraper.Active = true;
             var stopwatch = Stopwatch.StartNew();
-            scraper.ScrapeNewArrivalsPage(out var list, ScrappingLevel.PrimaryFields, CancellationToken.None);
+            scraper.ScrapeAllProducts(out var list, ScrappingLevel.PrimaryFields, CancellationToken.None);
             Helper.PrintFindItemsResults(list);
             Console.WriteLine(stopwatch.Elapsed.ToString("g"));
         }

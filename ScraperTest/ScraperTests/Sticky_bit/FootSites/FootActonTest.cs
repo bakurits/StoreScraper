@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using FootLocker_FootAction;
 using ScraperTest.Helpers;
+using StoreScraper.Bots.Html.Sticky_bit.FootLocker_FootAction;
 using StoreScraper.Models;
 
 namespace ScraperTest.ScraperTests.Sticky_bit.FootSites

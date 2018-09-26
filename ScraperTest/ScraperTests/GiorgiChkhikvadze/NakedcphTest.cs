@@ -2,10 +2,10 @@
 using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ScraperCore.Models;
 using ScraperTest.Helpers;
-using StoreScraper.Bots.GiorgiChkhikvadze.Nakedcph;
+using StoreScraper.Bots.Html.GiorgiChkhikvadze.Nakedcph;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
 namespace ScraperTest.ScraperTests.GiorgiChkhikvadze
 {
@@ -44,9 +44,9 @@ namespace ScraperTest.ScraperTests.GiorgiChkhikvadze
         }
 
         [TestMethod]
-        public void TestScrapeNewArrivalsPage()
+        public void TestScrapeAllProducts()
         {
-            scrapper.ScrapeNewArrivalsPage(out var products, ScrappingLevel.PrimaryFields, CancellationToken.None);
+            scrapper.ScrapeAllProducts(out var products, ScrappingLevel.PrimaryFields, CancellationToken.None);
             Helper.PrintFindItemsResults(products);
         }
     }

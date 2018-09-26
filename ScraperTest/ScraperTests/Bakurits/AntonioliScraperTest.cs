@@ -3,8 +3,9 @@ using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
-using StoreScraper.Bots.Bakurits.Antonioli;
+using StoreScraper.Bots.Html.Bakurits.Antonioli;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 using TestConsole;
 
 namespace ScraperTest.ScraperTests.Bakurits
@@ -49,7 +50,7 @@ namespace ScraperTest.ScraperTests.Bakurits
         {
             AntonioliScraper scraper = new AntonioliScraper();
             
-            scraper.ScrapeNewArrivalsPage(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
+            scraper.ScrapeAllProducts(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
             Helper.PrintFindItemsResults(lst);
         }
     }

@@ -2,8 +2,9 @@
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
-using StoreScraper.Bots.Bakurits.Baitme;
+using StoreScraper.Bots.Html.Bakurits.Baitme;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
 namespace ScraperTest.ScraperTests.Bakurits
 {
@@ -46,7 +47,7 @@ namespace ScraperTest.ScraperTests.Bakurits
         {
             BaitmeScraper scraper = new BaitmeScraper();
             
-            scraper.ScrapeNewArrivalsPage(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
+            scraper.ScrapeAllProducts(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
             Helper.PrintFindItemsResults(lst);
         }
     }

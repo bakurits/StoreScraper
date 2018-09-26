@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
 namespace StoreScraper.Core
 {

@@ -2,9 +2,9 @@
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
-using StoreScraper.Bots.Bakurits.Rimowa;
-using StoreScraper.Bots.Bakurits.Shelflife;
+using StoreScraper.Bots.Html.Bakurits.Rimowa;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
 namespace ScraperTest.ScraperTests.Bakurits
 {
@@ -47,7 +47,7 @@ namespace ScraperTest.ScraperTests.Bakurits
         {
             RimowaScraper scraper = new RimowaScraper();
             
-            scraper.ScrapeNewArrivalsPage(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
+            scraper.ScrapeAllProducts(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
             Helper.PrintFindItemsResults(lst);
         }
     }

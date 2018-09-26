@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StoreScraper.Bots.GiorgiBaghdavadze._290sqm;
+using StoreScraper.Bots.Html.GiorgiBaghdavadze._290sqm;
 using StoreScraper.Models;
 
 namespace ScraperTest.ScraperTests.GiorgiBaghdavadze

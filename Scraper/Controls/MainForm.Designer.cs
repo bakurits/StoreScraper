@@ -1,4 +1,4 @@
-﻿namespace StoreScraper.Controls
+﻿namespace Scraper.Controls
 {
     partial class MainForm
     {

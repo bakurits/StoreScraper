@@ -2,8 +2,9 @@
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
-using StoreScraper.Bots.GiorgiBaghdavadze.TitoloShop;
+using StoreScraper.Bots.Html.GiorgiBaghdavadze.Titoloshop;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
 namespace ScraperTest.ScraperTests.GiorgiBaghdavadze
 {
@@ -23,7 +24,7 @@ namespace ScraperTest.ScraperTests.GiorgiBaghdavadze
         [TestMethod()]
         public void testArrivals()
         {
-            scraper.ScrapeNewArrivalsPage(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
+            scraper.ScrapeAllProducts(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
             
             Helper.PrintFindItemsResults(lst);
         }

@@ -13,9 +13,9 @@ using CheckoutBot.CheckoutBots.FootSites.EastBay;
 using CheckoutBot.Core;
 using CheckoutBot.Models;
 using Newtonsoft.Json;
-using ScraperCore.Interfaces;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
+using StoreScraper.Interfaces;
 
 namespace CheckoutBot
 {

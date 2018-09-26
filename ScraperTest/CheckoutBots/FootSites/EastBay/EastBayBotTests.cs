@@ -17,7 +17,7 @@ using EO.WebBrowser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
 using ScraperTest.MinorTests;
-using StoreScraper.Bots.Sticky_bit.ChampsSports_EastBay;
+using StoreScraper.Bots.Html.Sticky_bit.ChampsSports_EastBay;
 using StoreScraper.Core;
 using StoreScraper.Models;
 using Helper = ScraperTest.Helpers.Helper;

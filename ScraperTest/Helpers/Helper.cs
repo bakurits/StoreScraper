@@ -5,10 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using FootLocker_FootAction;
 using StoreScraper;
+using StoreScraper.Bots.Html.Sticky_bit.FootLocker_FootAction;
 using StoreScraper.Core;
 using StoreScraper.Http;
+using StoreScraper.Http.CookieCollecting;
 using StoreScraper.Models;
 using TestContext = Microsoft.VisualStudio.TestTools.UnitTesting.TestContext;
 
