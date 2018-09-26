@@ -1,4 +1,8 @@
-﻿namespace ScraperCore.Interfaces
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace ScraperCore.Interfaces
 {
     public interface IWebsiteScraper
     {

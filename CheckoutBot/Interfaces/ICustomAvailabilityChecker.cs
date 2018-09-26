@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using CheckoutBot.Models.Checkout;
 using StoreScraper.Models;
 

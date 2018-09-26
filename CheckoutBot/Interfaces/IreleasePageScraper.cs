@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using CheckoutBot.Models;
+using StoreScraper.Models;
 
 namespace CheckoutBot.Interfaces
 {

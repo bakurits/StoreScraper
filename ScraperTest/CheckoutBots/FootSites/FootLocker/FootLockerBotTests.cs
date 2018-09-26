@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using CheckoutBot.CheckoutBots.FootSites.EastBay;
 using CheckoutBot.CheckoutBots.FootSites.FootLocker;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;

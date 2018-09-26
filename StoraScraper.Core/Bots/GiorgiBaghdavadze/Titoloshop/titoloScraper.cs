@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
+using Microsoft.CSharp.RuntimeBinder;
 using StoreScraper.Core;
 using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;

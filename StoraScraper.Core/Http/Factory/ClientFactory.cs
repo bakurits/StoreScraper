@@ -1,7 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Net;
+using System.Net.Configuration;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using System.Security.Authentication;
 using ScraperCore.Http;
 using StoreScraper.Helpers;
 using StoreScraper.Models;

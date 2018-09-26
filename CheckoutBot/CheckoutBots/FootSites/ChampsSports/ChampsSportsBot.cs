@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using CheckoutBot.Core;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
 using EO.WebBrowser;

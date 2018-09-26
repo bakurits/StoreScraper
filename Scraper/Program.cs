@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
+using System.Security.Cryptography;
 using System.Windows.Forms;
+using StoreScraper.Attributes;
 using StoreScraper.Controls;
 using StoreScraper.Helpers;
 using StoreScraper.Http;

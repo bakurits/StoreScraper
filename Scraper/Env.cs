@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Net.Mime;
+using System.Windows.Forms;
 
 namespace ScraperCore
 {

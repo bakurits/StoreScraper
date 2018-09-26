@@ -1,4 +1,6 @@
-﻿namespace CheckoutBot.Models.Shipping
+﻿using System.Data;
+
+namespace CheckoutBot.Models.Shipping
 {
     public class ShippinInfo
     {

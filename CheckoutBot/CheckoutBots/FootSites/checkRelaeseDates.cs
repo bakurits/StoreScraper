@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using CheckoutBot.CheckoutBots.FootSites.EastBay;
 using CheckoutBot.Models;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
+using StoreScraper.Models;
 
 namespace CheckoutBot.CheckoutBots.FootSites
 {
