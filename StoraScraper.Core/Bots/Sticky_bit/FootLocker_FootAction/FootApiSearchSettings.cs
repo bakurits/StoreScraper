@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Reflection;
-using System.Text;
+﻿using System.ComponentModel;
 using StoreScraper.Models;
 
 namespace FootLocker_FootAction

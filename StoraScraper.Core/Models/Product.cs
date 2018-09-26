@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Runtime.Serialization;
 using System.Threading;
 using HtmlAgilityPack;
 using Newtonsoft.Json;

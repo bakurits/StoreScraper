@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
@@ -13,8 +11,6 @@ using StoreScraper.Helpers;
 using StoreScraper.Models;
 using System.Net.Http;
 using System.Threading.Tasks;
-using StoreScraper.Attributes;
-using StoreScraper.Http;
 
 namespace StoreScraper.Bots.DavitBezhanishvili.SneakerStudioScraper
 {

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
 using StoreScraper.Bots.Bakurits.Rimowa;
-using StoreScraper.Bots.Bakurits.Shelflife;
 using StoreScraper.Models;
 
 namespace ScraperTest.ScraperTests.Bakurits

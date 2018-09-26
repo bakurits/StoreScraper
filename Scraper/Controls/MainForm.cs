@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Scraper.Controls;
 using StoreScraper.Core;
-using StoreScraper.Helpers;
 using StoreScraper.Http;
 using StoreScraper.Models;
 

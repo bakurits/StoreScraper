@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using HtmlAgilityPack;
-using StoreScraper.Attributes;
 using StoreScraper.Core;
 using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;

@@ -7,7 +7,6 @@ using StoreScraper.Core;
 using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using System.Threading.Tasks;

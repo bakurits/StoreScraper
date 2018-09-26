@@ -3,7 +3,6 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
 using StoreScraper.Bots.GiorgiChkhikvadze;
-using StoreScraper.Models;
 
 namespace ScraperTest.ScraperTests.GiorgiChkhikvadze
 {

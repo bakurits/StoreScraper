@@ -6,9 +6,6 @@ using System.Threading;
 using System.Timers;
 using CheckoutBot.CheckoutBots.FootSites;
 using CheckoutBot.Models;
-using EO.Internal;
-using EO.WebBrowser;
-using StoreScraper.Models;
 using Timer = System.Timers.Timer;
 
 namespace CheckoutBot.Core

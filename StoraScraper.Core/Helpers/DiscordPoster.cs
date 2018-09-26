@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using StoreScraper.Core;
 using StoreScraper.Http.Factory;
 using StoreScraper.Interfaces;
 using StoreScraper.Models;
