@@ -8,13 +8,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Scraper.Controls;
+using StoreScraper;
 using StoreScraper.Core;
-using StoreScraper.Helpers;
-using StoreScraper.Http;
+using StoreScraper.Http.CookieCollecting;
 using StoreScraper.Models;
 
-namespace StoreScraper.Controls
+namespace Scraper.Controls
 {
     public partial class MainForm : Form
     {

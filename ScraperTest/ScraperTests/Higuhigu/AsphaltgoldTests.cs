@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StoreScraper.Bots.Higuhigu.Asphaltgold;
+using StoreScraper.Bots.Html.Higuhigu.Asphaltgold;
 using StoreScraper.Models;
 
 namespace ScraperTest.ScraperTests.Higuhigu

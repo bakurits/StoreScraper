@@ -15,11 +15,11 @@ using EO.Internal;
 using EO.WebBrowser;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using ScraperCore.Interfaces;
 using StoreScraper.Attributes;
 using StoreScraper.Core;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
+using StoreScraper.Interfaces;
 using StoreScraper.Models;
 
 

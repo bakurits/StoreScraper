@@ -4,8 +4,9 @@ using System.Runtime.Serialization;
 using System.Threading;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
-using ScraperCore.Interfaces;
 using StoreScraper.Core;
+using StoreScraper.Interfaces;
+using StoreScraper.Models.Enums;
 
 namespace StoreScraper.Models
 {

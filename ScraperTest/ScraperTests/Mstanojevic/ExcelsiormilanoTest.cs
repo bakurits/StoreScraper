@@ -2,8 +2,9 @@
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
-using StoreScraper.Bots.Mstanojevic.Excelsiormilano;
+using StoreScraper.Bots.Html.Mstanojevic.Excelsiormilano;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
 namespace ScraperTest.ScraperTests.Mstanojevic
 {
@@ -28,7 +29,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
             ExcelsiormilanoScrapper scraper = new ExcelsiormilanoScrapper();
             SearchSettingsBase settings = new SearchSettingsBase();
             settings.KeyWords = "red canvas";
-            scraper.ScrapeNewArrivalsPage(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
+            scraper.ScrapeAllProducts(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
             Helpers.Helper.PrintFindItemsResults(lst);
 
         }

@@ -2,8 +2,9 @@
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
-using StoreScraper.Bots.Mstanojevic.Dtlr;
+using StoreScraper.Bots.Html.Mstanojevic.Dtlr;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
 namespace ScraperTest.ScraperTests.Mstanojevic
 {
@@ -28,7 +29,7 @@ namespace ScraperTest.ScraperTests.Mstanojevic
             DtlrScrapper scraper = new DtlrScrapper();
             SearchSettingsBase settings = new SearchSettingsBase();
             settings.KeyWords = "nike air";
-            scraper.ScrapeNewArrivalsPage(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
+            scraper.ScrapeAllProducts(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
             Helpers.Helper.PrintFindItemsResults(lst);
 
         }

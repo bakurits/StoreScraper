@@ -2,7 +2,7 @@
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
-using StoreScraper.Bots.Higuhigu.Consortium;
+using StoreScraper.Bots.Html.Higuhigu.Consortium;
 using StoreScraper.Models;
 
 namespace ScraperTest.ScraperTests.Higuhigu

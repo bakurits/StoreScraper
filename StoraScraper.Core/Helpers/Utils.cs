@@ -15,8 +15,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using StoreScraper.Attributes;
 using StoreScraper.Core;
-using ScraperCore.Models;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 using Cookie = System.Net.Cookie;
 using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 

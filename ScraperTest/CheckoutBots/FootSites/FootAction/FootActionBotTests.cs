@@ -9,7 +9,7 @@ using CheckoutBot.Models.Payment;
 using CheckoutBot.Models.Shipping;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
-using StoreScraper.Bots.Sticky_bit.ChampsSports_EastBay;
+using StoreScraper.Bots.Html.Sticky_bit.ChampsSports_EastBay;
 using StoreScraper.Models;
 
 namespace ScraperTest.CheckoutBots.FootSites.FootAction

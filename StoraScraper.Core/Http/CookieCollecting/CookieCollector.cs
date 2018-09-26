@@ -4,12 +4,12 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using StoreScraper.Http.Factory;
 using StoreScraper.Helpers;
+using StoreScraper.Http.Factory;
 
 #pragma warning disable 4014
 
-namespace StoreScraper.Http
+namespace StoreScraper.Http.CookieCollecting
 {
 
     public class CookieCollector

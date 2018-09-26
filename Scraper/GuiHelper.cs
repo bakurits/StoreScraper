@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using StoreScraper;
 using StoreScraper.Core;
 using StoreScraper.Models;
 
-namespace StoreScraper
+namespace Scraper
 {
     public static class GuiHelper
     {

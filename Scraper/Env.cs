@@ -1,7 +1,6 @@
-﻿using System.Net.Mime;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
-namespace ScraperCore
+namespace Scraper
 {
     public static class Env
     {

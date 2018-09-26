@@ -8,7 +8,6 @@ using System.Net.Configuration;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Security.Authentication;
-using ScraperCore.Http;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 

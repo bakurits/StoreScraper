@@ -2,7 +2,7 @@
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
-using StoreScraper.Bots.Sticky_bit.YOOX;
+using StoreScraper.Bots.Html.Sticky_bit.YOOX;
 using StoreScraper.Models;
 
 namespace ScraperTest.ScraperTests.Sticky_bit
