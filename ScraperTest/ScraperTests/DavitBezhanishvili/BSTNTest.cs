@@ -1,9 +1,7 @@
-﻿using System.Diagnostics;
-using System.Threading;
+﻿using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
 using StoreScraper.Bots.Html.DavitBezhanishvili.BSTN;
-using StoreScraper.Models;
 using StoreScraper.Models.Enums;
 
 namespace ScraperTest.ScraperTests.DavitBezhanishvili

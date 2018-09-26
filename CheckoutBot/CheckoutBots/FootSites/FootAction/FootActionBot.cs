@@ -1,18 +1,12 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
-using CheckoutBot.Models.Shipping;
 using EO.WebBrowser;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using StoreScraper.Core;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 

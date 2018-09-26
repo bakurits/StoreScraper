@@ -5,8 +5,6 @@ using StoreScraper.Core;
 
 namespace ScraperTest.MinorTests
 {
-    using System.Diagnostics.CodeAnalysis;
-
     [TestClass]
     public class LoggerTest
     {   

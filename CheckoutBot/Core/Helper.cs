@@ -3,10 +3,8 @@ using System.Net;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
-using CheckoutBot.CheckoutBots.FootSites;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper.Interfaces;
-using StoreScraper.Models;
 using DColor = System.Drawing.Color;
 using MColor = System.Windows.Media.Color;
 

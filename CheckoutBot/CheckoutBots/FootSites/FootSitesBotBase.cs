@@ -2,25 +2,19 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Globalization;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using CheckoutBot.Controls;
 using CheckoutBot.Core;
 using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
-using EO.Internal;
 using EO.WebBrowser;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using StoreScraper.Attributes;
 using StoreScraper.Core;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 using StoreScraper.Interfaces;
-using StoreScraper.Models;
 
 
 namespace CheckoutBot.CheckoutBots.FootSites

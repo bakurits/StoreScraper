@@ -1,6 +1,4 @@
-﻿using System.Net.Http;
-using System.Threading;
-using CheckoutBot.Models;
+﻿using System.Threading;
 using CheckoutBot.Models.Checkout;
 
 namespace CheckoutBot.Interfaces

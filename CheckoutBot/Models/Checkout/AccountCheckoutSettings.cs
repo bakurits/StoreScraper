@@ -1,8 +1,5 @@
-﻿using System;
-using CheckoutBot.Core;
-using CheckoutBot.Interfaces;
+﻿using CheckoutBot.Interfaces;
 using Newtonsoft.Json;
-using StoreScraper.Models;
 
 namespace CheckoutBot.Models.Checkout
 {

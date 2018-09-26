@@ -1,7 +1,5 @@
-﻿using System.Diagnostics;
-using System.Threading;
+﻿using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ScraperTest.Helpers;
 using StoreScraper.Bots.Html.Higuhigu.Chmielna;
 using StoreScraper.Models;
 

@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading;
-using CheckoutBot.CheckoutBots.FootSites.EastBay;
 using CheckoutBot.CheckoutBots.FootSites.FootAction;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
 using CheckoutBot.Models.Payment;
 using CheckoutBot.Models.Shipping;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ScraperTest.Helpers;
 using StoreScraper.Bots.Html.Sticky_bit.ChampsSports_EastBay;
-using StoreScraper.Models;
 
 namespace ScraperTest.CheckoutBots.FootSites.FootAction
 {

@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StoreScraper.Core;
-using StoreScraper.Models;
 
 namespace ScraperTest.Models
 {

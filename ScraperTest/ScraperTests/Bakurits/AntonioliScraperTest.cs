@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
 using StoreScraper.Bots.Html.Bakurits.Antonioli;
 using StoreScraper.Models;
 using StoreScraper.Models.Enums;
-using TestConsole;
 
 namespace ScraperTest.ScraperTests.Bakurits
 {

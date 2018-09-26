@@ -3,23 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Threading;
-using System.Threading.Tasks;
 using CheckoutBot;
-using CheckoutBot.CheckoutBots.FootSites;
 using CheckoutBot.CheckoutBots.FootSites.EastBay;
-using CheckoutBot.Core;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
 using CheckoutBot.Models.Payment;
 using CheckoutBot.Models.Shipping;
-using EO.Internal;
 using EO.WebBrowser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ScraperTest.Helpers;
-using ScraperTest.MinorTests;
 using StoreScraper.Bots.Html.Sticky_bit.ChampsSports_EastBay;
-using StoreScraper.Core;
-using StoreScraper.Models;
 using Helper = ScraperTest.Helpers.Helper;
 
 namespace ScraperTest.CheckoutBots.FootSites.EastBay
