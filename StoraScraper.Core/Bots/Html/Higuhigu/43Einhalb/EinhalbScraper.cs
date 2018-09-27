@@ -8,6 +8,7 @@ using StoreScraper.Core;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
 namespace StoreScraper.Bots.Html.Higuhigu._43Einhalb
 {
@@ -21,10 +22,31 @@ namespace StoreScraper.Bots.Html.Higuhigu._43Einhalb
         //private const string SearchFormat = @"https://www.43einhalb.com/en/search/{0}/page/1/sort/date_new/perpage/72";
         private const string SearchFormat = @"https://www.43einhalb.com/new-arrivals";
 
+        public override void ScrapeAllProducts(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
+        {
+            var searchUrl = "https://www.43einhalb.com/new-arrivals";
+            listOfProducts = new List<Product>();
+            HtmlNodeCollection itemCollection = GetProductCollection(token, searchUrl);
+
+            foreach (var item in itemCollection)
+            {
+                token.ThrowIfCancellationRequested();
+#if DEBUG
+                LoadSingleProduct(listOfProducts, null, item);
+#else
+                LoadSingleProductTryCatchWraper(listOfProducts, null, item);
+#endif
+            }
+
+        }
+
+
+
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
+            string url = string.Format(SearchFormat, settings.KeyWords);
+            HtmlNodeCollection itemCollection = GetProductCollection(token, url);
 
             foreach (var item in itemCollection)
             {
@@ -45,9 +67,8 @@ namespace StoreScraper.Bots.Html.Higuhigu._43Einhalb
             return document;
         }
 
-        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
+        private HtmlNodeCollection GetProductCollection(CancellationToken token, string url)
         {
-            string url = string.Format(SearchFormat, settings.KeyWords);
             var document = GetWebpage(url, token);
             if (document == null)
             {
@@ -84,7 +105,7 @@ namespace StoreScraper.Bots.Html.Higuhigu._43Einhalb
             var price = GetPrice(item);
             string imageUrl = WebsiteBaseUrl + GetImageUrl(item);
             var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
-            if (!Utils.SatisfiesCriteria(product, settings)) return;
+            if (settings != null && !Utils.SatisfiesCriteria(product, settings)) return;
             listOfProducts.Add(product);
         }
         
@@ -104,7 +125,7 @@ namespace StoreScraper.Bots.Html.Higuhigu._43Einhalb
             var priceSpanSecond = priceSpan.SelectSingleNode(".//span[@class='newPrice']");
             if (priceSpanSecond != null) priceSpan = priceSpanSecond;
             string priceStr = priceSpan.InnerText.Trim();
-            return Utils.ParsePrice(priceStr);
+            return Utils.ParsePrice(priceStr, ",", " ");
         }
 
         private string GetImageUrl(HtmlNode item)

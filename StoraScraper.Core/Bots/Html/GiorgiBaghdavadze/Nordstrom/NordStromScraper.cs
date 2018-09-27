@@ -90,19 +90,19 @@ namespace StoreScraper.Bots.Html.GiorgiBaghdavadze.Nordstrom
 
         private string getImageUrl(HtmlNode child)
         {
-            return child.SelectSingleNode(".//img[contains(@class, 'image_12eiRp')]")?.GetAttributeValue("src", null);
+            return child.SelectSingleNode(".//img[contains(@name, 'product-module-image')]")?.GetAttributeValue("src", null);
         }
 
         private string getProductUrl(HtmlNode child)
         {
-            string url = child.SelectSingleNode(".//a[contains(@class,link_22Nhi)]")?.GetAttributeValue("href", null);
+            string url = child.SelectSingleNode(".//a[contains(@class,link_)]")?.GetAttributeValue("href", null);
             url = this.WebsiteBaseUrl + url;
             return url;
         }
 
         private string getProductName(HtmlNode child)
         {
-            return child.SelectSingleNode(".//span[contains(@class,navigationLink_Z18Gs4y) and contains(@class, 'light_ZztMQb')]")?.InnerText;
+            return child.SelectSingleNode(".//span[contains(@class,navigationLink_) and contains(@class, 'light_')]/span")?.InnerText;
         }
 
         private void LoadSingleProduct(List<Product> listOfProducts, HtmlNode child, SearchSettingsBase settings)

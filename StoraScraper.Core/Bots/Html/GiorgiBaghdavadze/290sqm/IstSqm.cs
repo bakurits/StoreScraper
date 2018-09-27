@@ -10,6 +10,7 @@ using StoreScraper.Core;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
 namespace StoreScraper.Bots.Html.GiorgiBaghdavadze._290sqm
 {
@@ -19,17 +20,46 @@ namespace StoreScraper.Bots.Html.GiorgiBaghdavadze._290sqm
         public override string WebsiteBaseUrl { get; set; } = "https://ist.290sqm.com";
         public override bool Active { get; set; }
 
+        public override void ScrapeAllProducts(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
+        {
+            var searchUrl = "https://ist.290sqm.com/Just-Arrived";
+            listOfProducts = new List<Product>();
+            var request = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var document = request.GetDoc(searchUrl, token);
+            Logger.Instance.WriteErrorLog("Unexpected html!");
+            var children = document.DocumentNode.SelectNodes("//div[@id='content']/div[@class='row']/div");
+            if (children == null)
+            {
+                return;
+            }
 
+            foreach (var child in children)
+            {
+                token.ThrowIfCancellationRequested();
+#if DEBUG
+                LoadSingleProduct(listOfProducts, child, null);
+#else
+                LoadSingleProductTryCatchWraper(listOfProducts, child, null);
+#endif
+            }
+        }
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
             var searchUrl =
                 $"https://ist.290sqm.com/index.php?route=product/search&search={settings.KeyWords}";
+            scrap(listOfProducts, searchUrl, token, settings);
+        }
+
+
+        private void scrap(List<Product> listOfProducts, String searchUrl, CancellationToken token, SearchSettingsBase settings)
+        {
             var request = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var document = request.GetDoc(searchUrl, token);
+            var a = document.DocumentNode.InnerHtml;
             Logger.Instance.WriteErrorLog("Unexpected html!");
-            var children = document.DocumentNode.SelectNodes("//div[contains(@class,'col-lg-3') and contains(@class,'col-md-4')]");
+            var children = document.DocumentNode.SelectNodes("//div[@id='main']/div[2]/div[@class='row']/div");
             if (children == null)
             {
                 return;
@@ -45,7 +75,6 @@ namespace StoreScraper.Bots.Html.GiorgiBaghdavadze._290sqm
 #endif
             }
         }
-
         /// <summary>
         /// This method is simple wrapper on LoadSingleProduct
         /// To catch all Exceptions during release
@@ -67,7 +96,8 @@ namespace StoreScraper.Bots.Html.GiorgiBaghdavadze._290sqm
 
         private double getPrice(HtmlNode child)
         {
-            string priceIntoString = child.SelectSingleNode(".//p[contains(@class,'price')]").InnerText;
+            string priceIntoString = child.SelectSingleNode(".//p[contains(@class,'price')]")?.InnerText;
+            if (priceIntoString == null) return 0;
             Debug.Print(priceIntoString);
             string result = Regex.Match(priceIntoString, @"[\d\.]+").Value;
             double.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
@@ -77,18 +107,18 @@ namespace StoreScraper.Bots.Html.GiorgiBaghdavadze._290sqm
 
         private string getImageUrl(HtmlNode child)
         {
-            return child.SelectSingleNode(".//img[contains(@class,img-responsive)]").GetAttributeValue("src", null);
+            return child.SelectSingleNode(".//img[contains(@class,img-responsive)]")?.GetAttributeValue("src", null);
         }
 
         private string getProductUrl(HtmlNode child)
         {
-            string url = child.SelectSingleNode(".//div[contains(@class,caption)]/h4/a").GetAttributeValue("href", null);
+            string url = child.SelectSingleNode(".//div[contains(@class,caption)]/h4/a")?.GetAttributeValue("href", null);
             return url;
         }
 
         private string getProductName(HtmlNode child)
         {
-            string name = child.SelectSingleNode(".//div[contains(@class,caption)]/h4/a").InnerText;
+            string name = child.SelectSingleNode(".//div[contains(@class,caption)]/h4/a")?.InnerText;
             return name;
         }
 
@@ -98,7 +128,13 @@ namespace StoreScraper.Bots.Html.GiorgiBaghdavadze._290sqm
             string productURL = getProductUrl(child);
             string productName = getProductName(child);
             double price = getPrice(child);
-            var product = new Product(this, productName, productURL, price, imageURL, productURL,"TL");
+            if (productName == null) return;
+            var product = new Product(this, productName, productURL, price, imageURL, productURL, "TL");
+            if (settings == null)
+            {
+                listOfProducts.Add(product);
+                return;
+            }
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
