@@ -102,7 +102,7 @@ namespace StoreScraper.Core
                             }
                         }
 
-                        if (exceptions.Count > 0) throw new AggregateException(exceptions);
+                        //if (exceptions.Count > 0) throw new AggregateException(exceptions);
                     });
                     break;
                 case SearchMode.NewArrivalsPage:
