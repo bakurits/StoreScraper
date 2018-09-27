@@ -58,7 +58,7 @@ namespace StoreScraper.Bots.Html.DavitBezhanishvili.SneakerStudioScraper
                             {
                                 HttpRequestMessage message = new HttpRequestMessage();
                                 message.Method = HttpMethod.Get;
-                                message.RequestUri = SettingsUrl;
+                                message.RequestUri = SettingsUrl2;
                                 message.Headers.Referrer = NewArrivalsUrl;
                                 ClientFactory.Storage.Value.ProxilessClient.SendAsync(message).Result.EnsureSuccessStatusCode();
                             }
@@ -142,9 +142,9 @@ namespace StoreScraper.Bots.Html.DavitBezhanishvili.SneakerStudioScraper
             var nodes = document.DocumentNode.SelectSingleNode("//div[@class = 'row']");
             if (nodes == null)
             {
-                Logger.Instance.WriteErrorLog("Unexcepted Html");
+                Logger.Instance.WriteErrorLog("Unexpected Html");
                 Logger.Instance.SaveHtmlSnapshop(document);
-                throw new WebException("Unexcepted Html");
+                throw new WebException("Unexpected Html");
             }
 
             var children = nodes.SelectNodes("./div[@class = 'product_wrapper col-md-4 col-xs-6']");

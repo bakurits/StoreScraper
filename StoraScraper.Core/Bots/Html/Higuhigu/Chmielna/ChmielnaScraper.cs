@@ -8,6 +8,7 @@ using StoreScraper.Core;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
 namespace StoreScraper.Bots.Html.Higuhigu.Chmielna
 {
@@ -19,10 +20,29 @@ namespace StoreScraper.Bots.Html.Higuhigu.Chmielna
 
         private const string SearchFormat = @"https://chmielna20.pl/en/products/sneaker/keyword,sneaker/sort,1?keyword={0}";
 
+        public override void ScrapeAllProducts(out List<Product> listOfProducts, ScrappingLevel requiredInfo,
+            CancellationToken token)
+        {
+            listOfProducts = new List<Product>();
+            string searchUrl = "https://chmielna20.pl/en/menu/cl20/wszystkie-produkty/page,2";
+            HtmlNodeCollection itemCollection = GetProductCollection(token, searchUrl);
+            foreach (var item in itemCollection)
+            {
+                token.ThrowIfCancellationRequested();
+#if DEBUG
+                LoadSingleProduct(listOfProducts, null, item);
+#else
+                LoadSingleProductTryCatchWraper(listOfProducts, null, item);
+#endif
+            }
+
+        }
+
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
+            string url = string.Format(SearchFormat, settings.KeyWords);
+            HtmlNodeCollection itemCollection = GetProductCollection(token, url);
 
             foreach (var item in itemCollection)
             {
@@ -43,9 +63,8 @@ namespace StoreScraper.Bots.Html.Higuhigu.Chmielna
             return document;
         }
 
-        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
+        private HtmlNodeCollection GetProductCollection(CancellationToken token, string url)
         {
-            string url = string.Format(SearchFormat, settings.KeyWords);
             var document = GetWebpage(url, token);
             if (document == null)
             {
@@ -82,7 +101,7 @@ namespace StoreScraper.Bots.Html.Higuhigu.Chmielna
             var price = GetPrice(item);
             string imageUrl = GetImageUrl(item);
             var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
-            if (Utils.SatisfiesCriteria(product, settings))
+            if (settings == null || Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
             }
