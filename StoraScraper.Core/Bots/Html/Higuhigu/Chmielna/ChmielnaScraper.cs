@@ -25,8 +25,10 @@ namespace StoreScraper.Bots.Html.Higuhigu.Chmielna
         {
             listOfProducts = new List<Product>();
             string searchUrl = "https://chmielna20.pl/en/menu/cl20/wszystkie-produkty/page,2";
-            HtmlNodeCollection itemCollection = GetProductCollection(token, searchUrl);
-            foreach (var item in itemCollection)
+            var items = GetProductCollection(token, searchUrl);
+            
+
+            foreach (var item in items)
             {
                 token.ThrowIfCancellationRequested();
 #if DEBUG
