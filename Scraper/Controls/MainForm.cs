@@ -4,12 +4,14 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using StoreScraper;
 using StoreScraper.Core;
+using StoreScraper.Helpers;
 using StoreScraper.Http.CookieCollecting;
 using StoreScraper.Models;
 
@@ -226,20 +228,12 @@ namespace Scraper.Controls
 
             MessageBox.Show(@"searching filter is now adding to monitor list
                               That may take several mins
-                              You can continue usin scraper while filter is adding..");
+                              You can continue using scraper while filter is adding..");
 
 
             AddToMonitorTask(stores).ContinueWith(task =>
             {
-                if (task.IsFaulted || task.IsCanceled)
-                {
-                    MessageBox.Show(@"Error occured!!
-                                      scraper couldn't add filter in monitoring list
-                                      Please try again.");
-                }else if (task.IsCompleted)
-                {
-                    MessageBox.Show("Search filter was succesfully added to monitoring list");
-                }
+                MessageBox.Show("Search filter was succesfully added to monitoring list");
             });
         }
 
@@ -255,6 +249,8 @@ namespace Scraper.Controls
 
             await Task.Run(() =>
             {
+                StreamWriter logTextFile = null;
+                string log = $"Error while Adding There Websites to monitor: \n\n";
                 foreach (var store in stores)
                 {
                 
@@ -276,8 +272,21 @@ namespace Scraper.Controls
                     catch
                     {
                         MessageBox.Show($"Error Occured while trying to obtain current products with specified search criteria on {store.WebsiteName}");
-                        throw new Exception();
-                    } 
+                        if (logTextFile == null)
+                        {
+                            string filePath = Path.Combine("Logs",$"AddToMon ErrorLog ({DateTime.UtcNow:u})".EscapeFileName());
+                            logTextFile = File.CreateText(filePath);
+                        }
+
+                        log += store.WebsiteName + Environment.NewLine;
+                    }
+                }
+
+                if (logTextFile != null)
+                {
+                    logTextFile.Write(log);
+                    logTextFile.Flush();
+                    logTextFile.Close();
                 }
 
 
