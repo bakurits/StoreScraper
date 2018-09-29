@@ -41,7 +41,7 @@ namespace StoreScraper.Bots.Html.DavitBezhanishvili.SneakerStudioScraper
                                     client.GetAsync(NewArrivalsUrl).Result.EnsureSuccessStatusCode();
                                     HttpRequestMessage message = new HttpRequestMessage();
                                     message.Method = HttpMethod.Get;
-                                    message.RequestUri = SettingsUrl;
+                                    message.RequestUri = SettingsUrl;//////////////////////// change
                                     message.Headers.Referrer = NewArrivalsUrl;
                                     client.SendAsync(message).Result.EnsureSuccessStatusCode();
                                 }
