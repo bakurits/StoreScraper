@@ -10,6 +10,7 @@ using StoreScraper.Core;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
 namespace StoreScraper.Bots.Html.Higuhigu.Consortium
 {
@@ -21,10 +22,29 @@ namespace StoreScraper.Bots.Html.Higuhigu.Consortium
 
         private const string SearchFormat = @"https://www.consortium.co.uk/latest";
 
+        public override void ScrapeAllProducts(out List<Product> listOfProducts, ScrappingLevel requiredInfo,
+            CancellationToken token)
+        {
+            listOfProducts = new List<Product>();
+            string searchUrl = "http://www.consortium.co.uk/latest";
+            HtmlNodeCollection itemCollection = GetProductCollection(token, searchUrl);
+
+            foreach (var item in itemCollection)
+            {
+                token.ThrowIfCancellationRequested();
+#if DEBUG
+                LoadSingleProduct(listOfProducts, null, item);
+#else
+                LoadSingleProductTryCatchWraper(listOfProducts, null, item);
+#endif
+            }
+        }
+
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
+            string url = SearchFormat;
+            HtmlNodeCollection itemCollection = GetProductCollection(token, url);
 
             foreach (var item in itemCollection)
             {
@@ -45,9 +65,8 @@ namespace StoreScraper.Bots.Html.Higuhigu.Consortium
             return document;
         }
 
-        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
+        private HtmlNodeCollection GetProductCollection(CancellationToken token, string url)
         {
-            string url = SearchFormat;
             var document = GetWebpage(url, token);
             if (document == null)
             {
@@ -84,6 +103,11 @@ namespace StoreScraper.Bots.Html.Higuhigu.Consortium
             var price = GetPrice(item);
             string imageUrl = GetImageUrl(item);
             var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
+            if (settings == null)
+            {
+                listOfProducts.Add(product);
+                return;
+            }
             if (Utils.SatisfiesCriteria(product, settings))
             {
                 var keyWordSplit = settings.KeyWords.Split(' ');

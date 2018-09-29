@@ -240,7 +240,7 @@ namespace StoreScraper.Bots.Html.GiorgiChkhikvadze
             var engine = new Jurassic.ScriptEngine();
             engine.SetGlobalValue("interop", "15");
 
-            var task = client.GetAsync("https://www.off---white.com/en/US/", HttpCompletionOption.ResponseContentRead, token);
+            var task = client.GetAsync("https://www.off---white.com", HttpCompletionOption.ResponseContentRead, token);
 
             using (var result = task.Result)
             {
@@ -250,12 +250,12 @@ namespace StoreScraper.Bots.Html.GiorgiChkhikvadze
 
                 using (var message = new HttpRequestMessage())
                 {
-                    message.Headers.Referrer = new Uri("https://www.off---white.com/en/US/");
+                    message.Headers.Referrer = new Uri("https://www.off---white.com");
                     message.Headers.Add("Accept", "image/webp,image/apng,image/*,*/*;q=0.8");
                     message.Method = HttpMethod.Get;
                     message.RequestUri = new Uri("https://www.off---white.com/favicon.ico");
 
-                    //client.DefaultRequestHeaders.TryAddWithoutValidation("Referer", "https://www.off---white.com/en/US/");
+                    //client.DefaultRequestHeaders.TryAddWithoutValidation("Referer", "https://www.off---white.com");
                     //client.DefaultRequestHeaders.Remove("Accept");
                     //client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "image/webp,image/apng,image/*,*/*;q=0.8");
 
@@ -276,7 +276,7 @@ namespace StoreScraper.Bots.Html.GiorgiChkhikvadze
                 script = script.Replace("a.value", "interop");
                 script = script.Replace("t = document.createElement('div');", string.Empty);
                 script = script.Replace("t.innerHTML=\"<a href='/'>x</a>\";", string.Empty);
-                script = script.Replace("t = t.firstChild.href", "t='http://www.off---white.com/';");
+                script = script.Replace("t = t.firstChild.href", "t='http://www.off---white.com';");
 
 
 
@@ -287,7 +287,7 @@ namespace StoreScraper.Bots.Html.GiorgiChkhikvadze
                 using (var message2 = new HttpRequestMessage())
                 {
                 
-                    message2.Headers.Referrer = new Uri("https://www.off---white.com/en/US/");
+                    message2.Headers.Referrer = new Uri("https://www.off---white.com");
                     message2.RequestUri =
                         new Uri(
                             $"https://www.off---white.com/cdn-cgi/l/chk_jschl?jschl_vc={answer}&pass={pass}&jschl_answer={calc}");

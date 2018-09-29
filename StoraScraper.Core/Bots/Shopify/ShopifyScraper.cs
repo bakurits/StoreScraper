@@ -4,6 +4,7 @@ using System.Threading;
 using StoreScraper.Attributes;
 using StoreScraper.Core;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
 namespace StoreScraper.Bots.Shopify
 {
@@ -21,6 +22,11 @@ namespace StoreScraper.Bots.Shopify
         }
 
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void ScrapeAllProducts(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
         {
             throw new NotImplementedException();
         }

@@ -9,6 +9,7 @@ using StoreScraper.Core;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
 namespace StoreScraper.Bots.Html.Higuhigu.Basketrevolution
 {
@@ -19,11 +20,25 @@ namespace StoreScraper.Bots.Html.Higuhigu.Basketrevolution
         public override bool Active { get; set; }
 
         private const string SearchFormat = @"https://www.basketrevolution.es/catalogsearch/result/index/?dir=asc&limit=all&order=created_at&q={0}";
-       
+
+        public override void ScrapeAllProducts(out List<Product> listOfProducts, ScrappingLevel requiredInfo,
+            CancellationToken token)
+        {
+            var searchUrl = "";
+            listOfProducts = new List<Product>();
+            scrap(listOfProducts, null, token, searchUrl);
+        }
+
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
+            string url = string.Format(SearchFormat, settings.KeyWords);
             listOfProducts = new List<Product>();
-            HtmlNodeCollection itemCollection = GetProductCollection(settings, token);
+            scrap(listOfProducts, settings, token, url);
+        }
+
+        private void scrap(List <Product> listOfProducts, SearchSettingsBase settings, CancellationToken token, string url)
+        {
+            HtmlNodeCollection itemCollection = GetProductCollection(token, url);
 
             foreach (var item in itemCollection)
             {
@@ -44,10 +59,9 @@ namespace StoreScraper.Bots.Html.Higuhigu.Basketrevolution
             return document;
         }
 
-        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
+        private HtmlNodeCollection GetProductCollection(CancellationToken token, string url)
         {
 
-            string url = string.Format(SearchFormat, settings.KeyWords);
             var document = GetWebpage(url, token);
             if (document == null)
             {
@@ -84,7 +98,7 @@ namespace StoreScraper.Bots.Html.Higuhigu.Basketrevolution
             var price = GetPrice(item);
             string imageUrl = GetImageUrl(item);
             var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
-            if (Utils.SatisfiesCriteria(product, settings))
+            if (settings == null || Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
             }

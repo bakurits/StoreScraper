@@ -63,7 +63,7 @@ namespace StoreScraper.Core
 
 
         /// <summary>
-        /// Wrapper for FinItems Methods. It does some search settings refactoring before executing FindItems
+        /// Wrapper for FindItems Methods. It does some search settings refactoring before executing FindItems
         /// </summary>
         /// <param name="listOfProducts"></param>
         /// <param name="settings"></param>
@@ -102,7 +102,7 @@ namespace StoreScraper.Core
                             }
                         }
 
-                        if (exceptions.Count > 0) throw new AggregateException(exceptions);
+                        //if (exceptions.Count > 0) throw new AggregateException(exceptions);
                     });
                     break;
                 case SearchMode.NewArrivalsPage:

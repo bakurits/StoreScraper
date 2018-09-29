@@ -37,7 +37,14 @@ namespace CheckoutBot
             loadingBox.Visibility = Visibility.Visible;
             activeArea.Visibility = Visibility.Hidden;
 
-
+            EO.WebBrowser.Runtime.AddLicense(
+                "JbOz/RTinuX39vTjd4SOscufWbPw+g7kp+rp9um7aOPt9BDtrNzpz7iJWZek" + 
+                "sefgpePzCOmMQ5ekscufWZekzQzjnZf4ChvkdpnJ4NnCoenz/hChWe3pAx7o" + 
+                "qOXBs9y3Z6emsdq9RoGkscufdabl/RfusLWRm8ufWZfAAB3jnunN/xHuWdvl" + 
+                "BRC8W7Czxdqxaai8s8vyrtnJCRvoq9z30h+8W7Czxdqxaai9s8v1nun3+hrt" + 
+                "dpm1yc2faLWRm8ufWZfABBTmp9j4Bh3kd9vwxA23raz4/+6qo/Hp3ezYkb3y" + 
+                "2Py8drOzBBTmp9j4Bh3kd4SOzdrrotrp/x7kd4SOdePt9BDtrNzCnrWfWZek" + 
+                "zRfonNzyBBDInbW4weSwcau7wdywcA==");
             ServicePointManager.CheckCertificateRevocationList = false;
             ServicePointManager.DefaultConnectionLimit = 1000;
             ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;

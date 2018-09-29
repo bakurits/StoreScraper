@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using CheckoutBot.Core;
@@ -112,7 +113,7 @@ namespace CheckoutBot.CheckoutBots.FootSites
 
         public List<FootsitesProduct> ScrapeReleasePage(CancellationToken token)
         {
-            var proxy = Helper.GetRandomProxy(this);
+            var proxy = new WebProxy("162.217.145.90:2036");
             var client = ClientFactory.CreateHttpClient(proxy:proxy,autoCookies: true).AddHeaders(("Accept","application/json")).AddHeaders(ClientFactory.FirefoxUserAgentHeader)
                 .AddHeaders(("Accept-Language", "en-US,en; q=0.5"));
             var task = client.GetStringAsync(ReleasePageApiEndpoint);
