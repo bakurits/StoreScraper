@@ -3,8 +3,7 @@ using System.Net;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StoreScraper.Interfaces;
+using ScraperCore.Interfaces;
 using DColor = System.Drawing.Color;
 using MColor = System.Windows.Media.Color;
 
@@ -32,27 +31,8 @@ namespace CheckoutBot.Core
 
         public static WebProxy GetRandomProxy(IWebsiteScraper bot)
         {
-
-            if (!AppData.Session.UseProxy)
-            {
-                return null;
-            }
-
-            if (!AppData.Session.ParsedProxies.ContainsKey(bot))
-            {
-                return null;
-            }
-
-
             var lst = AppData.Session.ParsedProxies[bot];
             return lst[Rand.Next(lst.Count - 1)];
-        }
-
-
-        [ClassInitialize]
-        public static void ClassInit(TestContext context)
-        {
-           AppData.Session = AppData.Load();
         }
     }
 }
