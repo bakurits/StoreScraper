@@ -78,8 +78,9 @@
     <Reference Include="EO.Wpf">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Essential Objects\EO.Total 2018\EO.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.8.8.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+    <Reference Include="HtmlAgilityPack, Version=1.8.8.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a">
       <HintPath>..\packages\HtmlAgilityPack.1.8.8\lib\Net45\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Jurassic, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Jurassic.3.0.0-alpha2\lib\net45\Jurassic.dll</HintPath>
@@ -177,7 +178,7 @@
     <Compile Include="Captcha\TwoCaptchaAPI.cs" />
     <Compile Include="Captcha\CaptchaAPIBase.cs" />
     <Compile Include="CheckoutBots\FootSites\ChampsSports\ChampsSportsBot.cs" />
-    <Compile Include="CheckoutBots\FootSites\checkRelaeseDates.cs" />
+    <Compile Include="CheckoutBots\FootSites\CheckReleaseDates.cs" />
     <Compile Include="CheckoutBots\FootSites\EastBay\EastBayBot.cs" />
     <Compile Include="CheckoutBots\FootSites\FootAction\FootActionBot.cs" />
     <Compile Include="CheckoutBots\FootSites\FootLocker\FootLockerBot.cs" />

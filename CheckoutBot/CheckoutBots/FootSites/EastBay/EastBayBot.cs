@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using CheckoutBot.Interfaces;
 using CheckoutBot.Models;
 using CheckoutBot.Models.Checkout;
@@ -14,6 +15,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
+using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 
 namespace CheckoutBot.CheckoutBots.FootSites.EastBay
 {

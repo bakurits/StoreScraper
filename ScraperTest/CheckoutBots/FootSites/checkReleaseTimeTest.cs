@@ -11,14 +11,14 @@ namespace ScraperTest.CheckoutBots.FootSites
         [TestMethod]
         public void check()
         {
-            CheckRelaeseDates checker = new CheckRelaeseDates();
-            checker.checkRelaese();
+            CheckReleaseDates checker = new CheckReleaseDates();
+            checker.CheckRelease();
         }
 
         [TestMethod]
         public void testCheckPost()
         {
-            CheckRelaeseDates checker = new CheckRelaeseDates();
+            CheckReleaseDates checker = new CheckReleaseDates();
             FootsitesProduct product = new FootsitesProduct(null, "sd", "https://www.eastbay.com/product/model:303959/sku:00500617/", 0, "", "", "", null);
             checker.checkPost(product, CancellationToken.None);
         }
