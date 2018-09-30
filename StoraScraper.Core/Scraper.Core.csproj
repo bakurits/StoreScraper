@@ -147,10 +147,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <Folder Include="Bots\Shopify\ShopifyWebsites\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Bots\Shopify\ShopifyWebsites\" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Brotli.NET.1.0.19\build\Brotli.NET.targets" Condition="Exists('..\packages\Brotli.NET.1.0.19\build\Brotli.NET.targets')" />
