@@ -49,6 +49,13 @@ namespace Scraper.Controls
             Rtbx_EventLog.Invoke((MethodInvoker) (() =>
             {
                 Rtbx_EventLog.Clear();
+                LogEntry[] localLogs = null;
+
+                lock (Logger.Instance.Logs)
+                {
+                    localLogs = new LogEntry[Logger.Instance.Logs.Count];
+                    Logger.Instance.Logs.CopyTo(localLogs);
+                }
                 foreach (var log in Logger.Instance.Logs)
                 {
                     Rtbx_EventLog.AppendText(log.Text, log.Color);

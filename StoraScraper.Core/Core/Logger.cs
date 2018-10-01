@@ -119,26 +119,29 @@ namespace StoreScraper.Core
         private void InternalLogHander(string message, Color color)
         {
 
-            Logs.Add(new LogEntry()
+            lock (Logs)
             {
-                Text = message,
-                Color = color,
-            });
-
-            if (Logs.Count > MaxLogMesssages)
-            {
-                string logText = string.Join("\n", Logs.Select(log => log.Text));
-                string filePath = $"{LogsFolderName}/EventLog {DateTime.UtcNow.ToString("u", CultureInfo.InvariantCulture).EscapeFileName()}";
-                using (var stream = File.Create(filePath))
+                Logs.Add(new LogEntry()
                 {
-                    using (var writer = new StreamWriter(stream))
-                    {
-                        writer.Write(logText);
-                        writer.Flush();
-                    }
-                }
+                    Text = message,
+                    Color = color,
+                });
 
-                Logs.Clear();
+                if (Logs.Count > MaxLogMesssages)
+                {
+                    string logText = string.Join("\n", Logs.Select(log => log.Text));
+                    string filePath = $"{LogsFolderName}/EventLog {DateTime.UtcNow.ToString("u", CultureInfo.InvariantCulture).EscapeFileName()}";
+                    using (var stream = File.Create(filePath))
+                    {
+                        using (var writer = new StreamWriter(stream))
+                        {
+                            writer.Write(logText);
+                            writer.Flush();
+                        }
+                    }
+
+                    Logs.Clear();
+                } 
             }
         }
     }
