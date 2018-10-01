@@ -238,7 +238,7 @@ namespace Scraper.Controls
 
             AddToMonitorTask(stores).ContinueWith(task =>
             {
-                MessageBox.Show("Search filter was succesfully added to monitoring list");
+                MessageBox.Show(@"Search filter was succesfully added to monitoring list");
             });
         }
 
@@ -256,10 +256,13 @@ namespace Scraper.Controls
             {
                 StreamWriter logTextFile = null;
                 string log = $"Error while Adding There Websites to monitor: \n\n";
-                foreach (var store in stores)
+                Parallel.ForEach(stores, store =>
                 {
-                
-                    monTask.Stores.Add(store);
+
+                    lock (monTask.Stores)
+                    {
+                        monTask.Stores.Add(store); 
+                    }
 
                     var convertedFilter = searchOptions;
                     if (searchOptions.GetType() != store.SearchSettingsType &&
@@ -271,21 +274,29 @@ namespace Scraper.Controls
                     try
                     {
                         store.ScrapeItems(out var curProductsList, convertedFilter, _findTokenSource.Token);
-                        HashSet<Product> set = new HashSet<Product>(curProductsList);
-                        monTask.OldItems.Add(set);
+                        var set = new HashSet<Product>(curProductsList);
+                        lock (monTask.OldItems)
+                        {
+                            monTask.OldItems.Add(set); 
+                        }
                     }
                     catch
                     {
-                        MessageBox.Show($"Error Occured while trying to obtain current products with specified search criteria on {store.WebsiteName}");
+                        MessageBox.Show(
+                            $"Error Occured while trying to obtain current products with specified search criteria on {store.WebsiteName}");
                         if (logTextFile == null)
                         {
-                            string filePath = Path.Combine("Logs",$"AddToMon ErrorLog ({DateTime.UtcNow:u})".EscapeFileName());
+                            string filePath = Path.Combine("Logs",
+                                $"AddToMon ErrorLog ({DateTime.UtcNow:u})".EscapeFileName());
                             logTextFile = File.CreateText(filePath);
                         }
 
-                        log += store.WebsiteName + Environment.NewLine;
+                        lock (monTask.SearchSettings)
+                        {
+                            log += store.WebsiteName + Environment.NewLine; 
+                        }
                     }
-                }
+                });
 
                 if (logTextFile != null)
                 {
