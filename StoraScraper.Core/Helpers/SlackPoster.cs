@@ -30,8 +30,7 @@ namespace StoreScraper.Helpers
                         ""title_link"": ""{0}"",
                         ""text"": ""{1}"",
                         ""thumb_url"": ""{2}"",
-                        ""color"": ""#764FA5"",
-                        ""ts"": ""{4}""
+                        ""color"": ""#764FA5""
                     }}
                 ]
             }}";
@@ -49,10 +48,12 @@ namespace StoreScraper.Helpers
 
             string myJson = string.Format(formatter, productDetails.Url, textMessage, productDetails.ImageUrl, name, DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds);
 
-            return await PostMessageAsync(myJson, apiUrl, token);
+            await PostMessageAsync(myJson, apiUrl, token);
+            return await PostMessageAsync("{\"text\": \"------------------------------------------------------------------------------\\n------------------------------------------------------------------------------\\n\\n\\n\"}", 
+            "https://hooks.slack.com/services/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", token);
         }
 
-        public async Task<HttpResponseMessage> PostMessageAsync(string messageJson, string apiUrl, CancellationToken token)
+        private async Task<HttpResponseMessage> PostMessageAsync(string messageJson, string apiUrl, CancellationToken token)
         {
             var content = new StringContent(messageJson, Encoding.UTF8, "application/json");
             return await ClientFactory.GeneralClient.PostAsync(apiUrl, content, token);
