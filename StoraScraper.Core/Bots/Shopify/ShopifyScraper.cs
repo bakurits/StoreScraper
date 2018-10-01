@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -111,6 +112,7 @@ namespace StoreScraper.Bots.Shopify
                     Id = prod.id.ToString(),
                     ImageUrl = prod.images.FirstOrDefault()?.src,
                     SizesList = prod.variants.Where(v => v.available).Select(v => new StringPair() { Key = v.title, Value = "Unknown" }).ToList(),
+                    StoreName = this.WebsiteName
                 })).ToList();
             }
         }
