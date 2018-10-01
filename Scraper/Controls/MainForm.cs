@@ -24,7 +24,8 @@ namespace Scraper.Controls
         private CancellationTokenSource _findTokenSource = new CancellationTokenSource();
         private BindingList<Product> _listOfProducts = new BindingList<Product>();
         private CancellationTokenSource _monitorCancellation = new CancellationTokenSource();
-        private Timer _timer = new Timer(1000);
+        private readonly Timer _timer = new Timer(1000);
+        private bool _logchanged = false;
 
         public MainForm()
         {
@@ -34,6 +35,7 @@ namespace Scraper.Controls
             PGrid_Settings.SelectedObject = AppSettings.Default;
             PGrid_Bot.SelectedObject = new SearchSettingsBase();
             RTbx_Proxies.Text = string.Join("\r\n", AppSettings.Default.Proxies);
+            Logger.Instance.OnLogged += (message, color) => _logchanged = true;
             _timer.Elapsed += LogUpdaterElapsed;
             _timer.Start();
             
@@ -43,6 +45,7 @@ namespace Scraper.Controls
 
         private void LogUpdaterElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
         {
+            if (!_logchanged) return;
             Rtbx_EventLog.Invoke((MethodInvoker) (() =>
             {
                 Rtbx_EventLog.Clear();
@@ -51,6 +54,8 @@ namespace Scraper.Controls
                     Rtbx_EventLog.AppendText(log.Text, log.Color);
                 }
             }));
+
+            _logchanged = false;
         }
 
         private void btn_FindProducts_Click(object sender, EventArgs e)
@@ -279,6 +284,10 @@ namespace Scraper.Controls
                         {
                             monTask.OldItems.Add(set); 
                         }
+
+                        monTask.Stores.ForEach(storeElem => storeElem.Active = true);
+                        CLbx_Monitor.Invoke(new Action(() => CLbx_Monitor.Items.Add(monTask, true)));
+                        monTask.Start(monTask.TokenSource.Token);
                     }
                     catch
                     {
@@ -304,11 +313,6 @@ namespace Scraper.Controls
                     logTextFile.Flush();
                     logTextFile.Close();
                 }
-
-
-                monTask.Stores.ForEach(store => store.Active = true);
-                CLbx_Monitor.Invoke(new Action(() => CLbx_Monitor.Items.Add(monTask, true)));
-                monTask.Start(monTask.TokenSource.Token);
             });
         }
 

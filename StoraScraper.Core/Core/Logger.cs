@@ -69,7 +69,7 @@ namespace StoreScraper.Core
 
         public void WriteVerboseLog(string message)
         {
-            string nowTime = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture);
+            string nowTime = DateTime.UtcNow.ToString("u", CultureInfo.InvariantCulture);
 
             string log = $"[{nowTime}]: [Verbose] {message}" + Environment.NewLine + Environment.NewLine;
             OnLogged?.Invoke(log, Color.DodgerBlue);
@@ -80,7 +80,7 @@ namespace StoreScraper.Core
 
         public void WriteVerboseLog(string message, Color color)
         {
-            string nowTime = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture);
+            string nowTime = DateTime.UtcNow.ToString("u", CultureInfo.InvariantCulture);
 
             string log = $"[{nowTime}]: [Verbose] {message}" + Environment.NewLine + Environment.NewLine;
             OnLogged?.Invoke(log, color);
