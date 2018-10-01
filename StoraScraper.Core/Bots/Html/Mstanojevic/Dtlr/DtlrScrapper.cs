@@ -22,7 +22,6 @@ namespace StoreScraper.Bots.Html.Mstanojevic.Dtlr
         public override bool Active { get; set; }
 
         private const string noResults = "Sorry, no results found for your searchterm";
-
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
 
@@ -69,7 +68,7 @@ namespace StoreScraper.Bots.Html.Mstanojevic.Dtlr
         {
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             var page = (await client.GetDocTask(url, token)).DocumentNode;
-            HtmlNodeCollection collection = page.SelectNodes("//li[@class='notmobile item last']");
+            HtmlNodeCollection collection = page.SelectNodes("//div[@class='product']");
 
             foreach (var item in collection)
             {
@@ -217,13 +216,13 @@ namespace StoreScraper.Bots.Html.Mstanojevic.Dtlr
             var document = GetWebpage(url, token);
             if (document.InnerHtml.Contains(noResults)) return null;
 
-            return document.SelectNodes("//li[@class='notmobile item last']");
+            return document.SelectNodes("//div[@class='product']");
 
         }
 
         private bool CheckForValidProduct(HtmlNode item, SearchSettingsBase settings)
         {
-            string title = item.SelectSingleNode("./div/p[@class='product-name']").InnerText.ToLower();
+            string title = item.SelectSingleNode(".//h3[@class='product-name']").InnerText.ToLower();
             var validKeywords = settings.KeyWords.ToLower().Split(' ');
             var invalidKeywords = settings.NegKeyWords.ToLower().Split(' ');
             foreach (var keyword in validKeywords)
@@ -248,10 +247,6 @@ namespace StoreScraper.Bots.Html.Mstanojevic.Dtlr
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
-            if (!CheckForValidProduct(item, settings)) return;
-
-            if (item.SelectSingleNode("./div/div[@class='price-box']/span/span") == null)
-                return;
 
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
@@ -283,7 +278,7 @@ namespace StoreScraper.Bots.Html.Mstanojevic.Dtlr
             //Console.WriteLine("GetName");
             //Console.WriteLine(item.SelectSingleNode("./a").GetAttributeValue("title", ""));
 
-            return item.SelectSingleNode("./div/p[@class='product-name']").InnerText;
+            return item.SelectSingleNode(".//h3[@class='product-name']").InnerText;
         }
 
         private string GetUrl(HtmlNode item)
@@ -305,13 +300,13 @@ namespace StoreScraper.Bots.Html.Mstanojevic.Dtlr
                 return 0;
             }*/
             
-                return Utils.ParsePrice(item.SelectSingleNode("./div/div[@class='price-box']/span/span").InnerHtml);
+                return Utils.ParsePrice(item.SelectSingleNode(".//div[@class='price-box']/span/span").InnerHtml);
             
             }
 
         private string GetImageUrl(HtmlNode item)
         {
-            return item.SelectSingleNode("./a/img").GetAttributeValue("src", null);
+            return item.SelectSingleNode("./a//img").GetAttributeValue("src", null);
         }
     }
 }

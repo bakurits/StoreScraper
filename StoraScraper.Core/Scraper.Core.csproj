@@ -115,6 +115,7 @@
     <Compile Include="Bots\Html\Sticky_bit\ChampsSports_EastBay\FootStoreBase.cs" />
     <Compile Include="Bots\Html\Sticky_bit\FootLocker_FootAction\FootApiBase.cs" />
     <Compile Include="Bots\Html\Sticky_bit\FootLocker_FootAction\FootApiSearchSettings.cs" />
+    <Compile Include="Bots\Html\Sticky_bit\FootLocker_FootAction\FootsitesProduct.cs" />
     <Compile Include="Bots\Html\Sticky_bit\YOOX\YOOXScraper.cs" />
     <Compile Include="Bots\Shopify\ShopifyScraper.cs" />
     <Compile Include="Bots\Shopify\ShopifyWebsites\AclerScraper.cs" />
