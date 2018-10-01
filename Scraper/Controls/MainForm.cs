@@ -8,12 +8,14 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Forms;
 using StoreScraper;
 using StoreScraper.Core;
 using StoreScraper.Helpers;
 using StoreScraper.Http.CookieCollecting;
 using StoreScraper.Models;
+using Timer = System.Timers.Timer;
 
 namespace Scraper.Controls
 {
@@ -22,6 +24,8 @@ namespace Scraper.Controls
         private CancellationTokenSource _findTokenSource = new CancellationTokenSource();
         private BindingList<Product> _listOfProducts = new BindingList<Product>();
         private CancellationTokenSource _monitorCancellation = new CancellationTokenSource();
+        private readonly Timer _timer = new Timer(1000);
+        private bool _logchanged = false;
 
         public MainForm()
         {
@@ -31,21 +35,34 @@ namespace Scraper.Controls
             PGrid_Settings.SelectedObject = AppSettings.Default;
             PGrid_Bot.SelectedObject = new SearchSettingsBase();
             RTbx_Proxies.Text = string.Join("\r\n", AppSettings.Default.Proxies);
-            Logger.Instance.OnLogged += (message, color) =>
-            {
-                Rtbx_EventLog.Invoke((MethodInvoker)delegate
-                {
-                    if (Rtbx_EventLog.Text.Length > Logger.MaxLogBytes)
-                    {
-                        Rtbx_EventLog.SaveFile($"Logs\\EventLog{DateTime.Now.ToFileTime()}");
-                        Rtbx_EventLog.Clear();
-                    }
-                });
-
-                Rtbx_EventLog.AppendText(message, color);
-            };
+            Logger.Instance.OnLogged += (message, color) => _logchanged = true;
+            _timer.Elapsed += LogUpdaterElapsed;
+            _timer.Start();
+            
             CultureInfo.CurrentUICulture = new CultureInfo("en-US");
             CultureInfo.CurrentCulture = new CultureInfo("en-US");
+        }
+
+        private void LogUpdaterElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
+        {
+            if (!_logchanged) return;
+            Rtbx_EventLog.Invoke((MethodInvoker) (() =>
+            {
+                Rtbx_EventLog.Clear();
+                LogEntry[] localLogs = null;
+
+                lock (Logger.Instance.Logs)
+                {
+                    localLogs = new LogEntry[Logger.Instance.Logs.Count];
+                    Logger.Instance.Logs.CopyTo(localLogs);
+                }
+                foreach (var log in Logger.Instance.Logs)
+                {
+                    Rtbx_EventLog.AppendText(log.Text, log.Color);
+                }
+            }));
+
+            _logchanged = false;
         }
 
         private void btn_FindProducts_Click(object sender, EventArgs e)
@@ -119,7 +136,7 @@ namespace Scraper.Controls
 
                     Rtbx_DebugLog.Invoke((MethodInvoker) delegate
                     {
-                        if (Rtbx_DebugLog.Text.Length > Logger.MaxLogBytes)
+                        if (Rtbx_DebugLog.Text.Length > Logger.MaxLogMesssages)
                         {
                             Rtbx_DebugLog.Clear();
                         }
@@ -233,7 +250,7 @@ namespace Scraper.Controls
 
             AddToMonitorTask(stores).ContinueWith(task =>
             {
-                MessageBox.Show("Search filter was succesfully added to monitoring list");
+                MessageBox.Show(@"Search filter was succesfully added to monitoring list");
             });
         }
 
@@ -251,10 +268,13 @@ namespace Scraper.Controls
             {
                 StreamWriter logTextFile = null;
                 string log = $"Error while Adding There Websites to monitor: \n\n";
-                foreach (var store in stores)
+                Parallel.ForEach(stores, store =>
                 {
-                
-                    monTask.Stores.Add(store);
+
+                    lock (monTask.Stores)
+                    {
+                        monTask.Stores.Add(store); 
+                    }
 
                     var convertedFilter = searchOptions;
                     if (searchOptions.GetType() != store.SearchSettingsType &&
@@ -266,21 +286,33 @@ namespace Scraper.Controls
                     try
                     {
                         store.ScrapeItems(out var curProductsList, convertedFilter, _findTokenSource.Token);
-                        HashSet<Product> set = new HashSet<Product>(curProductsList);
-                        monTask.OldItems.Add(set);
+                        var set = new HashSet<Product>(curProductsList);
+                        lock (monTask.OldItems)
+                        {
+                            monTask.OldItems.Add(set); 
+                        }
+
+                        monTask.Stores.ForEach(storeElem => storeElem.Active = true);
+                        CLbx_Monitor.Invoke(new Action(() => CLbx_Monitor.Items.Add(monTask, true)));
+                        monTask.Start(monTask.TokenSource.Token);
                     }
                     catch
                     {
-                        MessageBox.Show($"Error Occured while trying to obtain current products with specified search criteria on {store.WebsiteName}");
+                        MessageBox.Show(
+                            $"Error Occured while trying to obtain current products with specified search criteria on {store.WebsiteName}");
                         if (logTextFile == null)
                         {
-                            string filePath = Path.Combine("Logs",$"AddToMon ErrorLog ({DateTime.UtcNow:u})".EscapeFileName());
+                            string filePath = Path.Combine("Logs",
+                                $"AddToMon ErrorLog ({DateTime.UtcNow:u})".EscapeFileName());
                             logTextFile = File.CreateText(filePath);
                         }
 
-                        log += store.WebsiteName + Environment.NewLine;
+                        lock (monTask.SearchSettings)
+                        {
+                            log += store.WebsiteName + Environment.NewLine; 
+                        }
                     }
-                }
+                });
 
                 if (logTextFile != null)
                 {
@@ -288,11 +320,6 @@ namespace Scraper.Controls
                     logTextFile.Flush();
                     logTextFile.Close();
                 }
-
-
-                monTask.Stores.ForEach(store => store.Active = true);
-                CLbx_Monitor.Invoke(new Action(() => CLbx_Monitor.Items.Add(monTask, true)));
-                monTask.Start(monTask.TokenSource.Token);
             });
         }
 
@@ -387,6 +414,22 @@ namespace Scraper.Controls
             KeywordInputForm form = new KeywordInputForm {Tbx_Input = {Text = settings.NegKeyWords}};
             form.ShowDialog();
             settings.NegKeyWords = form.ResultText;
+        }
+
+        private void btn_DeselectAll_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < Clbx_Websites.Items.Count; i++)
+            {
+                Clbx_Websites.SetItemChecked(i, false);
+            }
+        }
+
+        private void btn_SelectAll_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < Clbx_Websites.Items.Count; i++)
+            {
+                Clbx_Websites.SetItemChecked(i, true);
+            }
         }
     }
 }

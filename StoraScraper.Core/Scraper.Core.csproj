@@ -49,6 +49,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -115,8 +116,46 @@
     <Compile Include="Bots\Html\Sticky_bit\ChampsSports_EastBay\FootStoreBase.cs" />
     <Compile Include="Bots\Html\Sticky_bit\FootLocker_FootAction\FootApiBase.cs" />
     <Compile Include="Bots\Html\Sticky_bit\FootLocker_FootAction\FootApiSearchSettings.cs" />
+    <Compile Include="Bots\Html\Sticky_bit\FootLocker_FootAction\FootsitesProduct.cs" />
     <Compile Include="Bots\Html\Sticky_bit\YOOX\YOOXScraper.cs" />
     <Compile Include="Bots\Shopify\ShopifyScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\AclerScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\AllBirdsScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\ArgentScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\BigBallerBrandScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\BluKicksScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\CondorCyclesScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\DropDeadScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\EggTradingScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\EstherScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\FinisterreScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\FiveStoryScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\GreatsScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\HebeBoutiqueScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\HelmBootsScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\HickiesScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\HobesScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\HouseOfHollandScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\JackieSmithScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\KatherineHookerScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\KithScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\LadyGagaShopScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\MarcWennScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\MaviScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\MoreporksScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\Rebel8Scraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\RodenGrayScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\RyderScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\SaltSurfScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\SirTheLabelScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\SkinnyDipLondonScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\SvelteScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\TargetDryScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\TaylorStitchScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\TheGreatDivideScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\ThreeSixteenScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\UllacScraper.cs" />
+    <Compile Include="Bots\Shopify\ShopifyWebsites\YeezyScraper.cs" />
     <Compile Include="Core\Logger.cs" />
     <Compile Include="Core\MonitoringTaskBase.cs" />
     <Compile Include="Core\ScraperBase.cs" />
@@ -135,6 +174,7 @@
     <Compile Include="Interfaces\IWebsiteScraper.cs" />
     <Compile Include="Models\Enums\ShopifyScrappingMethod.cs" />
     <Compile Include="Models\Info.cs" />
+    <Compile Include="Models\JsonProductModels.cs" />
     <Compile Include="Models\Price.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\ProductDetails.cs" />
@@ -146,11 +186,9 @@
     <Compile Include="Models\WebHook.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Bots\Shopify\ShopifyWebsites" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Brotli.NET.1.0.19\build\Brotli.NET.targets" Condition="Exists('..\packages\Brotli.NET.1.0.19\build\Brotli.NET.targets')" />

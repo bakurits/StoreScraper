@@ -19,6 +19,7 @@ using StoreScraper.Models;
 using StoreScraper.Models.Enums;
 using Cookie = System.Net.Cookie;
 using HtmlDocument = HtmlAgilityPack.HtmlDocument;
+using Image = System.Drawing.Image;
 
 namespace StoreScraper.Helpers
 {

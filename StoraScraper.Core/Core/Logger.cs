@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using StoreScraper.Helpers;
 using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 
@@ -12,14 +14,18 @@ namespace StoreScraper.Core
 
         public static Logger Instance = new Logger();
 
-        public DateTime LastLogSave { get; set; }
-        public DateTime LastSnapshotSave { get; set; }
-        public event ColoredLogHandler OnLogged;
 
-        public const int MaxLogBytes = 1024 * 1024 * 10;
+        public const int MaxLogMesssages = 5000;
         public const string SnapshotFolderName = "HtmlSnapshots";
         public const string LogsFolderName = "Logs";
         public const int SnapshotSaveTimeoutSeconds = 5;
+
+        
+        public DateTime LastLogSave { get; set; }
+        public DateTime LastSnapshotSave { get; set; }
+        public List<LogEntry> Logs { get; set; } = new List<LogEntry>();
+        public event ColoredLogHandler OnLogged;
+
 
         public Logger()
         {
@@ -51,29 +57,35 @@ namespace StoreScraper.Core
 
         public void WriteErrorLog(string errorMessage)
         {
-            string nowTime = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+            string nowTime = DateTime.UtcNow.ToString("u",CultureInfo.InvariantCulture);
 
             string log = $"[{nowTime}]: [Error] {errorMessage}" + Environment.NewLine + Environment.NewLine;
 
             OnLogged?.Invoke(log, Color.Red);
+
+            InternalLogHander(log, Color.Red);
         }
 
 
         public void WriteVerboseLog(string message)
         {
-            string nowTime = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+            string nowTime = DateTime.UtcNow.ToString("u", CultureInfo.InvariantCulture);
 
             string log = $"[{nowTime}]: [Verbose] {message}" + Environment.NewLine + Environment.NewLine;
             OnLogged?.Invoke(log, Color.DodgerBlue);
+
+            InternalLogHander(log, Color.DodgerBlue);
         }
 
 
         public void WriteVerboseLog(string message, Color color)
         {
-            string nowTime = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+            string nowTime = DateTime.UtcNow.ToString("u", CultureInfo.InvariantCulture);
 
             string log = $"[{nowTime}]: [Verbose] {message}" + Environment.NewLine + Environment.NewLine;
             OnLogged?.Invoke(log, color);
+
+            InternalLogHander(log, color);
         }
 
 
@@ -83,7 +95,7 @@ namespace StoreScraper.Core
             if(LastSnapshotSave + TimeSpan.FromSeconds(SnapshotSaveTimeoutSeconds) > DateTime.Now) return;
 
             this.LastSnapshotSave = DateTime.Now;
-            string filename = DateTime.Now.ToString(CultureInfo.InvariantCulture).EscapeFileName() + ".html";
+            string filename = DateTime.UtcNow.ToString(CultureInfo.InvariantCulture).EscapeFileName() + ".html";
 
             string filePath = Path.Combine(SnapshotFolderName, filename);
 
@@ -102,6 +114,42 @@ namespace StoreScraper.Core
                 }
             }
         }
+
+
+        private void InternalLogHander(string message, Color color)
+        {
+
+            lock (Logs)
+            {
+                Logs.Add(new LogEntry()
+                {
+                    Text = message,
+                    Color = color,
+                });
+
+                if (Logs.Count > MaxLogMesssages)
+                {
+                    string logText = string.Join("\n", Logs.Select(log => log.Text));
+                    string filePath = $"{LogsFolderName}/EventLog {DateTime.UtcNow.ToString("u", CultureInfo.InvariantCulture).EscapeFileName()}";
+                    using (var stream = File.Create(filePath))
+                    {
+                        using (var writer = new StreamWriter(stream))
+                        {
+                            writer.Write(logText);
+                            writer.Flush();
+                        }
+                    }
+
+                    Logs.Clear();
+                } 
+            }
+        }
+    }
+
+    public struct LogEntry
+    {
+        public string Text;
+        public Color Color;
     }
 
     public delegate void ColoredLogHandler(string message, Color color);
