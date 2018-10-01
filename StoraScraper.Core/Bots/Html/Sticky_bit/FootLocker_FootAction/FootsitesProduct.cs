@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using StoreScraper.Interfaces;
 using StoreScraper.Models;
 
-namespace CheckoutBot.Models
+namespace StoreScraper.Bots.Html.Sticky_bit.FootLocker_FootAction
 {
     [JsonObject]
     public class FootsitesProduct : Product
