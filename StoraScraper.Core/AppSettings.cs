@@ -41,6 +41,8 @@ namespace StoreScraper
 
         public List<WebHook> Webhooks { get; set; } = new List<WebHook>();
 
+        public bool UseGUILogging { get; set; } = true;
+
         public bool PostStartMessage { get; set; } = false;
 
         public static void Init()

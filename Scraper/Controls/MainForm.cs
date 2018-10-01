@@ -8,12 +8,14 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Forms;
 using StoreScraper;
 using StoreScraper.Core;
 using StoreScraper.Helpers;
 using StoreScraper.Http.CookieCollecting;
 using StoreScraper.Models;
+using Timer = System.Timers.Timer;
 
 namespace Scraper.Controls
 {
@@ -22,6 +24,7 @@ namespace Scraper.Controls
         private CancellationTokenSource _findTokenSource = new CancellationTokenSource();
         private BindingList<Product> _listOfProducts = new BindingList<Product>();
         private CancellationTokenSource _monitorCancellation = new CancellationTokenSource();
+        private Timer _timer = new Timer(1000);
 
         public MainForm()
         {
@@ -31,21 +34,23 @@ namespace Scraper.Controls
             PGrid_Settings.SelectedObject = AppSettings.Default;
             PGrid_Bot.SelectedObject = new SearchSettingsBase();
             RTbx_Proxies.Text = string.Join("\r\n", AppSettings.Default.Proxies);
-            Logger.Instance.OnLogged += (message, color) =>
-            {
-                Rtbx_EventLog.Invoke((MethodInvoker)delegate
-                {
-                    if (Rtbx_EventLog.Text.Length > Logger.MaxLogBytes)
-                    {
-                        Rtbx_EventLog.SaveFile($"Logs\\EventLog{DateTime.Now.ToFileTime()}");
-                        Rtbx_EventLog.Clear();
-                    }
-                });
-
-                Rtbx_EventLog.AppendText(message, color);
-            };
+            _timer.Elapsed += LogUpdaterElapsed;
+            _timer.Start();
+            
             CultureInfo.CurrentUICulture = new CultureInfo("en-US");
             CultureInfo.CurrentCulture = new CultureInfo("en-US");
+        }
+
+        private void LogUpdaterElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
+        {
+            Rtbx_EventLog.Invoke((MethodInvoker) (() =>
+            {
+                Rtbx_EventLog.Clear();
+                foreach (var log in Logger.Instance.Logs)
+                {
+                    Rtbx_EventLog.AppendText(log.Text, log.Color);
+                }
+            }));
         }
 
         private void btn_FindProducts_Click(object sender, EventArgs e)
@@ -119,7 +124,7 @@ namespace Scraper.Controls
 
                     Rtbx_DebugLog.Invoke((MethodInvoker) delegate
                     {
-                        if (Rtbx_DebugLog.Text.Length > Logger.MaxLogBytes)
+                        if (Rtbx_DebugLog.Text.Length > Logger.MaxLogMesssages)
                         {
                             Rtbx_DebugLog.Clear();
                         }
@@ -387,6 +392,22 @@ namespace Scraper.Controls
             KeywordInputForm form = new KeywordInputForm {Tbx_Input = {Text = settings.NegKeyWords}};
             form.ShowDialog();
             settings.NegKeyWords = form.ResultText;
+        }
+
+        private void btn_DeselectAll_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < Clbx_Websites.Items.Count; i++)
+            {
+                Clbx_Websites.SetItemChecked(i, false);
+            }
+        }
+
+        private void btn_SelectAll_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < Clbx_Websites.Items.Count; i++)
+            {
+                Clbx_Websites.SetItemChecked(i, true);
+            }
         }
     }
 }
