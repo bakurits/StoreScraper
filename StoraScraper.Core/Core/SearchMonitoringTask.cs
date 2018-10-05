@@ -28,7 +28,7 @@ namespace StoreScraper.Core
             {
                 var oldSearch = OldItems[s];
                 var store = Stores[s];
-                monTasks[s] = Task.Run(() => MonitorSingleStore(store, oldSearch, token), token);
+                monTasks[s] = Task.Factory.StartNew(() => MonitorSingleStore(store, oldSearch, token), token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
             }
 
             Task.WaitAll(monTasks);
@@ -38,7 +38,7 @@ namespace StoreScraper.Core
         {
             while (!token.IsCancellationRequested)
             {
-                List<Product> lst = null;
+                List<Product> lst = new List<Product>();
 
                 try
                 {
@@ -51,7 +51,6 @@ namespace StoreScraper.Core
                 }
 
                 Logger.Instance.WriteVerboseLog($"({SearchSettings}) epoch completed");
-                Debug.Assert(lst != null, nameof(lst) + " != null");
                 foreach (var product in lst)
                 {
                     if (oldSearch.Contains(product)) continue;

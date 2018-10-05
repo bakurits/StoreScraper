@@ -71,9 +71,7 @@ namespace StoreScraper.Core
         public void ScrapeItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            List<Product> products = new List<Product>();
-            List<Exception> exceptions = new List<Exception>();
-           
+            List<Product> products = new List<Product>();           
 
             switch (settings.Mode)
             {
@@ -97,8 +95,7 @@ namespace StoreScraper.Core
                             catch (Exception e)
                             {
                                 if (i != AppSettings.Default.ProxyRotationRetryCount - 1) continue;
-                                Logger.Instance.WriteErrorLog($"Error while search {WebsiteName} with keyword {k}");
-                                exceptions.Add(e);
+                                Logger.Instance.WriteErrorLog($"Error while search {WebsiteName} with keyword {k}. \n msg={e.Message}");
                             }
                         }
 
@@ -122,8 +119,7 @@ namespace StoreScraper.Core
                         catch (Exception e)
                         {
                             if (i != AppSettings.Default.ProxyRotationRetryCount - 1) continue;
-                            Logger.Instance.WriteErrorLog($"Error while new arrivals page search {WebsiteName} with keyword {settings.KeyWords}");
-                            exceptions.Add(e);
+                            Logger.Instance.WriteErrorLog($"Error while new arrivals page search {WebsiteName} with keyword {settings.KeyWords}. \n msg= {e.Message}");
                         }
                     }
 

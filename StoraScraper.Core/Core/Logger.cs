@@ -15,7 +15,7 @@ namespace StoreScraper.Core
         public static Logger Instance = new Logger();
 
 
-        public const int MaxLogMesssages = 5000;
+        public const int MaxLogMesssages = 10000;
         public const string SnapshotFolderName = "HtmlSnapshots";
         public const string LogsFolderName = "Logs";
         public const int SnapshotSaveTimeoutSeconds = 5;

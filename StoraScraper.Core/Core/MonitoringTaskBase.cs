@@ -31,13 +31,16 @@ namespace StoreScraper.Core
             {
                 switch (action)
                 {
-                    case SearchMonitoringTask.FinalAction.PostToWebHook:
+                    case FinalAction.PostToWebHook:
                         foreach (var hook in AppSettings.Default.Webhooks)
                         {
                             hook.Poster.PostMessage(hook.WebHookUrl, productDetails, TokenSource.Token).ContinueWith(task =>
                             {
                                 if (task.IsCompleted) Logger.Instance.WriteErrorLog($"({productDetails}) Sent To Slack");
-                                if (task.IsFaulted) Logger.Instance.WriteErrorLog($"({productDetails}) Slack PostMessage Error");
+                                if (task.IsFaulted)
+                                {
+                                    Logger.Instance.WriteErrorLog($"({productDetails}) Slack PostMessage Error. msg: {task.Exception?.InnerException?.Message}");
+                                }
                             }, token);
                         }
                         break;

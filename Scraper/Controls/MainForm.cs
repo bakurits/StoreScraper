@@ -266,8 +266,11 @@ namespace Scraper.Controls
 
             await Task.Run(() =>
             {
-                StreamWriter logTextFile = null;
-                string log = $"Error while Adding There Websites to monitor: \n\n";
+                StreamWriter errorLogTxtFile = null;
+                StreamWriter verboseLogTxtFile = null;
+
+                string workingWebsiteLst = $"THESE WEBSITES SUCCESFULLY ADDED TO MONITOR: \n\n";
+                string errorLog = $"ERROR WHILE ADDING THESE WEBSITES TO MONITOR: \n\n";
                 Parallel.ForEach(stores, store =>
                 {
 
@@ -292,34 +295,40 @@ namespace Scraper.Controls
                             monTask.OldItems.Add(set); 
                         }
 
-                        monTask.Stores.ForEach(storeElem => storeElem.Active = true);
-                        CLbx_Monitor.Invoke(new Action(() => CLbx_Monitor.Items.Add(monTask, true)));
-                        monTask.Start(monTask.TokenSource.Token);
+                        workingWebsiteLst += store.WebsiteName += Environment.NewLine;
                     }
-                    catch
+                    catch(Exception e)
                     {
-                        MessageBox.Show(
-                            $"Error Occured while trying to obtain current products with specified search criteria on {store.WebsiteName}");
-                        if (logTextFile == null)
+                        if (errorLogTxtFile == null)
                         {
                             string filePath = Path.Combine("Logs",
                                 $"AddToMon ErrorLog ({DateTime.UtcNow:u})".EscapeFileName());
-                            logTextFile = File.CreateText(filePath);
+                            errorLogTxtFile = File.CreateText(filePath);
                         }
 
                         lock (monTask.SearchSettings)
                         {
-                            log += store.WebsiteName + Environment.NewLine; 
+                            errorLog += $"[{store.WebsiteName}] - error msg: {e.Message}"; 
                         }
                     }
                 });
 
-                if (logTextFile != null)
+
+                string verboseFilePath = Path.Combine("Logs", $"AddToMon VerboseLog ({DateTime.UtcNow:u})".EscapeFileName());
+                verboseLogTxtFile = File.CreateText(verboseFilePath);
+                verboseLogTxtFile.Write(workingWebsiteLst);
+                verboseLogTxtFile.Flush();
+
+                if (errorLogTxtFile != null)
                 {
-                    logTextFile.Write(log);
-                    logTextFile.Flush();
-                    logTextFile.Close();
+                    errorLogTxtFile.Write(errorLog);
+                    errorLogTxtFile.Flush();
+                    errorLogTxtFile.Close();
                 }
+
+                monTask.Stores.ForEach(store => store.Active = true);
+                CLbx_Monitor.Invoke(new Action(() => CLbx_Monitor.Items.Add(monTask, true)));
+                monTask.Start(monTask.TokenSource.Token);
             });
         }
 
