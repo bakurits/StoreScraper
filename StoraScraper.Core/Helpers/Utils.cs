@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -200,6 +201,15 @@ namespace StoreScraper.Helpers
             }
 
             return client;
+        }
+
+
+        public static void AddHeaders(this HttpRequestHeaders container, params StringPair[] headers)
+        {
+            foreach (var header in headers)
+            {
+                container.TryAddWithoutValidation(header.Key, header.Value);
+            }
         }
 
         #endregion
@@ -422,6 +432,7 @@ namespace StoreScraper.Helpers
                 try
                 {
                     action();
+                    break;
                 }
                 catch
                 {

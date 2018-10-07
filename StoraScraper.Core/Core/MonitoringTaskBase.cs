@@ -13,14 +13,11 @@ namespace StoreScraper.Core
         public List<FinalAction> FinalActions { get; set; }
         public CancellationTokenSource TokenSource { get; set; } = new CancellationTokenSource();
 
-        public abstract void MonitoringProcess(CancellationToken token);
+        public abstract void StartMonitoring();
 
-        public void Start(CancellationToken token)
+        public void Start()
         {
-            Task.Factory.StartNew(() =>
-            {
-               MonitoringProcess(token);
-            }, token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+            Task.Factory.StartNew(StartMonitoring, TokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
         protected void DoFinalActions(ProductDetails productDetails, CancellationToken token)

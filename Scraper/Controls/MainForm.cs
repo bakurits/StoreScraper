@@ -258,14 +258,11 @@ namespace Scraper.Controls
         {
             var searchOptions = (SearchSettingsBase)PGrid_Bot.SelectedObject;
 
-            var monTask = new SearchMonitoringTask()
-            {
-                SearchSettings = searchOptions,
-                FinalActions = new List<MonitoringTaskBase.FinalAction>() { MonitoringTaskBase.FinalAction.PostToWebHook }
-            };
 
             await Task.Run(() =>
             {
+
+
                 StreamWriter errorLogTxtFile = null;
                 StreamWriter verboseLogTxtFile = null;
 
@@ -274,10 +271,8 @@ namespace Scraper.Controls
                 Parallel.ForEach(stores, store =>
                 {
 
-                    lock (monTask.Stores)
-                    {
-                        monTask.Stores.Add(store); 
-                    }
+
+                    SearchMonitoringTask monTask;
 
                     var convertedFilter = searchOptions;
                     if (searchOptions.GetType() != store.SearchSettingsType &&
@@ -286,30 +281,43 @@ namespace Scraper.Controls
                         convertedFilter = SearchSettingsBase.ConvertToChild(searchOptions, store.SearchSettingsType);
                     }
 
-                    try
+
+                    if (!AppSettings.Default.MonTasks.TryGetValue(store, out monTask))
                     {
-                        store.ScrapeItems(out var curProductsList, convertedFilter, _findTokenSource.Token);
-                        var set = new HashSet<Product>(curProductsList);
-                        lock (monTask.OldItems)
+                        monTask = new SearchMonitoringTask()
                         {
-                            monTask.OldItems.Add(set); 
+                            TokenSource = new CancellationTokenSource(),
+                            Store = store,
+                            FinalActions = new List<MonitoringTaskBase.FinalAction>() { MonitoringTaskBase.FinalAction.PostToWebHook},
+                            MonitoringOptions = new List<MonitoringOptions>() { new MonitoringOptions() { SearchSettings = convertedFilter, WebHooks = null} }
+                        };
+
+
+                        try
+                        {
+                            CancellationTokenSource tknSource = new CancellationTokenSource();
+                            tknSource.CancelAfter(TimeSpan.FromSeconds(20));
+                            ProductMonitoringManager.Default.RegisterMonitoringTask(store, TimeSpan.FromMilliseconds(AppSettings.Default.MonitoringInterval), tknSource.Token);
+                            monTask.Start();
+                            AppSettings.Default.MonTasks.Add(store, monTask);
+                            CLbx_Monitor.Invoke(new Action(() => CLbx_Monitor.Items.Add(monTask, true)));
+                            workingWebsiteLst += store.WebsiteName += Environment.NewLine;
+                        }
+                        catch(Exception e)
+                        {
+                           
+                            lock (monTask)
+                            {
+                                if (errorLogTxtFile == null)
+                                {
+                                    string filePath = Path.Combine("Logs",
+                                        $"AddToMon ErrorLog ({DateTime.UtcNow:u})".EscapeFileName());
+                                    errorLogTxtFile = File.CreateText(filePath);
+                                }
+                                errorLog += $"[{store.WebsiteName}] - error msg: {e.Message}"; 
+                            }
                         }
 
-                        workingWebsiteLst += store.WebsiteName += Environment.NewLine;
-                    }
-                    catch(Exception e)
-                    {
-                        if (errorLogTxtFile == null)
-                        {
-                            string filePath = Path.Combine("Logs",
-                                $"AddToMon ErrorLog ({DateTime.UtcNow:u})".EscapeFileName());
-                            errorLogTxtFile = File.CreateText(filePath);
-                        }
-
-                        lock (monTask.SearchSettings)
-                        {
-                            errorLog += $"[{store.WebsiteName}] - error msg: {e.Message}"; 
-                        }
                     }
                 });
 
@@ -325,10 +333,6 @@ namespace Scraper.Controls
                     errorLogTxtFile.Flush();
                     errorLogTxtFile.Close();
                 }
-
-                monTask.Stores.ForEach(store => store.Active = true);
-                CLbx_Monitor.Invoke(new Action(() => CLbx_Monitor.Items.Add(monTask, true)));
-                monTask.Start(monTask.TokenSource.Token);
             });
         }
 
@@ -392,15 +396,14 @@ namespace Scraper.Controls
         private void Btn_Reset_Click(object sender, EventArgs e)
         {
             var proxies = AppSettings.Default.Proxies;
-            AppSettings.Default = new AppSettings();
-            AppSettings.Default.Proxies = proxies;
+            AppSettings.Default = new AppSettings {Proxies = proxies};
             AppSettings.Default.Save();
         }
 
         private void Btn_UrlMon_Click(object sender, EventArgs e)
         {
             UrlMonitoringTask task = new UrlMonitoringTask(Tbx_Url.Text);
-            task.Start(task.TokenSource.Token);
+            task.Start();
             CLbx_Monitor.Items.Add(task);
         }
 

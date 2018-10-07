@@ -10,7 +10,7 @@ using StoreScraper.Models.Enums;
 
 namespace StoreScraper.Core
 {
-    public abstract class ScraperBase : IWebsiteScraper
+    public abstract class ScraperBase : IShop
     {
         [Browsable(false)] public abstract string WebsiteName { get; set; }
 

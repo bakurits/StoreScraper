@@ -23,7 +23,7 @@ namespace StoreScraper.Models
 
         [Browsable(false)]
         [JsonProperty("Website")]
-        public IWebsiteScraper ScrapedBy { get; set; }
+        public IShop ScrapedBy { get; set; }
 
         public string Name { get; set; } = "";
 
@@ -64,7 +64,7 @@ namespace StoreScraper.Models
         public ScrappingLevel ScrappingLevel { get; set; } = ScrappingLevel.PrimaryFields;
 
 
-        public Product(IWebsiteScraper scrapedBy, string name, string url, double price, string imageUrl,
+        public Product(IShop scrapedBy, string name, string url, double price, string imageUrl,
             string id, string currency = "$", DateTime? releaseTime = null)
         {
             this.Name = name != null ? HtmlEntity.DeEntitize(name.Trim()).Replace("\n", "").Replace("\r", "").Replace("\t", "") : "<unknown name>";
@@ -79,7 +79,7 @@ namespace StoreScraper.Models
         }
 
 
-        public Product(IWebsiteScraper scrapedBy, string url)
+        public Product(IShop scrapedBy, string url)
         {
             this.ScrappingLevel = ScrappingLevel.Url;
             this.Url = url ?? "<unknown url>";
@@ -88,7 +88,7 @@ namespace StoreScraper.Models
             this.StoreName = scrapedBy?.WebsiteName;
         }
 
-        public Product(IWebsiteScraper scrapedBy, string url, string name)
+        public Product(IShop scrapedBy, string url, string name)
         {
             this.ScrappingLevel = ScrappingLevel.NameAndUrl;
             this.Url = url ?? "<unknown url>";

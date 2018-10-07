@@ -25,23 +25,7 @@ namespace StoreScraper.Bots.Html.GiorgiChkhikvadze
 
         private bool _active;
 
-        public override bool Active
-        {
-            get => _active;
-            set
-            {
-                if (!_active && value)
-                {
-                    CookieCollector.Default.RegisterActionAsync(this.WebsiteName, CollectCookies, TimeSpan.FromMinutes(20)).Wait();
-                    _active = true;
-                }
-                else if(_active && !value)
-                {
-                    CookieCollector.Default.RemoveAction(this.WebsiteName);
-                    _active = false;
-                }
-            }
-        }
+        public override bool Active { get; set; }
 
         [Browsable(false)]
         public List<string> CurrentCart { get; set; } = new List<string>();
@@ -63,35 +47,12 @@ namespace StoreScraper.Bots.Html.GiorgiChkhikvadze
 
         private void FinditemsInternal(List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token,  string url)
         {
-            HttpClient client = null;
+            
+            HtmlDocument document = new HtmlDocument();
 
+            var response = CfBypasser.GetRequestedPage(ClientFactory.GetRandomProxy(), this, url, token);
 
-            if (_active)
-            {
-                client = CookieCollector.Default.GetClient();
-            }
-            else
-            {
-                for (int i = 0; i < AppSettings.Default.ProxyRotationRetryCount; i++)
-                {
-                    try
-                    {
-                        client = ClientFactory.GetProxiedFirefoxClient();
-                        CollectCookies(client, token);
-                        break;
-                    }
-                    catch
-                    {
-                        if (i != AppSettings.Default.ProxyRotationRetryCount - 1) continue;
-                        Logger.Instance.WriteErrorLog($"Can't Connect to off---white");
-                        throw new WebException("Can't connect to website");
-                    }
-
-                }
-            }
-
-            var document = client.GetDoc(url, token);
-
+            document.LoadHtml(response.Content.ReadAsStringAsync().Result);
 
             if (document == null)
             {
@@ -104,9 +65,9 @@ namespace StoreScraper.Bots.Html.GiorgiChkhikvadze
 
             if (container == null)
             {
-                Logger.Instance.WriteErrorLog("Uncexpected Html!!");
+                Logger.Instance.WriteErrorLog("Unexpected Html!!");
                 Logger.Instance.SaveHtmlSnapshop(document);
-                throw new WebException("Undexpected Html");
+                throw new WebException("Unexpected Html");
             }
 
             var items = container.SelectNodes("./article");

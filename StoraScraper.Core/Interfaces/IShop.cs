@@ -1,6 +1,6 @@
 ﻿namespace StoreScraper.Interfaces
 {
-    public interface IWebsiteScraper
+    public interface IShop
     {
         string WebsiteName { get;}
         string WebsiteBaseUrl { get;}

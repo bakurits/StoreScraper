@@ -29,7 +29,7 @@ namespace CheckoutBot.Core
 
         private static readonly Random Rand = new Random();
 
-        public static WebProxy GetRandomProxy(IWebsiteScraper bot)
+        public static WebProxy GetRandomProxy(IShop bot)
         {
             var lst = AppData.Session.ParsedProxies[bot];
             return lst[Rand.Next(lst.Count - 1)];

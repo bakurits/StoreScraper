@@ -101,8 +101,8 @@ namespace CheckoutBot
         public bool UseProxy { get; set; } = false;
 
         [JsonIgnore]
-        public Dictionary<IWebsiteScraper, List<WebProxy>> ParsedProxies { get; set; } =
-            new Dictionary<IWebsiteScraper, List<WebProxy>>();
+        public Dictionary<IShop, List<WebProxy>> ParsedProxies { get; set; } =
+            new Dictionary<IShop, List<WebProxy>>();
 
 
         [JsonIgnore]

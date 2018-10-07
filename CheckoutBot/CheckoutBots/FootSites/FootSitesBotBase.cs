@@ -21,7 +21,7 @@ using StoreScraper.Interfaces;
 namespace CheckoutBot.CheckoutBots.FootSites
 {
     [JsonObject]
-    public abstract  class FootSitesBotBase : IWebsiteScraper, IGuestCheckouter, IAccountCheckouter, IReleasePageScraper, IBrowserSession
+    public abstract  class FootSitesBotBase : IShop, IGuestCheckouter, IAccountCheckouter, IReleasePageScraper, IBrowserSession
     {
         public string WebsiteName { get;}
         public string WebsiteBaseUrl { get; }

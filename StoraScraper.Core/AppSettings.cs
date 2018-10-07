@@ -17,16 +17,17 @@ namespace StoreScraper
         public const string DataFileName = "config.json";
         public static AppSettings Default;
         public static string DataDir;
+
         [JsonIgnore]
-        [XmlIgnore] 
         public static string DataFilePath;
 
-        [XmlIgnore]
+
         [JsonIgnore]
         [Browsable(false)] 
         public List<ScraperBase> AvailableScrapers;
 
-        public static int InitialBrowserCount { get; set; } = 0;
+        [JsonIgnore]
+        public Dictionary<ScraperBase, SearchMonitoringTask> MonTasks { get; set; } = new Dictionary<ScraperBase, SearchMonitoringTask>();
 
 
         [Browsable(false)]
@@ -36,8 +37,8 @@ namespace StoreScraper
 
         public int ProxyRotationRetryCount { get; set; } = 5;
 
-        [DisplayName("Monitring Delay(ms)")]
-        public int MonitoringDelay { get; set; } = 1000;
+        [DisplayName("Monitring Interval(ms)")]
+        public int MonitoringInterval { get; set; } = 1000;
 
         public List<WebHook> Webhooks { get; set; } = new List<WebHook>();
 

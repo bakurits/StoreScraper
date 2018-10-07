@@ -30,7 +30,7 @@ namespace StoreScraper.Bots.Html.Sticky_bit.FootLocker_FootAction
         [Browsable(false)]
         public string Gender { get; set; }
 
-        public FootsitesProduct(IWebsiteScraper scrapedBy, string name, string url, double price, string imageUrl,
+        public FootsitesProduct(IShop scrapedBy, string name, string url, double price, string imageUrl,
             string id, string currency = "$", DateTime? releaseTime = null)
             : base(scrapedBy, name, url, price, imageUrl, id, currency, releaseTime)
         {

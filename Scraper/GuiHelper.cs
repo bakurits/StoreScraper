@@ -27,27 +27,27 @@ namespace Scraper
         public static void LoadPredefinedTasks(this CheckedListBox container, string keywordsSource,
             string negKeywordsSource, string negScrapersSource) 
         {
-            if (!File.Exists(keywordsSource)) return;
+            //if (!File.Exists(keywordsSource)) return;
             
-            string[] keywords = File.ReadAllLines(keywordsSource);
-            string[] negKeywords =
-                File.Exists(negKeywordsSource) ? File.ReadAllLines(negKeywordsSource) : new string[0];
-            string[] negScrapers =
-                File.Exists(negScrapersSource) ? File.ReadAllLines(negScrapersSource) : new string[0];
+            //string[] keywords = File.ReadAllLines(keywordsSource);
+            //string[] negKeywords =
+            //    File.Exists(negKeywordsSource) ? File.ReadAllLines(negKeywordsSource) : new string[0];
+            //string[] negScrapers =
+            //    File.Exists(negScrapersSource) ? File.ReadAllLines(negScrapersSource) : new string[0];
 
-            var scraperBases = AppSettings.Default.AvailableScrapers.Where(scraper => Array.Exists(negScrapers, txt => txt == scraper.WebsiteName));
+            //var scraperBases = AppSettings.Default.AvailableScrapers.Where(scraper => Array.Exists(negScrapers, txt => txt == scraper.WebsiteName));
 
-            SearchMonitoringTask monitoringTask = new SearchMonitoringTask()
-            {
-                Stores = scraperBases.ToList(),
-                SearchSettings = new SearchSettingsBase()
-                {
-                    KeyWords = string.Join(",", keywords),
-                    NegKeyWords = string.Join(",", negKeywords)
-                }
-            };
+            //SearchMonitoringTask monitoringTask = new SearchMonitoringTask()
+            //{
+            //    Stores = scraperBases.ToList(),
+            //    SearchSettings = new SearchSettingsBase()
+            //    {
+            //        KeyWords = string.Join(",", keywords),
+            //        NegKeyWords = string.Join(",", negKeywords)
+            //    }
+            //};
 
-            container.Items.Add(monitoringTask);
+            //container.Items.Add(monitoringTask);
         }
     }
 }

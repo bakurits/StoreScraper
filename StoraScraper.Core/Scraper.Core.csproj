@@ -48,6 +48,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Windows.Forms" />
@@ -156,12 +157,14 @@
     <Compile Include="Bots\Shopify\ShopifyWebsites\ThreeSixteenScraper.cs" />
     <Compile Include="Bots\Shopify\ShopifyWebsites\UllacScraper.cs" />
     <Compile Include="Bots\Shopify\ShopifyWebsites\YeezyScraper.cs" />
+    <Compile Include="Core\ProductMonitoringManager.cs" />
     <Compile Include="Core\Logger.cs" />
     <Compile Include="Core\MonitoringTaskBase.cs" />
     <Compile Include="Core\ScraperBase.cs" />
     <Compile Include="Core\SearchMonitoringTask.cs" />
     <Compile Include="Core\UrlMonitoringTask.cs" />
     <Compile Include="Exceptions\ScrappingException.cs" />
+    <Compile Include="Helpers\CfBypasser.cs" />
     <Compile Include="Helpers\DiscordPoster.cs" />
     <Compile Include="Helpers\SlackPoster.cs" />
     <Compile Include="Helpers\Utils.cs" />
@@ -171,10 +174,11 @@
     <Compile Include="Http\FirefoxHttpClientStorage.cs" />
     <Compile Include="Interfaces\ISearchSettingsValidator.cs" />
     <Compile Include="Interfaces\IWebHookPoster.cs" />
-    <Compile Include="Interfaces\IWebsiteScraper.cs" />
+    <Compile Include="Interfaces\IShop.cs" />
     <Compile Include="Models\Enums\ShopifyScrappingMethod.cs" />
     <Compile Include="Models\Info.cs" />
     <Compile Include="Models\JsonProductModels.cs" />
+    <Compile Include="Models\MonitoringOptions.cs" />
     <Compile Include="Models\Price.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\ProductDetails.cs" />

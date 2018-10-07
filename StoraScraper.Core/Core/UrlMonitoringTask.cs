@@ -12,35 +12,40 @@ namespace StoreScraper.Core
         public string Url { get; set; }
         
 
-        public override void MonitoringProcess(CancellationToken token)
+        public override void StartMonitoring()
         {
-            while (!token.IsCancellationRequested)
+
+            Task.Factory.StartNew(() =>
             {
-                ProductDetails details = null;
-                try
+                while (!TokenSource.Token.IsCancellationRequested)
                 {
-                    details = _scraper.GetProductDetails(Url, token);
-                }
-                catch (Exception e)
-                {
-                    Logger.Instance.WriteErrorLog($"Error while monitoring url ({Url}) \n msg={e.Message}");
-                    continue;
-                }
+                    ProductDetails details = null;
+                    try
+                    {
+                        details = _scraper.GetProductDetails(Url, TokenSource.Token);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Instance.WriteErrorLog($"Error while monitoring url ({Url}) \n msg={e.Message}");
+                        continue;
+                    }
 
-                if (details.SizesList.Count > _oldDetails.SizesList.Count)
-                {
-                    Logger.Instance.WriteVerboseLog("New Size was found in stock");
-                    DoFinalActions(details, token);
-                }
-                else
-                {
-                    Logger.Instance.WriteVerboseLog("Url monitoring epoch completed. No new sizes in stock");
-                }
+                    if (details.SizesList.Count > _oldDetails.SizesList.Count)
+                    {
+                        Logger.Instance.WriteVerboseLog("New Size was found in stock");
+                        DoFinalActions(details, TokenSource.Token);
+                    }
+                    else
+                    {
+                        Logger.Instance.WriteVerboseLog("Url monitoring epoch completed. No new sizes in stock");
+                    }
 
-                _oldDetails = details;
+                    _oldDetails = details;
 
-                Task.Delay(AppSettings.Default.MonitoringDelay, token).Wait(token);
-            }
+                    Task.Delay(AppSettings.Default.MonitoringInterval, TokenSource.Token).Wait(TokenSource.Token);
+                }
+            }, TokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+            
         }
 
         public UrlMonitoringTask(string url)
