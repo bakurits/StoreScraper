@@ -22,7 +22,10 @@ namespace ScraperTest.ScraperTests.Bakurits
             };
 
             scraper.FindItems(out var lst, settings, CancellationToken.None);
-            Helper.PrintFindItemsResults(lst);
+            foreach (var item in lst)
+            {
+                Debug.WriteLine(item.Id);   
+            }
         }
 
         [TestMethod]

@@ -30,11 +30,13 @@ namespace ScraperTest.MinorTests
                     new StringPair() {Key = "XXL", Value = "1"}
                 }
             };
-            var task = new SlackPoster().PostMessage("https://hooks.slack.com/services/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", productDetails, CancellationToken.None);
+            var task = new SlackPoster().PostMessage("https://hooks.slack.com/services/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", productDetails, CancellationToken.None);
+            
 
             Debug.WriteLine(task.Result.Content.ReadAsStringAsync().Result);
-
+            
             task.Result.EnsureSuccessStatusCode();
+            
         }
     }
 }

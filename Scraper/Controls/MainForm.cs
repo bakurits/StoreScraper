@@ -179,16 +179,18 @@ namespace Scraper.Controls
         {
             var grid = sender as DataGridView;
 
+            Debug.Assert(grid != null, nameof(grid) + " != null");
             var product = grid.Rows[e.RowIndex].DataBoundItem as Product;
 
-            Process.Start(product.Url);
+            if (product != null) Process.Start(product.Url);
         }
 
         private void Grids_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             var grid = sender as DataGridView;
-            var cell = grid.Rows[e.RowIndex].Cells[e.ColumnIndex];
+            var cell = grid?.Rows[e.RowIndex].Cells[e.ColumnIndex];
 
+            Debug.Assert(cell != null, nameof(cell) + " != null");
             cell.ToolTipText = "Double click to open in browser";
         }
 
@@ -200,8 +202,8 @@ namespace Scraper.Controls
 
         private void Cbx_ChooseStore_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var bot = (sender as ComboBox).SelectedItem as ScraperBase;
-            var sType = bot.SearchSettingsType;
+            var bot = (sender as ComboBox)?.SelectedItem as ScraperBase;
+            var sType = bot?.SearchSettingsType;
             PGrid_Bot.SelectedObject = Activator.CreateInstance(sType);
         }
 

@@ -129,7 +129,7 @@ namespace StoreScraper.Bots.Html.Bakurits.Antonioli
                 var imageUrl = GetImageUrl(item);
                 var price = GetPrice(item);
                 var currency = GetCurrency(item);
-                return new Product(this, name, url, price, imageUrl, url, currency);
+                return new Product(this, name, url, price, imageUrl, url.Substring(url.LastIndexOf("/", StringComparison.Ordinal) + 1), currency);
             }
             catch
             {
