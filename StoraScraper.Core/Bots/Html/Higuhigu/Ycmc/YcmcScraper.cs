@@ -8,6 +8,7 @@ using StoreScraper.Core;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
 namespace StoreScraper.Bots.Html.Higuhigu.Ycmc
 {
@@ -31,10 +32,16 @@ namespace StoreScraper.Bots.Html.Higuhigu.Ycmc
 #if DEBUG
                 LoadSingleProduct(listOfProducts, settings, item);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
+                LoadSingleProductTryCatchWrapper(listOfProducts, settings, item);
 #endif
             }
 
+        }
+        
+        
+        public override void ScrapeAllProducts(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
+        {
+            FindItems(out listOfProducts, null, token);   
         }
 
         private HtmlDocument GetWebpage(string url, CancellationToken token)
@@ -57,14 +64,14 @@ namespace StoreScraper.Bots.Html.Higuhigu.Ycmc
             var items = node.SelectNodes("//li[@class='item']");
             if (items == null)
             {
-                Logger.Instance.WriteErrorLog("Uncexpected Html!!");
+                Logger.Instance.WriteErrorLog("Unexpected Html!!");
                 Logger.Instance.SaveHtmlSnapshop(document);
-                throw new WebException("Undexpected Html");
+                throw new WebException("Unexpected Html");
             }
             return items;
         }
 
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
+        private void LoadSingleProductTryCatchWrapper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
             {
@@ -85,9 +92,7 @@ namespace StoreScraper.Bots.Html.Higuhigu.Ycmc
             var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
             if (Utils.SatisfiesCriteria(product, settings))
             {
-                var keyWordSplit = settings.KeyWords.Split(' ');
-                if (keyWordSplit.All(keyWord => product.Name.ToLower().Contains(keyWord.ToLower())))
-                    listOfProducts.Add(product);
+                listOfProducts.Add(product);
             }
         }
 
