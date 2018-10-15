@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
 using StoreScraper.Bots.Html.Higuhigu.Consortium;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
 namespace ScraperTest.ScraperTests.Higuhigu
 {
@@ -40,6 +41,15 @@ namespace ScraperTest.ScraperTests.Higuhigu
             {
                 Debug.WriteLine(sz);
             }
+        }
+        
+        [TestMethod]
+        public void ScrapeAllProductsTest()
+        {
+            ConsortiumScraper scraper = new ConsortiumScraper();
+            
+            scraper.ScrapeAllProducts(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
+            Helper.PrintFindItemsResults(lst);
         }
     }
 }
