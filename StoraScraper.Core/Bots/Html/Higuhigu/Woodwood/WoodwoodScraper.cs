@@ -56,6 +56,47 @@ namespace StoreScraper.Bots.Html.Higuhigu.Woodwood
         {
             FindItems(out listOfProducts, null, token);   
         }
+        
+        
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
+        {
+            var document = GetWebpage(productUrl, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to woodwood website");
+                throw new WebException("Can't connect to website");
+            }
+
+            var root = document.DocumentNode;
+            
+            var sizeNodes = root.SelectNodes("//select[contains(@id, 'form-size')]//option[not(@value='')]");
+            var sizes = GetSizes(root.InnerHtml);
+
+            var name = root.SelectSingleNode("//h1[@class='headline']")?.InnerText.Trim();
+            var priceNode = root.SelectSingleNode("//span[@class='price']");
+            var price = Utils.ParsePrice(priceNode?.InnerText);
+            var image = root.SelectSingleNode("//a[@id='commodity-show-image']/img")?.GetAttributeValue("src", null);
+
+            ProductDetails result = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+
+            Debug.Assert(sizes != null, nameof(sizes) + " != null");
+            foreach (var size in sizes)
+            {
+                result.AddSize(size, "Unknown");
+            }
+
+            return result;
+        }
+
 
         private HtmlDocument GetWebpage(string url, CancellationToken token)
         {
@@ -139,46 +180,6 @@ namespace StoreScraper.Bots.Html.Higuhigu.Woodwood
         {
             return item.SelectSingleNode(".//img").GetAttributeValue("src", null);
         }
-
-        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
-        {
-            var document = GetWebpage(productUrl, token);
-            if (document == null)
-            {
-                Logger.Instance.WriteErrorLog($"Can't Connect to woodwood website");
-                throw new WebException("Can't connect to website");
-            }
-
-            var root = document.DocumentNode;
-            
-            var sizeNodes = root.SelectNodes("//select[contains(@id, 'form-size')]//option[not(@value='')]");
-            var sizes = GetSizes(root.InnerHtml);
-
-            var name = root.SelectSingleNode("//h1[@class='headline']")?.InnerText.Trim();
-            var priceNode = root.SelectSingleNode("//span[@class='price']");
-            var price = Utils.ParsePrice(priceNode?.InnerText);
-            var image = root.SelectSingleNode("//a[@id='commodity-show-image']/img")?.GetAttributeValue("src", null);
-
-            ProductDetails result = new ProductDetails()
-            {
-                Price = price.Value,
-                Name = name,
-                Currency = price.Currency,
-                ImageUrl = image,
-                Url = productUrl,
-                Id = productUrl,
-                ScrapedBy = this
-            };
-
-            Debug.Assert(sizes != null, nameof(sizes) + " != null");
-            foreach (var size in sizes)
-            {
-                result.AddSize(size, "Unknown");
-            }
-
-            return result;
-        }
-
 
         private List<string> GetSizes(string html)
         {

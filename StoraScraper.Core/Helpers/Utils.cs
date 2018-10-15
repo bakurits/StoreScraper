@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using StoreScraper.Attributes;
 using StoreScraper.Core;
+using StoreScraper.Http.Factory;
 using StoreScraper.Models;
 using StoreScraper.Models.Enums;
 using Cookie = System.Net.Cookie;
@@ -210,6 +211,18 @@ namespace StoreScraper.Helpers
             {
                 container.TryAddWithoutValidation(header.Key, header.Value);
             }
+        }
+        
+        
+        public static async Task<List<HtmlNode>> GetPageTask(List<string> urls, CancellationToken token)
+        {
+            var res = new List<HtmlNode>();
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+
+            var documents = await Task.WhenAll(urls.Select(i => client.GetDocTask(i, token)));
+            foreach (var document in documents) res.Add(document.DocumentNode);
+
+            return res;
         }
 
         #endregion

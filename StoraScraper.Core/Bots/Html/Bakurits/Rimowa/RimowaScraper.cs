@@ -54,7 +54,7 @@ namespace StoreScraper.Bots.Html.Bakurits.Rimowa
                 seenProducts += 12;
             }
 
-            var pages = GetPageTask(urls, token).Result;
+            var pages = Utils.GetPageTask(urls, token).Result;
             foreach (var page in pages)
             {
                 var items = page.SelectNodes("//li[contains(@class, 'grid-tile')]");
@@ -95,17 +95,6 @@ namespace StoreScraper.Bots.Html.Bakurits.Rimowa
 
             details.AddSize(productName, "Unknown");
             return details;
-        }
-
-        private static async Task<List<HtmlNode>> GetPageTask(List<string> urls, CancellationToken token)
-        {
-            var res = new List<HtmlNode>();
-            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
-
-            var documents = await Task.WhenAll(urls.Select(i => client.GetDocTask(i, token)));
-            foreach (var document in documents) res.Add(document.DocumentNode);
-
-            return res;
         }
 
         private Product GetProduct(HtmlNode item)
