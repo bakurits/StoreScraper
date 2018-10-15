@@ -17,5 +17,10 @@
             Key = tuple.key,
             Value = tuple.value
         };
+
+        public override string ToString()
+        {
+            return this.Key + " " + this.Value;
+        }
     }
 }

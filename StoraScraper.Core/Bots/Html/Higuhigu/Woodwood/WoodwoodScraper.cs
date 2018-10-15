@@ -4,12 +4,15 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using System.Windows.Forms;
 using HtmlAgilityPack;
+using Newtonsoft.Json.Linq;
 using StoreScraper.Core;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 using StoreScraper.Models;
 using StoreScraper.Models.Enums;
+using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 
 namespace StoreScraper.Bots.Html.Higuhigu.Woodwood
 {
@@ -147,8 +150,9 @@ namespace StoreScraper.Bots.Html.Higuhigu.Woodwood
             }
 
             var root = document.DocumentNode;
+            
             var sizeNodes = root.SelectNodes("//select[contains(@id, 'form-size')]//option[not(@value='')]");
-            var sizes = sizeNodes?.Select(node => node.InnerText.Trim()).ToList();
+            var sizes = GetSizes(root.InnerHtml);
 
             var name = root.SelectSingleNode("//h1[@class='headline']")?.InnerText.Trim();
             var priceNode = root.SelectSingleNode("//span[@class='price']");
@@ -173,6 +177,33 @@ namespace StoreScraper.Bots.Html.Higuhigu.Woodwood
             }
 
             return result;
+        }
+
+
+        private List<string> GetSizes(string html)
+        {
+            var indexOf = html.IndexOf("'items':",
+                StringComparison.Ordinal);
+            var json = Utils.GetFirstJson(html.Substring(indexOf));
+            List<string> ans = new List<string>();
+            foreach (var jToken in json)
+            {
+                try
+                {
+                    var size = jToken.Value["params"][1].ToString();
+                    if (!size.Contains("Out Of Stock"))
+                    {
+                        ans.Add(size);
+                    }
+                }
+                catch (Exception e)
+                {
+                    // ignored
+                }
+
+            }
+
+            return ans;
         }
     }
 }
