@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -24,7 +25,7 @@ namespace StoreScraper.Bots.Html.Higuhigu.Chmielna
             CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            string searchUrl = "https://chmielna20.pl/en/menu/cl20/wszystkie-produkty/page,2";
+            string searchUrl = "https://chmielna20.pl/en/menu/cl20/wszystkie-produkty/page,10";
             var items = GetProductCollection(token, searchUrl);
             
 
@@ -34,7 +35,7 @@ namespace StoreScraper.Bots.Html.Higuhigu.Chmielna
 #if DEBUG
                 LoadSingleProduct(listOfProducts, null, item);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, null, item);
+                LoadSingleProductTryCatchWrapper(listOfProducts, null, item);
 #endif
             }
 
@@ -52,10 +53,51 @@ namespace StoreScraper.Bots.Html.Higuhigu.Chmielna
 #if DEBUG
                 LoadSingleProduct(listOfProducts, settings, item);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
+                LoadSingleProductTryCatchWrapper(listOfProducts, settings, item);
 #endif
             }
 
+        }
+        
+        
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
+        {
+            var document = GetWebpage(productUrl, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to chmielna website");
+                throw new WebException("Can't connect to website");
+            }
+
+            var root = document.DocumentNode;
+            var sizeNodes = root.SelectNodes("//div[@class='selector']/ul/li");
+            var sizes = sizeNodes?.Select(node => node.GetAttributeValue("data-sizeeu", null) ?? 
+                                                  node.GetAttributeValue("data-sizeuk", null) ??
+                                                  node.GetAttributeValue("data-value", null)).ToList();
+
+            var name = root.SelectSingleNode("//div[@class='product__name']/h1")?.InnerText.Trim();
+            var priceNode = root.SelectSingleNode("//span[@class='product__price_shop']");
+            var price = Utils.ParsePrice(priceNode?.InnerText);
+            var image = root.SelectSingleNode("//div[@class='item zoom']/img")?.GetAttributeValue("src", null);
+
+            ProductDetails result = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+
+            Debug.Assert(sizes != null, nameof(sizes) + " != null");
+            foreach (var size in sizes)
+            {
+                result.AddSize(size, "Unknown");
+            }
+
+            return result;
         }
 
         private HtmlDocument GetWebpage(string url, CancellationToken token)
@@ -77,14 +119,14 @@ namespace StoreScraper.Bots.Html.Higuhigu.Chmielna
             var items = node.SelectNodes("//div[contains(@class, 'products__item')]");
             if (items == null)
             {
-                Logger.Instance.WriteErrorLog("Uncexpected Html!!");
+                Logger.Instance.WriteErrorLog("Unexpected Html!!");
                 Logger.Instance.SaveHtmlSnapshop(document);
-                throw new WebException("Undexpected Html");
+                throw new WebException("Unexpected Html");
             }
             return items;
         }
 
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
+        private void LoadSingleProductTryCatchWrapper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
             {
@@ -103,7 +145,7 @@ namespace StoreScraper.Bots.Html.Higuhigu.Chmielna
             var price = GetPrice(item);
             string imageUrl = GetImageUrl(item);
             var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
-            if (settings == null || Utils.SatisfiesCriteria(product, settings))
+            if (Utils.SatisfiesCriteria(product, settings))
             {
                 listOfProducts.Add(product);
             }
@@ -128,43 +170,6 @@ namespace StoreScraper.Bots.Html.Higuhigu.Chmielna
         private string GetImageUrl(HtmlNode item)
         {
             return item.SelectSingleNode(".//img").GetAttributeValue("src", null);
-        }
-
-        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
-        {
-            var document = GetWebpage(productUrl, token);
-            if (document == null)
-            {
-                Logger.Instance.WriteErrorLog($"Can't Connect to chmielna website");
-                throw new WebException("Can't connect to website");
-            }
-
-            var root = document.DocumentNode;
-            var sizeNodes = root.SelectNodes("//div[@class='selector']/ul/li");
-            var sizes = sizeNodes?.Select(node => node.GetAttributeValue("data-sizeeu", null)).ToList();
-
-            var name = root.SelectSingleNode("//div[@class='product__name']/h1")?.InnerText.Trim();
-            var priceNode = root.SelectSingleNode("//span[@class='product__price_shop']");
-            var price = Utils.ParsePrice(priceNode?.InnerText);
-            var image = root.SelectSingleNode("//div[@class='item zoom']/img")?.GetAttributeValue("src", null);
-
-            ProductDetails result = new ProductDetails()
-            {
-                Price = price.Value,
-                Name = name,
-                Currency = price.Currency,
-                ImageUrl = image,
-                Url = productUrl,
-                Id = productUrl,
-                ScrapedBy = this
-            };
-
-            foreach (var size in sizes)
-            {
-                result.AddSize(size, "Unknown");
-            }
-
-            return result;
         }
     }
 }

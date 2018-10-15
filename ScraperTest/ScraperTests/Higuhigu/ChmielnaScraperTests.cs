@@ -1,7 +1,9 @@
 ﻿using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ScraperTest.Helpers;
 using StoreScraper.Bots.Html.Higuhigu.Chmielna;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
 namespace ScraperTest.ScraperTests.Higuhigu
 {
@@ -33,6 +35,16 @@ namespace ScraperTest.ScraperTests.Higuhigu
                 "EUR");
 
             ProductDetails details = scraper.GetProductDetails(curProduct.Url, CancellationToken.None);
+            Helper.PrintFindItemsResults(details.SizesList);
+        }
+        
+        [TestMethod]
+        public void ScrapeAllProductsTest()
+        {
+            ChmielnaScraper scraper = new ChmielnaScraper();
+            
+            scraper.ScrapeAllProducts(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
+            Helper.PrintFindItemsResults(lst);
         }
     }
 }
