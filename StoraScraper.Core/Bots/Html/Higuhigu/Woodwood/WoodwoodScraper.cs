@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -8,6 +9,7 @@ using StoreScraper.Core;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
 namespace StoreScraper.Bots.Html.Higuhigu.Woodwood
 {
@@ -47,6 +49,11 @@ namespace StoreScraper.Bots.Html.Higuhigu.Woodwood
             }
         }
 
+        public override void ScrapeAllProducts(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
+        {
+            FindItems(out listOfProducts, null, token);   
+        }
+
         private HtmlDocument GetWebpage(string url, CancellationToken token)
         {
             var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
@@ -54,9 +61,9 @@ namespace StoreScraper.Bots.Html.Higuhigu.Woodwood
             return document;
         }
 
-        private void FindItemsForGender(List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token, int Gender)
+        private void FindItemsForGender(List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token, int gender)
         {
-            string url = Links[Gender];
+            string url = Links[gender];
             var document = GetWebpage(url, token);
             if (document == null)
             {
@@ -64,7 +71,7 @@ namespace StoreScraper.Bots.Html.Higuhigu.Woodwood
                 throw new WebException("Can't connect to website");
             }
             var node = document.DocumentNode;
-            var items = node.SelectNodes("//ul[@id='landingpage-lister-list']/li");
+            var items = node.SelectNodes("//ul[@id='commodity-lister-list']/li");
             if (items == null)
             {
                 Logger.Instance.WriteErrorLog("Unexpected Html!!");
@@ -77,12 +84,11 @@ namespace StoreScraper.Bots.Html.Higuhigu.Woodwood
 #if DEBUG
                 LoadSingleProduct(listOfProducts, settings, item);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
+                LoadSingleProductTryCatchWrapper(listOfProducts, settings, item);
 #endif
             }
         }
-
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
+        private void LoadSingleProductTryCatchWrapper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
             {
@@ -104,9 +110,7 @@ namespace StoreScraper.Bots.Html.Higuhigu.Woodwood
             var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
             if (Utils.SatisfiesCriteria(product, settings))
             {
-                var keyWordSplit = settings.KeyWords.Split(' ');
-                if (keyWordSplit.All(keyWord => product.Name.ToLower().Contains(keyWord.ToLower())))
-                    listOfProducts.Add(product);
+                listOfProducts.Add(product);
             }
         }
 
@@ -122,7 +126,9 @@ namespace StoreScraper.Bots.Html.Higuhigu.Woodwood
 
         private Price GetPrice(HtmlNode item)
         {
-            string priceStr = item.SelectSingleNode(".//span[@class='list-commodity-price']").InnerText;
+            string priceStr = item.SelectSingleNode(".//span[@class='list-commodity-price']") != null ? 
+                                item.SelectSingleNode(".//span[@class='list-commodity-price']").InnerText : 
+                                item.SelectSingleNode(".//span[@class='list-commodity-offer']").InnerText;
             return Utils.ParsePrice(priceStr);
         }
 
@@ -160,6 +166,7 @@ namespace StoreScraper.Bots.Html.Higuhigu.Woodwood
                 ScrapedBy = this
             };
 
+            Debug.Assert(sizes != null, nameof(sizes) + " != null");
             foreach (var size in sizes)
             {
                 result.AddSize(size, "Unknown");
