@@ -24,7 +24,7 @@ namespace StoreScraper.Bots.Html.Higuhigu._43Einhalb
 
         public override void ScrapeAllProducts(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
         {
-            var searchUrl = "https://www.43einhalb.com/new-arrivals";
+            const string searchUrl = "https://www.43einhalb.com/new-arrivals";
             listOfProducts = new List<Product>();
             HtmlNodeCollection itemCollection = GetProductCollection(token, searchUrl);
 
@@ -34,13 +34,11 @@ namespace StoreScraper.Bots.Html.Higuhigu._43Einhalb
 #if DEBUG
                 LoadSingleProduct(listOfProducts, null, item);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, null, item);
+                LoadSingleProductTryCatchWrapper(listOfProducts, null, item);
 #endif
             }
 
         }
-
-
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
@@ -54,7 +52,7 @@ namespace StoreScraper.Bots.Html.Higuhigu._43Einhalb
 #if DEBUG
                 LoadSingleProduct(listOfProducts, settings, item);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
+                LoadSingleProductTryCatchWrapper(listOfProducts, settings, item);
 #endif
             }
 
@@ -79,14 +77,14 @@ namespace StoreScraper.Bots.Html.Higuhigu._43Einhalb
             var items = node.SelectNodes("//li[@class='item']");
             if(items == null)
             {
-                Logger.Instance.WriteErrorLog("Uncexpected Html!!");
+                Logger.Instance.WriteErrorLog("Unexpected Html!!");
                 Logger.Instance.SaveHtmlSnapshop(document);
-                throw new WebException("Undexpected Html");
+                throw new WebException("Unexpected Html");
             }
             return items;
         }
 
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
+        private void LoadSingleProductTryCatchWrapper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
             {
@@ -105,8 +103,8 @@ namespace StoreScraper.Bots.Html.Higuhigu._43Einhalb
             var price = GetPrice(item);
             string imageUrl = WebsiteBaseUrl + GetImageUrl(item);
             var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
-            if (settings != null && !Utils.SatisfiesCriteria(product, settings)) return;
-            listOfProducts.Add(product);
+            if (Utils.SatisfiesCriteria(product, settings))
+                listOfProducts.Add(product);
         }
         
         private string GetName(HtmlNode item)
