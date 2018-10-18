@@ -31,6 +31,9 @@ namespace StoreScraper
         [DisplayName("Monitoring Interval(ms)")]
         public int MonitoringInterval { get; set; } = 1000;
 
+        [DisplayName("Download Timeout (second)")]
+        public int DownloadTimeout { get; set; } = 5;
+
         public List<WebHook> WebHooks { get; set; } = new List<WebHook>();
 
         public bool UseGUILogging { get; set; } = true;

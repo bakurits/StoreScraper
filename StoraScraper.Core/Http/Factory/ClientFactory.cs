@@ -177,7 +177,7 @@ namespace StoreScraper.Http.Factory
                 handler.Proxy = proxy;
             }
 
-            HttpClient client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(15) };
+            HttpClient client = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(AppSettings.Default.DownloadTimeout) };
             return client;
         }
 

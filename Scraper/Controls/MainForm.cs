@@ -26,7 +26,7 @@ namespace Scraper.Controls
         private CancellationTokenSource _findTokenSource = new CancellationTokenSource();
         private BindingList<Product> _listOfProducts = new BindingList<Product>();
         private CancellationTokenSource _monitorCancellation = new CancellationTokenSource();
-        private readonly Timer _timer = new Timer(1000);
+        private readonly Timer _timer = new Timer(5000);
         private bool _logchanged = false;
 
         public MainForm()
@@ -61,6 +61,9 @@ namespace Scraper.Controls
                 {
                     Rtbx_EventLog.AppendText(log.Text, log.Color);
                 }
+
+                Rtbx_EventLog.SelectionStart = Rtbx_EventLog.Text.Length;
+                Rtbx_EventLog.ScrollToCaret();
             }));
 
             _logchanged = false;
