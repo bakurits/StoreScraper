@@ -346,19 +346,19 @@ namespace StoreScraper.Bots.Html.Sticky_bit.ChampsSports_EastBay
             return productDetails;
         }
 
-        public class ChampsSportsScraper : FootSimpleBase
+        /*public class ChampsSportsScraper : FootSimpleBase
         {
             public ChampsSportsScraper() : base("ChampsSports", "https://www.champssports.com")
             {
             }
-        }
+        }*/
 
-        public class EastBayScraper : FootSimpleBase
+        /*public class EastBayScraper : FootSimpleBase
         {
             public EastBayScraper() : base("EastBay", "https://www.eastbay.com")
             {
             }
-        }
+        }*/
     }
 
 

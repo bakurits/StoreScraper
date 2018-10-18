@@ -361,5 +361,21 @@ namespace StoreScraper.Bots.Html.Sticky_bit.FootLocker_FootAction
                 ReleasePageApiEndpoint = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/34";
             }
         }
+
+        public class ChampsSportsScraper : FootAPIBase
+        {
+            public ChampsSportsScraper() : base("ChampsSports", "https://www.ChampsSports.com")
+            {
+                ReleasePageApiEndpoint = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/20";
+            }
+        }
+
+        public class EastBayScraper : FootAPIBase
+        {
+            public EastBayScraper() : base("EastBay", "https://www.EastBay.com")
+            {
+                ReleasePageApiEndpoint = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/1";
+            }
+        }
     }
 }

@@ -75,9 +75,6 @@
     <Reference Include="EO.WebEngine, Version=18.2.74.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
       <HintPath>..\packages\EO.WebBrowser.18.2.74\lib\EO.WebEngine.dll</HintPath>
     </Reference>
-    <Reference Include="EO.Wpf">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Essential Objects\EO.Total 2018\EO.Wpf.dll</HintPath>
-    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.8.8.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a">
       <HintPath>..\packages\HtmlAgilityPack.1.8.8\lib\Net45\HtmlAgilityPack.dll</HintPath>
       <Private>True</Private>
