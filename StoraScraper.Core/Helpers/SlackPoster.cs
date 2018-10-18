@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using StoreScraper.Core;
 using StoreScraper.Http.Factory;
 using StoreScraper.Interfaces;
 using StoreScraper.Models;
@@ -14,11 +15,6 @@ namespace StoreScraper.Helpers
 {
     public class SlackPoster : IWebHookPoster
     {
-
-        public void PostStartMessage(string apiUrl) =>
-            PostMessageAsync(new JObject(new JProperty("text", "Test search started")).ToString(), apiUrl, CancellationToken.None);
-
-
 
         public async Task<HttpResponseMessage> PostMessage(string apiUrl, ProductDetails productDetails, CancellationToken token)
         {
@@ -37,20 +33,30 @@ namespace StoreScraper.Helpers
 
 
 
-            string currency = productDetails.Currency.HtmlDeEntitize();
-            string name = productDetails.Name.HtmlDeEntitize().EscapeNewLines();
-            string sizes = string.Join("\\n ",
-                productDetails.SizesList.Select(sizInfo => $"{sizInfo.Key}[{sizInfo.Value}]".HtmlDeEntitize()));
+            try
+            {
+                string currency = productDetails.Currency.HtmlDeEntitize();
+                string name = productDetails.Name.HtmlDeEntitize().EscapeNewLines();
+                string sizes = string.Join("\\n ",
+                    productDetails.SizesList.Select(sizInfo => $"{sizInfo.Key}[{sizInfo.Value}]".HtmlDeEntitize()));
 
-            string textMessage = $"*Price*:\\n{productDetails.Price + currency}\\n" +
-                                 $"*Store link*:\\n{productDetails.Url}\\n" +
-                                 $"*Available sizes are*:\\n{sizes}\\n";
+                string textMessage = $"*Price*:\\n{productDetails.Price + currency}\\n" +
+                                     $"*Store link*:\\n{productDetails.Url}\\n" +
+                                     $"*Available sizes are*:\\n{sizes}\\n";
 
-            string myJson = string.Format(formatter, productDetails.Url, textMessage, productDetails.ImageUrl, name, DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds);
+                string myJson = string.Format(formatter, productDetails.Url, textMessage, productDetails.ImageUrl, name, DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds);
 
-            await PostMessageAsync(myJson, apiUrl, token);
-            return await PostMessageAsync("{\"text\": \"------------------------------------------------------------------------------\\n------------------------------------------------------------------------------\\n\\n\\n\"}", 
-            "https://hooks.slack.com/services/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", token);
+                await PostMessageAsync(myJson, apiUrl, token);
+                var result = await PostMessageAsync("{\"text\": \"------------------------------------------------------------------------------\\n------------------------------------------------------------------------------\\n\\n\\n\"}",
+                    "https://hooks.slack.com/services/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", token);
+                result.EnsureSuccessStatusCode();
+                return result;
+            }
+            catch (Exception e)
+            {
+                Logger.Instance.WriteErrorLog($"Error occured while posting to slack. \n msg={e.GetMessage()}");
+                throw;
+            }
         }
 
         private async Task<HttpResponseMessage> PostMessageAsync(string messageJson, string apiUrl, CancellationToken token)

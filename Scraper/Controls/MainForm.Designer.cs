@@ -61,6 +61,9 @@
             this.Btn_ClearAllLogs = new System.Windows.Forms.Button();
             this.Rtbx_EventLog = new System.Windows.Forms.RichTextBox();
             this.Rtbx_DebugLog = new System.Windows.Forms.RichTextBox();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
             this.toolStripContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.SuspendLayout();
@@ -69,6 +72,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.DGrid_FoundProducts)).BeginInit();
             this.Tab_Settings.SuspendLayout();
             this.Tab_ErrorLog.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStripContainer1
@@ -127,6 +132,7 @@
             // 
             // Tab_Main
             // 
+            this.Tab_Main.Controls.Add(this.tabControl1);
             this.Tab_Main.Controls.Add(this.btn_DeselectAll);
             this.Tab_Main.Controls.Add(this.btn_SelectAll);
             this.Tab_Main.Controls.Add(this.btn_NegKeywords);
@@ -134,9 +140,7 @@
             this.Tab_Main.Controls.Add(this.Btn_UrlMon);
             this.Tab_Main.Controls.Add(this.Tbx_Url);
             this.Tab_Main.Controls.Add(this.Clbx_Websites);
-            this.Tab_Main.Controls.Add(this.Btn_RemoveMon);
             this.Tab_Main.Controls.Add(this.label5);
-            this.Tab_Main.Controls.Add(this.CLbx_Monitor);
             this.Tab_Main.Controls.Add(this.Btn_AddCriteriaToMonitor);
             this.Tab_Main.Controls.Add(this.label3);
             this.Tab_Main.Controls.Add(this.Btn_Stop);
@@ -234,7 +238,7 @@
             // 
             this.Btn_RemoveMon.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.Btn_RemoveMon.ForeColor = System.Drawing.Color.Crimson;
-            this.Btn_RemoveMon.Location = new System.Drawing.Point(799, 550);
+            this.Btn_RemoveMon.Location = new System.Drawing.Point(240, 185);
             this.Btn_RemoveMon.Name = "Btn_RemoveMon";
             this.Btn_RemoveMon.Size = new System.Drawing.Size(236, 23);
             this.Btn_RemoveMon.TabIndex = 22;
@@ -247,7 +251,7 @@
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(746, 322);
+            this.label5.Location = new System.Drawing.Point(730, 307);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(69, 20);
             this.label5.TabIndex = 18;
@@ -257,9 +261,9 @@
             // 
             this.CLbx_Monitor.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.CLbx_Monitor.FormattingEnabled = true;
-            this.CLbx_Monitor.Location = new System.Drawing.Point(542, 345);
+            this.CLbx_Monitor.Location = new System.Drawing.Point(6, 15);
             this.CLbx_Monitor.Name = "CLbx_Monitor";
-            this.CLbx_Monitor.Size = new System.Drawing.Size(493, 199);
+            this.CLbx_Monitor.Size = new System.Drawing.Size(470, 169);
             this.CLbx_Monitor.TabIndex = 17;
             // 
             // Btn_AddCriteriaToMonitor
@@ -317,7 +321,7 @@
             this.DGrid_FoundProducts.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.DGrid_FoundProducts.BackgroundColor = System.Drawing.SystemColors.Control;
             this.DGrid_FoundProducts.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.DGrid_FoundProducts.Location = new System.Drawing.Point(20, 226);
+            this.DGrid_FoundProducts.Location = new System.Drawing.Point(3, 226);
             this.DGrid_FoundProducts.Name = "DGrid_FoundProducts";
             this.DGrid_FoundProducts.ReadOnly = true;
             this.DGrid_FoundProducts.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
@@ -461,6 +465,38 @@
             this.Rtbx_DebugLog.TabIndex = 0;
             this.Rtbx_DebugLog.Text = "";
             // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Location = new System.Drawing.Point(542, 345);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(496, 243);
+            this.tabControl1.TabIndex = 30;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.CLbx_Monitor);
+            this.tabPage1.Controls.Add(this.Btn_RemoveMon);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(488, 217);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Keyword Monitoring";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(488, 217);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Url Monitoring";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -484,6 +520,8 @@
             this.Tab_Settings.ResumeLayout(false);
             this.Tab_Settings.PerformLayout();
             this.Tab_ErrorLog.ResumeLayout(false);
+            this.tabControl1.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -522,6 +560,9 @@
         private System.Windows.Forms.Button btn_Keywords;
         private System.Windows.Forms.Button btn_DeselectAll;
         private System.Windows.Forms.Button btn_SelectAll;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
     }
 }
 

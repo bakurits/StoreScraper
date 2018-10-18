@@ -435,6 +435,7 @@ namespace StoreScraper.Helpers
 
         #endregion
 
+        #region Other
         public static T GetRandomValue<T>(this IList<T> list)
         {
             int index = R.Next(0, list.Count);
@@ -452,7 +453,7 @@ namespace StoreScraper.Helpers
                 bool disabled = type.CustomAttributes.Any(attr => attr.AttributeType == typeof(DisableInGUI));
                 if (!disabled)
                 {
-                    yield return (T) Activator.CreateInstance(type);
+                    yield return (T)Activator.CreateInstance(type);
                 }
             }
         }
@@ -492,6 +493,16 @@ namespace StoreScraper.Helpers
         }
 
 
+        public static string GetMessage(this Exception e)
+        {
+            while (e is AggregateException aggregate && aggregate.InnerException != null)
+            {
+                e = aggregate.InnerException;
+            }
+
+            return e.Message;
+        }
+
         public static void WaitToBecomeTrue(this Func<bool> predicate, CancellationToken token,
             int checkIntervalMilliSeconds = 100)
         {
@@ -501,6 +512,7 @@ namespace StoreScraper.Helpers
                 token.ThrowIfCancellationRequested();
                 Task.Delay(checkIntervalMilliSeconds, token).Wait(token);
             }
-        }
+        } 
+        #endregion
     }
 }
