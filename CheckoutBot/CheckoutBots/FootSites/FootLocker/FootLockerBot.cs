@@ -12,7 +12,8 @@ namespace CheckoutBot.CheckoutBots.FootSites.FootLocker
     {
         protected override FootsitesProduct GetArbitraryItem(CancellationToken token)
         {
-            throw new NotImplementedException();
+            throw new 
+                Exception();
         }
 
         public override bool Login(string username, string password, CancellationToken token)

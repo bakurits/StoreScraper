@@ -57,7 +57,7 @@ namespace Scraper.Controls
                     localLogs = new LogEntry[Logger.Instance.Logs.Count];
                     Logger.Instance.Logs.CopyTo(localLogs);
                 }
-                foreach (var log in Logger.Instance.Logs)
+                foreach (var log in localLogs)
                 {
                     Rtbx_EventLog.AppendText(log.Text, log.Color);
                 }

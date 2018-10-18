@@ -71,6 +71,10 @@ namespace StoreScraper.Core
                 TokenSource = new CancellationTokenSource(),
             };
 
+#if DEBUG
+         task.CurrentProducts = new HashSet<Product>();
+#endif
+
             _allShopsTasks.Add(website, task);
             Task.Factory.StartNew(() => MonitorShop(website, task), token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
