@@ -105,13 +105,10 @@ namespace StoreScraper.Bots.Html.Higuhigu.Overkill
             }
             var node = document.DocumentNode;
             var items = node.SelectNodes("//div[@class='category-products']//li[contains(@class, 'item')]");
-            if (items == null)
-            {
-                Logger.Instance.WriteErrorLog("Unexpected Html!!");
-                Logger.Instance.SaveHtmlSnapshop(document);
-                throw new WebException("Unexpected Html");
-            }
-            return items;
+            if (items != null) return items;
+            Logger.Instance.WriteErrorLog("Unexpected Html!!");
+            Logger.Instance.SaveHtmlSnapshop(document);
+            throw new WebException("Unexpected Html");
         }
 
         private void LoadSingleProductTryCatchWrapper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
@@ -128,7 +125,6 @@ namespace StoreScraper.Bots.Html.Higuhigu.Overkill
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
-            if (GetStatus(item)) return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             var price = GetPrice(item);
