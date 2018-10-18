@@ -45,7 +45,6 @@ namespace ScraperTest.Helpers
         [AssemblyInitialize]
         public static void InitSettings(TestContext context)
         {
-            AppSettings.Init();
             if (!Directory.Exists(AppSettings.DataDir)) Directory.CreateDirectory(AppSettings.DataDir);
             AppSettings.Default = AppSettings.Load();
 

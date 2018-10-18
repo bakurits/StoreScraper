@@ -23,34 +23,27 @@ namespace StoreScraper.Bots.Html.GiorgiChkhikvadze
         public sealed override string WebsiteName { get; set; } = "Off---white";
         public sealed override string WebsiteBaseUrl { get; set; } = "https://Off---white.com";
 
-        private bool _active;
+        private const string SearchUrlFormat = @"https://www.off---white.com/en/US/search?q={0}";
 
         public override bool Active { get; set; }
 
-        [Browsable(false)]
-        public List<string> CurrentCart { get; set; } = new List<string>();
-
-        private const string SearchUrlFormat = @"https://www.off---white.com/en/US/search?q={0}";
-
-
-        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings
-            , CancellationToken token)
+        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
         {
 
             listOfProducts = new List<Product>();
 
             var searchUrl = string.Format(SearchUrlFormat, settings.KeyWords);
-            FinditemsInternal(listOfProducts, settings, token, searchUrl);         
+            FindItemsInternal(listOfProducts, settings, token, searchUrl);         
         }
 
 
 
-        private void FinditemsInternal(List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token,  string url)
+        private void FindItemsInternal(List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token,  string url)
         {
             
             HtmlDocument document = new HtmlDocument();
-
-            var response = CfBypasser.GetRequestedPage(ClientFactory.GetRandomProxy(), this, url, token);
+            var client = ClientFactory.GetProxiedFirefoxClient();
+            var response = CfBypasser.GetRequestedPage(client, this, url, token);
 
             document.LoadHtml(response.Content.ReadAsStringAsync().Result);
 
@@ -101,6 +94,7 @@ namespace StoreScraper.Bots.Html.GiorgiChkhikvadze
                 Logger.Instance.WriteErrorLog(e.Message);
             }
         }
+
         /// <summary>
         /// This method handles single product's creation 
         /// </summary>
@@ -134,33 +128,11 @@ namespace StoreScraper.Bots.Html.GiorgiChkhikvadze
 
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            HttpClient client = null;
+            HtmlDocument doc = new HtmlDocument();
+            var client = ClientFactory.GetProxiedFirefoxClient();
+            var response = CfBypasser.GetRequestedPage(client, this, productUrl, token);
 
-            for (int i = 0; i < AppSettings.Default.ProxyRotationRetryCount; i++)
-            {
-                try
-                {
-                    
-                    if (_active)
-                    {
-                        client = CookieCollector.Default.GetClient();
-                    }
-                    else
-                    {
-                        client = ClientFactory.GetProxiedFirefoxClient();
-                        CollectCookies(client, token);
-                    }
-                    break;
-                }
-                catch
-                {
-                    if (i != AppSettings.Default.ProxyRotationRetryCount - 1) continue;
-                    Logger.Instance.WriteErrorLog("Cookie collecting failed");
-                    throw new Exception("Cookie collecting failed");
-                }
-            }
-
-            var doc = client.GetDoc(productUrl, token);
+            doc.LoadHtml(response.Content.ReadAsStringAsync().Result);
             var root = doc.DocumentNode;
             var sizeNodes = root.SelectNodes("//*[contains(@class,'styled-radio')]/label");
             var sizes = sizeNodes.Select(node => node.InnerText).ToList();
@@ -192,7 +164,7 @@ namespace StoreScraper.Bots.Html.GiorgiChkhikvadze
         public override void ScrapeAllProducts(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
         {
             listOfProducts = new List<Product>();
-            FinditemsInternal(listOfProducts, null, token, "https://www.off---white.com/en/US/section/new-arrivals");
+            FindItemsInternal(listOfProducts, null, token, "https://www.off---white.com/en/US/section/new-arrivals");
         }
 
         static void CollectCookies(HttpClient client, CancellationToken token)

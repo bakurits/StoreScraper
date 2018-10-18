@@ -21,15 +21,6 @@ namespace StoreScraper
         [JsonIgnore]
         public static string DataFilePath;
 
-
-        [JsonIgnore]
-        [Browsable(false)] 
-        public List<ScraperBase> AvailableScrapers;
-
-        [JsonIgnore]
-        public Dictionary<ScraperBase, SearchMonitoringTask> MonTasks { get; set; } = new Dictionary<ScraperBase, SearchMonitoringTask>();
-
-
         [Browsable(false)]
         public List<string> Proxies { get; set; } = new List<string>();
 
@@ -37,16 +28,16 @@ namespace StoreScraper
 
         public int ProxyRotationRetryCount { get; set; } = 5;
 
-        [DisplayName("Monitring Interval(ms)")]
+        [DisplayName("Monitoring Interval(ms)")]
         public int MonitoringInterval { get; set; } = 1000;
 
-        public List<WebHook> Webhooks { get; set; } = new List<WebHook>();
+        public List<WebHook> WebHooks { get; set; } = new List<WebHook>();
 
         public bool UseGUILogging { get; set; } = true;
 
         public bool PostStartMessage { get; set; } = false;
 
-        public static void Init()
+        static AppSettings()
         {
             DataDir = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -57,8 +48,6 @@ namespace StoreScraper
 
         public static AppSettings Load()
         {
-            Init();
-
             if (!File.Exists(DataFilePath))
             {
                 return new AppSettings();

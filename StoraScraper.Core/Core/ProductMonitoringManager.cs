@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 using StoreScraper.Models.Enums;
+#pragma warning disable 4014
 
 namespace StoreScraper.Core
 {
@@ -32,7 +33,7 @@ namespace StoreScraper.Core
 
         public static ProductMonitoringManager Default { get; set; } = new ProductMonitoringManager(Logger.Instance);
 
-        private Dictionary<ScraperBase, ShopMonitoringTask> _allProductsCollection { get; set; } = new Dictionary<ScraperBase, ShopMonitoringTask>();
+        private Dictionary<ScraperBase, ShopMonitoringTask> _allShopsTasks { get; set; } = new Dictionary<ScraperBase, ShopMonitoringTask>();
         private Logger _logger { get; }
 
 
@@ -43,19 +44,25 @@ namespace StoreScraper.Core
 
         public void AddNewProductHandler(ScraperBase website, NewProductHandler handler)
         {
-            if (_allProductsCollection.TryGetValue(website, out var task))
+            if (_allShopsTasks.TryGetValue(website, out var task))
             {
                 task.Handler += handler;
             }
             else
             {
-                throw new KeyNotFoundException($"Can't add new product handler to {website.WebsiteName}, \n because monitoring on this website not runnning");
+                throw new KeyNotFoundException($"Can't add new product handler to {website.WebsiteName}, \n because monitoring on this website not running");
             }
         }
 
-        public void RegisterMonitoringTask(ScraperBase website, TimeSpan monInterval, CancellationToken token)
+        public async Task RegisterMonitoringTaskAsync(ScraperBase website, TimeSpan monInterval, CancellationToken token)
         {
-            var curList = ScrapeCurrentProductsList(website, token);
+            if (_allShopsTasks.ContainsKey(website))
+            {
+                _logger.WriteVerboseLog("Requested shop monitoring task is already added (Adding Process Skipped)");
+                return;
+            }
+
+            var curList = await Task.Run(() =>ScrapeCurrentProductsList(website, token));
 
             var task = new ShopMonitoringTask()
             {
@@ -64,21 +71,21 @@ namespace StoreScraper.Core
                 TokenSource = new CancellationTokenSource(),
             };
 
-            _allProductsCollection.Add(website, task);
+            _allShopsTasks.Add(website, task);
             Task.Factory.StartNew(() => MonitorShop(website, task), token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
         public void RemoveMonitoringTask(ScraperBase website)
         {
-            if(!_allProductsCollection.TryGetValue(website, out var task)) throw new KeyNotFoundException($"can't remove {website} monitoring, because it is not registered");
+            if(!_allShopsTasks.TryGetValue(website, out var task)) throw new KeyNotFoundException($"can't remove {website} monitoring, because it is not registered");
 
             task.TokenSource.Cancel();
-            _allProductsCollection.Remove(website);
+            _allShopsTasks.Remove(website);
         }
 
         public IReadOnlyCollection<Product> GetCurrentProducts(ScraperBase website)
         {
-            if (_allProductsCollection.TryGetValue(website, out var task))
+            if (_allShopsTasks.TryGetValue(website, out var task))
             {
                 return task.CurrentProducts.ToList().AsReadOnly();
             }
@@ -131,7 +138,7 @@ namespace StoreScraper.Core
                                 try
                                 {
                                     task.OnNewProductAppeared(product);
-                                    _logger.WriteVerboseLog($"Succesfully invoker new product event handler");
+                                    _logger.WriteVerboseLog($"Successfully invoked new product event handler");
                                 }
                                 catch (Exception e)
                                 {

@@ -12,10 +12,12 @@ using System.Timers;
 using System.Windows.Forms;
 using StoreScraper;
 using StoreScraper.Core;
+using StoreScraper.Data;
 using StoreScraper.Helpers;
 using StoreScraper.Http.CookieCollecting;
 using StoreScraper.Models;
 using Timer = System.Timers.Timer;
+#pragma warning disable 4014
 
 namespace Scraper.Controls
 {
@@ -30,17 +32,16 @@ namespace Scraper.Controls
         public MainForm()
         {
             InitializeComponent();
+            CultureInfo.CurrentUICulture = new CultureInfo("en-US");
+            CultureInfo.CurrentCulture = new CultureInfo("en-US");
             DGrid_FoundProducts.DataSource = _listOfProducts;
-            Clbx_Websites.Items.AddRange(AppSettings.Default.AvailableScrapers.ToArray());
+            Clbx_Websites.Items.AddRange(Session.Current.AvailableScrapers.ToArray());
             PGrid_Settings.SelectedObject = AppSettings.Default;
             PGrid_Bot.SelectedObject = new SearchSettingsBase();
             RTbx_Proxies.Text = string.Join("\r\n", AppSettings.Default.Proxies);
             Logger.Instance.OnLogged += (message, color) => _logchanged = true;
             _timer.Elapsed += LogUpdaterElapsed;
             _timer.Start();
-            
-            CultureInfo.CurrentUICulture = new CultureInfo("en-US");
-            CultureInfo.CurrentCulture = new CultureInfo("en-US");
         }
 
         private void LogUpdaterElapsed(object sender, ElapsedEventArgs elapsedEventArgs)
@@ -90,7 +91,7 @@ namespace Scraper.Controls
 
         private void PostProduct(ProductDetails productDetails)
         {
-            foreach (var hook in AppSettings.Default.Webhooks)
+            foreach (var hook in AppSettings.Default.WebHooks)
             {
                 hook.Poster.PostMessage(hook.WebHookUrl, productDetails, _findTokenSource.Token);
             }
@@ -236,107 +237,30 @@ namespace Scraper.Controls
 
         private void Btn_AddToMonitor_Click(object sender, EventArgs e)
         {
-            
-            List<ScraperBase> stores = new List<ScraperBase>();
+            var websites = new List<ScraperBase>();
 
-            foreach (var obj in Clbx_Websites.CheckedItems)
+            foreach (var website in Clbx_Websites.CheckedItems)
             {
-                var store = (ScraperBase) obj;
-                stores.Add(store);
+                websites.Add((ScraperBase)website);
             }
 
-            MessageBox.Show(@"searching filter is now adding to monitor list
-                              That may take several mins
-                              You can continue using scraper while filter is adding..");
-
-
-            AddToMonitorTask(stores).ContinueWith(task =>
+            var monOptions = new MonitoringOptions()
             {
-                MessageBox.Show(@"Search filter was succesfully added to monitoring list");
-            });
+                WebHooks = new List<WebHook>(),
+                Filter = (SearchSettingsBase) PGrid_Bot.SelectedObject,
+            };
+
+            AppSettings.Default.WebHooks.ForEach(hook => monOptions.WebHooks.Add(hook));
+
+            var taskGroup = new SearchMonitoringTaskGroup()
+            {
+                Options = monOptions,
+                WebsiteList = websites,
+            };
+
+            MonitoringTaskManager.Default.AddSearchTaskGroup(taskGroup);
         }
 
-        public async Task AddToMonitorTask(List<ScraperBase> stores)
-        {
-            var searchOptions = (SearchSettingsBase)PGrid_Bot.SelectedObject;
-
-
-            await Task.Run(() =>
-            {
-
-
-                StreamWriter errorLogTxtFile = null;
-                StreamWriter verboseLogTxtFile = null;
-
-                string workingWebsiteLst = $"THESE WEBSITES SUCCESFULLY ADDED TO MONITOR: \n\n";
-                string errorLog = $"ERROR WHILE ADDING THESE WEBSITES TO MONITOR: \n\n";
-                Parallel.ForEach(stores, store =>
-                {
-
-
-                    SearchMonitoringTask monTask;
-
-                    var convertedFilter = searchOptions;
-                    if (searchOptions.GetType() != store.SearchSettingsType &&
-                        !searchOptions.GetType().IsSubclassOf(store.SearchSettingsType))
-                    {
-                        convertedFilter = SearchSettingsBase.ConvertToChild(searchOptions, store.SearchSettingsType);
-                    }
-
-
-                    if (!AppSettings.Default.MonTasks.TryGetValue(store, out monTask))
-                    {
-                        monTask = new SearchMonitoringTask()
-                        {
-                            TokenSource = new CancellationTokenSource(),
-                            Store = store,
-                            FinalActions = new List<MonitoringTaskBase.FinalAction>() { MonitoringTaskBase.FinalAction.PostToWebHook},
-                            MonitoringOptions = new List<MonitoringOptions>() { new MonitoringOptions() { SearchSettings = convertedFilter, WebHooks = null} }
-                        };
-
-
-                        try
-                        {
-                            CancellationTokenSource tknSource = new CancellationTokenSource();
-                            tknSource.CancelAfter(TimeSpan.FromSeconds(20));
-                            ProductMonitoringManager.Default.RegisterMonitoringTask(store, TimeSpan.FromMilliseconds(AppSettings.Default.MonitoringInterval), tknSource.Token);
-                            monTask.Start();
-                            AppSettings.Default.MonTasks.Add(store, monTask);
-                            CLbx_Monitor.Invoke(new Action(() => CLbx_Monitor.Items.Add(monTask, true)));
-                            workingWebsiteLst += store.WebsiteName += Environment.NewLine;
-                        }
-                        catch(Exception e)
-                        {
-                           
-                            lock (monTask)
-                            {
-                                if (errorLogTxtFile == null)
-                                {
-                                    string filePath = Path.Combine("Logs",
-                                        $"AddToMon ErrorLog ({DateTime.UtcNow:u})".EscapeFileName());
-                                    errorLogTxtFile = File.CreateText(filePath);
-                                }
-                                errorLog += $"[{store.WebsiteName}] - error msg: {e.Message}"; 
-                            }
-                        }
-
-                    }
-                });
-
-
-                string verboseFilePath = Path.Combine("Logs", $"AddToMon VerboseLog ({DateTime.UtcNow:u})".EscapeFileName());
-                verboseLogTxtFile = File.CreateText(verboseFilePath);
-                verboseLogTxtFile.Write(workingWebsiteLst);
-                verboseLogTxtFile.Flush();
-
-                if (errorLogTxtFile != null)
-                {
-                    errorLogTxtFile.Write(errorLog);
-                    errorLogTxtFile.Flush();
-                    errorLogTxtFile.Close();
-                }
-            });
-        }
 
         private void Btn_RemoveMon_Click(object sender, EventArgs e)
         {
@@ -444,6 +368,11 @@ namespace Scraper.Controls
             {
                 Clbx_Websites.SetItemChecked(i, true);
             }
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            MonitoringTaskManager.Default.MonTasksContainer = CLbx_Monitor;
         }
     }
 }

@@ -15,12 +15,10 @@ namespace StoreScraper.Helpers
 {
     public static class CfBypasser
     {
-        public static HttpResponseMessage GetRequestedPage(WebProxy proxy, IShop shop, string url,  CancellationToken token)
+        public static HttpResponseMessage GetRequestedPage(HttpClient client, IShop shop, string url,  CancellationToken token)
         {
             var initialUrl = new Uri(url);
             var host = new Uri(shop.WebsiteBaseUrl);
-
-            var client = ClientFactory.GetProxiedFirefoxClient();
             string initialPage = null;
 
             var message1 = new HttpRequestMessage()
