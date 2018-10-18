@@ -60,7 +60,7 @@ namespace StoreScraper.Core
                         {
                             CancellationTokenSource tknSource = new CancellationTokenSource();
                             tknSource.CancelAfter(TimeSpan.FromSeconds(20));
-                            ProductMonitoringManager.Default.RegisterMonitoringTaskAsync(store, TimeSpan.FromMilliseconds(AppSettings.Default.MonitoringInterval), tknSource.Token).Wait();
+                            ProductMonitoringManager.Default.RegisterMonitoringTaskAsync(store,  tknSource.Token).Wait();
                             ProductMonitoringManager.Default.AddNewProductHandler(store, monTask.HandleNewProduct);
                             SearchMonTasks.Add(store, monTask);
                             workingWebsiteLst += store.WebsiteName += Environment.NewLine;

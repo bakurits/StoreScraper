@@ -40,17 +40,19 @@ namespace StoreScraper.Bots.Html.Sticky_bit.FootLocker_FootAction
         {
             listOfProducts = new List<Product>();
             List <FootsitesProduct> products =  ScrapeReleasePage(token);
-            products.Where((product) => { return product.ReleaseTime < DateTime.UtcNow; });
-            listOfProducts = products.Select((product) => { return (Product) product;}).ToList();
+            products = products.Where((product) => product.ReleaseTime < DateTime.UtcNow).ToList();
+            listOfProducts = products.Select((product) => (Product) product).ToList();
             Console.WriteLine(listOfProducts);
         }
 
         public List<FootsitesProduct> ScrapeReleasePage(CancellationToken token)
         {
-            var proxy = new WebProxy("162.217.145.90:2036");
-            var client = ClientFactory.CreateHttpClient(proxy: proxy, autoCookies: true).AddHeaders(("Accept", "application/json")).AddHeaders(ClientFactory.FirefoxUserAgentHeader)
-                .AddHeaders(("Accept-Language", "en-US,en; q=0.5"));
-            var task = client.GetStringAsync(ReleasePageApiEndpoint);
+            var client = ClientFactory.GetProxiedFirefoxClient();
+            var message = new HttpRequestMessage();
+            message.Method = HttpMethod.Get;
+            message.Headers.Add("Accept", "application/json");
+            message.RequestUri = new Uri(ReleasePageApiEndpoint);
+            var task = client.SendAsync(message).Result.Content.ReadAsStringAsync();
             task.Wait(token);
 
             if (task.IsFaulted) throw new JsonException("Can't get data");
@@ -347,6 +349,7 @@ namespace StoreScraper.Bots.Html.Sticky_bit.FootLocker_FootAction
         {
             public FootLockerScraper() : base("FootLocker", "https://www.footlocker.com")
             {
+                ReleasePageApiEndpoint = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/21";
             }
 
         }

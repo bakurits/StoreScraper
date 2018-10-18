@@ -129,6 +129,7 @@ namespace StoreScraper.Core
 
                 if (Logs.Count > MaxLogMesssages)
                 {
+                    Logs.Clear();
                     string logText = string.Join("\n", Logs.Select(log => log.Text));
                     string filePath = $"{LogsFolderName}/EventLog {DateTime.UtcNow.ToString("u", CultureInfo.InvariantCulture).EscapeFileName()}";
                     using (var stream = File.Create(filePath))
@@ -139,8 +140,6 @@ namespace StoreScraper.Core
                             writer.Flush();
                         }
                     }
-
-                    Logs.Clear();
                 } 
             }
         }

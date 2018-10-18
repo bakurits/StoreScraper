@@ -22,7 +22,6 @@ namespace StoreScraper.Core
             public HashSet<Product> CurrentProducts { get; set; }
             public event NewProductHandler Handler;
             public CancellationTokenSource TokenSource { get; set; }
-            public TimeSpan MonitoringInterval { get; set; }
 
             public void OnNewProductAppeared(Product product)
             {
@@ -54,7 +53,7 @@ namespace StoreScraper.Core
             }
         }
 
-        public async Task RegisterMonitoringTaskAsync(ScraperBase website, TimeSpan monInterval, CancellationToken token)
+        public async Task RegisterMonitoringTaskAsync(ScraperBase website, CancellationToken token)
         {
             if (_allShopsTasks.ContainsKey(website))
             {
@@ -67,7 +66,6 @@ namespace StoreScraper.Core
             var task = new ShopMonitoringTask()
             {
                 CurrentProducts = curList,
-                MonitoringInterval = monInterval,
                 TokenSource = new CancellationTokenSource(),
             };
 
@@ -111,11 +109,11 @@ namespace StoreScraper.Core
 
         private void MonitorShop(ScraperBase website, ShopMonitoringTask task)
         {
-            Stopwatch counter = Stopwatch.StartNew();
+            
 
             while (!task.TokenSource.Token.IsCancellationRequested)
             {
-                counter.Restart();
+                var counter = Stopwatch.StartNew();
                 HashSet<Product> products = null;
 
                 try
@@ -155,9 +153,9 @@ namespace StoreScraper.Core
                     } 
                 }
 
-                if (task.MonitoringInterval > counter.Elapsed)
+                if (AppSettings.Default.MonitoringInterval > counter.ElapsedMilliseconds)
                 {
-                    Task.Delay(task.MonitoringInterval - counter.Elapsed, task.TokenSource.Token)
+                    Task.Delay(TimeSpan.FromMilliseconds(AppSettings.Default.MonitoringInterval - counter.ElapsedMilliseconds), task.TokenSource.Token)
                         .Wait(task.TokenSource.Token);
                 }
             }
