@@ -123,7 +123,6 @@ namespace StoreScraper.Bots.Html.Higuhigu.Nighshop
 
         private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
-            if (GetStatus(item)) return;
             string name = GetName(item).TrimEnd();
             string url = GetUrl(item);
             var price = GetPrice(item);
