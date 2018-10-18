@@ -155,7 +155,7 @@ namespace CheckoutBot
             };
             // Default file name
             // Default file extension
-            // Filter files by extension
+            // Options files by extension
 
             // Show save file dialog box
             bool? result = dlg.ShowDialog();
@@ -176,7 +176,7 @@ namespace CheckoutBot
             };
             // Default file name
             // Default file extension
-            // Filter files by extension
+            // Options files by extension
 
             // Show save file dialog box
             bool? result = dlg.ShowDialog();

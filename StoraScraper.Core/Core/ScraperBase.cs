@@ -114,12 +114,15 @@ namespace StoreScraper.Core
                             {
                                 products.AddRange(filteredProducts);
                             }
+
+                            Logger.Instance.WriteVerboseLog($"Completed new arrivals page search {WebsiteName} with keyword {settings.KeyWords}!");
                             break;
                         }
                         catch (Exception e)
                         {
                             if (i != AppSettings.Default.ProxyRotationRetryCount - 1) continue;
                             Logger.Instance.WriteErrorLog($"Error while new arrivals page search {WebsiteName} with keyword {settings.KeyWords}. \n msg= {e.Message}");
+                            throw;
                         }
                     }
 

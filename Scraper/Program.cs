@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using Scraper.Controls;
 using StoreScraper;
 using StoreScraper.Core;
+using StoreScraper.Data;
 using StoreScraper.Helpers;
 using StoreScraper.Http.CookieCollecting;
 
@@ -26,7 +27,6 @@ namespace Scraper
 
             EnsureInternetConnection();
 
-            AppSettings.Init();
             if (!Directory.Exists(AppSettings.DataDir)) Directory.CreateDirectory(AppSettings.DataDir);
             AppSettings.Default = AppSettings.Load();
 
@@ -36,8 +36,8 @@ namespace Scraper
             ServicePointManager.Expect100Continue = false;
             ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
 
-            AppSettings.Default.AvailableScrapers = Utils.GetAllSubClassInstances<ScraperBase>().ToList();
-            AppSettings.Default.AvailableScrapers.Sort((s1, s2) => string.CompareOrdinal(s1.WebsiteName, s2.WebsiteName));
+            Session.Current.AvailableScrapers = Utils.GetAllSubClassInstances<ScraperBase>().ToList();
+            Session.Current.AvailableScrapers.Sort((s1, s2) => string.CompareOrdinal(s1.WebsiteName, s2.WebsiteName));
 
             Application.Run(new MainForm());
         }

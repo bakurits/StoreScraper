@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using StoreScraper.Models;
+using StoreScraper.Data;
 
 namespace StoreScraper.Core
 {
@@ -10,9 +12,15 @@ namespace StoreScraper.Core
         private readonly ScraperBase _scraper;
         private ProductDetails _oldDetails;
         public string Url { get; set; }
-        
 
-        public override void StartMonitoring()
+        public List<WebHook> WebHooks { get; set; }
+        
+        public void Start()
+        {
+            Task.Factory.StartNew(StartMonitoring, TokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+        }
+
+        public void StartMonitoring()
         {
 
             Task.Factory.StartNew(() =>
@@ -33,7 +41,7 @@ namespace StoreScraper.Core
                     if (details.SizesList.Count > _oldDetails.SizesList.Count)
                     {
                         Logger.Instance.WriteVerboseLog("New Size was found in stock");
-                        DoFinalActions(details, TokenSource.Token);
+                        SendNotification(details, WebHooks);
                     }
                     else
                     {
@@ -52,7 +60,7 @@ namespace StoreScraper.Core
         {
             Uri parsedUri = new Uri(url);
 
-            foreach (var scraper in AppSettings.Default.AvailableScrapers)
+            foreach (var scraper in Session.Current.AvailableScrapers)
             {
                 Uri scraperUri = new Uri(scraper.WebsiteBaseUrl);
                 var result = Uri.Compare(parsedUri, scraperUri, UriComponents.Host, UriFormat.SafeUnescaped,

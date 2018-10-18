@@ -8,7 +8,7 @@ namespace StoreScraper.Models
 {
     public class MonitoringOptions
     {
-        public SearchSettingsBase SearchSettings { get; set; }
+        public SearchSettingsBase Filter { get; set; }
         public List<WebHook> WebHooks { get; set; }
     }
 }

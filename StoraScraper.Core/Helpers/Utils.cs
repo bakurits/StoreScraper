@@ -119,8 +119,28 @@ namespace StoreScraper.Helpers
             {
                 using (var response = client.SendAsync(message, token).Result)
                 {
-                    var result = response.Content.ReadAsStringAsync().Result;
-                    var doc = new HtmlDocument();
+                    string result = null;
+
+                    try
+                    {
+                        result = response.Content.ReadAsStringAsync().Result;
+                    }
+                    catch (Exception e)
+                    {
+                        if (e is OperationCanceledException && !token.IsCancellationRequested)
+                        {
+                            throw new WebException("Timeout Exceed. Server did not respond");
+                        }
+
+                        throw;
+                    }
+                    var doc = new HtmlDocument()
+                    {
+                        OptionAutoCloseOnEnd = true,
+                        OptionCheckSyntax = true,
+                        OptionFixNestedTags = true,
+                        OptionWriteEmptyNodes = true,
+                    };
                     doc.LoadHtml(result);
                     return doc;
                 }
