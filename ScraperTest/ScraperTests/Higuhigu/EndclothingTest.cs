@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ScraperTest.Helpers;
 using StoreScraper.Bots.Html.Higuhigu.Endclothing;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
 namespace ScraperTest.ScraperTests.Higuhigu
 {
@@ -40,6 +42,15 @@ namespace ScraperTest.ScraperTests.Higuhigu
             {
                 Console.WriteLine(sz);
             }
+        }
+        
+        [TestMethod]
+        public void ScrapeAllProductsTest()
+        {
+            EndclothingScraper scraper = new EndclothingScraper();
+            
+            scraper.ScrapeAllProducts(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
+            Helper.PrintFindItemsResults(lst);
         }
         
     }

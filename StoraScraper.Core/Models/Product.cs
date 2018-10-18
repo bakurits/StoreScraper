@@ -126,12 +126,12 @@ namespace StoreScraper.Models
         {
             if (!(obj is Product toCompare)) return false;
 
-            return this.Url == toCompare.Url;
+            return this.Id == toCompare.Id;
         }
 
         public static bool operator == (Product p1, Product p2)
-        { 
-            return p1?.Url == p2?.Url;
+        {
+            return p1?.Id == p2?.Id;
         }
 
         public static bool operator !=(Product p1, Product p2)
@@ -141,7 +141,7 @@ namespace StoreScraper.Models
 
         public override int GetHashCode()
         {
-            return this.Url.GetHashCode();
+            return this.Id.GetHashCode();
         }
 
         public override string ToString() => this.Name;
@@ -150,22 +150,18 @@ namespace StoreScraper.Models
         
         private string ValidateString(string value, string variableName)
         {
-            if (value == null)
-            {
-                Logger.Instance.WriteErrorLog($"{StoreName}: Product {variableName} is not scrapped correctly");
-                return $"<Unknown {variableName}>";
-            }
-            else return value;
+            if (value != null) return value;
+            Logger.Instance.WriteErrorLog($"{StoreName}: Product {variableName} is not scrapped correctly");
+            return $"<Unknown {variableName}>";
+
         }
 
         private double ValidatePrice(double value, string variableName)
         {
-            if (value <= 0 || double.IsNaN(value) || double.IsPositiveInfinity(value))
-            {
-                Logger.Instance.WriteErrorLog($"{StoreName}: Product {variableName} is not scrapped correctly");
-                return 0;
-            }
-            else return value;
+            if (!(value <= 0) && !double.IsNaN(value) && !double.IsPositiveInfinity(value)) return value;
+            Logger.Instance.WriteErrorLog($"{StoreName}: Product {variableName} is not scrapped correctly");
+            return 0;
+
         }
     }
 }
