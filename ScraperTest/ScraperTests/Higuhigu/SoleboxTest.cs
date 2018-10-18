@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ScraperTest.Helpers;
 using StoreScraper.Bots.Html.Higuhigu.Solebox;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
 namespace ScraperTest.ScraperTests.Higuhigu
 {
@@ -25,11 +27,20 @@ namespace ScraperTest.ScraperTests.Higuhigu
         public void GetProductDetailsTest()
         {
             SoleboxScraper scraper = new SoleboxScraper();
-            ProductDetails details = scraper.GetProductDetails("https://www.solebox.com/en/Footwear/Basketball/Air-Jordan-1Retro-Hi-Premium.html", CancellationToken.None);
+            ProductDetails details = scraper.GetProductDetails("https://www.solebox.com/en/Footwear/Basketball/Air-Jordan-1-Retro-High-OG-variant-14.html", CancellationToken.None);
             foreach (var sz in details.SizesList)
             {
                 Debug.WriteLine(sz);
             }
+        }
+        
+        [TestMethod]
+        public void ScrapeAllProductsTest()
+        {
+            SoleboxScraper scraper = new SoleboxScraper();
+            
+            scraper.ScrapeAllProducts(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
+            Helper.PrintFindItemsResults(lst);
         }
     }
 }
