@@ -10,6 +10,7 @@ using StoreScraper.Core;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
 namespace StoreScraper.Bots.Html.Higuhigu.Overkill
 {
@@ -32,92 +33,16 @@ namespace StoreScraper.Bots.Html.Higuhigu.Overkill
 #if DEBUG
                 LoadSingleProduct(listOfProducts, settings, item);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
+                LoadSingleProductTryCatchWrapper(listOfProducts, settings, item);
 #endif
             }
         }
-
-        private HtmlDocument GetWebpage(string url, CancellationToken token)
+        
+        public override void ScrapeAllProducts(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
         {
-            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
-            var document = client.GetDoc(url, token);
-            return document;
+            FindItems(out listOfProducts, null, token);   
         }
-
-        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
-        {
-            string url = SearchFormat;
-            var document = GetWebpage(url, token);
-            if (document == null)
-            {
-                Logger.Instance.WriteErrorLog($"Can't Connect to overkill website");
-                throw new WebException("Can't connect to website");
-            }
-            var node = document.DocumentNode;
-            var items = node.SelectNodes("//div[@class='category-products']//li[contains(@class, 'item')]");
-            if (items == null)
-            {
-                Logger.Instance.WriteErrorLog("Uncexpected Html!!");
-                Logger.Instance.SaveHtmlSnapshop(document);
-                throw new WebException("Undexpected Html");
-            }
-            return items;
-        }
-
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
-        {
-            try
-            {
-                LoadSingleProduct(listOfProducts, settings, item);
-            }
-            catch (Exception e)
-            {
-                Logger.Instance.WriteErrorLog(e.Message);
-            }
-        }
-
-        private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
-        {
-            if (GetStatus(item)) return;
-            string name = GetName(item).TrimEnd();
-            string url = GetUrl(item);
-            var price = GetPrice(item);
-            string imageUrl = GetImageUrl(item);
-            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
-            if (Utils.SatisfiesCriteria(product, settings))
-            {
-                var keyWordSplit = settings.KeyWords.Split(' ');
-                if (keyWordSplit.All(keyWord => product.Name.ToLower().Contains(keyWord.ToLower())))
-                    listOfProducts.Add(product);
-            }
-        }
-
-        private bool GetStatus(HtmlNode item)
-        {
-            return item.InnerHtml.Contains("Coming Soon");
-        }
-
-        private string GetName(HtmlNode item)
-        {
-            return item.SelectSingleNode("./div/a").GetAttributeValue("title", null);
-        }
-
-        private string GetUrl(HtmlNode item)
-        {
-            return item.SelectSingleNode("./div/a").GetAttributeValue("href", null);
-        }
-
-        private Price GetPrice(HtmlNode item)
-        {
-            string priceStr = item.SelectSingleNode(".//span[@class='price']").InnerText;
-            return Utils.ParsePrice(priceStr);
-        }
-
-        private string GetImageUrl(HtmlNode item)
-        {
-            return item.SelectSingleNode(".//img").GetAttributeValue("src", null);
-        }
-
+        
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var document = GetWebpage(productUrl, token);
@@ -145,23 +70,100 @@ namespace StoreScraper.Bots.Html.Higuhigu.Overkill
             };
 
 
-            if (root.InnerHtml.Contains("new Product.Config"))
+            if (!root.InnerHtml.Contains("new Product.Config")) return result;
+            var jsonStr = Regex.Match(root.InnerHtml, @"var spConfig = new Product.Config\((.*)\)").Groups[1].Value;
+            var tokenStr = Regex.Match(jsonStr, "\"(\\d+)\":").Groups[1].Value;
+            JObject parsed = JObject.Parse(jsonStr);
+            var sizes = parsed.SelectToken("attributes").SelectToken(tokenStr).SelectToken("options");
+            foreach (JToken sz in sizes.Children())
             {
-                var jsonStr = Regex.Match(root.InnerHtml, @"var spConfig = new Product.Config\((.*)\)").Groups[1].Value;
-                var tokenStr = Regex.Match(jsonStr, "\"(\\d+)\":").Groups[1].Value;
-                JObject parsed = JObject.Parse(jsonStr);
-                var sizes = parsed.SelectToken("attributes").SelectToken(tokenStr).SelectToken("options");
-                foreach (JToken sz in sizes.Children())
+                var sizeName = (string)sz.SelectToken("label");
+                JArray products = (JArray)sz.SelectToken("products");
+                if (products.Count > 0)
                 {
-                    var sizeName = (string)sz.SelectToken("label");
-                    JArray products = (JArray)sz.SelectToken("products");
-                    if (products.Count > 0)
-                    {
-                        result.AddSize(sizeName, "Unknown");
-                    }
+                    result.AddSize(sizeName, "Unknown");
                 }
             }
             return result;
+        }
+
+        private HtmlDocument GetWebpage(string url, CancellationToken token)
+        {
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var document = client.GetDoc(url, token);
+            return document;
+        }
+
+        private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
+        {
+            string url = SearchFormat;
+            var document = GetWebpage(url, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to overkill website");
+                throw new WebException("Can't connect to website");
+            }
+            var node = document.DocumentNode;
+            var items = node.SelectNodes("//div[@class='category-products']//li[contains(@class, 'item')]");
+            if (items == null)
+            {
+                Logger.Instance.WriteErrorLog("Unexpected Html!!");
+                Logger.Instance.SaveHtmlSnapshop(document);
+                throw new WebException("Unexpected Html");
+            }
+            return items;
+        }
+
+        private void LoadSingleProductTryCatchWrapper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
+        {
+            try
+            {
+                LoadSingleProduct(listOfProducts, settings, item);
+            }
+            catch (Exception e)
+            {
+                Logger.Instance.WriteErrorLog(e.Message);
+            }
+        }
+
+        private void LoadSingleProduct(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
+        {
+            if (GetStatus(item)) return;
+            string name = GetName(item).TrimEnd();
+            string url = GetUrl(item);
+            var price = GetPrice(item);
+            string imageUrl = GetImageUrl(item);
+            var product = new Product(this, name, url, price.Value, imageUrl, url, price.Currency);
+            if (Utils.SatisfiesCriteria(product, settings))
+            {
+                listOfProducts.Add(product);
+            }
+        }
+
+        private bool GetStatus(HtmlNode item)
+        {
+            return item.InnerHtml.Contains("Coming Soon");
+        }
+
+        private string GetName(HtmlNode item)
+        {
+            return item.SelectSingleNode("./div/a").GetAttributeValue("title", null);
+        }
+
+        private string GetUrl(HtmlNode item)
+        {
+            return item.SelectSingleNode("./div/a").GetAttributeValue("href", null);
+        }
+
+        private Price GetPrice(HtmlNode item)
+        {
+            string priceStr = item.SelectSingleNode(".//span[@class='price']").InnerText;
+            return Utils.ParsePrice(priceStr);
+        }
+
+        private string GetImageUrl(HtmlNode item)
+        {
+            return item.SelectSingleNode(".//img").GetAttributeValue("src", null);
         }
     }
 }

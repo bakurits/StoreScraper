@@ -9,6 +9,7 @@ using StoreScraper.Core;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
 namespace StoreScraper.Bots.Html.Higuhigu.Okini
 {
@@ -32,10 +33,60 @@ namespace StoreScraper.Bots.Html.Higuhigu.Okini
 #if DEBUG
                 LoadSingleProduct(listOfProducts, settings, item);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
+                LoadSingleProductTryCatchWrapper(listOfProducts, settings, item);
 #endif
             }
 
+        }
+        
+        public override void ScrapeAllProducts(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
+        {
+            FindItems(out listOfProducts, null, token);   
+        }
+        
+        
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
+        {
+            var document = GetWebpage(productUrl, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to oki-ni website");
+                throw new WebException("Can't connect to website");
+            }
+
+            var root = document.DocumentNode;
+            var name = root.SelectSingleNode("//span[@itemprop='name']")?.InnerText.Trim();
+            var priceNode = root.SelectSingleNode("//span[@class='price'][last()]");
+            var price = Utils.ParsePrice(priceNode?.InnerText);
+            var image = root.SelectSingleNode("//meta[@property='og:image']")?.GetAttributeValue("content", null);
+
+            ProductDetails result = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+
+
+            if (!root.InnerHtml.Contains("spConfig")) return result;
+            var jsonStr = Regex.Match(root.InnerHtml, "\"spConfig\": (.*?),\n").Groups[1].Value;
+            var tokenStr = Regex.Match(jsonStr, "\"(\\d+)\":").Groups[1].Value;
+            JObject parsed = JObject.Parse(jsonStr);
+            var sizes = parsed.SelectToken("attributes").SelectToken(tokenStr).SelectToken("options");
+            foreach (JToken sz in sizes.Children())
+            {
+                var sizeName = (string)sz.SelectToken("label");
+                JArray products = (JArray)sz.SelectToken("products");
+                if (products.Count > 0)
+                {
+                    result.AddSize(sizeName, "Unknown");
+                }
+            }
+            return result;
         }
 
         private HtmlDocument GetWebpage(string url, CancellationToken token)
@@ -47,7 +98,7 @@ namespace StoreScraper.Bots.Html.Higuhigu.Okini
 
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
-            string url = string.Format(SearchFormat, settings.KeyWords);
+            string url = SearchFormat;
             var document = GetWebpage(url, token);
             if (document == null)
             {
@@ -56,16 +107,13 @@ namespace StoreScraper.Bots.Html.Higuhigu.Okini
             }
             var node = document.DocumentNode;
             var items = node.SelectNodes("//li[@class='item product product-item']");
-            if (items == null)
-            {
-                Logger.Instance.WriteErrorLog("Uncexpected Html!!");
-                Logger.Instance.SaveHtmlSnapshop(document);
-                throw new WebException("Undexpected Html");
-            }
-            return items;
+            if (items != null) return items;
+            Logger.Instance.WriteErrorLog("Unexpected Html!!");
+            Logger.Instance.SaveHtmlSnapshop(document);
+            throw new WebException("Unexpected Html");
         }
 
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
+        private void LoadSingleProductTryCatchWrapper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
             {
@@ -109,52 +157,6 @@ namespace StoreScraper.Bots.Html.Higuhigu.Okini
         private string GetImageUrl(HtmlNode item)
         {
             return item.SelectSingleNode(".//img").GetAttributeValue("src", null);
-        }
-
-        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
-        {
-            var document = GetWebpage(productUrl, token);
-            if (document == null)
-            {
-                Logger.Instance.WriteErrorLog($"Can't Connect to oki-ni website");
-                throw new WebException("Can't connect to website");
-            }
-
-            var root = document.DocumentNode;
-            var name = root.SelectSingleNode("//span[@itemprop='name']")?.InnerText.Trim();
-            var priceNode = root.SelectSingleNode("//span[@class='price'][last()]");
-            var price = Utils.ParsePrice(priceNode?.InnerText);
-            var image = root.SelectSingleNode("//meta[@property='og:image']")?.GetAttributeValue("content", null);
-
-            ProductDetails result = new ProductDetails()
-            {
-                Price = price.Value,
-                Name = name,
-                Currency = price.Currency,
-                ImageUrl = image,
-                Url = productUrl,
-                Id = productUrl,
-                ScrapedBy = this
-            };
-
-
-            if (root.InnerHtml.Contains("spConfig"))
-            {
-                var jsonStr = Regex.Match(root.InnerHtml, "\"spConfig\": (.*?),\n").Groups[1].Value;
-                var tokenStr = Regex.Match(jsonStr, "\"(\\d+)\":").Groups[1].Value;
-                JObject parsed = JObject.Parse(jsonStr);
-                var sizes = parsed.SelectToken("attributes").SelectToken(tokenStr).SelectToken("options");
-                foreach (JToken sz in sizes.Children())
-                {
-                    var sizeName = (string)sz.SelectToken("label");
-                    JArray products = (JArray)sz.SelectToken("products");
-                    if (products.Count > 0)
-                    {
-                        result.AddSize(sizeName, "Unknown");
-                    }
-                }
-            }
-            return result;
         }
     }
 }
