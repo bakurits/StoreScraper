@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -8,6 +9,7 @@ using StoreScraper.Core;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
 namespace StoreScraper.Bots.Html.Higuhigu.Shoezgallery
 {
@@ -31,10 +33,53 @@ namespace StoreScraper.Bots.Html.Higuhigu.Shoezgallery
 #if DEBUG
                 LoadSingleProduct(listOfProducts, settings, item);
 #else
-                LoadSingleProductTryCatchWraper(listOfProducts, settings, item);
+                LoadSingleProductTryCatchWrapper(listOfProducts, settings, item);
 #endif
             }
 
+        }
+        
+        public override void ScrapeAllProducts(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
+        {
+            FindItems(out listOfProducts, null, token);   
+        }
+        
+        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
+        {
+            var document = GetWebpage(productUrl, token);
+            if (document == null)
+            {
+                Logger.Instance.WriteErrorLog($"Can't Connect to shoezgallery website");
+                throw new WebException("Can't connect to website");
+            }
+
+            var root = document.DocumentNode;
+            var sizeNodes = root.SelectNodes("//a[contains(@class, 'attribute_link')]");
+            var sizes = sizeNodes?.Select(node => node.InnerText).ToList();
+
+            var name = root.SelectSingleNode("//h1[contains(@class, 'product-name')]")?.InnerText.Trim();
+            var priceNode = root.SelectSingleNode(".//span[@itemprop='price'][last()]");
+            var price = Utils.ParsePrice(priceNode?.InnerText);
+            var image = root.SelectSingleNode("//ul[@class='product-slider']/li/a")?.GetAttributeValue("src", null);
+
+            ProductDetails result = new ProductDetails()
+            {
+                Price = price.Value,
+                Name = name,
+                Currency = price.Currency,
+                ImageUrl = image,
+                Url = productUrl,
+                Id = productUrl,
+                ScrapedBy = this
+            };
+
+            Debug.Assert(sizes != null, nameof(sizes) + " != null");
+            foreach (var size in sizes)
+            {
+                result.AddSize(size, "Unknown");
+            }
+
+            return result;
         }
 
         private HtmlDocument GetWebpage(string url, CancellationToken token)
@@ -46,7 +91,7 @@ namespace StoreScraper.Bots.Html.Higuhigu.Shoezgallery
 
         private HtmlNodeCollection GetProductCollection(SearchSettingsBase settings, CancellationToken token)
         {
-            string url = string.Format(SearchFormat, settings.KeyWords);
+            const string url = SearchFormat;
             var document = GetWebpage(url, token);
             if (document == null)
             {
@@ -55,16 +100,13 @@ namespace StoreScraper.Bots.Html.Higuhigu.Shoezgallery
             }
             var node = document.DocumentNode;
             var items = node.SelectNodes("//div[contains(@id, 'category_product_')]");
-            if (items == null)
-            {
-                Logger.Instance.WriteErrorLog("Uncexpected Html!!");
-                Logger.Instance.SaveHtmlSnapshop(document);
-                throw new WebException("Undexpected Html");
-            }
-            return items;
+            if (items != null) return items;
+            Logger.Instance.WriteErrorLog("Unexpected Html!!");
+            Logger.Instance.SaveHtmlSnapshop(document);
+            throw new WebException("Unexpected Html");
         }
 
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
+        private void LoadSingleProductTryCatchWrapper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
         {
             try
             {
@@ -108,43 +150,6 @@ namespace StoreScraper.Bots.Html.Higuhigu.Shoezgallery
         private string GetImageUrl(HtmlNode item)
         {
             return item.SelectSingleNode(".//img").GetAttributeValue("src", null);
-        }
-
-        public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
-        {
-            var document = GetWebpage(productUrl, token);
-            if (document == null)
-            {
-                Logger.Instance.WriteErrorLog($"Can't Connect to shoezgallery website");
-                throw new WebException("Can't connect to website");
-            }
-
-            var root = document.DocumentNode;
-            var sizeNodes = root.SelectNodes("//a[contains(@class, 'attribute_link')]");
-            var sizes = sizeNodes?.Select(node => node.InnerText).ToList();
-
-            var name = root.SelectSingleNode("//h1[contains(@class, 'product-name')]")?.InnerText.Trim();
-            var priceNode = root.SelectSingleNode(".//span[@itemprop='price'][last()]");
-            var price = Utils.ParsePrice(priceNode?.InnerText);
-            var image = root.SelectSingleNode("//ul[@class='product-slider']/li/a")?.GetAttributeValue("src", null);
-
-            ProductDetails result = new ProductDetails()
-            {
-                Price = price.Value,
-                Name = name,
-                Currency = price.Currency,
-                ImageUrl = image,
-                Url = productUrl,
-                Id = productUrl,
-                ScrapedBy = this
-            };
-
-            foreach (var size in sizes)
-            {
-                result.AddSize(size, "Unknown");
-            }
-
-            return result;
         }
     }
 }
