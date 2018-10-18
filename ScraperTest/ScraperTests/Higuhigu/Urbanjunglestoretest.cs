@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ScraperTest.Helpers;
 using StoreScraper.Bots.Html.Higuhigu.Urbanjunglestore;
 using StoreScraper.Models;
+using StoreScraper.Models.Enums;
 
 namespace ScraperTest.ScraperTests.Higuhigu
 {
@@ -38,11 +40,22 @@ namespace ScraperTest.ScraperTests.Higuhigu
                 Debug.WriteLine(sz);
             }
         }
+        
+        [TestMethod]
+        public void ScrapeAllProductsTest()
+        {
+            UrbanjunglestoreScraper scraper = new UrbanjunglestoreScraper();
+            
+            scraper.ScrapeAllProducts(out var lst, ScrappingLevel.PrimaryFields, CancellationToken.None);
+            Helper.PrintFindItemsResults(lst);
+        }
 
         // Nike Air Jordan Wmns 1 Retro
         // "https://www.urbanjunglestore.com/it/nike-wmns-air-jordan-1-retro-low-ns-ah7232-623.html"
         // new Product(this, name, url, price, imageUrl, url, "EUR")
     }
+    
+    
 
    
 }
