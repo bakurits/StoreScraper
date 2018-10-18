@@ -34,8 +34,7 @@ namespace StoreScraper.Models
         public double Price { get; set; }
 
         /// <summary>
-        /// Short name of currency.
-        /// For example: USD, EUR etc..
+        /// Symbol of currency
         /// </summary>
         [Browsable(false)]
         public string Currency { get; set; }

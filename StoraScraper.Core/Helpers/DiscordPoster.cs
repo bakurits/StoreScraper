@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using StoreScraper.Core;
 using StoreScraper.Http.Factory;
 using StoreScraper.Interfaces;
 using StoreScraper.Models;
@@ -183,32 +184,40 @@ namespace StoreScraper.Helpers
 
         public async Task<HttpResponseMessage> PostMessage(string webhookUrl, ProductDetails productDetails, CancellationToken token)
         {
-            string currency = productDetails.Currency.HtmlDeEntitize();
-            string name = productDetails.Name?.EscapeNewLines().HtmlDeEntitize();
-            string sizes = string.Join("\n",
-                productDetails.SizesList.Select(sizInfo => $"{sizInfo.Key}[{sizInfo.Value}]".HtmlDeEntitize()));
-            string textMessage = $"*Price*:\n{productDetails.Price + currency}\n" +
-                                 $"*Store link*:\n{productDetails.Url}\n" +
-                                 $"*Available sizes are*:\n{sizes}\n";
+            try
+            {
+                string currency = productDetails.Currency.HtmlDeEntitize();
+                string name = productDetails.Name?.EscapeNewLines().HtmlDeEntitize();
+                string sizes = string.Join("\n",
+                    productDetails.SizesList.Select(sizInfo => $"{sizInfo.Key}[{sizInfo.Value}]".HtmlDeEntitize()));
+                string textMessage = $"*Price*:\n{productDetails.Price + currency}\n" +
+                                     $"*Store link*:\n{productDetails.Url}\n" +
+                                     $"*Available sizes are*:\n{sizes}\n";
 
-            Embed embed = new Embed()
-            {
-                Title = name,
-                Type = "rich",
-                Description = textMessage,
-                Url = productDetails.Url,
-                Color = 7753637,
-                Thumbnail = new EmbedThumbnail()
+                Embed embed = new Embed()
                 {
-                    Url = productDetails.ImageUrl
-                },
-                TimeStamp = new DateTimeOffset(DateTime.UtcNow)
-            };
-            Webhook webhook = new Webhook(webhookUrl, token)
+                    Title = name,
+                    Type = "rich",
+                    Description = textMessage,
+                    Url = productDetails.Url,
+                    Color = 7753637,
+                    Thumbnail = new EmbedThumbnail()
+                    {
+                        Url = productDetails.ImageUrl
+                    },
+                    TimeStamp = new DateTimeOffset(DateTime.UtcNow)
+                };
+                Webhook webhook = new Webhook(webhookUrl, token)
+                {
+                    Embeds = new List<Embed> { embed }
+                };
+                return await webhook.Send();
+            }
+            catch (Exception e)
             {
-                Embeds = new List<Embed> { embed }
-            };
-            return await webhook.Send();
+                Logger.Instance.WriteErrorLog($"Error occured while posting to slack. \n msg={e.GetMessage()}");
+                throw;
+            }
         }
 
     }

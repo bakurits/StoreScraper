@@ -271,8 +271,9 @@ namespace Scraper.Controls
                 for (int i = selectedItems.Count - 1; i >= 0; i--)
                 {
                     var item = selectedItems[i];
-                    (item as MonitoringTaskBase).TokenSource.Cancel();
-                    CLbx_Monitor.Items.Remove(selectedItems[i]);
+                    var group = (item as SearchMonitoringTaskGroup);
+
+                    MonitoringTaskManager.Default.RemoveSearchTaskGroup(group);
                 }
                     
             }

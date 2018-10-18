@@ -19,7 +19,7 @@ namespace StoreScraper.Core
 
         public override string ToString()
         {
-            return $"[WebsiteCount: {WebsiteList.Count}] [Filter: {Options.Filter.KeyWords}({Options.Filter.MinPrice}, {Options.Filter.MaxPrice})]";
+            return $"[WebsiteCount: {WebsiteList.Count}] [{Options.Filter.KeyWords}({Options.Filter.MinPrice}, {Options.Filter.MaxPrice})]";
         }
     }
 }

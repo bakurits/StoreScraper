@@ -77,7 +77,7 @@ namespace StoreScraper.Core
 
         public void RemoveMonitoringTask(ScraperBase website)
         {
-            if(!_allShopsTasks.TryGetValue(website, out var task)) throw new KeyNotFoundException($"can't remove {website} monitoring, because it is not registered");
+            if(!_allShopsTasks.TryGetValue(website, out var task)) throw new KeyNotFoundException($"Can't remove {website} monitoring, because it is not registered");
 
             task.TokenSource.Cancel();
             _allShopsTasks.Remove(website);
@@ -116,7 +116,9 @@ namespace StoreScraper.Core
 
                 try
                 {
+                    Stopwatch stopWatch = Stopwatch.StartNew();
                     products = ScrapeCurrentProductsList(website, task.TokenSource.Token);
+                    _logger.WriteVerboseLog($"Successfully scraped {website}. Scrapping took {stopWatch.ElapsedMilliseconds}ms !!!");
                 }
                 catch (Exception e)
                 {

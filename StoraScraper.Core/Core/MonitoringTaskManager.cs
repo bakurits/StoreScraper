@@ -123,5 +123,22 @@ namespace StoreScraper.Core
 
             });
         }
+
+        public void RemoveSearchTaskGroup(SearchMonitoringTaskGroup taskGroup)
+        {
+            MonTasksContainer.Items.Remove(taskGroup);
+            foreach (var scraper in taskGroup.WebsiteList)
+            {
+                var searchTask = SearchMonTasks[scraper];
+
+                searchTask.MonitoringOptions.Remove(taskGroup.Options);
+
+                if (searchTask.MonitoringOptions.Count == 0)
+                {
+                    searchTask.TokenSource.Cancel();
+                    SearchMonTasks.Remove(scraper);
+                }
+            }
+        }
     }
 }
