@@ -200,8 +200,7 @@ namespace Scraper.Controls
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            CookieCollector.Default.Dispose();
+        { 
             Environment.Exit(Environment.ExitCode);
         }
 
