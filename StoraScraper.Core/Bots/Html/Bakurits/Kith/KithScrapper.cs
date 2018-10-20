@@ -5,32 +5,31 @@ using System.Linq;
 using System.Threading;
 using HtmlAgilityPack;
 using StoreScraper.Core;
+using StoreScraper.Exceptions;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 using StoreScraper.Models.Enums;
-
-#pragma warning disable 4014
 
 namespace StoreScraper.Bots.Html.Bakurits.Kith
 {
     public class KithScrapper : ScraperBase
     {
-        
         public override string WebsiteName { get; set; } = "Kith";
         public override string WebsiteBaseUrl { get; set; } = "https://kith.com/";
         public override bool Active { get; set; }
-       
-        
-        private static readonly string[] Urls = { "https://kith.com/collections/latest",
-                                                  "https://kith.com/collections/womens-latest-products",
-                                                  "https://kith.com/collections/latest-kids"
+
+
+        private static readonly string[] Urls =
+        {
+            "https://kith.com/collections/latest",
+            "https://kith.com/collections/womens-latest-products",
+            "https://kith.com/collections/latest-kids"
         };
-        
+
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,
             CancellationToken token)
         {
-            listOfProducts = new List<Product>();
             ConcurrentDictionary<Product, byte> products = new ConcurrentDictionary<Product, byte>();
             var pages = Utils.GetPageTask(Urls.ToList(), token).Result;
             foreach (var page in pages)
@@ -46,6 +45,8 @@ namespace StoreScraper.Bots.Html.Bakurits.Kith
 #endif
                 }
             }
+
+            listOfProducts = products.Keys.ToList();
         }
 
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
@@ -53,12 +54,14 @@ namespace StoreScraper.Bots.Html.Bakurits.Kith
             throw new NotImplementedException();
         }
 
-        public override void ScrapeAllProducts(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
+        public override void ScrapeAllProducts(out List<Product> listOfProducts, ScrappingLevel requiredInfo,
+            CancellationToken token)
         {
-            throw new NotImplementedException();
+            FindItems(out listOfProducts, null, token);
         }
 
-        private void LoadSingleProductTryCatchWrapper(ConcurrentDictionary<Product, byte>  listOfProducts, SearchSettingsBase settings, HtmlNode item)
+        private void LoadSingleProductTryCatchWrapper(ConcurrentDictionary<Product, byte> listOfProducts,
+            SearchSettingsBase settings, HtmlNode item)
         {
             try
             {
@@ -70,9 +73,38 @@ namespace StoreScraper.Bots.Html.Bakurits.Kith
             }
         }
 
-        private void LoadSingleProduct(ConcurrentDictionary<Product, byte>  listOfProducts, SearchSettingsBase settings, HtmlNode item)
+        private void LoadSingleProduct(ConcurrentDictionary<Product, byte> listOfProducts, SearchSettingsBase settings,
+            HtmlNode item)
+        {
+            var url = GetUrl(item);
+            var name = GetName(item);
+            var imageUrl = GetImageUrl(item);
+            var price = GetPrice(item);
+            listOfProducts.TryAdd(new Product(this, name, url, price.Value, imageUrl, url, price.Currency), byte.MaxValue);
+        }
+
+
+        private static string GetName(HtmlNode item)
+        {
+            string name = item.SelectSingleNode(".//p[contains(@class, 'product-card-title')]").InnerText;
+            return name;
+        }
+
+        private string GetUrl(HtmlNode item)
         {
             
+            return WebsiteBaseUrl + item.GetAttributeValue("href", "");
+        }
+
+        private string GetImageUrl(HtmlNode item)
+        {
+            return null;
+        }
+
+        private static Price GetPrice(HtmlNode item)
+        {
+            var priceContainer = item.SelectSingleNode(".//p[contains(@class, 'product-card-price')]").InnerText;
+            return Utils.ParsePrice(priceContainer);
         }
     }
 }

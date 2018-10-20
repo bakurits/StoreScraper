@@ -47,6 +47,7 @@ namespace StoreScraper.Core
         /// Scrapes All products from new arrivals page
         /// </summary>
         /// <param name="listOfProducts">All products that exist on new arrivals page</param>
+        /// <param name="requiredInfo"></param>
         /// <param name="token">Cancellation token for canceling task. </param>
         public virtual void ScrapeAllProducts(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
         {
