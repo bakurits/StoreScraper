@@ -117,14 +117,16 @@ namespace StoreScraper.Bots.Html.GiorgiBaghdavadze.Adidas
 
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            var request = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
-            var document = request.GetDoc(productUrl, token);
-            HtmlNode ds = document.DocumentNode;
+            HtmlNode ds = GetWebpage(productUrl, token);
             string name = ds.SelectSingleNode("//h1[contains(@data-auto-id,'product-title')]").InnerText;
             string priceIntoString = ds.SelectSingleNode("//div[contains(@class,'gl-price-container')]/span").InnerText;
             string result = Regex.Match(priceIntoString, @"[\d\.]+").Value;
             double.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
             string imageURL = ds.SelectSingleNode("//img[@class='performance-item']").GetAttributeValue("src", null);
+            int t = productUrl.LastIndexOf("/", StringComparison.Ordinal);
+            int r = productUrl.LastIndexOf(".", StringComparison.Ordinal);
+
+            var sku = productUrl.Substring(t + 1, r - t - 1);
             ProductDetails details = new ProductDetails()
             {
                 Name = name,
@@ -135,15 +137,41 @@ namespace StoreScraper.Bots.Html.GiorgiBaghdavadze.Adidas
                 Currency = "CHF",
                 ScrapedBy = this
             };
-            var nodes = ds.SelectNodes("//select[contains(@class,'gl-dropdown__select-element')]/option");
-            if (nodes == null)
-                return details;
-            var sizes = nodes.Select(node => node.InnerText.Trim()).Where(element => !element.Contains("defaultOption"));
-            foreach (var size in sizes)
+
+            string search = $"https://www.adidas.com/api/products/{sku}/availability?sitePath=us";
+            ds = GetWebpage(search, token);
+            string toJason = ds.InnerText;
+            int arrayStart = toJason.LastIndexOf("[", StringComparison.Ordinal);
+            int arrayEnd = toJason.LastIndexOf("}");
+            if (arrayStart == -1) return details;
+            toJason = toJason.Substring(arrayStart, arrayEnd - arrayStart);
+            JArray parsed = null; 
+            try
             {
-                details.AddSize(size, "Unknown");
+                parsed = JArray.Parse(toJason);
             }
+            catch (Exception e)
+            {
+                return details;
+            }
+            foreach (var x in parsed.Children())
+            {
+                var value = (string)x.SelectToken("size");
+                var availability_status = (string)x.SelectToken("availability_status");
+                if (availability_status == "IN_STOCK")
+                    details.AddSize(value, "Unknown");
+            }
+
             return details;
         }
+        private HtmlNode GetWebpage(string url, CancellationToken token)
+        {
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            return client.GetDoc(url, token).DocumentNode;
+
+        }
+
     }
 }
+
+//"\"variation_list\":[{\"sku\":\"B37458_530\",\"availability\":15,\"availability_status\":\"IN_STOCK\",\"size\":\"5\"},{\"sku\":\"B37458_540\",\"availability\":15,\"availability_status\":\"IN_STOCK\",\"size\":\"5.5\"},{\"sku\":\"B37458_550\",\"availability\":15,\"availability_status\":\"IN_STOCK\",\"size\":\"6\"},{\"sku\":\"B37458_560\",\"availability\":15,\"availability_status\":\"IN_STOCK\",\"size\":\"6.5\"},{\"sku\":\"B37458_570\",\"availability\":15,\"availability_status\":\"IN_STOCK\",\"size\":\"7\"},{\"sku\":\"B37458_580\",\"availability\":15,\"availability_status\":\"IN_STOCK\",\"size\":\"7.5\"},{\"sku\":\"B37458_590\",\"availability\":15,\"availability_status\":\"IN_STOCK\",\"size\":\"8\"},{\"sku\":\"B37458_600\",\"availability\":15,\"availability_status\":\"IN_STOCK\",\"size\":\"8.5\"},{\"sku\":\"B37458_610\",\"availability\":15,\"availability_status\":\"IN_STOCK\",\"size\":\"9\"},{\"sku\":\"B37458_620\",\"availability\":15,\"availability_status\":\"IN_STOCK\",\"size\":\"9.5\"},{\"sku\":\"B37458_630\",\"availability\":15,\"availability_status\":\"IN_STOCK\",\"size\":\"10\"},{\"sku\":\"B37458_640\",\"availability\":15,\"availability_status\":\"IN_STOCK\",\"size\":\"10.5\"},{\"sku\":\"B37458_650\",\"availability\":0,\"availability_status\":\"NOT_AVAILABLE\",\"size\":\"11\"}]"
