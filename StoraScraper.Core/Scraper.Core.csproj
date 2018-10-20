@@ -61,6 +61,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bots\Html\GiorgiBaghdavadze\AdidasSraper\AdidasSraper.cs" />
     <Compile Include="Core\MonitoringTaskManager.cs" />
     <Compile Include="Data\AppSettings.cs" />
     <Compile Include="Attributes\DisableInGUI.cs" />

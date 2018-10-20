@@ -377,5 +377,6 @@ namespace StoreScraper.Bots.Html.Sticky_bit.FootLocker_FootAction
                 ReleasePageApiEndpoint = "http://pciis02.eastbay.com/api/v2/productlaunch/ReleaseCalendar/1";
             }
         }
+
     }
 }
