@@ -84,7 +84,9 @@ namespace StoreScraper.Bots.Html.GiorgiBaghdavadze.Adidas
 
         private double getPrice(HtmlNode child)
         {
-            string priceIntoString = child.SelectSingleNode(".//div[contains(@class,'gl-price-container')]/span").InnerText;
+            string priceIntoString = child.SelectSingleNode(".//div[contains(@class,'gl-price-container')]/span[0]")?.InnerText;
+            if (priceIntoString == null)
+                return 0;
             Debug.Print(priceIntoString);
             string result = Regex.Match(priceIntoString, @"[\d\.]+").Value;
             double.TryParse(result, NumberStyles.Any, CultureInfo.InvariantCulture, out var price);
