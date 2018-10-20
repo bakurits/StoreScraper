@@ -78,6 +78,7 @@ namespace StoreScraper.Helpers
                         OptionWriteEmptyNodes = true,
                     };
                     doc.LoadHtml(result);
+                    response.Dispose();
                     return doc;
                 }
             }
@@ -103,6 +104,7 @@ namespace StoreScraper.Helpers
                         OptionWriteEmptyNodes = true,
                     };
                     doc.LoadHtml(result);
+                    response.Dispose();
                     return doc;
                 }
             }
@@ -142,6 +144,7 @@ namespace StoreScraper.Helpers
                         OptionWriteEmptyNodes = true,
                     };
                     doc.LoadHtml(result);
+                    response.Dispose();
                     return doc;
                 }
             }

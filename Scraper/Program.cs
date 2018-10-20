@@ -30,7 +30,6 @@ namespace Scraper
             if (!Directory.Exists(AppSettings.DataDir)) Directory.CreateDirectory(AppSettings.DataDir);
             AppSettings.Default = AppSettings.Load();
 
-            CookieCollector.Default = new CookieCollector();
             ServicePointManager.CheckCertificateRevocationList = false;
             ServicePointManager.DefaultConnectionLimit = 1000;
             ServicePointManager.Expect100Continue = false;
