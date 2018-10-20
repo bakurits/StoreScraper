@@ -144,7 +144,6 @@ namespace StoreScraper.Bots.Html.GiorgiBaghdavadze.Titoloshop
             }
 
             var sizes = nodes.Select(node => node.InnerText.Trim()).Where(element => !element.Contains("Choose"));
-
             foreach (var size in sizes)
             {
                 details.AddSize(size, "Unknown");

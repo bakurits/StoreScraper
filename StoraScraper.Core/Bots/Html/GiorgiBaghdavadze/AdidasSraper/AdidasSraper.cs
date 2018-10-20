@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
@@ -135,7 +136,14 @@ namespace StoreScraper.Bots.Html.GiorgiBaghdavadze.Adidas
                 ScrapedBy = this
             };
             var nodes = ds.SelectNodes("//select[contains(@class,'gl-dropdown__select-element')]/option");
-            return null;
+            if (nodes == null)
+                return details;
+            var sizes = nodes.Select(node => node.InnerText.Trim()).Where(element => !element.Contains("defaultOption"));
+            foreach (var size in sizes)
+            {
+                details.AddSize(size, "Unknown");
+            }
+            return details;
         }
     }
 }
