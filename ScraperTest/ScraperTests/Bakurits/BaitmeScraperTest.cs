@@ -38,8 +38,6 @@ namespace ScraperTest.ScraperTests.Bakurits
             ProductDetails details = scraper.GetProductDetails(curProduct.Url, CancellationToken.None);
 
             Helper.PrintGetDetailsResult(details.SizesList);
-            Debug.WriteLine(curProduct.ImageUrl);
-
         }
         
         [TestMethod]
