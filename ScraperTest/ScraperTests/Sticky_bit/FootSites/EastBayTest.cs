@@ -7,6 +7,7 @@ using StoreScraper.Models;
 
 namespace ScraperTest.ScraperTests.Sticky_bit.FootSites
 {
+
     [TestClass]
     public class EastBayTest
     {
