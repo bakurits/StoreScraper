@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -377,6 +378,30 @@ namespace Scraper.Controls
         private void MainForm_Load(object sender, EventArgs e)
         {
             MonitoringTaskManager.Default.MonTasksContainer = CLbx_Monitor;
+        }
+
+        private void Btn_Export_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog dialog = new SaveFileDialog()
+            {
+                DefaultExt = "txt"
+            };
+            var result = dialog.ShowDialog();
+            if(result != DialogResult.OK)return;
+            
+            var list = new List<ScraperBase>();
+
+            foreach (var item in Clbx_Websites.CheckedItems)
+            {
+                list.Add((ScraperBase)item);
+            }
+
+            var file = dialog.OpenFile();
+
+            using (StreamWriter writer = new StreamWriter(file))
+            {
+                writer.Write(string.Join(Environment.NewLine, list));
+            }
         }
     }
 }

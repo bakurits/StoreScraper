@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,13 +20,76 @@ namespace StoreScraper.Core
 
         private class ShopMonitoringTask
         {
+            public ScraperBase Website { private get; set; }
             public HashSet<Product> CurrentProducts { get; set; }
             public event NewProductHandler Handler;
             public CancellationTokenSource TokenSource { get; set; }
+            private bool _started = false;
 
-            public void OnNewProductAppeared(Product product)
+            private void OnNewProductAppeared(Product product)
             {
                 Handler?.Invoke(product);
+            }
+
+            public void Start()
+            {
+                if(_started)return;
+                Task.Factory.StartNew(MonitorShop, TokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+                _started = true;
+            }
+
+            private void MonitorShop()
+            {
+
+
+                while (!TokenSource.Token.IsCancellationRequested)
+                {
+                    var counter = Stopwatch.StartNew();
+                    HashSet<Product> products = null;
+
+                    try
+                    {
+                        Stopwatch stopWatch = Stopwatch.StartNew();
+                        products = ScrapeCurrentProductsList(Website, TokenSource.Token);
+                        Logger.Instance.WriteVerboseLog($"Successfully scraped {Website}. Scrapping took {stopWatch.ElapsedMilliseconds}ms !!!");
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Instance.WriteErrorLog($"Error while scrapping {Website}. \n msg= {e.Message} \n");
+                    }
+
+
+                    if (products != null)
+                    {
+
+                        lock (CurrentProducts)
+                        {
+                            foreach (var product in products)
+                            {
+                                if (CurrentProducts.Contains(product)) continue;
+                                CurrentProducts.Add(product);
+                                Task.Run(() =>
+                                {
+                                    try
+                                    {
+                                        OnNewProductAppeared(product);
+                                        Logger.Instance.WriteVerboseLog($"Successfully invoked new product event handler");
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Logger.Instance.WriteErrorLog($"Error while invoking new product event handler. \n msg={e.Message} \n");
+                                    }
+                                });
+                            }
+                        }
+                    }
+
+                    if (AppSettings.Default.MonitoringInterval > counter.ElapsedMilliseconds)
+                    {
+                        Task.Delay(TimeSpan.FromMilliseconds(AppSettings.Default.MonitoringInterval - counter.ElapsedMilliseconds), TokenSource.Token)
+                            .Wait(TokenSource.Token);
+                    }
+                }
             }
         }
 
@@ -61,25 +125,29 @@ namespace StoreScraper.Core
                 return;
             }
 
-            var curList = await Task.Run(() =>ScrapeCurrentProductsList(website, token));
+            var curList = await Task.Run(() => ScrapeCurrentProductsList(website, token));
 
             var task = new ShopMonitoringTask()
-            {
+            {   
+                Website = website,
                 CurrentProducts = curList,
                 TokenSource = new CancellationTokenSource(),
             };
-
-#if DEBUG
-         task.CurrentProducts = new HashSet<Product>();
-#endif
-
+             
             _allShopsTasks.Add(website, task);
-            Task.Factory.StartNew(() => MonitorShop(website, task), token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+        }
+
+
+        public void StartMonitoringTask(ScraperBase website)
+        {
+            if(_allShopsTasks.TryGetValue(website, out var task)) throw new KeyNotFoundException("Can't start task. Task with this name not found");
+
+            task.Start();
         }
 
         public void RemoveMonitoringTask(ScraperBase website)
         {
-            if(!_allShopsTasks.TryGetValue(website, out var task)) throw new KeyNotFoundException($"Can't remove {website} monitoring, because it is not registered");
+            if (!_allShopsTasks.TryGetValue(website, out var task)) throw new KeyNotFoundException($"Can't remove {website} monitoring, because it is not registered");
 
             task.TokenSource.Cancel();
             _allShopsTasks.Remove(website);
@@ -97,7 +165,7 @@ namespace StoreScraper.Core
             }
         }
 
-        private HashSet<Product> ScrapeCurrentProductsList(ScraperBase website, CancellationToken token)
+        private static HashSet<Product> ScrapeCurrentProductsList(ScraperBase website, CancellationToken token)
         {
             List<Product> products = new List<Product>();
             Utils.TrySeveralTimes(() => website.ScrapeAllProducts(out products, ScrappingLevel.Url, token), AppSettings.Default.ProxyRotationRetryCount);
@@ -106,59 +174,5 @@ namespace StoreScraper.Core
             return new HashSet<Product>(products);
         }
 
-
-        private void MonitorShop(ScraperBase website, ShopMonitoringTask task)
-        {
-            
-
-            while (!task.TokenSource.Token.IsCancellationRequested)
-            {
-                var counter = Stopwatch.StartNew();
-                HashSet<Product> products = null;
-
-                try
-                {
-                    Stopwatch stopWatch = Stopwatch.StartNew();
-                    products = ScrapeCurrentProductsList(website, task.TokenSource.Token);
-                    _logger.WriteVerboseLog($"Successfully scraped {website}. Scrapping took {stopWatch.ElapsedMilliseconds}ms !!!");
-                }
-                catch (Exception e)
-                {
-                    _logger.WriteErrorLog($"Error while scrapping {website}. \n msg= {e.Message} \n");
-                }
-
-
-                if (products != null)
-                {
-
-                    lock (task.CurrentProducts)
-                    {
-                        foreach (var product in products)
-                        {
-                            if (task.CurrentProducts.Contains(product)) continue;
-                            task.CurrentProducts.Add(product);
-                            Task.Run(() =>
-                            {
-                                try
-                                {
-                                    task.OnNewProductAppeared(product);
-                                    _logger.WriteVerboseLog($"Successfully invoked new product event handler");
-                                }
-                                catch (Exception e)
-                                {
-                                    _logger.WriteErrorLog($"Error while invoking new product event handler. \n msg={e.Message} \n");
-                                }
-                            });
-                        }
-                    } 
-                }
-
-                if (AppSettings.Default.MonitoringInterval > counter.ElapsedMilliseconds)
-                {
-                    Task.Delay(TimeSpan.FromMilliseconds(AppSettings.Default.MonitoringInterval - counter.ElapsedMilliseconds), task.TokenSource.Token)
-                        .Wait(task.TokenSource.Token);
-                }
-            }
-        }
     }
 }
