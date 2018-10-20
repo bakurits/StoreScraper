@@ -15,17 +15,11 @@ namespace ScraperTest.ScraperTests.Sticky_bit.FootSites
         [TestMethod]
         public void FindItems()
         {
-            FootSimpleBase.EastBayScraper scraper = new FootSimpleBase.EastBayScraper();
-            scraper.FindItems(out var lst, Helper.SearchSettings, CancellationToken.None);
-            Helper.PrintFindItemsResults(lst);
         }
 
         [TestMethod]
         public void GetProductDetails()
         {
-            FootSimpleBase.EastBayScraper scraper = new FootSimpleBase.EastBayScraper();
-            ProductDetails productDetails = scraper.GetProductDetails("https://www.eastbay.com/product/model:286098/sku:A111794/easton-ghost-x-bbcor-baseball-bat-mens/white/gold/", CancellationToken.None);
-            Console.Write(productDetails); 
         }
     }
 }

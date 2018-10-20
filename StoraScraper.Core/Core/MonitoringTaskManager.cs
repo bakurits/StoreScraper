@@ -47,7 +47,8 @@ namespace StoreScraper.Core
                 StreamWriter verboseLogTxtFile = null;
                 bool isNewWebsite = false;
 
-                string workingWebsiteLst = $"THESE WEBSITES SUCCESSFULLY ADDED TO MONITOR: \n\n";
+                string workingWebsiteLog = $"THESE WEBSITES SUCCESSFULLY ADDED TO MONITOR: \n\n";
+                List<ScraperBase> workingWebsiteList = new List<ScraperBase>();
                 string errorLog = $"ERROR WHILE ADDING THESE WEBSITES TO MONITOR: \n\n";
                 Parallel.ForEach(stores, store =>
                 {
@@ -63,7 +64,7 @@ namespace StoreScraper.Core
                             ProductMonitoringManager.Default.RegisterMonitoringTaskAsync(store,  tknSource.Token).Wait();
                             ProductMonitoringManager.Default.AddNewProductHandler(store, monTask.HandleNewProduct);
                             SearchMonTasks.Add(store, monTask);
-                            workingWebsiteLst += store.WebsiteName += Environment.NewLine;
+                            workingWebsiteList.Add(store);
                             isNewWebsite = true;
                         }
                         catch (Exception e)
@@ -101,7 +102,7 @@ namespace StoreScraper.Core
                 {
                     if (taskGroup.WebsiteList.Count > 0)
                     {
-                        MessageBox.Show(workingWebsiteLst, "Adding process for these websites was successful!!!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(workingWebsiteLog, "Adding process for these websites was successful!!!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         MonTasksContainer.Invoke((MethodInvoker)(() => { MonTasksContainer.Items.Add(taskGroup); }));
                     } 
                 }
@@ -110,8 +111,10 @@ namespace StoreScraper.Core
                 {
                     string verboseFilePath = Path.Combine("Logs", $"AddToMon VerboseLog ({DateTime.UtcNow:u})".EscapeFileName());
                     verboseLogTxtFile = File.CreateText(verboseFilePath);
-                    verboseLogTxtFile.Write(workingWebsiteLst);
+                    workingWebsiteLog += string.Join(Environment.NewLine, workingWebsiteList);
+                    verboseLogTxtFile.Write(workingWebsiteLog);
                     verboseLogTxtFile.Flush();
+                    verboseLogTxtFile.Close();
 
                     if (errorLogTxtFile != null)
                     {
@@ -120,6 +123,8 @@ namespace StoreScraper.Core
                         errorLogTxtFile.Close();
                     }
                 }
+
+                workingWebsiteList.ForEach(store => ProductMonitoringManager.Default.StartMonitoringTask(store));
 
             });
         }

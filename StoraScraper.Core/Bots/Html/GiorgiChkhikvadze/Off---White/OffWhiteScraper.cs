@@ -226,9 +226,9 @@ namespace StoreScraper.Bots.Html.GiorgiChkhikvadze
                             $"https://www.off---white.com/cdn-cgi/l/chk_jschl?jschl_vc={answer}&pass={pass}&jschl_answer={calc}");
                     message2.Method = HttpMethod.Get;
 
-                    using (var resultTask = client.SendAsync(message2, token))
+                    using (var result2 = client.SendAsync(message2, token).Result)
                     {
-                        resultTask.Result.EnsureSuccessStatusCode();
+                        result2.EnsureSuccessStatusCode();
                     }
                 }
             }

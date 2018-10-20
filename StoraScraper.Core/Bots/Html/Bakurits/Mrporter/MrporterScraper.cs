@@ -21,39 +21,17 @@ namespace StoreScraper.Bots.Html.Bakurits.Mrporter
     {
         private const string SearchUrlFormat = @"https://www.mrporter.com/mens/search/{0}?keywords={0}&pn={1}";
 
-
-        private bool _active;
         public override string WebsiteName { get; set; } = "Mrporter";
         public override string WebsiteBaseUrl { get; set; } = "https://www.mrporter.com/";
 
-        public override bool Active
-        {
-            get => _active;
-            set
-            {
-                if (!_active && value)
-                {
-                    CookieCollector.Default.RegisterActionAsync(WebsiteName,
-                        (httpClient, token) => httpClient.GetAsync("https://www.mrporter.com/mens/whats-new"),
-                        TimeSpan.FromMinutes(20)).Wait();
-                    _active = true;
-                }
-                else if (_active && !value)
-                {
-                    CookieCollector.Default.RemoveAction(WebsiteName);
-                    _active = false;
-                }
-            }
-        }
-
         private int NumberOfPages { get; } = 3;
+
+        public override bool Active { get; set; }
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,
             CancellationToken token)
         {
-            var client = _active
-                ? CookieCollector.Default.GetClient()
-                : ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
             listOfProducts = new List<Product>();
             var urls = new List<string>();
             for (var i = 1; i <= NumberOfPages; i++) urls.Add(string.Format(SearchUrlFormat, settings.KeyWords, i));
@@ -155,9 +133,7 @@ namespace StoreScraper.Bots.Html.Bakurits.Mrporter
 
         private HtmlNode GetPage(string url, CancellationToken token)
         {
-            var client = _active
-                ? CookieCollector.Default.GetClient()
-                : ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
 
             var document = client.GetDoc(url, token);
             return document.DocumentNode;

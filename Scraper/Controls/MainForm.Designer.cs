@@ -34,6 +34,11 @@
             this.btn_FindProducts = new System.Windows.Forms.Button();
             this.Tabs = new System.Windows.Forms.TabControl();
             this.Tab_Main = new System.Windows.Forms.TabPage();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.CLbx_Monitor = new System.Windows.Forms.CheckedListBox();
+            this.Btn_RemoveMon = new System.Windows.Forms.Button();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
             this.btn_DeselectAll = new System.Windows.Forms.Button();
             this.btn_SelectAll = new System.Windows.Forms.Button();
             this.btn_NegKeywords = new System.Windows.Forms.Button();
@@ -41,9 +46,7 @@
             this.Btn_UrlMon = new System.Windows.Forms.Button();
             this.Tbx_Url = new System.Windows.Forms.TextBox();
             this.Clbx_Websites = new System.Windows.Forms.CheckedListBox();
-            this.Btn_RemoveMon = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
-            this.CLbx_Monitor = new System.Windows.Forms.CheckedListBox();
             this.Btn_AddCriteriaToMonitor = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.Btn_Stop = new System.Windows.Forms.Button();
@@ -61,19 +64,17 @@
             this.Btn_ClearAllLogs = new System.Windows.Forms.Button();
             this.Rtbx_EventLog = new System.Windows.Forms.RichTextBox();
             this.Rtbx_DebugLog = new System.Windows.Forms.RichTextBox();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.Btn_Export = new System.Windows.Forms.Button();
             this.toolStripContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.SuspendLayout();
             this.Tabs.SuspendLayout();
             this.Tab_Main.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DGrid_FoundProducts)).BeginInit();
             this.Tab_Settings.SuspendLayout();
             this.Tab_ErrorLog.SuspendLayout();
-            this.tabControl1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStripContainer1
@@ -132,6 +133,7 @@
             // 
             // Tab_Main
             // 
+            this.Tab_Main.Controls.Add(this.Btn_Export);
             this.Tab_Main.Controls.Add(this.tabControl1);
             this.Tab_Main.Controls.Add(this.btn_DeselectAll);
             this.Tab_Main.Controls.Add(this.btn_SelectAll);
@@ -155,6 +157,59 @@
             this.Tab_Main.TabIndex = 0;
             this.Tab_Main.Text = "Main";
             this.Tab_Main.UseVisualStyleBackColor = true;
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Location = new System.Drawing.Point(542, 345);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(496, 243);
+            this.tabControl1.TabIndex = 30;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.CLbx_Monitor);
+            this.tabPage1.Controls.Add(this.Btn_RemoveMon);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(488, 217);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Keyword Monitoring";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // CLbx_Monitor
+            // 
+            this.CLbx_Monitor.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.CLbx_Monitor.FormattingEnabled = true;
+            this.CLbx_Monitor.Location = new System.Drawing.Point(6, 15);
+            this.CLbx_Monitor.Name = "CLbx_Monitor";
+            this.CLbx_Monitor.Size = new System.Drawing.Size(470, 169);
+            this.CLbx_Monitor.TabIndex = 17;
+            // 
+            // Btn_RemoveMon
+            // 
+            this.Btn_RemoveMon.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.Btn_RemoveMon.ForeColor = System.Drawing.Color.Crimson;
+            this.Btn_RemoveMon.Location = new System.Drawing.Point(240, 185);
+            this.Btn_RemoveMon.Name = "Btn_RemoveMon";
+            this.Btn_RemoveMon.Size = new System.Drawing.Size(236, 23);
+            this.Btn_RemoveMon.TabIndex = 22;
+            this.Btn_RemoveMon.Text = "Remove Selected";
+            this.Btn_RemoveMon.UseVisualStyleBackColor = true;
+            this.Btn_RemoveMon.Click += new System.EventHandler(this.Btn_RemoveMon_Click);
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(488, 217);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Url Monitoring";
+            this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // btn_DeselectAll
             // 
@@ -234,18 +289,6 @@
             this.Clbx_Websites.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.Clbx_Websites_ItemCheck);
             this.Clbx_Websites.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Clbx_Websites_MouseUp);
             // 
-            // Btn_RemoveMon
-            // 
-            this.Btn_RemoveMon.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.Btn_RemoveMon.ForeColor = System.Drawing.Color.Crimson;
-            this.Btn_RemoveMon.Location = new System.Drawing.Point(240, 185);
-            this.Btn_RemoveMon.Name = "Btn_RemoveMon";
-            this.Btn_RemoveMon.Size = new System.Drawing.Size(236, 23);
-            this.Btn_RemoveMon.TabIndex = 22;
-            this.Btn_RemoveMon.Text = "Remove Selected";
-            this.Btn_RemoveMon.UseVisualStyleBackColor = true;
-            this.Btn_RemoveMon.Click += new System.EventHandler(this.Btn_RemoveMon_Click);
-            // 
             // label5
             // 
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -256,15 +299,6 @@
             this.label5.Size = new System.Drawing.Size(69, 20);
             this.label5.TabIndex = 18;
             this.label5.Text = "Monitor";
-            // 
-            // CLbx_Monitor
-            // 
-            this.CLbx_Monitor.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.CLbx_Monitor.FormattingEnabled = true;
-            this.CLbx_Monitor.Location = new System.Drawing.Point(6, 15);
-            this.CLbx_Monitor.Name = "CLbx_Monitor";
-            this.CLbx_Monitor.Size = new System.Drawing.Size(470, 169);
-            this.CLbx_Monitor.TabIndex = 17;
             // 
             // Btn_AddCriteriaToMonitor
             // 
@@ -465,37 +499,16 @@
             this.Rtbx_DebugLog.TabIndex = 0;
             this.Rtbx_DebugLog.Text = "";
             // 
-            // tabControl1
+            // Btn_Export
             // 
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(542, 345);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(496, 243);
-            this.tabControl1.TabIndex = 30;
-            // 
-            // tabPage1
-            // 
-            this.tabPage1.Controls.Add(this.CLbx_Monitor);
-            this.tabPage1.Controls.Add(this.Btn_RemoveMon);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(488, 217);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Keyword Monitoring";
-            this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(488, 217);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Url Monitoring";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            this.Btn_Export.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            this.Btn_Export.Location = new System.Drawing.Point(41, 124);
+            this.Btn_Export.Name = "Btn_Export";
+            this.Btn_Export.Size = new System.Drawing.Size(107, 23);
+            this.Btn_Export.TabIndex = 31;
+            this.Btn_Export.Text = "Export";
+            this.Btn_Export.UseVisualStyleBackColor = true;
+            this.Btn_Export.Click += new System.EventHandler(this.Btn_Export_Click);
             // 
             // MainForm
             // 
@@ -516,12 +529,12 @@
             this.Tabs.ResumeLayout(false);
             this.Tab_Main.ResumeLayout(false);
             this.Tab_Main.PerformLayout();
+            this.tabControl1.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.DGrid_FoundProducts)).EndInit();
             this.Tab_Settings.ResumeLayout(false);
             this.Tab_Settings.PerformLayout();
             this.Tab_ErrorLog.ResumeLayout(false);
-            this.tabControl1.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -563,6 +576,7 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.Button Btn_Export;
     }
 }
 
