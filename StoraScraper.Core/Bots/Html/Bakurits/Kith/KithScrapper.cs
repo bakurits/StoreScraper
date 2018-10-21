@@ -55,7 +55,28 @@ namespace StoreScraper.Bots.Html.Bakurits.Kith
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
             var page = GetWebpage(productUrl, token);
-            throw new NotImplementedException();
+            string name = page.SelectSingleNode("//h1[@class = 'product-header-title']").InnerText;
+            name.EscapeNewLines();
+            name = name.Trim();
+            string priceContainer = page.SelectSingleNode("//span[@id = 'ProductPrice']").InnerText;
+            var price = Utils.ParsePrice(priceContainer);
+            var sizesContainer = page.SelectNodes("//select[@id = 'productSelect']/option");
+            var keyWords = page.SelectSingleNode("//meta[@name='description']")?.GetAttributeValue("content", "") +
+                           " " +
+                           page.SelectSingleNode("//meta[@property='og:title']")?.GetAttributeValue("content", "");
+            ProductDetails details = new ProductDetails()
+            {
+                Name = name,
+                Price = price.Value,
+                KeyWords = keyWords,
+                Currency = price.Currency
+            };
+            foreach (var htmlNode in sizesContainer)
+            {
+                details.SizesList.Add((htmlNode.InnerHtml, "Unknown"));
+            }
+
+            return details;
         }
 
         public override void ScrapeAllProducts(out List<Product> listOfProducts, ScrappingLevel requiredInfo,
@@ -98,6 +119,8 @@ namespace StoreScraper.Bots.Html.Bakurits.Kith
         private static string GetName(HtmlNode item)
         {
             string name = item.SelectSingleNode(".//p[contains(@class, 'product-card-title')]").InnerText;
+            name.EscapeNewLines();
+            name = name.Trim();
             return name;
         }
 
@@ -109,7 +132,8 @@ namespace StoreScraper.Bots.Html.Bakurits.Kith
 
         private string GetImageUrl(HtmlNode item)
         {
-            return null;
+            string imageUrl = item.ParentNode.SelectSingleNode(".//div[contains(@class, 'js-product-card-image-slideshow')]/a/img").GetAttributeValue("src", null);
+            return "https:" + imageUrl;
         }
 
         private static Price GetPrice(HtmlNode item)

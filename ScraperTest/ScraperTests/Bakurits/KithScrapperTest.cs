@@ -31,19 +31,14 @@ namespace ScraperTest.ScraperTests.Bakurits
         [TestMethod]
         public void GetProductDetailsTest()
         {
-            Product curProduct = new Product(new KithScrapper(), "Unknown",
-                "https://kith.com/collections/latest/products/nike-air-jordan-10-retro-racer-blue-team-orange-black",
-                420,
-                "https://d3hed5rtv63hp1.cloudfront.net/products/280972/large/JC8230W115-BLACK-6014.jpg?1519741368",
-                "id");
 
 
             KithScrapper scraper = new KithScrapper();
 
-            ProductDetails details = scraper.GetProductDetails(curProduct.Url, CancellationToken.None);
+            ProductDetails details = scraper.GetProductDetails("https://kith.com/collections/latest/products/nike-air-jordan-10-retro-racer-blue-team-orange-black", CancellationToken.None);
 
             Helper.PrintGetDetailsResult(details.SizesList);
-            Debug.WriteLine(curProduct.Name);
+            Debug.WriteLine(details.Name);
         }
 
         [TestMethod]

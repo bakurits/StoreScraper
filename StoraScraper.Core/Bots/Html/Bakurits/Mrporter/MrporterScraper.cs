@@ -217,7 +217,7 @@ namespace StoreScraper.Bots.Html.Bakurits.Mrporter
                 price = GetPrice(priceContainer.SelectSingleNode("./p[1]").InnerHtml);
             }
 
-            var curProduct = new Product(this, name, url, price, imgUrl, url, "GBR");
+            var curProduct = new Product(this, name, GetId(url), price, imgUrl, url, "GBR");
 
             if (settings == null)
             {
@@ -225,10 +225,16 @@ namespace StoreScraper.Bots.Html.Bakurits.Mrporter
                 return;
             }
 
-            if (!Utils.SatisfiesCriteria(curProduct, settings)) return;
-            var keyWordSplit = settings.KeyWords.Split(' ');
-            if (keyWordSplit.All(keyWord => curProduct.Name.ToLower().Contains(keyWord.ToLower())))
+            if (Utils.SatisfiesCriteria(curProduct, settings))
                 listOfProducts.Add(curProduct);
+        }
+
+        private static string GetId(string url)
+        {
+            int lastIndexOfDash = url.LastIndexOf('/');
+            int indexOfQuestionMark = url.LastIndexOf('?');
+            if (indexOfQuestionMark == -1) indexOfQuestionMark = url.Length;
+            return url.Substr(lastIndexOfDash, indexOfQuestionMark);
         }
 
         private static double GetPrice(string html)

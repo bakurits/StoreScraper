@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -35,12 +36,12 @@ namespace ScraperTest.Helpers
         
         public static void PrintFindItemsResults<T>(List<T> list)
         {
-            Console.WriteLine(string.Join("\n", list));
+            Debug.WriteLine(string.Join("\n", list));
         }
 
         public static void PrintGetDetailsResult(List<StringPair> sizes)
         {
-            Console.WriteLine(string.Join("\n", sizes.Select(size => $"{size.Key}[{size.Value}]")));
+            Debug.WriteLine(string.Join("\n", sizes.Select(size => $"{size.Key}[{size.Value}]")));
         }
 
         [AssemblyInitialize]
