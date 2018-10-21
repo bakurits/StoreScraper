@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using StoreScraper.Core;
 using StoreScraper.Helpers;
@@ -20,37 +21,18 @@ namespace StoreScraper.Bots.Html.Bakurits.Antonioli
         public override string WebsiteBaseUrl { get; set; } = "https://www.antonioli.eu";
         public override bool Active { get; set; }
 
-        public override Type SearchSettingsType { get; set; } = typeof(AntonioliSearchSettings);
+        public override Type SearchSettingsType { get; set; } = typeof(SearchSettingsBase);
 
         public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,
             CancellationToken token)
         {
-            AntonioliSearchSettings.GenderEnum genderEnum;
-            try
-            {
-                genderEnum = ((AntonioliSearchSettings) settings).Gender;
-            }
-            catch
-            {
-                genderEnum = AntonioliSearchSettings.GenderEnum.Both;
-            }
-
             listOfProducts = new List<Product>();
-            switch (genderEnum)
-            {
-                case AntonioliSearchSettings.GenderEnum.Man:
-                    FindItemsForGender(listOfProducts, settings, token, "men");
-                    break;
-                case AntonioliSearchSettings.GenderEnum.Woman:
-                    FindItemsForGender(listOfProducts, settings, token, "women");
-                    break;
-                case AntonioliSearchSettings.GenderEnum.Both:
-                    break;
-                default:
-                    FindItemsForGender(listOfProducts, settings, token, "men");
-                    FindItemsForGender(listOfProducts, settings, token, "women");
-                    break;
-            }
+            var lst = listOfProducts;
+
+            var task1 = Task.Run(() => FindItemsForGender(lst, settings, token, "men"));
+            var task2 = Task.Run(() => FindItemsForGender(lst, settings, token, "women"));
+
+            Task.WaitAll(task1, task2);
         }
 
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
@@ -116,7 +98,13 @@ namespace StoreScraper.Bots.Html.Bakurits.Antonioli
             {
                 token.ThrowIfCancellationRequested();
                 var product = GetProduct(item);
-                if (product != null && Utils.SatisfiesCriteria(product, settings)) listOfProducts.Add(product);
+                if (product != null && Utils.SatisfiesCriteria(product, settings))
+                {
+                    lock (listOfProducts)
+                    {
+                        listOfProducts.Add(product);
+                    }
+                }
             }
         }
 

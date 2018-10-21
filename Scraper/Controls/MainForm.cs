@@ -283,8 +283,7 @@ namespace Scraper.Controls
                     var group = (item as SearchMonitoringTaskGroup);
 
                     Session.Current.TaskManager.RemoveSearchTaskGroup(group);
-                }
-                    
+                }      
             }
         }
 

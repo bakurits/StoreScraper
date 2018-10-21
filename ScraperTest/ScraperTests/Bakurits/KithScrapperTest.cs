@@ -16,10 +16,9 @@ namespace ScraperTest.ScraperTests.Bakurits
         public void FindItemsTest()
         {
             KithScrapper scraper = new KithScrapper();
-            AntonioliSearchSettings settings = new AntonioliSearchSettings()
+            SearchSettingsBase settings = new SearchSettingsBase()
             {
-                KeyWords = "Boots",
-                Gender = AntonioliSearchSettings.GenderEnum.Woman
+                KeyWords = "Boots"
             };
 
             scraper.FindItems(out var lst, settings, CancellationToken.None);

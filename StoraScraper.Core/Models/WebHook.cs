@@ -44,15 +44,18 @@ namespace StoreScraper.Models
                 }
                 else
                 {
-                    throw new NotSupportedException("This kinf of webhook is not supported");
+                    throw new NotSupportedException("This kind of webhook is not supported");
                 }
             }
         }
 
 
+        public string Name { get; set; }
+
+
         public override string ToString()
         {
-            return this._webHookUrl;
+            return this.Name;
         }
     }
 }

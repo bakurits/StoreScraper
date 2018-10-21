@@ -362,7 +362,7 @@
             this.label_FindingStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label_FindingStatus.AutoSize = true;
             this.label_FindingStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.label_FindingStatus.Location = new System.Drawing.Point(446, 95);
+            this.label_FindingStatus.Location = new System.Drawing.Point(416, 99);
             this.label_FindingStatus.Name = "label_FindingStatus";
             this.label_FindingStatus.Size = new System.Drawing.Size(0, 20);
             this.label_FindingStatus.TabIndex = 6;

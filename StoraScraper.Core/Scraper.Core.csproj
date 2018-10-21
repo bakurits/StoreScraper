@@ -68,7 +68,6 @@
     <Compile Include="Data\AppSettings.cs" />
     <Compile Include="Attributes\DisableInGUI.cs" />
     <Compile Include="Bots\Html\Bakurits\Antonioli\AntonioliScraper.cs" />
-    <Compile Include="Bots\Html\Bakurits\Antonioli\AntonioliSearchSettings.cs" />
     <Compile Include="Bots\Html\Bakurits\Baitme\BaitmeScraper.cs" />
     <Compile Include="Bots\Html\Bakurits\Mrporter\MrporterScraper.cs" />
     <Compile Include="Bots\Html\Bakurits\Rimowa\RimowaScraper.cs" />

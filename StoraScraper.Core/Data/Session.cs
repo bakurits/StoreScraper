@@ -15,13 +15,13 @@ namespace StoreScraper.Data
 
         public const string DataFileName = "Session.json";
         public static string DataFilePath;
-        public static Session Current { get; set; } = new Session();
+        public static Session Current { get; set; } = LoadSession();
 
         [JsonIgnore]
         [Browsable(false)]
         public List<ScraperBase> AvailableScrapers;
 
-        public MonitoringTaskManager TaskManager { get; set; }
+        public MonitoringTaskManager TaskManager { get; set; } = new MonitoringTaskManager();
 
         [JsonIgnore]
         public ProductMonitoringManager MonitoringManager { get; set; } = new ProductMonitoringManager();
