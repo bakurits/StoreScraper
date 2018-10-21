@@ -28,12 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.PGrid_Bot = new System.Windows.Forms.PropertyGrid();
             this.btn_FindProducts = new System.Windows.Forms.Button();
             this.Tabs = new System.Windows.Forms.TabControl();
             this.Tab_Main = new System.Windows.Forms.TabPage();
+            this.Btn_Export = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.CLbx_Monitor = new System.Windows.Forms.CheckedListBox();
@@ -64,7 +66,11 @@
             this.Btn_ClearAllLogs = new System.Windows.Forms.Button();
             this.Rtbx_EventLog = new System.Windows.Forms.RichTextBox();
             this.Rtbx_DebugLog = new System.Windows.Forms.RichTextBox();
-            this.Btn_Export = new System.Windows.Forms.Button();
+            this.Tbx_TaskName = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.Tbx_CustomWebHook = new System.Windows.Forms.TextBox();
             this.toolStripContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.SuspendLayout();
@@ -72,6 +78,7 @@
             this.Tab_Main.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DGrid_FoundProducts)).BeginInit();
             this.Tab_Settings.SuspendLayout();
             this.Tab_ErrorLog.SuspendLayout();
@@ -101,10 +108,10 @@
             this.PGrid_Bot.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.PGrid_Bot.CanShowVisualStyleGlyphs = false;
             this.PGrid_Bot.HelpVisible = false;
-            this.PGrid_Bot.Location = new System.Drawing.Point(459, 50);
+            this.PGrid_Bot.Location = new System.Drawing.Point(3, 35);
             this.PGrid_Bot.Name = "PGrid_Bot";
             this.PGrid_Bot.PropertySort = System.Windows.Forms.PropertySort.Categorized;
-            this.PGrid_Bot.Size = new System.Drawing.Size(433, 155);
+            this.PGrid_Bot.Size = new System.Drawing.Size(397, 155);
             this.PGrid_Bot.TabIndex = 2;
             this.PGrid_Bot.ToolbarVisible = false;
             // 
@@ -112,9 +119,9 @@
             // 
             this.btn_FindProducts.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btn_FindProducts.ForeColor = System.Drawing.Color.DarkCyan;
-            this.btn_FindProducts.Location = new System.Drawing.Point(896, 50);
+            this.btn_FindProducts.Location = new System.Drawing.Point(405, 35);
             this.btn_FindProducts.Name = "btn_FindProducts";
-            this.btn_FindProducts.Size = new System.Drawing.Size(126, 23);
+            this.btn_FindProducts.Size = new System.Drawing.Size(94, 23);
             this.btn_FindProducts.TabIndex = 3;
             this.btn_FindProducts.Text = "Test Search";
             this.btn_FindProducts.UseVisualStyleBackColor = true;
@@ -137,19 +144,10 @@
             this.Tab_Main.Controls.Add(this.tabControl1);
             this.Tab_Main.Controls.Add(this.btn_DeselectAll);
             this.Tab_Main.Controls.Add(this.btn_SelectAll);
-            this.Tab_Main.Controls.Add(this.btn_NegKeywords);
-            this.Tab_Main.Controls.Add(this.btn_Keywords);
-            this.Tab_Main.Controls.Add(this.Btn_UrlMon);
-            this.Tab_Main.Controls.Add(this.Tbx_Url);
             this.Tab_Main.Controls.Add(this.Clbx_Websites);
             this.Tab_Main.Controls.Add(this.label5);
-            this.Tab_Main.Controls.Add(this.Btn_AddCriteriaToMonitor);
             this.Tab_Main.Controls.Add(this.label3);
-            this.Tab_Main.Controls.Add(this.Btn_Stop);
-            this.Tab_Main.Controls.Add(this.label_FindingStatus);
             this.Tab_Main.Controls.Add(this.DGrid_FoundProducts);
-            this.Tab_Main.Controls.Add(this.PGrid_Bot);
-            this.Tab_Main.Controls.Add(this.btn_FindProducts);
             this.Tab_Main.Location = new System.Drawing.Point(4, 22);
             this.Tab_Main.Name = "Tab_Main";
             this.Tab_Main.Padding = new System.Windows.Forms.Padding(3);
@@ -158,24 +156,46 @@
             this.Tab_Main.Text = "Main";
             this.Tab_Main.UseVisualStyleBackColor = true;
             // 
+            // Btn_Export
+            // 
+            this.Btn_Export.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            this.Btn_Export.Location = new System.Drawing.Point(41, 124);
+            this.Btn_Export.Name = "Btn_Export";
+            this.Btn_Export.Size = new System.Drawing.Size(107, 23);
+            this.Btn_Export.TabIndex = 31;
+            this.Btn_Export.Text = "Export";
+            this.Btn_Export.UseVisualStyleBackColor = true;
+            this.Btn_Export.Click += new System.EventHandler(this.Btn_Export_Click);
+            // 
             // tabControl1
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(542, 345);
+            this.tabControl1.Location = new System.Drawing.Point(525, 6);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(496, 243);
+            this.tabControl1.Size = new System.Drawing.Size(513, 582);
             this.tabControl1.TabIndex = 30;
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.Tbx_CustomWebHook);
+            this.tabPage1.Controls.Add(this.label6);
+            this.tabPage1.Controls.Add(this.label1);
+            this.tabPage1.Controls.Add(this.Tbx_TaskName);
             this.tabPage1.Controls.Add(this.CLbx_Monitor);
             this.tabPage1.Controls.Add(this.Btn_RemoveMon);
+            this.tabPage1.Controls.Add(this.PGrid_Bot);
+            this.tabPage1.Controls.Add(this.btn_FindProducts);
+            this.tabPage1.Controls.Add(this.btn_NegKeywords);
+            this.tabPage1.Controls.Add(this.label_FindingStatus);
+            this.tabPage1.Controls.Add(this.btn_Keywords);
+            this.tabPage1.Controls.Add(this.Btn_Stop);
+            this.tabPage1.Controls.Add(this.Btn_AddCriteriaToMonitor);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(488, 217);
+            this.tabPage1.Size = new System.Drawing.Size(505, 556);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Keyword Monitoring";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -184,16 +204,16 @@
             // 
             this.CLbx_Monitor.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.CLbx_Monitor.FormattingEnabled = true;
-            this.CLbx_Monitor.Location = new System.Drawing.Point(6, 15);
+            this.CLbx_Monitor.Location = new System.Drawing.Point(11, 353);
             this.CLbx_Monitor.Name = "CLbx_Monitor";
-            this.CLbx_Monitor.Size = new System.Drawing.Size(470, 169);
+            this.CLbx_Monitor.Size = new System.Drawing.Size(488, 154);
             this.CLbx_Monitor.TabIndex = 17;
             // 
             // Btn_RemoveMon
             // 
             this.Btn_RemoveMon.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.Btn_RemoveMon.ForeColor = System.Drawing.Color.Crimson;
-            this.Btn_RemoveMon.Location = new System.Drawing.Point(240, 185);
+            this.Btn_RemoveMon.Location = new System.Drawing.Point(269, 513);
             this.Btn_RemoveMon.Name = "Btn_RemoveMon";
             this.Btn_RemoveMon.Size = new System.Drawing.Size(236, 23);
             this.Btn_RemoveMon.TabIndex = 22;
@@ -203,10 +223,12 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.Btn_UrlMon);
+            this.tabPage2.Controls.Add(this.Tbx_Url);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(488, 217);
+            this.tabPage2.Size = new System.Drawing.Size(488, 232);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Url Monitoring";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -239,7 +261,7 @@
             // 
             this.btn_NegKeywords.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btn_NegKeywords.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.btn_NegKeywords.Location = new System.Drawing.Point(571, 21);
+            this.btn_NegKeywords.Location = new System.Drawing.Point(123, 6);
             this.btn_NegKeywords.Name = "btn_NegKeywords";
             this.btn_NegKeywords.Size = new System.Drawing.Size(120, 23);
             this.btn_NegKeywords.TabIndex = 27;
@@ -251,7 +273,7 @@
             // 
             this.btn_Keywords.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btn_Keywords.ForeColor = System.Drawing.Color.DarkGreen;
-            this.btn_Keywords.Location = new System.Drawing.Point(459, 21);
+            this.btn_Keywords.Location = new System.Drawing.Point(11, 6);
             this.btn_Keywords.Name = "btn_Keywords";
             this.btn_Keywords.Size = new System.Drawing.Size(106, 23);
             this.btn_Keywords.TabIndex = 26;
@@ -262,7 +284,7 @@
             // Btn_UrlMon
             // 
             this.Btn_UrlMon.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.Btn_UrlMon.Location = new System.Drawing.Point(929, 271);
+            this.Btn_UrlMon.Location = new System.Drawing.Point(350, 21);
             this.Btn_UrlMon.Name = "Btn_UrlMon";
             this.Btn_UrlMon.Size = new System.Drawing.Size(106, 23);
             this.Btn_UrlMon.TabIndex = 25;
@@ -273,9 +295,9 @@
             // Tbx_Url
             // 
             this.Tbx_Url.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.Tbx_Url.Location = new System.Drawing.Point(542, 273);
+            this.Tbx_Url.Location = new System.Drawing.Point(13, 23);
             this.Tbx_Url.Name = "Tbx_Url";
-            this.Tbx_Url.Size = new System.Drawing.Size(381, 20);
+            this.Tbx_Url.Size = new System.Drawing.Size(331, 20);
             this.Tbx_Url.TabIndex = 24;
             // 
             // Clbx_Websites
@@ -294,7 +316,7 @@
             this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(730, 307);
+            this.label5.Location = new System.Drawing.Point(737, 226);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(69, 20);
             this.label5.TabIndex = 18;
@@ -304,11 +326,11 @@
             // 
             this.Btn_AddCriteriaToMonitor.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.Btn_AddCriteriaToMonitor.ForeColor = System.Drawing.Color.DarkGreen;
-            this.Btn_AddCriteriaToMonitor.Location = new System.Drawing.Point(896, 108);
+            this.Btn_AddCriteriaToMonitor.Location = new System.Drawing.Point(223, 275);
             this.Btn_AddCriteriaToMonitor.Name = "Btn_AddCriteriaToMonitor";
-            this.Btn_AddCriteriaToMonitor.Size = new System.Drawing.Size(126, 40);
+            this.Btn_AddCriteriaToMonitor.Size = new System.Drawing.Size(177, 24);
             this.Btn_AddCriteriaToMonitor.TabIndex = 14;
-            this.Btn_AddCriteriaToMonitor.Text = "Add Search Criteria to Monitor";
+            this.Btn_AddCriteriaToMonitor.Text = "Add Task To Monitor";
             this.Btn_AddCriteriaToMonitor.UseVisualStyleBackColor = true;
             this.Btn_AddCriteriaToMonitor.Click += new System.EventHandler(this.Btn_AddToMonitor_Click);
             // 
@@ -327,9 +349,9 @@
             // 
             this.Btn_Stop.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.Btn_Stop.ForeColor = System.Drawing.Color.Crimson;
-            this.Btn_Stop.Location = new System.Drawing.Point(896, 79);
+            this.Btn_Stop.Location = new System.Drawing.Point(405, 64);
             this.Btn_Stop.Name = "Btn_Stop";
-            this.Btn_Stop.Size = new System.Drawing.Size(126, 23);
+            this.Btn_Stop.Size = new System.Drawing.Size(94, 23);
             this.Btn_Stop.TabIndex = 7;
             this.Btn_Stop.Text = "Stop";
             this.Btn_Stop.UseVisualStyleBackColor = true;
@@ -340,7 +362,7 @@
             this.label_FindingStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label_FindingStatus.AutoSize = true;
             this.label_FindingStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.label_FindingStatus.Location = new System.Drawing.Point(892, 113);
+            this.label_FindingStatus.Location = new System.Drawing.Point(446, 95);
             this.label_FindingStatus.Name = "label_FindingStatus";
             this.label_FindingStatus.Size = new System.Drawing.Size(0, 20);
             this.label_FindingStatus.TabIndex = 6;
@@ -499,16 +521,44 @@
             this.Rtbx_DebugLog.TabIndex = 0;
             this.Rtbx_DebugLog.Text = "";
             // 
-            // Btn_Export
+            // Tbx_TaskName
             // 
-            this.Btn_Export.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
-            this.Btn_Export.Location = new System.Drawing.Point(41, 124);
-            this.Btn_Export.Name = "Btn_Export";
-            this.Btn_Export.Size = new System.Drawing.Size(107, 23);
-            this.Btn_Export.TabIndex = 31;
-            this.Btn_Export.Text = "Export";
-            this.Btn_Export.UseVisualStyleBackColor = true;
-            this.Btn_Export.Click += new System.EventHandler(this.Btn_Export_Click);
+            this.Tbx_TaskName.Location = new System.Drawing.Point(139, 212);
+            this.Tbx_TaskName.Name = "Tbx_TaskName";
+            this.Tbx_TaskName.Size = new System.Drawing.Size(261, 20);
+            this.Tbx_TaskName.TabIndex = 28;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(49, 213);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(84, 17);
+            this.label1.TabIndex = 29;
+            this.label1.Text = "Task Name:";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(10, 249);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(123, 17);
+            this.label6.TabIndex = 30;
+            this.label6.Text = "Custom Webhook:";
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            // 
+            // Tbx_CustomWebHook
+            // 
+            this.Tbx_CustomWebHook.Location = new System.Drawing.Point(139, 249);
+            this.Tbx_CustomWebHook.Name = "Tbx_CustomWebHook";
+            this.Tbx_CustomWebHook.Size = new System.Drawing.Size(261, 20);
+            this.Tbx_CustomWebHook.TabIndex = 31;
             // 
             // MainForm
             // 
@@ -531,6 +581,9 @@
             this.Tab_Main.PerformLayout();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DGrid_FoundProducts)).EndInit();
             this.Tab_Settings.ResumeLayout(false);
             this.Tab_Settings.PerformLayout();
@@ -577,6 +630,11 @@
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.Button Btn_Export;
+        private System.Windows.Forms.TextBox Tbx_CustomWebHook;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox Tbx_TaskName;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
     }
 }
 

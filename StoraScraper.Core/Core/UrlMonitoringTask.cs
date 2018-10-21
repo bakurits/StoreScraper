@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using StoreScraper.Models;
 using StoreScraper.Data;
 
@@ -53,7 +54,6 @@ namespace StoreScraper.Core
                     Task.Delay(AppSettings.Default.MonitoringInterval, TokenSource.Token).Wait(TokenSource.Token);
                 }
             }, TokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
-            
         }
 
         public UrlMonitoringTask(string url)
