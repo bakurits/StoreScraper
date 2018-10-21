@@ -2,6 +2,8 @@
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Scraper.Controls;
 using StoreScraper;
@@ -34,7 +36,6 @@ namespace Scraper
             ServicePointManager.DefaultConnectionLimit = 1000;
             ServicePointManager.Expect100Continue = false;
             ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, errors) => true;
-
             Session.Current.AvailableScrapers = Utils.GetAllSubClassInstances<ScraperBase>().ToList();
             Session.Current.AvailableScrapers.Sort((s1, s2) => string.CompareOrdinal(s1.WebsiteName, s2.WebsiteName));
 

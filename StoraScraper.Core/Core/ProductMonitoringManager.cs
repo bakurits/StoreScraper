@@ -140,7 +140,7 @@ namespace StoreScraper.Core
 
         public void StartMonitoringTask(ScraperBase website)
         {
-            if(_allShopsTasks.TryGetValue(website, out var task)) throw new KeyNotFoundException("Can't start task. Task with this name not found");
+            if(!_allShopsTasks.TryGetValue(website, out var task)) throw new KeyNotFoundException("Can't start task. Task with this name not found");
 
             task.Start();
         }

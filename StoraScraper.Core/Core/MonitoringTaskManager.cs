@@ -98,6 +98,8 @@ namespace StoreScraper.Core
 
                 if(errorLogTxtFile != null)MessageBox.Show(errorLog, "Error occured while adding these websites in monitor!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
+
+                workingWebsiteLog += string.Join(Environment.NewLine, workingWebsiteList);
                 lock (taskGroup.WebsiteList)
                 {
                     if (taskGroup.WebsiteList.Count > 0)
@@ -111,7 +113,6 @@ namespace StoreScraper.Core
                 {
                     string verboseFilePath = Path.Combine("Logs", $"AddToMon VerboseLog ({DateTime.UtcNow:u})".EscapeFileName());
                     verboseLogTxtFile = File.CreateText(verboseFilePath);
-                    workingWebsiteLog += string.Join(Environment.NewLine, workingWebsiteList);
                     verboseLogTxtFile.Write(workingWebsiteLog);
                     verboseLogTxtFile.Flush();
                     verboseLogTxtFile.Close();
