@@ -2,11 +2,14 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
+using Newtonsoft.Json.Linq;
 using StoreScraper.Core;
 using StoreScraper.Exceptions;
 using StoreScraper.Helpers;
+using StoreScraper.Http.Factory;
 using StoreScraper.Models;
 using StoreScraper.Models.Enums;
 
@@ -51,6 +54,7 @@ namespace StoreScraper.Bots.Html.Bakurits.Kith
 
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
+            var page = GetWebpage(productUrl, token);
             throw new NotImplementedException();
         }
 
@@ -58,6 +62,13 @@ namespace StoreScraper.Bots.Html.Bakurits.Kith
             CancellationToken token)
         {
             FindItems(out listOfProducts, null, token);
+        }
+        
+        private static HtmlNode GetWebpage(string url, CancellationToken token)
+        {
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var document = client.GetDoc(url, token).DocumentNode;
+            return document;
         }
 
         private void LoadSingleProductTryCatchWrapper(ConcurrentDictionary<Product, byte> listOfProducts,

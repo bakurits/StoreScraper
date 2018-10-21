@@ -54,7 +54,6 @@ namespace StoreScraper.Core
 
 
                 StreamWriter errorLogTxtFile = null;
-                StreamWriter verboseLogTxtFile = null;
                 bool isNewWebsite = false;
 
                 string workingWebsiteLog = $"THESE WEBSITES SUCCESSFULLY ADDED TO MONITOR: \n\n";
@@ -122,7 +121,7 @@ namespace StoreScraper.Core
                 if (isNewWebsite)
                 {
                     string verboseFilePath = Path.Combine("Logs", $"AddToMon VerboseLog ({DateTime.UtcNow:u})".EscapeFileName());
-                    verboseLogTxtFile = File.CreateText(verboseFilePath);
+                    var verboseLogTxtFile = File.CreateText(verboseFilePath);
                     verboseLogTxtFile.Write(workingWebsiteLog);
                     verboseLogTxtFile.Flush();
                     verboseLogTxtFile.Close();
@@ -149,11 +148,9 @@ namespace StoreScraper.Core
 
                 searchTask.MonitoringOptions.Remove(taskGroup.Options);
 
-                if (searchTask.MonitoringOptions.Count == 0)
-                {
-                    searchTask.TokenSource.Cancel();
-                    SearchMonTasks.Remove(scraper);
-                }
+                if (searchTask.MonitoringOptions.Count != 0) continue;
+                searchTask.TokenSource.Cancel();
+                SearchMonTasks.Remove(scraper);
             }
         }
     }
