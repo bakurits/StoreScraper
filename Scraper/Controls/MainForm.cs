@@ -255,13 +255,19 @@ namespace Scraper.Controls
 
             AppSettings.Default.WebHooks.ForEach(hook => monOptions.WebHooks.Add(hook));
 
+            if (!string.IsNullOrWhiteSpace(Tbx_CustomWebHook.Text))
+            {
+                monOptions.WebHooks.Add(new WebHook(){WebHookUrl = Tbx_CustomWebHook.Text});
+            }
+
             var taskGroup = new SearchMonitoringTaskGroup()
             {
+                Name = Tbx_TaskName.Text,
                 Options = monOptions,
                 WebsiteList = websites,
             };
 
-            MonitoringTaskManager.Default.AddSearchTaskGroup(taskGroup);
+            Session.Current.TaskManager.AddSearchTaskGroup(taskGroup);
         }
 
 
@@ -276,9 +282,8 @@ namespace Scraper.Controls
                     var item = selectedItems[i];
                     var group = (item as SearchMonitoringTaskGroup);
 
-                    MonitoringTaskManager.Default.RemoveSearchTaskGroup(group);
-                }
-                    
+                    Session.Current.TaskManager.RemoveSearchTaskGroup(group);
+                }      
             }
         }
 
@@ -376,7 +381,7 @@ namespace Scraper.Controls
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            MonitoringTaskManager.Default.MonTasksContainer = CLbx_Monitor;
+            Session.Current.TaskManager.MonTasksContainer = CLbx_Monitor;
         }
 
         private void Btn_Export_Click(object sender, EventArgs e)

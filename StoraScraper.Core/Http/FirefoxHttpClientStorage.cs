@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using StoreScraper.Data;
 using StoreScraper.Http.Factory;
 using static StoreScraper.Helpers.Utils;
 

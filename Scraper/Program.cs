@@ -43,7 +43,7 @@ namespace Scraper
         }
 
 
-        public static bool EnsureInternetConnection()
+        private static bool EnsureInternetConnection()
         {
             try
             {

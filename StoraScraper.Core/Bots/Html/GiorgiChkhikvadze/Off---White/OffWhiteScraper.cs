@@ -21,26 +21,28 @@ namespace StoreScraper.Bots.Html.GiorgiChkhikvadze
     public class OffWhiteScraper : ScraperBase
     {
         public sealed override string WebsiteName { get; set; } = "Off---white";
-        public sealed override string WebsiteBaseUrl { get; set; } = "https://Off---white.com";
+        public sealed override string WebsiteBaseUrl { get; set; } = "https://www.off---white.com";
 
         private const string SearchUrlFormat = @"https://www.off---white.com/en/US/search?q={0}";
 
         public override bool Active { get; set; }
 
-        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token)
+        public override void FindItems(out List<Product> listOfProducts, SearchSettingsBase settings,
+            CancellationToken token)
         {
 
             listOfProducts = new List<Product>();
 
             var searchUrl = string.Format(SearchUrlFormat, settings.KeyWords);
-            FindItemsInternal(listOfProducts, settings, token, searchUrl);         
+            FindItemsInternal(listOfProducts, settings, token, searchUrl);
         }
 
 
 
-        private void FindItemsInternal(List<Product> listOfProducts, SearchSettingsBase settings, CancellationToken token,  string url)
+        private void FindItemsInternal(List<Product> listOfProducts, SearchSettingsBase settings,
+            CancellationToken token, string url)
         {
-            
+
             HtmlDocument document = new HtmlDocument();
             var client = ClientFactory.GetProxiedFirefoxClient();
             var response = CfBypasser.GetRequestedPage(client, this, url, token);
@@ -83,7 +85,8 @@ namespace StoreScraper.Bots.Html.GiorgiChkhikvadze
         /// This method is simple wrapper on LoadSingleProduct
         /// To catch all Exceptions during release
         /// </summary>
-        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings, HtmlNode item)
+        private void LoadSingleProductTryCatchWraper(List<Product> listOfProducts, SearchSettingsBase settings,
+            HtmlNode item)
         {
             try
             {
@@ -161,77 +164,11 @@ namespace StoreScraper.Bots.Html.GiorgiChkhikvadze
             return result;
         }
 
-        public override void ScrapeAllProducts(out List<Product> listOfProducts, ScrappingLevel requiredInfo, CancellationToken token)
+        public override void ScrapeAllProducts(out List<Product> listOfProducts, ScrappingLevel requiredInfo,
+            CancellationToken token)
         {
             listOfProducts = new List<Product>();
             FindItemsInternal(listOfProducts, null, token, "https://www.off---white.com/en/US/section/new-arrivals");
-        }
-
-        static void CollectCookies(HttpClient client, CancellationToken token)
-        {
-
-            var engine = new Jurassic.ScriptEngine();
-            engine.SetGlobalValue("interop", "15");
-
-            var task = client.GetAsync("https://www.off---white.com", HttpCompletionOption.ResponseContentRead, token);
-
-            using (var result = task.Result)
-            {
-                if (result.IsSuccessStatusCode) return;
-
-                var aa = result.Content.ReadAsStringAsync().Result;
-
-                using (var message = new HttpRequestMessage())
-                {
-                    message.Headers.Referrer = new Uri("https://www.off---white.com");
-                    message.Headers.Add("Accept", "image/webp,image/apng,image/*,*/*;q=0.8");
-                    message.Method = HttpMethod.Get;
-                    message.RequestUri = new Uri("https://www.off---white.com/favicon.ico");
-
-                    //client.DefaultRequestHeaders.TryAddWithoutValidation("Referer", "https://www.off---white.com");
-                    //client.DefaultRequestHeaders.Remove("Accept");
-                    //client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "image/webp,image/apng,image/*,*/*;q=0.8");
-
-                    var cc = client.SendAsync(message, token).Result;
-                    cc.Dispose();
-                }
-
-               
-                var pass = Regex.Match(aa, "name=\"pass\" value=\"(.*?)\"/>").Groups[1].Value;
-                var answer = Regex.Match(aa, "name=\"jschl_vc\" value=\"(.*?)\"/>").Groups[1].Value;
-
-                var script = Regex.Match(aa, "setTimeout\\(function\\(\\){(.*?)}, 4000\\);",
-                    RegexOptions.Singleline | RegexOptions.IgnoreCase).Groups[1].Value;
-                script = script.Replace("a = document.getElementById('jschl-answer');", string.Empty);
-                script = script.Replace("f.action += location.hash;", string.Empty);
-                script = script.Replace("f.submit();", string.Empty);
-                script = script.Replace("f = document.getElementById('challenge-form');", string.Empty);
-                script = script.Replace("a.value", "interop");
-                script = script.Replace("t = document.createElement('div');", string.Empty);
-                script = script.Replace("t.innerHTML=\"<a href='/'>x</a>\";", string.Empty);
-                script = script.Replace("t = t.firstChild.href", "t='http://www.off---white.com';");
-
-
-
-                var gga = engine.Evaluate(script);
-                var calc = engine.GetGlobalValue<string>("interop");
-
-                Task.Delay(5000, token).Wait(token);
-                using (var message2 = new HttpRequestMessage())
-                {
-                
-                    message2.Headers.Referrer = new Uri("https://www.off---white.com");
-                    message2.RequestUri =
-                        new Uri(
-                            $"https://www.off---white.com/cdn-cgi/l/chk_jschl?jschl_vc={answer}&pass={pass}&jschl_answer={calc}");
-                    message2.Method = HttpMethod.Get;
-
-                    using (var result2 = client.SendAsync(message2, token).Result)
-                    {
-                        result2.EnsureSuccessStatusCode();
-                    }
-                }
-            }
         }
     }
 }

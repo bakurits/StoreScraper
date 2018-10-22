@@ -298,7 +298,7 @@ namespace StoreScraper.Helpers
         /// This function finds substring of string
         /// From <c>l</c> to <c>r</c> both inclusive
         /// </summary>
-        private static string Substr(this string str, int l, int r)
+        public static string Substr(this string str, int l, int r)
         {
             return str.Substring(l, r - l + 1);
         }

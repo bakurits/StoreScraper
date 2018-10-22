@@ -12,6 +12,7 @@ namespace StoreScraper.Core
     {
         public static int CurrId = 1;
 
+        public string Name { get; set; }
         public int Id { get; } = CurrId++;
         public List<ScraperBase> WebsiteList { get; set; }
         public MonitoringOptions Options { get; set; }
@@ -19,7 +20,7 @@ namespace StoreScraper.Core
 
         public override string ToString()
         {
-            return $"[WebsiteCount: {WebsiteList.Count}] [{Options.Filter.KeyWords}({Options.Filter.MinPrice}, {Options.Filter.MaxPrice})]";
+            return Name;
         }
     }
 }

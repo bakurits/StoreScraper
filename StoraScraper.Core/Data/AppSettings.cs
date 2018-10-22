@@ -2,21 +2,18 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Xml.Serialization;
 using Newtonsoft.Json;
-using StoreScraper.Core;
 using StoreScraper.Models;
 
-
-namespace StoreScraper
+namespace StoreScraper.Data
 {
     [JsonObject]
     [Serializable]
     public class AppSettings
     {
         public const string DataFileName = "config.json";
-        public static AppSettings Default;
-        public static string DataDir;
+        public static AppSettings Default { get; set; }
+        public static readonly string DataDir;
 
         [JsonIgnore]
         public static string DataFilePath;
@@ -76,7 +73,7 @@ namespace StoreScraper
             }
             catch
             {
-                //ingored
+                //ignored
             }
             return new AppSettings();
         }

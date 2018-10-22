@@ -15,7 +15,7 @@ namespace StoreScraper.Helpers
 {
     public static class CfBypasser
     {
-        public static HttpResponseMessage GetRequestedPage(HttpClient client, IShop shop, string url,  CancellationToken token)
+        public static HttpResponseMessage GetRequestedPage(HttpClient client, IShop shop, string url, CancellationToken token)
         {
             var initialUrl = new Uri(url);
             var host = new Uri(shop.WebsiteBaseUrl);
@@ -24,30 +24,54 @@ namespace StoreScraper.Helpers
             var message1 = new HttpRequestMessage()
             {
                 Method = HttpMethod.Get,
-                RequestUri = initialUrl
+                RequestUri = initialUrl,
             };
 
-            message1.Headers.AddHeaders(FireFoxHeaders);
+            message1.Headers.AddHeaders(DefaultHeaders);
 
             using (message1)
             {
                 var task = client.SendAsync(message1);
 
-                var result = task.Result;
-
-                string pageSource = result.Content.ReadAsStringAsync().Result;
-                if (!pageSource.Contains("s,t,o,p,b,r,e,a,k,i,n,g,f"))
+                using (var result = task.Result)
                 {
-                    result.EnsureSuccessStatusCode();
-                    return result;
-                }
+                    string pageSource = result.Content.ReadAsStringAsync().Result;
+                    if (!pageSource.Contains("s,t,o,p,b,r,e,a,k,i,n,g,f"))
+                    {
+                        result.EnsureSuccessStatusCode();
+                        return result;
+                    }
 
-                initialPage = pageSource;
-                result.Dispose();
+                    initialPage = pageSource;
+                }
             }
 
             for (int i = 0; i < 3; i++)
             {
+
+
+                #region AdditionalReq
+                //var message2 = new HttpRequestMessage()
+                //{
+                //    Method = HttpMethod.Get,
+                //    RequestUri = new Uri(host, "/favicon.ico")
+                //};
+
+                //message2.Headers.AddHeaders(DefaultHeaders);
+
+                //using (message2)
+                //{
+                //    message2.Headers.Referrer = initialUrl;
+                //    message2.Headers.Remove("Accept");
+                //    message2.Headers.Add("Accept", "*/*");
+                //    using (var cc = client.SendAsync(message2, token).Result)
+                //    {
+                //        cc.EnsureSuccessStatusCode();
+                //    }
+                //} 
+                #endregion
+
+
                 var engine = new Jurassic.ScriptEngine();
                 engine.SetGlobalValue("interop", "15");
 
@@ -76,7 +100,7 @@ namespace StoreScraper.Helpers
                 {
                     Method = HttpMethod.Get,
                     RequestUri = uri,
-                    Headers = {Referrer = initialUrl}
+                    Headers = { Referrer = initialUrl }
                 };
 
                 message3.Headers.AddHeaders(FireFoxHeaders);
@@ -93,7 +117,8 @@ namespace StoreScraper.Helpers
                         finalResult.EnsureSuccessStatusCode();
                         return finalResult;
                     }
-                    finalResult.Dispose();
+
+                    initialPage = pageSource;
                 }
             }
 

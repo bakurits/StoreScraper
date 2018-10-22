@@ -4,6 +4,7 @@ using System.Threading;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using StoreScraper.Core;
+using StoreScraper.Data;
 using StoreScraper.Interfaces;
 using StoreScraper.Models.Enums;
 
@@ -12,8 +13,14 @@ namespace StoreScraper.Models
     [JsonObject]
     public class Product
     {
+
+
         [DisplayName("Store")]
-        public string StoreName { get; set; } = "";
+        public string StoreName 
+        { 
+            get => ScrapedBy.WebsiteName;
+            set => ScrapedBy = Session.Current.AvailableScrapers.Find(scraper => scraper.WebsiteName == value);
+        }
 
         [Browsable(false)]
         public string BrandName { get; set; } = "";
@@ -22,7 +29,7 @@ namespace StoreScraper.Models
         public string KeyWords { get; set; } = "";
 
         [Browsable(false)]
-        [JsonProperty("Website")]
+        [JsonIgnore]
         public IShop ScrapedBy { get; set; }
 
         public string Name { get; set; } = "";

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using StoreScraper.Data;
 using StoreScraper.Helpers;
 using StoreScraper.Http.Factory;
 

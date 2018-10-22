@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
+using StoreScraper.Data;
 using StoreScraper.Helpers;
 using StoreScraper.Interfaces;
 using StoreScraper.Models;

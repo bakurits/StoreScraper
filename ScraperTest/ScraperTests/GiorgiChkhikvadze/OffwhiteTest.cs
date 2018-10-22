@@ -3,6 +3,7 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ScraperTest.Helpers;
 using StoreScraper.Bots.Html.GiorgiChkhikvadze;
+using StoreScraper.Models.Enums;
 
 namespace ScraperTest.ScraperTests.GiorgiChkhikvadze
 {
@@ -12,10 +13,9 @@ namespace ScraperTest.ScraperTests.GiorgiChkhikvadze
         public OffWhiteScraper Scraper = new OffWhiteScraper();
 
         [TestMethod]
-        public void TestFind()
+        public void TestAllProductScrape()
         {
-            var searchSettings = Helper.SearchSettings;
-            Scraper.FindItems(out var listOfProducts, searchSettings, CancellationToken.None);
+            Scraper.ScrapeAllProducts(out var listOfProducts, ScrappingLevel.PrimaryFields, CancellationToken.None);
             Helper.PrintFindItemsResults(listOfProducts);
         }
 
