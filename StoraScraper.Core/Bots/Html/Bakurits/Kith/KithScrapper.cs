@@ -41,7 +41,7 @@ namespace StoreScraper.Bots.Html.Bakurits.Kith
 #if DEBUG
                     LoadSingleProduct(products, null, item);
 #else
-                    LoadSingleProductTryCatchWrapper(listOfProducts, null, item);
+                    LoadSingleProductTryCatchWrapper(products, null, item);
 #endif
                 }
             }
