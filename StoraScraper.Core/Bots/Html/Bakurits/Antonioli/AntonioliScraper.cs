@@ -29,8 +29,8 @@ namespace StoreScraper.Bots.Html.Bakurits.Antonioli
             listOfProducts = new List<Product>();
             var lst = listOfProducts;
 
-            var task1 = Task.Run(() => FindItemsForGender(lst, settings, token, "men"));
-            var task2 = Task.Run(() => FindItemsForGender(lst, settings, token, "women"));
+            var task1 = Task.Run(() => FindItemsForGender(lst, settings, token, "men"), token);
+            var task2 = Task.Run(() => FindItemsForGender(lst, settings, token, "women"), token);
 
             Task.WaitAll(task1, task2);
         }

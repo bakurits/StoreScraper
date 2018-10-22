@@ -217,7 +217,7 @@ namespace StoreScraper.Bots.Html.Bakurits.Mrporter
                 price = GetPrice(priceContainer.SelectSingleNode("./p[1]").InnerHtml);
             }
 
-            var curProduct = new Product(this, name, GetId(url), price, imgUrl, url, "GBR");
+            var curProduct = new Product(this, name, url, price, imgUrl, GetId(url), "GBR");
 
             if (settings == null)
             {
