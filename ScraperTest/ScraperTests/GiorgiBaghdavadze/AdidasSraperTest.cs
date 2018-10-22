@@ -19,7 +19,7 @@ namespace ScraperTest.ScraperTests.GiorgiBaghdavadze
         {
             var product = new Product()
             {
-                Url = "https://www.adidas.com/us/calabasas-track-pant/DY0572.html",
+                Url = "https://www.adidas.com/us/tape-tee/DZ0099.html",
                 ScrapedBy = Scraper
             };
 
