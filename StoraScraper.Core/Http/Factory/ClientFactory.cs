@@ -21,7 +21,7 @@ namespace StoreScraper.Http.Factory
         public static StringPair HtmlOnlyHeader = ("Accept", "text/html");
 
         public static StringPair FirefoxUserAgentHeader = ("User-Agent",
-            "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0");
+            "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:62.0) Gecko/20100101 Firefox/62.0");
 
         public static StringPair FirefoxUserAgentHeaderOlder = ("User-Agent",
             "Mozilla/5.0 (Windows NT 6.1; rv:52.0) Gecko/20100101 Firefox/52.0");
@@ -56,7 +56,7 @@ namespace StoreScraper.Http.Factory
             ("Accept-Language", @"en-US,en;q=0.8"),
             ("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"),
             ("Upgrade-Insecure-Requests","1"),
-            //("Connection","keep-alive"),
+            ("Connection","keep-alive"),
         };
 
 
@@ -74,12 +74,9 @@ namespace StoreScraper.Http.Factory
         {
             FirefoxUserAgentHeader,
             FirefoxAcceptHeader,
-            ("Accept-Encoding", "gzip, deflate, br"),
-            ("Accept-Language", "en-US,en; q=0.5"),
-            ("Cache-Control", "no-cache"),
-            ("Pramgma","no-cache"),
+            ("Accept-Encoding", "gzip, deflate"),
+            ("Accept-Language", "ru,en;q=0.8,de;q=0.6,sq;q=0.4,be;q=0.2,sv;q=0.2,en-GB;q=0.2,en-NZ;q=0.2,en-US;q=0.2"),
             ("Connection", "keep-alive"),
-            //("DNT","1"),
             ("Upgrade-Insecure-Requests", "1"),
         };
 

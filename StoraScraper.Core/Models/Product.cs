@@ -13,6 +13,8 @@ namespace StoreScraper.Models
     [JsonObject]
     public class Product
     {
+
+
         [DisplayName("Store")]
         public string StoreName 
         { 
