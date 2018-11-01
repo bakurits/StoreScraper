@@ -28,7 +28,7 @@ namespace StoreScraper.Http.Factory
 
         public static StringPair ChromeUserAgentHeader =
             ("User-Agent",
-                @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36");
+                @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36");
 
         public static StringPair ChromeAcceptHeader =
             ("Accept",
@@ -43,8 +43,8 @@ namespace StoreScraper.Http.Factory
             ChromeUserAgentHeader,
             ("Accept-Language", @"en-US,en;q=0.9"),
             ("Accept-Encoding", "gzip,deflate,br"),
-            ("Cache-Control", "no-cache"),
-            ("Pramgma","no-cache"),
+            /*("Cache-Control", "no-cache"),*/
+            /*("Pramgma","no-cache"),*/
             ("Connection", "keep-alive"),
             ("Upgrade-Insecure-Requests", "1"),
         };
