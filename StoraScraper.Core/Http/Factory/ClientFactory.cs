@@ -76,7 +76,7 @@ namespace StoreScraper.Http.Factory
             FirefoxAcceptHeader,
             ("Accept-Encoding", "gzip, deflate"),
             ("Accept-Language", "ru,en;q=0.8,de;q=0.6,sq;q=0.4,be;q=0.2,sv;q=0.2,en-GB;q=0.2,en-NZ;q=0.2,en-US;q=0.2"),
-            ("Connection", "keep-alive"),
+            ("Connection", "close"), // connection close may be used only for performance improvment. firefox uses keep-alive
             ("Upgrade-Insecure-Requests", "1"),
         };
 

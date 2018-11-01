@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using StoreScraper.Data;
 using StoreScraper.Http.Factory;
 using StoreScraper.Interfaces;
 using static StoreScraper.Http.Factory.ClientFactory;
@@ -72,14 +73,16 @@ namespace StoreScraper.Helpers
                 #endregion
 
 
-                var engine = new Jurassic.ScriptEngine();
-                engine.SetGlobalValue("interop", "15");
+                var engine = new Jint.Engine();
+                engine.SetValue("interop", "15");
 
                 var pass = Regex.Match(initialPage, "name=\"pass\" value=\"(.*?)\"/>").Groups[1].Value;
                 var answer = Regex.Match(initialPage, "name=\"jschl_vc\" value=\"(.*?)\"/>").Groups[1].Value;
 
-                var script = Regex.Match(initialPage, "setTimeout\\(function\\(\\){(.*?)}, 4000\\);",
-                    RegexOptions.Singleline | RegexOptions.IgnoreCase).Groups[1].Value;
+                var match = Regex.Match(initialPage, @"setTimeout\(function\(\)({.+}), (\d+)\)",
+                    RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                var script = match.Groups[1].Value;
+                int timeout = int.Parse(match.Groups[2].Value);
                 script = script.Replace("a = document.getElementById('jschl-answer');", string.Empty);
                 script = script.Replace("f.action += location.hash;", string.Empty);
                 script = script.Replace("f.submit();", string.Empty);
@@ -91,10 +94,11 @@ namespace StoreScraper.Helpers
 
 
 
-                var gga = engine.Evaluate(script);
-                var calc = engine.GetGlobalValue<string>("interop");
+                engine.Execute(script);
+                engine.Execute("interop=interop.toString();");
+                var calc = engine.GetValue("interop").AsString();
 
-                Task.Delay(5000, token).Wait(token);
+                Task.Delay(timeout, token).Wait(token);
                 var uri = new Uri(host, $"/cdn-cgi/l/chk_jschl?jschl_vc={answer}&pass={pass}&jschl_answer={calc}");
                 var message3 = new HttpRequestMessage()
                 {

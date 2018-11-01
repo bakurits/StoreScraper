@@ -15,8 +15,7 @@ namespace StoreScraper.Data
         public static AppSettings Default { get; set; }
         public static readonly string DataDir;
 
-        [JsonIgnore]
-        public static string DataFilePath;
+        [JsonIgnore] private static string DataFilePath;
 
         [Browsable(false)]
         public List<string> Proxies { get; set; } = new List<string>();
@@ -29,7 +28,12 @@ namespace StoreScraper.Data
         public int MonitoringInterval { get; set; } = 1000;
 
         [DisplayName("Download Timeout (second)")]
-        public int DownloadTimeout { get; set; } = 5;
+        public int DownloadTimeout { get; set; } = 10;
+
+        public bool AsyncRequests { get; set; } = false;
+
+        [DisplayName("Memory CleanUp Interval (sec)")]
+        public int CleanUpIntervalSec { get; set; } = 10;
 
         public List<WebHook> WebHooks { get; set; } = new List<WebHook>();
 
@@ -81,7 +85,7 @@ namespace StoreScraper.Data
 
         public void Save()
         {
-            var jsonData = JsonConvert.SerializeObject(this);
+            var jsonData = JsonConvert.SerializeObject(this, Formatting.Indented);
             File.WriteAllText(DataFilePath,jsonData);
         }
     }

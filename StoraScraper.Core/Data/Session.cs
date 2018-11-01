@@ -23,7 +23,7 @@ namespace StoreScraper.Data
 
         public MonitoringTaskManager TaskManager { get; set; } = new MonitoringTaskManager();
 
-        [JsonIgnore]
+        
         public ProductMonitoringManager MonitoringManager { get; set; } = new ProductMonitoringManager();
 
 
@@ -57,11 +57,14 @@ namespace StoreScraper.Data
 
         public void SaveSession()
         {
-            using (var stream = File.Open(DataFilePath, FileMode.OpenOrCreate))
+            using (var stream = File.Open(DataFilePath, FileMode.Truncate))
             {
                 using (var writer = new StreamWriter(stream))
                 {
-                    var serializer = new JsonSerializer();
+                    var serializer = new JsonSerializer()
+                    {
+                        Formatting = Formatting.Indented,
+                    };
                     serializer.Serialize(writer, this);
                 }
             }

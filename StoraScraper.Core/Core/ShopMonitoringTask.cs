@@ -26,8 +26,12 @@ namespace StoreScraper.Core
         public HashSet<Product> CurrentProducts { get; set; }
 
         public event ProductMonitoringManager.NewProductHandler Handler;
+
+        [JsonIgnore]
         public CancellationTokenSource TokenSource { get; set; } = new CancellationTokenSource();
-        private bool _started = false;
+
+        [JsonProperty]
+        private bool _running = false;
 
         private void OnNewProductAppeared(Product product)
         {
@@ -36,9 +40,15 @@ namespace StoreScraper.Core
 
         public void Start()
         {
-            if (_started) return;
+            if (_running) return;
             Task.Factory.StartNew(MonitorShop, TokenSource.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
-            _started = true;
+            _running = true;
+        }
+
+        public void Stop()
+        {
+            TokenSource.Cancel();
+            TokenSource = new CancellationTokenSource();
         }
 
         private void MonitorShop()

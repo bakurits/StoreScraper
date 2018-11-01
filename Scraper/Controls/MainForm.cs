@@ -234,6 +234,7 @@ namespace Scraper.Controls
             });
 
             AppSettings.Default.Save();
+            Session.Current.SaveSession();
         }
 
 
@@ -333,6 +334,7 @@ namespace Scraper.Controls
             var proxies = AppSettings.Default.Proxies;
             AppSettings.Default = new AppSettings {Proxies = proxies};
             AppSettings.Default.Save();
+            Session.Current.SaveSession();
         }
 
         private void Btn_UrlMon_Click(object sender, EventArgs e)

@@ -21,12 +21,14 @@ namespace StoreScraper.Core
     {
         public delegate void NewProductHandler(Product product);
 
-        private Dictionary<ScraperBase, ShopMonitoringTask> AllShopsTasks { get; set; } = new Dictionary<ScraperBase, ShopMonitoringTask>();
+        [JsonProperty]
+        private Dictionary<ScraperBase, ShopMonitoringTask> _allShopTasks { get; set; } = new Dictionary<ScraperBase, ShopMonitoringTask>();
+
 
 
         public void AddNewProductHandler(ScraperBase website, NewProductHandler handler)
         {
-            if (AllShopsTasks.TryGetValue(website, out var task))
+            if (_allShopTasks.TryGetValue(website, out var task))
             {
                 task.Handler += handler;
             }
@@ -38,7 +40,7 @@ namespace StoreScraper.Core
 
         public async Task RegisterMonitoringTaskAsync(ScraperBase website, CancellationToken token)
         {
-            if (AllShopsTasks.ContainsKey(website))
+            if (_allShopTasks.ContainsKey(website))
             {
                 Logger.Instance.WriteVerboseLog("Requested shop monitoring task is already added (Adding Process Skipped)");
                 return;
@@ -53,28 +55,28 @@ namespace StoreScraper.Core
                 TokenSource = new CancellationTokenSource(),
             };
              
-            AllShopsTasks.Add(website, task);
+            _allShopTasks.Add(website, task);
         }
 
 
         public void StartMonitoringTask(ScraperBase website)
         {
-            if(!AllShopsTasks.TryGetValue(website, out var task)) throw new KeyNotFoundException("Can't start task. Task with this name not found");
+            if(!_allShopTasks.TryGetValue(website, out var task)) throw new KeyNotFoundException("Can't start task. Task with this name not found");
 
             task.Start();
         }
 
         public void RemoveMonitoringTask(ScraperBase website)
         {
-            if (!AllShopsTasks.TryGetValue(website, out var task)) throw new KeyNotFoundException($"Can't remove {website} monitoring, because it is not registered");
+            if (!_allShopTasks.TryGetValue(website, out var task)) throw new KeyNotFoundException($"Can't remove {website} monitoring, because it is not registered");
 
             task.TokenSource.Cancel();
-            AllShopsTasks.Remove(website);
+            _allShopTasks.Remove(website);
         }
 
         public IReadOnlyCollection<Product> GetCurrentProducts(ScraperBase website)
         {
-            if (AllShopsTasks.TryGetValue(website, out var task))
+            if (_allShopTasks.TryGetValue(website, out var task))
             {
                 return task.CurrentProducts.ToList().AsReadOnly();
             }
