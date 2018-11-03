@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
+using StoreScraper.Data;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
@@ -20,14 +21,14 @@ namespace StoreScraper.Http.Factory
         public static StringPair HtmlOnlyHeader = ("Accept", "text/html");
 
         public static StringPair FirefoxUserAgentHeader = ("User-Agent",
-            "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0");
+            "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:62.0) Gecko/20100101 Firefox/62.0");
 
         public static StringPair FirefoxUserAgentHeaderOlder = ("User-Agent",
             "Mozilla/5.0 (Windows NT 6.1; rv:52.0) Gecko/20100101 Firefox/52.0");
 
         public static StringPair ChromeUserAgentHeader =
             ("User-Agent",
-                @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36");
+                @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36");
 
         public static StringPair ChromeAcceptHeader =
             ("Accept",
@@ -42,8 +43,8 @@ namespace StoreScraper.Http.Factory
             ChromeUserAgentHeader,
             ("Accept-Language", @"en-US,en;q=0.9"),
             ("Accept-Encoding", "gzip,deflate,br"),
-            ("Cache-Control", "no-cache"),
-            ("Pramgma","no-cache"),
+            /*("Cache-Control", "no-cache"),*/
+            /*("Pramgma","no-cache"),*/
             ("Connection", "keep-alive"),
             ("Upgrade-Insecure-Requests", "1"),
         };
@@ -55,7 +56,7 @@ namespace StoreScraper.Http.Factory
             ("Accept-Language", @"en-US,en;q=0.8"),
             ("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36"),
             ("Upgrade-Insecure-Requests","1"),
-            //("Connection","keep-alive"),
+            ("Connection","keep-alive"),
         };
 
 
@@ -73,12 +74,9 @@ namespace StoreScraper.Http.Factory
         {
             FirefoxUserAgentHeader,
             FirefoxAcceptHeader,
-            ("Accept-Encoding", "gzip, deflate, br"),
-            ("Accept-Language", "en-US,en; q=0.5"),
-            ("Cache-Control", "no-cache"),
-            ("Pramgma","no-cache"),
-            ("Connection", "keep-alive"),
-            //("DNT","1"),
+            ("Accept-Encoding", "gzip, deflate"),
+            ("Accept-Language", "ru,en;q=0.8,de;q=0.6,sq;q=0.4,be;q=0.2,sv;q=0.2,en-GB;q=0.2,en-NZ;q=0.2,en-US;q=0.2"),
+            ("Connection", "close"), // connection close may be used only for performance improvment. firefox uses keep-alive
             ("Upgrade-Insecure-Requests", "1"),
         };
 

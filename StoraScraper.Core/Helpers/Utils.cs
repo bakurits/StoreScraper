@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using StoreScraper.Attributes;
 using StoreScraper.Core;
+using StoreScraper.Data;
 using StoreScraper.Http.Factory;
 using StoreScraper.Models;
 using StoreScraper.Models.Enums;
@@ -93,20 +94,20 @@ namespace StoreScraper.Helpers
         {
             try
             {
-                using (var response = client.GetAsync(url, token).Result)
-                {
-                    var result = response.Content.ReadAsStringAsync().Result;
-                    var doc = new HtmlDocument()
+                    using (var response = client.GetAsync(url, token).Result)
                     {
-                        OptionAutoCloseOnEnd = true,
-                        OptionCheckSyntax = true,
-                        OptionFixNestedTags = true,
-                        OptionWriteEmptyNodes = true,
-                    };
-                    doc.LoadHtml(result);
-                    response.Dispose();
-                    return doc;
-                }
+                        var result = response.Content.ReadAsStringAsync().Result;
+                        var doc = new HtmlDocument()
+                        {
+                            OptionAutoCloseOnEnd = true,
+                            OptionCheckSyntax = true,
+                            OptionFixNestedTags = true,
+                            OptionWriteEmptyNodes = true,
+                        };
+                        doc.LoadHtml(result);
+                        response.Dispose();
+                        return doc;
+                    }
             }
             catch (WebException)
             {
@@ -298,7 +299,7 @@ namespace StoreScraper.Helpers
         /// This function finds substring of string
         /// From <c>l</c> to <c>r</c> both inclusive
         /// </summary>
-        private static string Substr(this string str, int l, int r)
+        public static string Substr(this string str, int l, int r)
         {
             return str.Substring(l, r - l + 1);
         }

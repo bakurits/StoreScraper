@@ -7,12 +7,14 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 using StoreScraper.Data;
 using StoreScraper.Helpers;
 using StoreScraper.Models;
 
 namespace StoreScraper.Core
 {
+    [JsonObject]
     public class MonitoringTaskManager
     {
         private const string UrlTasksFileName = "UrlTasks.json";
@@ -24,15 +26,23 @@ namespace StoreScraper.Core
             SearchTaskGroupsFilePath = Path.Combine(AppSettings.DataDir, SearchTaskGroupsFileName);
         }
 
-        public static MonitoringTaskManager Default { get; set; } = new MonitoringTaskManager();
 
         private static string UrlTasksFilePath { get; }
         private static string SearchTaskGroupsFilePath { get; }
 
+        [JsonIgnore]
         private Dictionary<ScraperBase, SearchMonitoringTask> SearchMonTasks { get; set; } = new Dictionary<ScraperBase, SearchMonitoringTask>();
+
+        [JsonProperty]
+        public List<SearchMonitoringTask> SearchMonTaskList 
+        { 
+            get => SearchMonTasks.ToList().Select(elem => elem.Value).ToList(); 
+            set => SearchMonTasks = value.ToDictionary(elem => elem.Store, elem => elem);
+        }
 
         public List<UrlMonitoringTask> UrlMonTasks { get; set; } = new List<UrlMonitoringTask>();
 
+        [JsonIgnore]
         public CheckedListBox MonTasksContainer { get; set; }
 
         public async Task AddSearchTaskGroup(SearchMonitoringTaskGroup taskGroup)
@@ -44,7 +54,6 @@ namespace StoreScraper.Core
 
 
                 StreamWriter errorLogTxtFile = null;
-                StreamWriter verboseLogTxtFile = null;
                 bool isNewWebsite = false;
 
                 string workingWebsiteLog = $"THESE WEBSITES SUCCESSFULLY ADDED TO MONITOR: \n\n";
@@ -61,8 +70,8 @@ namespace StoreScraper.Core
                         {
                             CancellationTokenSource tknSource = new CancellationTokenSource();
                             tknSource.CancelAfter(TimeSpan.FromSeconds(20));
-                            ProductMonitoringManager.Default.RegisterMonitoringTaskAsync(store,  tknSource.Token).Wait();
-                            ProductMonitoringManager.Default.AddNewProductHandler(store, monTask.HandleNewProduct);
+                            Session.Current.MonitoringManager.RegisterMonitoringTaskAsync(store,  tknSource.Token).Wait();
+                            Session.Current.MonitoringManager.AddNewProductHandler(store, monTask.HandleNewProduct);
                             SearchMonTasks.Add(store, monTask);
                             workingWebsiteList.Add(store);
                             isNewWebsite = true;
@@ -98,6 +107,8 @@ namespace StoreScraper.Core
 
                 if(errorLogTxtFile != null)MessageBox.Show(errorLog, "Error occured while adding these websites in monitor!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
+
+                workingWebsiteLog += string.Join(Environment.NewLine, workingWebsiteList);
                 lock (taskGroup.WebsiteList)
                 {
                     if (taskGroup.WebsiteList.Count > 0)
@@ -110,8 +121,7 @@ namespace StoreScraper.Core
                 if (isNewWebsite)
                 {
                     string verboseFilePath = Path.Combine("Logs", $"AddToMon VerboseLog ({DateTime.UtcNow:u})".EscapeFileName());
-                    verboseLogTxtFile = File.CreateText(verboseFilePath);
-                    workingWebsiteLog += string.Join(Environment.NewLine, workingWebsiteList);
+                    var verboseLogTxtFile = File.CreateText(verboseFilePath);
                     verboseLogTxtFile.Write(workingWebsiteLog);
                     verboseLogTxtFile.Flush();
                     verboseLogTxtFile.Close();
@@ -124,7 +134,7 @@ namespace StoreScraper.Core
                     }
                 }
 
-                workingWebsiteList.ForEach(store => ProductMonitoringManager.Default.StartMonitoringTask(store));
+                workingWebsiteList.ForEach(store => Session.Current.MonitoringManager.StartMonitoringTask(store));
 
             });
         }
@@ -138,11 +148,9 @@ namespace StoreScraper.Core
 
                 searchTask.MonitoringOptions.Remove(taskGroup.Options);
 
-                if (searchTask.MonitoringOptions.Count == 0)
-                {
-                    searchTask.TokenSource.Cancel();
-                    SearchMonTasks.Remove(scraper);
-                }
+                if (searchTask.MonitoringOptions.Count != 0) continue;
+                searchTask.TokenSource.Cancel();
+                SearchMonTasks.Remove(scraper);
             }
         }
     }

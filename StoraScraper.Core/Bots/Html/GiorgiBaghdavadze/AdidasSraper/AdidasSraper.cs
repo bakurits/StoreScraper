@@ -141,7 +141,7 @@ namespace StoreScraper.Bots.Html.GiorgiBaghdavadze.Adidas
                 Currency = "CHF",
                 ScrapedBy = this
             };
-
+                
             string search = $"https://www.adidas.com/api/products/{sku}/availability?sitePath=us";
             ds = GetWebpage(search, token);
             string toJason = ds.InnerText;

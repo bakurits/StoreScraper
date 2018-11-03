@@ -2,24 +2,20 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Xml.Serialization;
 using Newtonsoft.Json;
-using StoreScraper.Core;
 using StoreScraper.Models;
 
-
-namespace StoreScraper
+namespace StoreScraper.Data
 {
     [JsonObject]
     [Serializable]
     public class AppSettings
     {
         public const string DataFileName = "config.json";
-        public static AppSettings Default;
-        public static string DataDir;
+        public static AppSettings Default { get; set; }
+        public static readonly string DataDir;
 
-        [JsonIgnore]
-        public static string DataFilePath;
+        [JsonIgnore] private static string DataFilePath;
 
         [Browsable(false)]
         public List<string> Proxies { get; set; } = new List<string>();
@@ -32,7 +28,12 @@ namespace StoreScraper
         public int MonitoringInterval { get; set; } = 1000;
 
         [DisplayName("Download Timeout (second)")]
-        public int DownloadTimeout { get; set; } = 5;
+        public int DownloadTimeout { get; set; } = 10;
+
+        public bool AsyncRequests { get; set; } = false;
+
+        [DisplayName("Memory CleanUp Interval (sec)")]
+        public int CleanUpIntervalSec { get; set; } = 10;
 
         public List<WebHook> WebHooks { get; set; } = new List<WebHook>();
 
@@ -76,7 +77,7 @@ namespace StoreScraper
             }
             catch
             {
-                //ingored
+                //ignored
             }
             return new AppSettings();
         }
@@ -84,7 +85,7 @@ namespace StoreScraper
 
         public void Save()
         {
-            var jsonData = JsonConvert.SerializeObject(this);
+            var jsonData = JsonConvert.SerializeObject(this, Formatting.Indented);
             File.WriteAllText(DataFilePath,jsonData);
         }
     }

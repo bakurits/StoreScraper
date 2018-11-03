@@ -66,21 +66,17 @@
     <Reference Include="DotNetKit.Wpf.AutoCompleteComboBox, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetKit.Wpf.AutoCompleteComboBox.1.2.0\lib\net45\DotNetKit.Wpf.AutoCompleteComboBox.dll</HintPath>
     </Reference>
-    <Reference Include="EO.Base, Version=18.2.74.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
-      <HintPath>..\packages\EO.WebBrowser.18.2.74\lib\EO.Base.dll</HintPath>
+    <Reference Include="EO.Base, Version=18.3.23.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
+      <HintPath>..\packages\EO.WebBrowser.18.3.23\lib\EO.Base.dll</HintPath>
     </Reference>
-    <Reference Include="EO.WebBrowser, Version=18.2.74.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
-      <HintPath>..\packages\EO.WebBrowser.18.2.74\lib\EO.WebBrowser.dll</HintPath>
+    <Reference Include="EO.WebBrowser, Version=18.3.23.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
+      <HintPath>..\packages\EO.WebBrowser.18.3.23\lib\EO.WebBrowser.dll</HintPath>
     </Reference>
-    <Reference Include="EO.WebEngine, Version=18.2.74.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
-      <HintPath>..\packages\EO.WebBrowser.18.2.74\lib\EO.WebEngine.dll</HintPath>
+    <Reference Include="EO.WebEngine, Version=18.3.23.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
+      <HintPath>..\packages\EO.WebBrowser.18.3.23\lib\EO.WebEngine.dll</HintPath>
     </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.8.8.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a">
-      <HintPath>..\packages\HtmlAgilityPack.1.8.8\lib\Net45\HtmlAgilityPack.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Jurassic, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Jurassic.3.0.0-alpha2\lib\net45\Jurassic.dll</HintPath>
+    <Reference Include="HtmlAgilityPack, Version=1.8.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.8.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>

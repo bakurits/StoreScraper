@@ -2,11 +2,14 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using HtmlAgilityPack;
+using Newtonsoft.Json.Linq;
 using StoreScraper.Core;
 using StoreScraper.Exceptions;
 using StoreScraper.Helpers;
+using StoreScraper.Http.Factory;
 using StoreScraper.Models;
 using StoreScraper.Models.Enums;
 
@@ -41,7 +44,7 @@ namespace StoreScraper.Bots.Html.Bakurits.Kith
 #if DEBUG
                     LoadSingleProduct(products, null, item);
 #else
-                    LoadSingleProductTryCatchWrapper(listOfProducts, null, item);
+                    LoadSingleProductTryCatchWrapper(products, null, item);
 #endif
                 }
             }
@@ -51,13 +54,42 @@ namespace StoreScraper.Bots.Html.Bakurits.Kith
 
         public override ProductDetails GetProductDetails(string productUrl, CancellationToken token)
         {
-            throw new NotImplementedException();
+            var page = GetWebpage(productUrl, token);
+            string name = page.SelectSingleNode("//h1[@class = 'product-header-title']").InnerText;
+            name.EscapeNewLines();
+            name = name.Trim();
+            string priceContainer = page.SelectSingleNode("//span[@id = 'ProductPrice']").InnerText;
+            var price = Utils.ParsePrice(priceContainer);
+            var sizesContainer = page.SelectNodes("//select[@id = 'productSelect']/option");
+            var keyWords = page.SelectSingleNode("//meta[@name='description']")?.GetAttributeValue("content", "") +
+                           " " +
+                           page.SelectSingleNode("//meta[@property='og:title']")?.GetAttributeValue("content", "");
+            ProductDetails details = new ProductDetails()
+            {
+                Name = name,
+                Price = price.Value,
+                KeyWords = keyWords,
+                Currency = price.Currency
+            };
+            foreach (var htmlNode in sizesContainer)
+            {
+                details.SizesList.Add((htmlNode.InnerHtml, "Unknown"));
+            }
+
+            return details;
         }
 
         public override void ScrapeAllProducts(out List<Product> listOfProducts, ScrappingLevel requiredInfo,
             CancellationToken token)
         {
             FindItems(out listOfProducts, null, token);
+        }
+        
+        private static HtmlNode GetWebpage(string url, CancellationToken token)
+        {
+            var client = ClientFactory.GetProxiedFirefoxClient(autoCookies: true);
+            var document = client.GetDoc(url, token).DocumentNode;
+            return document;
         }
 
         private void LoadSingleProductTryCatchWrapper(ConcurrentDictionary<Product, byte> listOfProducts,
@@ -87,6 +119,8 @@ namespace StoreScraper.Bots.Html.Bakurits.Kith
         private static string GetName(HtmlNode item)
         {
             string name = item.SelectSingleNode(".//p[contains(@class, 'product-card-title')]").InnerText;
+            name.EscapeNewLines();
+            name = name.Trim();
             return name;
         }
 
@@ -98,7 +132,8 @@ namespace StoreScraper.Bots.Html.Bakurits.Kith
 
         private string GetImageUrl(HtmlNode item)
         {
-            return null;
+            string imageUrl = item.ParentNode.SelectSingleNode(".//div[contains(@class, 'js-product-card-image-slideshow')]/a/img").GetAttributeValue("src", null);
+            return "https:" + imageUrl;
         }
 
         private static Price GetPrice(HtmlNode item)

@@ -37,9 +37,11 @@
     <Reference Include="Brotli.NET, Version=1.0.11.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Brotli.NET.1.0.19\lib\net40\Brotli.NET.dll</HintPath>
     </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.8.8.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a">
-      <HintPath>..\packages\HtmlAgilityPack.1.8.8\lib\Net45\HtmlAgilityPack.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="HtmlAgilityPack, Version=1.8.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.8.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="Jint, Version=0.0.0.0, Culture=neutral, PublicKeyToken=2e92ba9c8d81157f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jint.2.11.58\lib\net451\Jint.dll</HintPath>
     </Reference>
     <Reference Include="Jurassic, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Jurassic.3.0.0-alpha2\lib\net45\Jurassic.dll</HintPath>
@@ -64,10 +66,10 @@
     <Compile Include="Bots\Html\Bakurits\Kith\KithScrapper.cs" />
     <Compile Include="Bots\Html\GiorgiBaghdavadze\AdidasSraper\AdidasSraper.cs" />
     <Compile Include="Core\MonitoringTaskManager.cs" />
+    <Compile Include="Core\ShopMonitoringTask.cs" />
     <Compile Include="Data\AppSettings.cs" />
     <Compile Include="Attributes\DisableInGUI.cs" />
     <Compile Include="Bots\Html\Bakurits\Antonioli\AntonioliScraper.cs" />
-    <Compile Include="Bots\Html\Bakurits\Antonioli\AntonioliSearchSettings.cs" />
     <Compile Include="Bots\Html\Bakurits\Baitme\BaitmeScraper.cs" />
     <Compile Include="Bots\Html\Bakurits\Mrporter\MrporterScraper.cs" />
     <Compile Include="Bots\Html\Bakurits\Rimowa\RimowaScraper.cs" />
@@ -171,10 +173,12 @@
     <Compile Include="Exceptions\ScrappingException.cs" />
     <Compile Include="Helpers\CfBypasser.cs" />
     <Compile Include="Helpers\DiscordPoster.cs" />
+    <Compile Include="Helpers\MemoryCleanup.cs" />
     <Compile Include="Helpers\SlackPoster.cs" />
     <Compile Include="Helpers\Utils.cs" />
     <Compile Include="Http\CookieCollecting\CookieCollector.cs" />
     <Compile Include="Http\ExtendedClientHandler.cs" />
+    <Compile Include="Http\ExtendedHttpClient.cs" />
     <Compile Include="Http\Factory\ClientFactory.cs" />
     <Compile Include="Http\FirefoxHttpClientStorage.cs" />
     <Compile Include="Interfaces\ISearchSettingsValidator.cs" />
