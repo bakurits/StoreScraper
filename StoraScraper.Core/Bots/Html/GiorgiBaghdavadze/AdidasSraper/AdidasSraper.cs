@@ -84,7 +84,7 @@ namespace StoreScraper.Bots.Html.GiorgiBaghdavadze.Adidas
 
         private double getPrice(HtmlNode child)
         {
-            string priceIntoString = child.SelectSingleNode(".//div[contains(@class,'gl-price-container')]/span[0]")?.InnerText;
+            string priceIntoString = child.SelectSingleNode(".//div[contains(@class,'gl-price-container')]/span[1]")?.InnerText;
             if (priceIntoString == null)
                 return 0;
             Debug.Print(priceIntoString);
@@ -101,6 +101,8 @@ namespace StoreScraper.Bots.Html.GiorgiBaghdavadze.Adidas
             string productName = getProductName(child);
             if (imageURL == null || productName == null || productURL == null) return;
             double price = getPrice(child);
+            if (price == 0)
+                return;
             var product = new Product(this, productName, productURL, price, imageURL, productURL);
             if (settings == null)
                 listOfProducts.Add(product);
